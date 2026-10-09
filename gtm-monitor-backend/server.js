@@ -2536,7 +2536,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || 'Terjadi kesalahan internal pada server.' });
 });
 
-const staticPath = path.join(__dirname, '../gtm-monitor-react/dist');
+const staticPath = path.join(__dirname, '../gtm-monitor-frontend/dist');
 if (fs.existsSync(staticPath)) {
   app.use(express.static(staticPath));
   app.use((req, res) => {
