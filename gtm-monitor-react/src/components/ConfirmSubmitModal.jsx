@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom';
 
 export default function ConfirmSubmitModal({ data, onConfirm, onCancel, isSubmitting }) {
   if (!data) return null;
-  const { branchName, projectName, actLabel } = data;
+  const { projectName, actLabel } = data;
 
   return createPortal(
     <div style={{

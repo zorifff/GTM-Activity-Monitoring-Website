@@ -62,7 +62,7 @@ function handleBackendFailure(reason) {
   if (backendFailures >= MAX_FAILURES) {
     backendFailures = 0;
     console.error(`[Watchdog Alert] Backend non-responsive. Triggering PM2 restart...`);
-    exec('pm2 restart gtm-backend', (err, stdout) => {
+    exec('pm2 restart gtm-backend', (err) => {
       if (err) console.error(`[Watchdog Error] PM2 restart failed: ${err.message}`);
       else console.log(`[Watchdog Success] Backend restarted.`);
     });
@@ -80,12 +80,12 @@ function handleCloudflaredFailure(reason) {
     console.error(`[Watchdog Auto-Healer] Cloudflare Tunnel timed out! Executing automatic restart: net stop cloudflared -> net start cloudflared`);
     
     // Step 1: Stop cloudflared service
-    exec('net stop cloudflared', (stopErr, stopStdout) => {
+    exec('net stop cloudflared', () => {
       console.log(`[Watchdog Auto-Healer] Stopping cloudflared...`);
       
       // Step 2: Wait 4 seconds, then start cloudflared service again
       setTimeout(() => {
-        exec('net start cloudflared', (startErr, startStdout) => {
+        exec('net start cloudflared', (startErr) => {
           if (startErr) {
             console.warn(`[Watchdog Auto-Healer] 'net start' warning, fallback to 'sc start'...`);
             exec('sc start cloudflared');

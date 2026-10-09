@@ -12,7 +12,6 @@ export default function UploadModal({ data, onClose, onSubmit }) {
   const [namaOutlet, setNamaOutlet] = useState('');
   const [namaBumdes, setNamaBumdes] = useState('');
   const [kodeSf, setKodeSf] = useState('');
-  const [keterangan, setKeterangan] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
@@ -77,7 +76,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
       namaOutlet: namaOutlet.trim(),
       namaBumdes: namaBumdes.trim(),
       kodeSf: kodeSf.trim(),
-      keterangan: keterangan.trim() || kodeSf.trim() || namaOutlet.trim() || namaBumdes.trim()
+      keterangan: kodeSf.trim() || namaOutlet.trim() || namaBumdes.trim()
     });
   };
 

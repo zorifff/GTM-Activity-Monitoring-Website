@@ -10,7 +10,6 @@ const BranchView = memo(function BranchView({
   goDashboard,
   verifyActivity,
   rejectActivity,
-  updateActivityField,
   uploadPhoto,
   deletePhoto
 }) {
@@ -60,7 +59,7 @@ const BranchView = memo(function BranchView({
 
   let modalData = null;
   if (modalKey && branch) {
-    const [bName, pName] = modalKey.split('||');
+    const [, pName] = modalKey.split('||');
     const p = (branch.projects || []).find(x => x.name === pName);
     if (p) {
       const odps = p.odps || [];
@@ -212,11 +211,7 @@ const BranchView = memo(function BranchView({
         projects={filteredProjects}
         branchName={branch.name}
         onReview={openModal}
-        updateActivityField={updateActivityField}
         uploadPhoto={uploadPhoto}
-        verifyActivity={verifyActivity}
-        rejectActivity={rejectActivity}
-        deletePhoto={deletePhoto}
       />
 
       <ReviewModal

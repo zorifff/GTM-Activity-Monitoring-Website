@@ -40,20 +40,6 @@ export function getOdpCoords(odpName, branchName, existingLat, existingLon) {
   return { lat: base.lat + latOffset, lon: base.lon + lonOffset };
 }
 
-export function hash(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
-  return Math.abs(h);
-}
-
-export function occColor(status) {
-  return { GREEN: '#16a34a', YELLOW: '#d97706', ORANGE: '#f97316', BLACK: '#334155', RED: '#dc2626' }[status] || '#64748b';
-}
-
-export function occBg(status) {
-  return { GREEN: '#dcfce7', YELLOW: '#fef3c7', ORANGE: '#ffedd5', BLACK: '#e2e8f0', RED: '#fee2e2' }[status] || '#f1f5f9';
-}
-
 export function actMeta(status) {
   if (status === 'verified') return { label: 'Terverifikasi', bg: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0' };
   if (status === 'upload') return { label: 'Menunggu Verifikasi', bg: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' };

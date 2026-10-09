@@ -1,10 +1,10 @@
 import { useState, useMemo, memo, useCallback, useEffect } from 'react';
 import ProjectTable from './ProjectTable';
 import ReviewModal from './ReviewModal';
-import { formatBranch, computeStats, exportProjectsToExcel } from '../utils';
+import { formatBranch, computeStats } from '../utils';
 import { API_BASE_URL } from '../apiConfig';
 
-const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, goDashboard, onLogout, verifyActivity, rejectActivity, updateActivityField, uploadPhoto, deletePhoto, kpi, onProgramUploaded }) {
+const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, verifyActivity, rejectActivity, uploadPhoto, deletePhoto, onProgramUploaded }) {
   const [activeTab, setActiveTab] = useState('monitoring'); // 'monitoring' | 'excel'
   
   // Excel Upload & Export States (Monitoring ODP)
@@ -40,7 +40,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, go
       } else {
         setUploadAvailablePrograms([]);
       }
-    } catch (err) {
+    } catch {
       setUploadAvailablePrograms([]);
     }
   }, []);
@@ -78,7 +78,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, go
       } else {
         setDeleteAvailablePrograms([]);
       }
-    } catch (err) {
+    } catch {
       setDeleteAvailablePrograms([]);
     }
   }, []);
@@ -446,8 +446,6 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, go
 
   // Dynamic KPI stats recalculated based on the selected branch filter
   const stats = useMemo(() => computeStats(filteredBranches), [filteredBranches]);
-  const totalProjectsInFilter = useMemo(() => filteredBranches.reduce((s, b) => s + (b.projects?.length || 0), 0), [filteredBranches]);
-  const totalBranchesInFilter = useMemo(() => selectedBranch === 'Semua Branch' ? priorityBranches.length : (filteredBranches.length > 0 ? 1 : 0), [priorityBranches, filteredBranches, selectedBranch]);
 
   // Hitung jumlah proyek per status filter (Semua, Menunggu Verifikasi, Sudah Terverifikasi, Belum Dikerjakan)
   const statusCounts = useMemo(() => {
@@ -886,11 +884,8 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, go
                 <ProjectTable 
                   projects={allProjectsMultiBranch} 
                   branchName="Multi Branch" 
-                  updateActivityField={updateActivityField}
                   uploadPhoto={uploadPhoto}
                   onReview={openModal}
-                  verifyActivity={verifyActivity}
-                  rejectActivity={rejectActivity}
                 />
               </div>
             ) : (
@@ -899,11 +894,8 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, go
                   <ProjectTable 
                     projects={b.projects} 
                     branchName={b.name} 
-                    updateActivityField={updateActivityField}
                     uploadPhoto={uploadPhoto}
                     onReview={openModal}
-                    verifyActivity={verifyActivity}
-                    rejectActivity={rejectActivity}
                   />
                 </div>
               ))

@@ -9,7 +9,6 @@ import ProgramViewerModal from './components/ProgramViewerModal';
 import CekPairingPopover from './components/CekPairingPopover';
 import { formatBranch, flatOdps, computeStats, BRANCH_COLORS } from './utils';
 import { API_BASE_URL } from './apiConfig';
-import './index.css';
 
 // ─── LOADING SCREEN (di-definisikan di level modul agar TIDAK di-remount setiap App re-render) ───
 function LoadingScreen() {
@@ -529,34 +528,6 @@ function App() {
     }).sort((a, b) => a.occRate - b.occRate);
   }, [branches, typeDesignFilter]);
 
-  const { mapBounds, mapPoints } = useMemo(() => {
-    const lats = allOdps.map(o => o.lat).filter(Number.isFinite);
-    const lons = allOdps.map(o => o.lon).filter(Number.isFinite);
-    const minLat = Math.min(...lats), maxLat = Math.max(...lats);
-    const minLon = Math.min(...lons), maxLon = Math.max(...lons);
-    const calculatedBounds = (lats.length > 0 && lons.length > 0 && Number.isFinite(minLat) && Number.isFinite(maxLat) && (minLat !== maxLat || minLon !== maxLon))
-      ? [[minLat, minLon], [maxLat, maxLon]]
-      : [[-7.5, 109], [-6.5, 111]];
-    
-    // Sample max 120 ODP points per branch for fast map rendering (~720 markers total)
-    const validOdps = allOdps.filter(o => Number.isFinite(o.lat) && Number.isFinite(o.lon));
-    const branchBuckets = {};
-    validOdps.forEach(o => {
-      if (!branchBuckets[o.branch]) branchBuckets[o.branch] = [];
-      if (branchBuckets[o.branch].length < 120) {
-        branchBuckets[o.branch].push(o);
-      }
-    });
-
-    const sampledOdps = Object.values(branchBuckets).flat();
-    const points = sampledOdps.map(o => ({
-      lat: o.lat, lon: o.lon,
-      color: BRANCH_COLORS[o.branch?.toString().trim().toUpperCase()] || BRANCH_COLORS[o.branch] || '#64748b',
-      key: o.odp, branch: o.branch
-    }));
-    return { mapBounds: calculatedBounds, mapPoints: points };
-  }, [allOdps]);
-
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -762,95 +733,6 @@ function App() {
     navigateTo('admin', null);
   }, [user, isAdmin, navigateTo]);
 
-  // Update activity field at PROJECT level
-  // Update activity field at PROJECT level
-  const updateActivityField = useCallback(async (branchName, projectName, actType, fieldKey, value) => {
-    let targetStatus = 'upload';
-    const b = branches.find(x => x.name === branchName);
-    const p = b?.projects.find(x => x.name === projectName);
-    let a = p?.activities?.find(x => x.type === actType);
-
-    let hasDate = false;
-    let hasPhoto = false;
-
-    if (a) {
-      hasDate = Boolean(a.planDate);
-      hasPhoto = Boolean(a.photoUrl && a.photoUrl !== 'uploading...');
-    }
-
-    if (fieldKey === 'planDate') {
-      hasDate = Boolean(value);
-    } else if (fieldKey === 'photoUrl') {
-      hasPhoto = Boolean(value && value !== 'uploading...');
-    }
-
-    if (a?.status === 'verified') {
-      targetStatus = 'verified';
-    } else if (actType === 'tsel_menyapa') {
-      targetStatus = (hasDate && hasPhoto) ? 'upload' : 'belum';
-    } else {
-      targetStatus = value ? 'upload' : 'belum';
-    }
-
-    // Optimistic UI Update
-    setBranches(prev => {
-      const newBranches = JSON.parse(JSON.stringify(prev));
-      const bDraft = newBranches.find(x => x.name === branchName);
-      const pDraft = bDraft?.projects.find(x => x.name === projectName);
-      if (pDraft) {
-        if (!pDraft.activities) pDraft.activities = [];
-        let aDraft = pDraft.activities.find(x => x.type === actType);
-        if (!aDraft) {
-          aDraft = { type: actType, status: 'belum' };
-          pDraft.activities.push(aDraft);
-        }
-        if (fieldKey === 'planDate') {
-          aDraft.planDate = value;
-        } else {
-          aDraft[fieldKey] = value;
-          aDraft.keterangan = value;
-          if (!aDraft.fields) aDraft.fields = {};
-          aDraft.fields[fieldKey] = value;
-        }
-
-        if (aDraft.status !== 'verified') {
-          aDraft.status = targetStatus;
-        }
-      }
-      return newBranches;
-    });
-
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/activities`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          branchName,
-          projectName,
-          type: actType,
-          status: targetStatus,
-          ...(fieldKey === 'planDate' ? { planDate: value } : { keterangan: value })
-        })
-      });
-      if (res.ok) {
-        fetchData();
-        return true;
-      } else if (res.status === 403 || res.status === 401) {
-        const errData = await res.json();
-        alert(`❌ ${errData.error || errData.message}`);
-        fetchData(); // revert optimistic update
-        return false;
-      }
-    } catch (err) {
-      console.error('Error saving activity:', err);
-      return false;
-    }
-    return true;
-  }, [token, branches]);
-
   // Upload photo at PROJECT level
   const uploadPhoto = useCallback(async (branchName, projectName, actType, payload) => {
     let file = payload;
@@ -1028,7 +910,7 @@ function App() {
           >
             ✕
           </button>
-          <LoginPage branches={branches} onLoginSuccess={(u, t) => { handleLoginSuccess(u, t); setShowLoginModal(false); }} />
+          <LoginPage onLoginSuccess={(u, t) => { handleLoginSuccess(u, t); setShowLoginModal(false); }} />
         </div>
       </div>
     );
@@ -1328,7 +1210,6 @@ function App() {
                       const nowMonthIdx = new Date().getMonth();
                       const isSession2 = nowMonthIdx >= 6;
                       const activeMonths = isSession2 ? SESSION_2_MONTHS : SESSION_1_MONTHS;
-                      const sessionLabel = isSession2 ? 'Sesi II (Jul - Des)' : 'Sesi I (Jan - Jun)';
 
                       return (
                         <>
@@ -1665,9 +1546,6 @@ function App() {
                 if (!user) setShowLoginModal(true);
                 else setView('dashboard');
               }}
-              onLogin={() => setShowLoginModal(true)}
-              onGoDashboard={goDashboard}
-              onGoUpload={goUpload}
               kpi={kpi}
               importMeta={importMeta}
               branches={branches}
@@ -1680,10 +1558,7 @@ function App() {
               kpi={kpi} 
               importMeta={importMeta}
               statusChips={statusChips} 
-              ranking={ranking} 
-              mapBounds={mapBounds} 
-              mapPoints={mapPoints} 
-              isAdmin={isAdmin} 
+              ranking={ranking}
               typeDesignFilter={typeDesignFilter} 
               setTypeDesignFilter={setTypeDesignFilter} 
             />
@@ -1693,7 +1568,6 @@ function App() {
               branches={branches} 
               activeBranch={activeBranch} 
               goDashboard={goDashboard}
-              updateActivityField={updateActivityField} 
               uploadPhoto={uploadPhoto}
               verifyActivity={isAdmin ? verifyActivity : null}
               rejectActivity={isAdmin ? rejectActivity : null}
@@ -1704,7 +1578,6 @@ function App() {
             <UploadView 
               branches={uploadBranches} 
               initialBranch={activeBranch}
-              updateActivityField={updateActivityField} 
               uploadPhoto={uploadPhoto}
               verifyActivity={isAdmin ? verifyActivity : null}
               rejectActivity={isAdmin ? rejectActivity : null}
@@ -1717,14 +1590,10 @@ function App() {
               branches={branches}
               onUpdate={fetchData} 
               onProgramUploaded={fetchPrograms}
-              goDashboard={goDashboard} 
-              onLogout={() => handleLogout(true)}
               verifyActivity={verifyActivity}
               rejectActivity={rejectActivity}
-              updateActivityField={updateActivityField}
               uploadPhoto={uploadPhoto}
               deletePhoto={deletePhoto}
-              kpi={kpi}
             />
           )}
         </div>

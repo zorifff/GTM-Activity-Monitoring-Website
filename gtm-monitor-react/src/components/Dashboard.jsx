@@ -69,7 +69,7 @@ function getProgress35Color(pct) {
 }
 
 // Dashboard dibungkus React.memo agar TIDAK re-render saat menu profile di header dibuka/ditutup.
-const Dashboard = memo(function Dashboard({ branches, goBranch, kpi, importMeta, statusChips, ranking, isAdmin, typeDesignFilter = 'ALL', setTypeDesignFilter }) {
+const Dashboard = memo(function Dashboard({ branches, goBranch, kpi, importMeta, statusChips, ranking, typeDesignFilter = 'ALL', setTypeDesignFilter }) {
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [isExportingPng, setIsExportingPng] = useState(false);
   const [expandedBranches, setExpandedBranches] = useState({});

@@ -1,22 +1,13 @@
-import { useState, memo } from 'react';
+import { memo } from 'react';
 import { BRANCH_COLORS } from '../utils';
 
-const LandingPage = memo(function LandingPage({ onExplore, onLogin, onGoDashboard, onGoUpload, kpi, importMeta, branches }) {
-  const [activeTab, setActiveTab] = useState('overview');
-
+const LandingPage = memo(function LandingPage({ onExplore, kpi, importMeta, branches }) {
   const occRate = (importMeta && importMeta.occRate !== null && importMeta.occRate !== undefined)
     ? (importMeta.occRate * 100).toFixed(1)
     : (kpi?.occRate || 12.1);
 
   const odpCount = kpi?.odpCount || 3094;
   const branchCount = (branches && branches.length) ? branches.length : 6;
-
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <div style={{

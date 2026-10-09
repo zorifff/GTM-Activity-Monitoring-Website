@@ -288,19 +288,6 @@ const excelUpload = multer({
   }
 });
 
-// Multer memory storage for Program Tracking Excel files (.xlsx, .xls)
-const programExcelUpload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 25 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    if (/\.(xlsx|xls)$/i.test(file.originalname) || (file.mimetype && (file.mimetype.includes('spreadsheet') || file.mimetype.includes('excel')))) {
-      cb(null, true);
-    } else {
-      cb(new Error('Hanya file Excel (.xlsx, .xls) yang diperbolehkan untuk tracking program!'));
-    }
-  }
-});
-
 // Multer memory storage for Program Tracking Image files (.jpg, .png, .jpeg, .webp)
 const programImageUpload = multer({
   storage: multer.memoryStorage(),
@@ -367,53 +354,6 @@ const requireAdmin = (req, res, next) => {
 
 // --- Auth Endpoints ---
 
-// Register User Baru (khusus Admin â€” akun WOK sudah dibuat tetap, bukan self-signup)
-app.post('/api/auth/register', requireAdmin, async (req, res) => {
-  try {
-    const { username, password, fullName, branchName } = req.body;
-    if (!username || !password || !fullName || !branchName) {
-      return res.status(400).json({ success: false, message: 'Semua kolom (username, password, nama, dan branch) wajib diisi.' });
-    }
-
-    const existingUser = await prisma.user.findUnique({ where: { username } });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: 'Username sudah digunakan oleh akun lain.' });
-    }
-
-    const branch = await prisma.branch.findUnique({ where: { name: branchName } });
-    if (!branch) {
-      return res.status(400).json({ success: false, message: 'Branch yang dipilih tidak ditemukan dalam sistem.' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: {
-        username,
-        password: hashedPassword,
-        fullName,
-        role: 'USER',
-        branchId: branch.id
-      },
-      include: { branch: true }
-    });
-
-    const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.role, branchName: branch.name, fullName: user.fullName },
-      JWT_SECRET,
-      { expiresIn: '8h' }
-    );
-
-    res.json({
-      success: true,
-      token,
-      user: { id: user.id, username: user.username, role: user.role, branchName: branch.name, fullName: user.fullName }
-    });
-  } catch (error) {
-    console.error('Error in /api/auth/register:', error);
-    res.status(500).json({ success: false, message: 'Terjadi kesalahan internal pada server saat registrasi.' });
-  }
-});
-
 // Login User / Admin
 app.post('/api/auth/login', async (req, res) => {
   try {
@@ -463,65 +403,6 @@ app.post('/api/auth/login', async (req, res) => {
     console.error('Error in /api/auth/login:', error);
     res.status(500).json({ success: false, message: 'Terjadi kesalahan internal saat login.' });
   }
-});
-
-// Reset / Forgot Password with credentials verification (Username, Nama Lengkap, Branch)
-app.post('/api/auth/reset-password', async (req, res) => {
-  try {
-    const { username, fullName, branchName, newPassword } = req.body;
-    if (!username || !fullName || !branchName || !newPassword) {
-      return res.status(400).json({ success: false, message: 'Semua kolom (username, nama lengkap, branch, dan password baru) wajib diisi.' });
-    }
-
-    if (newPassword.length < 4) {
-      return res.status(400).json({ success: false, message: 'Password baru minimal harus 4 karakter.' });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { username },
-      include: { branch: true }
-    });
-
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'Kredensial tidak cocok. Username tidak ditemukan.' });
-    }
-
-    // Verify Full Name
-    if (user.fullName.trim().toLowerCase() !== fullName.trim().toLowerCase()) {
-      return res.status(400).json({ success: false, message: 'Kredensial tidak cocok. Nama Lengkap tidak sesuai dengan data akun.' });
-    }
-
-    // Verify Branch Name
-    if (user.role === 'USER') {
-      if (!user.branch || user.branch.name.trim().toLowerCase() !== branchName.trim().toLowerCase()) {
-        return res.status(400).json({ success: false, message: 'Kredensial tidak cocok. Branch tidak sesuai dengan data akun.' });
-      }
-    } else if (user.role === 'ADMIN') {
-      if (branchName.trim().toUpperCase() !== 'ADMIN' && branchName.trim().toLowerCase() !== (user.branch?.name || '').trim().toLowerCase()) {
-        return res.status(400).json({ success: false, message: 'Kredensial tidak cocok. Branch tidak sesuai untuk akun Administrator.' });
-      }
-    }
-
-    // Hash new password and update user in database
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { password: hashedPassword }
-    });
-
-    res.json({
-      success: true,
-      message: 'Password Anda telah berhasil diperbarui. Silakan login kembali dengan password baru Anda.'
-    });
-  } catch (error) {
-    console.error('Error in /api/auth/reset-password:', error);
-    res.status(500).json({ success: false, message: 'Terjadi kesalahan pada server saat mereset password.' });
-  }
-});
-
-// Verify session & get current user profile
-app.get('/api/auth/me', authenticateToken, (req, res) => {
-  res.json({ success: true, user: req.user });
 });
 
 // --- Data Endpoints (Protected & Branch-Scoped) ---
@@ -1183,26 +1064,8 @@ app.post('/api/reject', requireAdmin, async (req, res) => {
   }
 });
 
-// 3c. Reset All Activities (Admin only — resets all GTM activities to 0 / 'belum')
-app.post('/api/admin/reset-activities', requireAdmin, async (req, res) => {
-  try {
-    const deletedPhotos = await prisma.projectActivityPhoto.deleteMany({});
-    const deletedProjectActivities = await prisma.projectActivity.deleteMany({});
-    const deletedActivities = await prisma.activity.deleteMany({});
-
-    res.json({
-      success: true,
-      message: `Reset selesai. Semua data aktivitas GTM telah dikosongkan (${deletedPhotos.count} foto, ${deletedProjectActivities.count} aktivitas proyek).`,
-      count: deletedProjectActivities.count
-    });
-  } catch (error) {
-    console.error('Reset activities error:', error);
-    res.status(500).json({ success: false, message: 'Gagal mereset data aktivitas GTM' });
-  }
-});
-
 // 4. Import Excel (Admin only) — updates ODP data and creates Projects/Branches robustly & super fast
-app.post('/api/admin/import-excel', requireAdmin, (req, res, next) => {
+app.post('/api/admin/import-excel', requireAdmin, (req, res) => {
   excelUpload.single('file')(req, res, async (err) => {
     if (err) {
       console.error('Multer Error in ODP excel import:', err.message);
@@ -1681,16 +1544,6 @@ app.post('/api/admin/import-excel', requireAdmin, (req, res, next) => {
 
     // ─── 5. SIMPAN NILAI OCC BRANCH & GAP WOW PER BRANCH KE DATABASE ───
     console.log('📊 Menyimpan OCC BRANCH & GAP WOW per branch...');
-    // Baseline raw gap dari Minggu Pertama (27 Juli) untuk pembandingan jika prevGap belum ada
-    const BASELINE_RAW_GAP_MAP = {
-      MAGELANG: -0.0564,
-      PEKALONGAN: -0.0923,
-      PURWOKERTO: -0.0704,
-      SEMARANG: -0.0792,
-      SURAKARTA: -0.0808,
-      YOGYAKARTA: -0.0656
-    };
-
     const allBranchesInDb = await prisma.branch.findMany();
     for (const b of allBranchesInDb) {
       const bUpper = b.name.toUpperCase();
@@ -1724,9 +1577,6 @@ app.post('/api/admin/import-excel', requireAdmin, (req, res, next) => {
 
     // ─── 6. SIMPAN SUMMARY JATENG DIY KE ImportMeta ───
     if (jatengDiySummary) {
-      const BASELINE_JATENG_GAP = -0.0760; // Baseline Minggu 1 Jateng DIY (-7.60%)
-      const newJatengGap = jatengDiySummary.gapWoW;
-      const jatengGapDelta = newJatengGap !== null ? (newJatengGap - BASELINE_JATENG_GAP) : null;
 
       await prisma.importMeta.upsert({
         where: { key: 'jateng_diy_summary' },
@@ -1879,7 +1729,7 @@ function parseProgramExcelFile(filePath) {
 // Ensure program storage directory exists
 const programsDir = path.join(__dirname, 'data/programs');
 if (!fs.existsSync(programsDir)) {
-  try { fs.mkdirSync(programsDir, { recursive: true }); } catch (e) {}
+  try { fs.mkdirSync(programsDir, { recursive: true }); } catch {}
 }
 
 const INDONESIAN_MONTH_MAP = {
@@ -2138,69 +1988,6 @@ app.post('/api/admin/upload-program-image', authenticateToken, requireAdmin, (re
   });
 });
 
-// --- POST /api/admin/upload-program-excel: Admin Upload Excel Tracking Program ---
-app.post('/api/admin/upload-program-excel', authenticateToken, requireAdmin, (req, res, next) => {
-  programExcelUpload.single('file')(req, res, (err) => {
-    if (err) {
-      console.error('Multer Error in program excel upload:', err.message);
-      return res.status(400).json({ error: err.message || 'Gagal mengunggah file Excel program.' });
-    }
-
-    try {
-      if (!req.file || !req.file.buffer) {
-        return res.status(400).json({ error: 'Tidak ada file Excel program yang diunggah.' });
-      }
-
-      const monthLabel = req.body.monthLabel || 'Agustus 2026';
-      const monthSlug = monthLabel.toLowerCase().replace(/[^a-z0-9]/g, '_');
-      
-      // Save file into data/programs/ from buffer
-      const targetPath = path.join(programsDir, `program_${monthSlug}.xlsx`);
-      fs.writeFileSync(targetPath, req.file.buffer);
-
-      // Parse Excel file
-      const sheetsData = parseProgramExcelFile(targetPath);
-      if (!sheetsData || sheetsData.length === 0) {
-        return res.status(400).json({ error: 'Gagal menguraikan file Excel program. Pastikan format tabel dan header sesuai.' });
-      }
-
-      // Update index.json
-      const indexPath = path.join(programsDir, 'index.json');
-      const programIndex = getOrInitializeProgramIndex();
-      if (monthLabel === 'Agustus 2026' && programIndex['__deleted_Agustus_2026']) {
-        delete programIndex['__deleted_Agustus_2026'];
-      }
-
-      programIndex[monthLabel] = {
-        monthLabel,
-        updatedAt: new Date().toISOString(),
-        sheetsCount: sheetsData.length,
-        programs: sheetsData
-      };
-
-      // Clean expired session programs
-      cleanExpiredProgramSessions(programIndex);
-
-      fs.writeFileSync(indexPath, JSON.stringify(programIndex, null, 2), 'utf8');
-
-      res.json({
-        success: true,
-        message: `Berhasil mengimpor Program Excel untuk periode ${monthLabel}! (${sheetsData.length} sheet terdeteksi)`,
-        monthLabel,
-        sheetsCount: sheetsData.length,
-        sheets: sheetsData.map(s => ({
-          sheetName: s.sheetName,
-          detailUrl: s.detailUrl,
-          rowsCount: s.rows ? s.rows.length : 0
-        }))
-      });
-    } catch (err) {
-      console.error('Error uploading program excel:', err);
-      res.status(500).json({ error: 'Gagal memproses file Excel program: ' + err.message });
-    }
-  });
-});
-
 // Helper: Case-insensitive & normalized month label lookup
 function findMonthKey(programIndex, label) {
   if (!programIndex || typeof programIndex !== 'object' || !label) return null;
@@ -2216,7 +2003,7 @@ function getOrInitializeProgramIndex() {
   if (fs.existsSync(indexPath)) {
     try {
       programIndex = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
-    } catch (e) {}
+    } catch {}
   }
 
   // Clean expired session programs
@@ -2387,7 +2174,7 @@ app.delete('/api/admin/programs', authenticateToken, requireAdmin, (req, res) =>
           programIndex['__deleted_Agustus_2026'] = true;
         }
         if (fs.existsSync(physicalExcelFile)) {
-          try { fs.unlinkSync(physicalExcelFile); } catch (e) {}
+          try { fs.unlinkSync(physicalExcelFile); } catch {}
         }
       }
 
@@ -2436,7 +2223,7 @@ app.delete('/api/admin/programs', authenticateToken, requireAdmin, (req, res) =>
 
 const pairingDir = path.join(__dirname, 'data/pairing');
 if (!fs.existsSync(pairingDir)) {
-  try { fs.mkdirSync(pairingDir, { recursive: true }); } catch (e) {}
+  try { fs.mkdirSync(pairingDir, { recursive: true }); } catch {}
 }
 
 let cachedPairingRecords = null;
@@ -2457,7 +2244,7 @@ function formatExcelDate(val) {
         const ss = String(dateObj.S || 0).padStart(2, '0');
         return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
       }
-    } catch (e) {}
+    } catch {}
   }
   return String(val).replace(/^\\N$/, '').trim();
 }
@@ -2735,18 +2522,6 @@ app.get('/api/pairing/search', authenticateToken, (req, res) => {
     console.error('Error searching pairing data:', err);
     res.status(500).json({ success: false, error: 'Gagal melakukan pencarian data pairing: ' + err.message });
   }
-});
-
-// --- GET /api/pairing/meta: Get pairing dataset metadata (Auth Required) ---
-app.get('/api/pairing/meta', authenticateToken, (req, res) => {
-  const metaPath = path.join(pairingDir, 'meta.json');
-  if (fs.existsSync(metaPath)) {
-    try {
-      const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-      return res.json({ success: true, meta });
-    } catch (e) {}
-  }
-  res.json({ success: true, meta: { totalRows: 0, updatedAt: null } });
 });
 
 // Dedicated API 404 handler: ensure API requests never fall back to HTML index.html

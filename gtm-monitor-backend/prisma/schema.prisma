@@ -51,25 +51,6 @@ model Odp {
   occStatus  String?    @default("GREEN")
   project    Project    @relation(fields: [projectId], references: [id])
   projectId  String
-  activities Activity[]
-}
-
-model Activity {
-  id         String    @id @default(uuid())
-  type       String
-  status     String    @default("belum") // "belum", "sudah_upload", "verified"
-  photoUrl   String?
-  planDate   DateTime?
-  actualDate DateTime?
-  keterangan String?
-  
-  odp        Odp       @relation(fields: [odpId], references: [id], onDelete: Cascade)
-  odpId      String
-
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  @@unique([odpId, type])
 }
 
 model ProjectActivity {

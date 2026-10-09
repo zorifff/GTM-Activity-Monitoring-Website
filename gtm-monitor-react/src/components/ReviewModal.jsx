@@ -217,7 +217,6 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {photoList.map((ph, idx) => {
-                      const isPhVerified = ph.status === 'verified';
                       const phMeta = actMeta(ph.status);
                       return (
                         <div key={ph.id || idx} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px 12px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
