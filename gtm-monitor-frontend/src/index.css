@@ -2,7 +2,7 @@
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #1e293b;
   background-color: #ffffff;
-  --font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
   
   /* Spektrum Merah - Jingga - Hitam - Putih */
@@ -176,50 +176,12 @@ button {
   color: #0f172a;
 }
 
-/* 4-Item Visible Scrollable Navbar Container */
-.nav-scroll-container {
-  max-width: 442px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
-}
-
-.nav-scroll-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-
-/* Simple & Clean Nav Scroll Arrow Buttons */
-.nav-scroll-arrow-btn {
-  background: transparent;
-  border: none;
-  color: #94A3B8;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
+/* Clean Horizontal Nav Menu Items (All options visible directly without scroll) */
+.nav-menu-items {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: opacity 0.25s ease, visibility 0.25s ease, color 0.2s ease, transform 0.2s ease;
-  outline: none;
-  user-select: none;
-  transform: translateY(-2px);
-  opacity: 1;
-  visibility: visible;
-  flex-shrink: 0;
-}
-.nav-scroll-arrow-btn:hover:not(:disabled) {
-  color: #C8102E;
-  transform: translateY(-2px) scale(1.2);
-}
-.nav-scroll-arrow-btn.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  gap: 32px;
+  position: relative;
 }
 
 /* Profile Flyout Dropdown Card */
@@ -299,19 +261,6 @@ button {
   -webkit-overflow-scrolling: touch;
 }
 
-.nav-scroll-container {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  overflow-x: auto;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.nav-scroll-container::-webkit-scrollbar {
-  display: none;
-}
 
 .app-root-container {
   min-height: 100vh;
@@ -320,6 +269,10 @@ button {
   padding-top: 72px;
   width: 100%;
   box-sizing: border-box;
+}
+
+.app-root-container.app-root-no-nav {
+  padding-top: 0 !important;
 }
 
 .main-top-nav {
@@ -350,7 +303,7 @@ button {
 }
 
 @media (max-width: 900px) {
-  .app-root-container {
+  .app-root-container:not(.app-root-no-nav) {
     padding-top: 56px !important;
   }
 
@@ -376,14 +329,9 @@ button {
     overflow: hidden !important;
   }
   
-  .nav-scroll-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    gap: 12px !important;
+  .nav-menu-items {
+    gap: 16px !important;
     padding-bottom: 0 !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    scrollbar-width: none !important;
   }
 
   .nav-tab-btn {
@@ -568,10 +516,29 @@ button {
 .dashboard-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 20px;
-  padding: 28px;
-  margin-bottom: 28px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 16px -4px rgba(15, 23, 42, 0.02);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.custom-table-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-table-scrollbar::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+.custom-table-scrollbar::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+.custom-table-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
 }
 
 @media (max-width: 640px) {

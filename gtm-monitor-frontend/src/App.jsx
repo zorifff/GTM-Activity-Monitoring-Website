@@ -80,7 +80,18 @@ const PROGRAM_PLACEHOLDERS = {
 function App() {
   const [branches, setBranches] = useState([]);
   const [importMeta, setImportMeta] = useState(null); // Jateng DIY summary dari ImportMeta
-  const [view, setView] = useState('landing'); // landing, dashboard, branch, upload, admin
+  const [view, setView] = useState(() => {
+    const hash = window.location.hash.replace('#', '').toLowerCase();
+    const savedUser = sessionStorage.getItem('gtm_user') || localStorage.getItem('gtm_user');
+    if (savedUser) {
+      if (hash === 'upload') return 'upload';
+      if (hash === 'admin') return 'admin';
+      return 'dashboard';
+    }
+    if (hash === 'login') return 'login';
+    if (hash === 'dashboard' || hash === 'monitoring') return 'dashboard';
+    return 'landing';
+  });
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [activeBranch, setActiveBranch] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -96,14 +107,12 @@ function App() {
   const [showLogoutConfirmModal, setShowLogoutConfirmModal] = useState(false);
   const lastLoginTimestamp = useRef(0);
 
-  const overviewTabRef = useRef(null);
   const monitoringTabRef = useRef(null);
   const activityTabRef = useRef(null);
   const cekPairingTabRef = useRef(null);
   const programTabRef = useRef(null);
   const controlTabRef = useRef(null);
   const programMenuRef = useRef(null);
-  const navScrollContainerRef = useRef(null);
 
   const [isProgramDropdownOpen, setIsProgramDropdownOpen] = useState(false);
   const [activeHoverMonth, setActiveHoverMonth] = useState('Agustus 2026');
@@ -219,47 +228,9 @@ function App() {
     };
   }, []);
 
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const checkNavScrollStatus = useCallback(() => {
-    if (navScrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = navScrollContainerRef.current;
-      setCanScrollLeft(scrollLeft > 5);
-      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
-    }
-  }, []);
-
-  const handleNavScroll = useCallback(() => {
-    updateDropdownCoords();
-    updatePairingCoords();
-    checkNavScrollStatus();
-  }, [updateDropdownCoords, updatePairingCoords, checkNavScrollStatus]);
-
-  const handleNavWheel = (e) => {
-    if (navScrollContainerRef.current) {
-      navScrollContainerRef.current.scrollLeft += e.deltaY;
-      checkNavScrollStatus();
-    }
-  };
-
-  const scrollNavLeft = () => {
-    if (navScrollContainerRef.current) {
-      navScrollContainerRef.current.scrollBy({ left: -160, behavior: 'smooth' });
-    }
-  };
-
-  const scrollNavRight = () => {
-    if (navScrollContainerRef.current) {
-      navScrollContainerRef.current.scrollBy({ left: 160, behavior: 'smooth' });
-    }
-  };
-
-  const updateIndicator = useCallback((targetView = view, autoScrollContainer = false) => {
+  const updateIndicator = useCallback((targetView = view) => {
     let target = null;
-    if (targetView === 'landing') {
-      target = overviewTabRef.current;
-    } else if (targetView === 'dashboard' || targetView === 'branch') {
+    if (targetView === 'dashboard' || targetView === 'branch') {
       target = monitoringTabRef.current;
     } else if (targetView === 'upload') {
       target = activityTabRef.current;
@@ -277,28 +248,16 @@ function App() {
         width: target.offsetWidth,
         opacity: 1
       });
-
-      if (autoScrollContainer && navScrollContainerRef.current) {
-        const container = navScrollContainerRef.current;
-        const targetLeft = target.offsetLeft;
-        const targetRight = targetLeft + target.offsetWidth;
-        if (targetLeft < container.scrollLeft) {
-          container.scrollTo({ left: targetLeft - 12, behavior: 'smooth' });
-        } else if (targetRight > container.scrollLeft + container.clientWidth) {
-          container.scrollTo({ left: targetRight - container.clientWidth + 12, behavior: 'smooth' });
-        }
-      }
     } else {
       setIndicatorStyle(prev => ({ ...prev, opacity: 0 }));
     }
   }, [view]);
 
   useLayoutEffect(() => {
-    updateIndicator(view, false);
-    checkNavScrollStatus();
-    const timer = setTimeout(() => { updateIndicator(view, false); checkNavScrollStatus(); }, 50);
-    const timer2 = setTimeout(() => { updateIndicator(view, false); checkNavScrollStatus(); }, 200);
-    const handleResize = () => { updateIndicator(view, false); checkNavScrollStatus(); };
+    updateIndicator(view);
+    const timer = setTimeout(() => { updateIndicator(view); }, 50);
+    const timer2 = setTimeout(() => { updateIndicator(view); }, 200);
+    const handleResize = () => { updateIndicator(view); };
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -306,7 +265,7 @@ function App() {
       clearTimeout(timer2);
       window.removeEventListener('resize', handleResize);
     };
-  }, [view, loading, token, branches, updateIndicator, checkNavScrollStatus]);
+  }, [view, loading, token, branches, updateIndicator]);
 
   const isAdmin = user && user.role === 'ADMIN';
 
@@ -558,40 +517,48 @@ function App() {
   // Sesi pengguna tetap aktif selama tab browser masih dibuka
   // (Pengguna akan ter-logout otomatis hanya jika keluar dari tab/browser atau menekan Log Out di profil)
 
-  // Browser Back/Forward (popstate) Navigation Handler
+  // Browser Back/Forward (popstate & hashchange) Navigation Handler
   useEffect(() => {
-    if (!user || !token) return;
-
-    // Initial state setup for browser history
-    if (!window.history.state) {
-      window.history.replaceState({ view, activeBranch }, '');
-    }
-
-    const handlePopState = (event) => {
-      if (event.state && event.state.view) {
+    const handleUrlChange = (event) => {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      if (event && event.state && event.state.view) {
         setView(event.state.view);
         setActiveBranch(event.state.activeBranch || null);
-      } else {
+      } else if (hash === 'login') {
+        setView('login');
+      } else if (hash === 'monitoring' || hash === 'dashboard') {
         setView('dashboard');
-        setActiveBranch(null);
+      } else if (!hash || hash === 'overview' || hash === 'landing') {
+        const savedUser = sessionStorage.getItem('gtm_user') || localStorage.getItem('gtm_user');
+        if (savedUser) {
+          setView('dashboard');
+        } else {
+          setView('landing');
+        }
       }
     };
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [user, token, view, activeBranch]);
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
 
   const navigateTo = useCallback((newView, newBranch = null, replace = false) => {
-    updateIndicator(newView, true);
+    updateIndicator(newView);
     setView(newView);
     setActiveBranch(newBranch);
+    const hash = (newView === 'landing' || newView === 'overview') ? '' : `#${newView}`;
+    const url = hash ? `${window.location.pathname}${hash}` : window.location.pathname;
     const stateObj = { view: newView, activeBranch: newBranch };
     if (replace) {
-      window.history.replaceState(stateObj, '');
+      window.history.replaceState(stateObj, '', url);
     } else {
-      window.history.pushState(stateObj, '');
+      window.history.pushState(stateObj, '', url);
     }
-  }, []);
+  }, [updateIndicator]);
 
   const handleLoginSuccess = (newToken, newUser) => {
     document.activeElement?.blur();
@@ -673,10 +640,10 @@ function App() {
   }, [token, user, executeLogout]);
 
   // ─── STRICT UNAUTHENTICATED NAVIGATION GUARD ───
-  // Pengguna yang ter-logout tidak dapat mengakses menu selain Overview ('landing').
+  // Pengguna yang belum login hanya dapat mengakses Overview ('landing') dan Login ('login').
   // Mencoba membuka menu lain akan mengarahkan kembali ke 'landing' & memunculkan pop-up login.
   useEffect(() => {
-    if (!user && view !== 'landing') {
+    if (!user && view !== 'landing' && view !== 'login') {
       setView('landing');
       setActiveBranch(null);
       window.history.replaceState({ view: 'landing', activeBranch: null }, '');
@@ -885,39 +852,20 @@ function App() {
   const renderLoginModal = () => {
     if (!showLoginModal) return null;
     return (
-      <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: '440px', background: '#fff', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', overflow: 'hidden' }}>
-          <button 
-            onClick={() => setShowLoginModal(false)}
-            style={{
-              position: 'absolute',
-              top: '16px',
-              right: '16px',
-              zIndex: 10,
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              border: 'none',
-              background: '#f1f5f9',
-              color: '#64748b',
-              fontSize: '16px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            ✕
-          </button>
-          <LoginPage onLoginSuccess={(u, t) => { handleLoginSuccess(u, t); setShowLoginModal(false); }} />
-        </div>
+      <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#ffffff', overflowY: 'auto' }}>
+        <LoginPage
+          onLoginSuccess={(token, user) => {
+            handleLoginSuccess(token, user);
+            setShowLoginModal(false);
+          }}
+          onBackToLanding={() => setShowLoginModal(false)}
+        />
       </div>
     );
   };
 
   return (
-    <div className="app-root-container">
+    <div className={`app-root-container ${(view === 'landing' || view === 'login') ? 'app-root-no-nav' : ''}`}>
       {renderLoginModal()}
       {activeProgramModal && (
         <ProgramViewerModal
@@ -934,6 +882,7 @@ function App() {
       )}
 
       {/* ─── SINGLE UNIFIED PERSISTENT TOP NAVIGATION BAR (SEAMLESS ACROSS ALL PAGES) ─── */}
+      {view !== 'landing' && view !== 'login' && (
       <nav className="main-top-nav" style={{
         position: 'sticky',
         top: 0,
@@ -948,77 +897,31 @@ function App() {
         gridTemplateColumns: '1fr auto 1fr',
         alignItems: 'center'
       }}>
-        {/* Left: LOGO BADGE GTM SAJA (Tanpa Teks) */}
+        {/* Left: LOGO TELKOMSEL (Pojok Kiri Bar Menu) */}
         <div 
           className="nav-logo-section"
           style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifySelf: 'start', flexShrink: 0 }} 
-          onClick={() => setView('landing')}
-          title="Klik untuk kembali ke Halaman Overview"
+          onClick={goDashboard}
+          title="Beranda Monitoring Telkomsel"
         >
-          <div style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '99px',
-            background: 'linear-gradient(135deg, #C8102E 0%, #FF5E00 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 900,
-            fontSize: '13px',
-            color: '#FFFFFF',
-            boxShadow: '0 4px 18px rgba(200, 16, 46, 0.35)',
-            transition: 'transform 0.2s ease',
-            flexShrink: 0
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            GTM
-          </div>
+          <img 
+            src="/telkomsel-logo.png" 
+            alt="Telkomsel" 
+            style={{ 
+              height: '24px', 
+              width: 'auto', 
+              display: 'block', 
+              objectFit: 'contain' 
+            }} 
+          />
         </div>
 
-        {/* Center: Nav Menu Options (4 Visible Items + Smooth Horizontal Scroll + Visual Indicator Arrows) */}
-        <div className="nav-menu-section" style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '6px', justifySelf: 'center' }}>
-          <button
-            type="button"
-            className={`nav-scroll-arrow-btn ${canScrollLeft ? '' : 'hidden'}`}
-            onClick={scrollNavLeft}
-            disabled={!canScrollLeft}
-            title="Geser menu ke kiri"
-          >
-            ‹
-          </button>
-
+        {/* Center: Nav Menu Options (Semua menu terlihat langsung tanpa scroll horizontal) */}
+        <div className="nav-menu-section" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifySelf: 'center' }}>
           <div 
-            ref={navScrollContainerRef}
-            className="nav-scroll-container" 
-            onScroll={handleNavScroll}
-            onWheel={handleNavWheel}
-            style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '24px', paddingBottom: '4px' }}
+            className="nav-menu-items" 
+            style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '32px', paddingBottom: '4px' }}
           >
-            <button
-              ref={overviewTabRef}
-              type="button"
-              className="nav-tab-btn"
-              onClick={() => setView('landing')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: view === 'landing' ? '#C8102E' : '#64748B',
-                fontSize: '12px',
-                fontWeight: 800,
-                letterSpacing: '2px',
-                cursor: 'pointer',
-                transition: 'color 0.25s ease',
-                padding: '6px 4px',
-                outline: 'none',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseEnter={(e) => { if (view !== 'landing') e.currentTarget.style.color = '#FF5E00'; }}
-              onMouseLeave={(e) => { if (view !== 'landing') e.currentTarget.style.color = '#64748B'; }}
-            >
-              OVERVIEW
-            </button>
 
             <button
               ref={monitoringTabRef}
@@ -1028,17 +931,17 @@ function App() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: (view === 'dashboard' || view === 'branch') ? '#C8102E' : '#64748B',
+                color: (view === 'dashboard' || view === 'branch') ? '#ED0226' : '#64748B',
                 fontSize: '12px',
                 fontWeight: 800,
-                letterSpacing: '2px',
+                letterSpacing: '1.5px',
                 cursor: 'pointer',
-                transition: 'color 0.25s ease',
+                transition: 'color 0.2s ease',
                 padding: '6px 4px',
                 outline: 'none',
                 whiteSpace: 'nowrap'
               }}
-              onMouseEnter={(e) => { if (view !== 'dashboard' && view !== 'branch') e.currentTarget.style.color = '#FF5E00'; }}
+              onMouseEnter={(e) => { if (view !== 'dashboard' && view !== 'branch') e.currentTarget.style.color = '#0F172A'; }}
               onMouseLeave={(e) => { if (view !== 'dashboard' && view !== 'branch') e.currentTarget.style.color = '#64748B'; }}
             >
               MONITORING
@@ -1052,17 +955,17 @@ function App() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: view === 'upload' ? '#C8102E' : '#64748B',
+                color: view === 'upload' ? '#ED0226' : '#64748B',
                 fontSize: '12px',
                 fontWeight: 800,
-                letterSpacing: '2px',
+                letterSpacing: '1.5px',
                 cursor: 'pointer',
-                transition: 'color 0.25s ease',
+                transition: 'color 0.2s ease',
                 padding: '6px 4px',
                 outline: 'none',
                 whiteSpace: 'nowrap'
               }}
-              onMouseEnter={(e) => { if (view !== 'upload') e.currentTarget.style.color = '#FF5E00'; }}
+              onMouseEnter={(e) => { if (view !== 'upload') e.currentTarget.style.color = '#0F172A'; }}
               onMouseLeave={(e) => { if (view !== 'upload') e.currentTarget.style.color = '#64748B'; }}
             >
               ACTIVITY
@@ -1089,12 +992,12 @@ function App() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: isPairingDropdownOpen ? '#C8102E' : '#64748B',
+                  color: isPairingDropdownOpen ? '#ED0226' : '#64748B',
                   fontSize: '12px',
                   fontWeight: 800,
-                  letterSpacing: '2px',
+                  letterSpacing: '1.5px',
                   cursor: 'pointer',
-                  transition: 'color 0.25s ease',
+                  transition: 'color 0.2s ease',
                   padding: '6px 4px',
                   outline: 'none',
                   display: 'inline-flex',
@@ -1102,7 +1005,7 @@ function App() {
                   gap: '4px',
                   whiteSpace: 'nowrap'
                 }}
-                onMouseEnter={(e) => { if (!isPairingDropdownOpen) e.currentTarget.style.color = '#FF5E00'; }}
+                onMouseEnter={(e) => { if (!isPairingDropdownOpen) e.currentTarget.style.color = '#0F172A'; }}
                 onMouseLeave={(e) => { if (!isPairingDropdownOpen) e.currentTarget.style.color = '#64748B'; }}
               >
                 <span>CEK PAIRING</span>
@@ -1128,17 +1031,17 @@ function App() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: view === 'admin' ? '#C8102E' : '#64748B',
+                  color: view === 'admin' ? '#ED0226' : '#64748B',
                   fontSize: '12px',
                   fontWeight: 800,
-                  letterSpacing: '2px',
+                  letterSpacing: '1.5px',
                   cursor: 'pointer',
-                  transition: 'color 0.25s ease',
+                  transition: 'color 0.2s ease',
                   padding: '6px 4px',
                   outline: 'none',
                   whiteSpace: 'nowrap'
                 }}
-                onMouseEnter={(e) => { if (view !== 'admin') e.currentTarget.style.color = '#FF5E00'; }}
+                onMouseEnter={(e) => { if (view !== 'admin') e.currentTarget.style.color = '#0F172A'; }}
                 onMouseLeave={(e) => { if (view !== 'admin') e.currentTarget.style.color = '#64748B'; }}
               >
                 CONTROL
@@ -1165,12 +1068,12 @@ function App() {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: isProgramDropdownOpen ? '#C8102E' : '#64748B',
+                    color: isProgramDropdownOpen ? '#ED0226' : '#64748B',
                     fontSize: '12px',
                     fontWeight: 800,
-                    letterSpacing: '2px',
+                    letterSpacing: '1.5px',
                     cursor: 'pointer',
-                    transition: 'color 0.25s ease',
+                    transition: 'color 0.2s ease',
                     padding: '6px 4px',
                     outline: 'none',
                     display: 'inline-flex',
@@ -1178,7 +1081,7 @@ function App() {
                     gap: '4px',
                     whiteSpace: 'nowrap'
                   }}
-                  onMouseEnter={(e) => { if (!isProgramDropdownOpen) e.currentTarget.style.color = '#FF5E00'; }}
+                  onMouseEnter={(e) => { if (!isProgramDropdownOpen) e.currentTarget.style.color = '#0F172A'; }}
                   onMouseLeave={(e) => { if (!isProgramDropdownOpen) e.currentTarget.style.color = '#64748B'; }}
                 >
                   <span>PROGRAM</span>
@@ -1426,32 +1329,22 @@ function App() {
               </div>
             )}
 
-            {/* Sliding Orange Line Indicator */}
+            {/* Sliding Solid Telkomsel Red Line Indicator */}
             <div
               style={{
                 position: 'absolute',
                 bottom: 0,
                 left: `${indicatorStyle.left}px`,
                 width: `${indicatorStyle.width}px`,
-                height: '3px',
-                background: 'linear-gradient(90deg, #C8102E 0%, #FF5E00 100%)',
-                borderRadius: '3px 3px 0 0',
+                height: '2.5px',
+                background: '#ED0226',
+                borderRadius: '2px 2px 0 0',
                 opacity: indicatorStyle.opacity,
-                transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 -2px 8px rgba(200, 16, 46, 0.4)'
+                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                pointerEvents: 'none'
               }}
             />
           </div>
-
-          <button
-            type="button"
-            className={`nav-scroll-arrow-btn ${canScrollRight ? '' : 'hidden'}`}
-            onClick={scrollNavRight}
-            disabled={!canScrollRight}
-            title="Geser menu ke kanan"
-          >
-            ›
-          </button>
         </div>
 
         {/* Right: User Profile Widget / Login Button */}
@@ -1483,14 +1376,13 @@ function App() {
                     width: '32px',
                     height: '32px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #C8102E 0%, #FF5E00 100%)',
+                    background: '#ED0226',
                     color: '#FFFFFF',
-                    fontWeight: 900,
+                    fontWeight: 800,
                     fontSize: '13px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 2px 8px rgba(200, 16, 46, 0.25)',
                     flexShrink: 0
                   }}
                 >
@@ -1513,7 +1405,7 @@ function App() {
             <button
               type="button"
               className="nav-login-btn"
-              onClick={() => setShowLoginModal(true)}
+              onClick={() => navigateTo('login')}
               style={{
                 padding: '8px 20px',
                 borderRadius: '50px',
@@ -1536,19 +1428,23 @@ function App() {
           )}
         </div>
       </nav>
+      )}
 
       {/* Main Content View Switcher */}
-      <div className={view === 'landing' ? 'main-content-full' : 'main-content'}>
+      <div className={(view === 'landing' || view === 'login') ? 'main-content-full' : 'main-content'}>
         <div className="fade-in" key={view}>
           {view === 'landing' && (
             <LandingPage
-              onExplore={() => {
-                if (!user) setShowLoginModal(true);
-                else setView('dashboard');
+              onLoginClick={() => navigateTo('login')}
+              onExplore={() => navigateTo('login')}
+            />
+          )}
+          {view === 'login' && (
+            <LoginPage
+              onLoginSuccess={(token, user) => {
+                handleLoginSuccess(token, user);
               }}
-              kpi={kpi}
-              importMeta={importMeta}
-              branches={branches}
+              onBackToLanding={() => navigateTo('landing')}
             />
           )}
           {view === 'dashboard' && (
