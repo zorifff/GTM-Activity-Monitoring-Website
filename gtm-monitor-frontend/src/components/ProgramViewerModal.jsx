@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
-import { API_BASE_URL } from '../apiConfig';
+import { API_BASE_URL, authFetch } from '../apiConfig';
 
 export default function ProgramViewerModal({ program, monthLabel, onClose, isAdmin, token, onDeleteSuccess }) {
   // Normalize multi-image slides from program.images or fallback to single imageUrl
@@ -110,7 +110,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
         payload.imageId = currentSlide.id;
       }
 
-      const res = await fetch(`${API_BASE_URL}/api/admin/programs`, {
+      const res = await authFetch(`${API_BASE_URL}/api/admin/programs`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

@@ -515,8 +515,9 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           onConfirm={async () => {
             setIsSubmitting(true);
             try {
+              let result = null;
               if (uploadPhoto) {
-                await uploadPhoto(
+                result = await uploadPhoto(
                   confirmSubmitData.branchName,
                   confirmSubmitData.projectName,
                   confirmSubmitData.actTypeObj.key,
@@ -524,7 +525,10 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                 );
               }
               setConfirmSubmitData(null);
-              setActiveUploadData(null);
+              // Jika gagal, form upload tetap terbuka agar data yang sudah diisi tidak hilang
+              if (!result || result.success !== false) {
+                setActiveUploadData(null);
+              }
             } catch (err) {
               console.error('Submit error:', err);
             } finally {

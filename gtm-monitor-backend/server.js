@@ -79,10 +79,16 @@ function getOdpCoords(odpName, branchName, existingLat, existingLon) {
 }
 
 // ─── CLOUDINARY CONFIGURATION (STAGING FOR UNVERIFIED PHOTOS) ───
+// Kredensial Cloudinary WAJIB diisi lewat file .env (lihat .env.example)
+const missingCloudinaryEnv = ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET']
+  .filter(key => !process.env[key]);
+if (missingCloudinaryEnv.length > 0) {
+  console.warn(`⚠️ [Cloudinary] Variabel .env belum diisi: ${missingCloudinaryEnv.join(', ')}. Upload foto & gambar program akan gagal.`);
+}
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'qlggcwmf',
-  api_key: process.env.CLOUDINARY_API_KEY || '334656367936846',
-  api_secret: process.env.CLOUDINARY_API_SECRET || 'VAhyDEr0QzAithQk7KAWmKx-ctI',
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // Helper: Upload buffer photo to Cloudinary staging
@@ -403,6 +409,12 @@ app.post('/api/auth/login', async (req, res) => {
     console.error('Error in /api/auth/login:', error);
     res.status(500).json({ success: false, message: 'Terjadi kesalahan internal saat login.' });
   }
+});
+
+// Validasi sesi aktif (dipakai frontend untuk memastikan token tersimpan masih sah)
+app.get('/api/auth/me', authenticateToken, (req, res) => {
+  const { id, username, role, branchName, fullName } = req.user;
+  res.json({ success: true, user: { id, username, role, branchName, fullName } });
 });
 
 // --- Data Endpoints (Protected & Branch-Scoped) ---

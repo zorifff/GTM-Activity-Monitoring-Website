@@ -24,7 +24,8 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
     if (verifyActivity && !verifyingId) {
       setVerifyingId(photoId);
       try {
-        await verifyActivity(modalData.bName, modalData.pName, actKey, photoId, modalData.projectId);
+        const resOk = await verifyActivity(modalData.bName, modalData.pName, actKey, photoId, modalData.projectId);
+        if (resOk === false) return;
         setLocalActivities(prev => prev.map(a => {
           if (a.type !== actKey) return a;
           const updatedPhotos = (a.photos || []).map(ph => ph.id === photoId ? { ...ph, status: 'verified' } : ph);

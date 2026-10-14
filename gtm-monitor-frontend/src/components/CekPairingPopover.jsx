@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import { createPortal } from 'react-dom';
-import { API_BASE_URL } from '../apiConfig';
+import { API_BASE_URL, authFetch } from '../apiConfig';
 
 const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onClose, token }) {
   const [query, setQuery] = useState('');
@@ -27,7 +27,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
     try {
       const savedToken = token || localStorage.getItem('gtm_token') || sessionStorage.getItem('gtm_token') || localStorage.getItem('token');
       const headers = savedToken ? { 'Authorization': `Bearer ${savedToken}` } : {};
-      const res = await fetch(`${API_BASE_URL}/api/pairing/search?q=${encodeURIComponent(cleanQ)}`, { headers });
+      const res = await authFetch(`${API_BASE_URL}/api/pairing/search?q=${encodeURIComponent(cleanQ)}`, { headers });
       const contentType = res.headers.get('content-type') || '';
 
       let data = {};

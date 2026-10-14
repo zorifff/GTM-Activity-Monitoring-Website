@@ -1,15 +1,43 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../../apiConfig';
 
 export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
-  const [username, setUsername] = useState('Gatfanrajendra9@gmail.com');
-  const [password, setPassword] = useState('password123456');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onLoginSuccess) {
-      onLoginSuccess('mock-token-demo', { username, fullName: 'Gatfan Rajendra', role: 'ADMIN' });
+    if (loading) return;
+    if (!username.trim() || !password) {
+      setError('Silakan masukkan username dan password Anda.');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.success && data.token) {
+        if (onLoginSuccess) onLoginSuccess(data.token, data.user);
+      } else {
+        setError(data.message || 'Login gagal. Periksa kembali username dan password Anda.');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Gagal terhubung ke server. Pastikan server backend sedang aktif.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -292,9 +320,26 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 - Unhovered: Background Putih, Border Merah, Teks Hitam
                 - Hovered: Background Merah Solid (#FF0000), Border Merah, Teks Putih
             */}
+            {error && (
+              <div
+                role="alert"
+                style={{
+                  margin: '-20px 0 20px 0',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: '#DC2626',
+                  textAlign: 'center',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif"
+                }}
+              >
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
               id="login-submit-btn"
+              disabled={loading}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               style={{
@@ -306,7 +351,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 color: isHovered ? '#FFFFFF' : '#111827',
                 fontSize: '15px',
                 fontWeight: isHovered ? 600 : 500,
-                cursor: 'pointer',
+                cursor: loading ? 'wait' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -316,7 +361,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 transition: 'background-color 0.22s ease, color 0.22s ease'
               }}
             >
-              Login
+              {loading ? 'Memproses...' : 'Login'}
             </button>
           </form>
         </div>

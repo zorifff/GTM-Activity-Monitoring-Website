@@ -8,7 +8,7 @@ import LoginPage from './components/Auth/LoginPage';
 import ProgramViewerModal from './components/ProgramViewerModal';
 import CekPairingPopover from './components/CekPairingPopover';
 import { formatBranch, flatOdps, computeStats, BRANCH_COLORS } from './utils';
-import { API_BASE_URL } from './apiConfig';
+import { API_BASE_URL, authFetch, UNAUTHORIZED_EVENT } from './apiConfig';
 
 // ─── LOADING SCREEN (di-definisikan di level modul agar TIDAK di-remount setiap App re-render) ───
 function LoadingScreen() {
@@ -85,7 +85,11 @@ function App() {
     const savedUser = sessionStorage.getItem('gtm_user') || localStorage.getItem('gtm_user');
     if (savedUser) {
       if (hash === 'upload') return 'upload';
-      if (hash === 'admin') return 'admin';
+      if (hash === 'admin') {
+        try {
+          if (JSON.parse(savedUser)?.role === 'ADMIN') return 'admin';
+        } catch { /* data sesi rusak, abaikan */ }
+      }
       return 'dashboard';
     }
     if (hash === 'login') return 'login';
@@ -613,7 +617,7 @@ function App() {
     const checkInactivity = () => {
       if (Date.now() - lastActivityRef.current >= INACTIVITY_LIMIT) {
         executeLogout('landing'); // Terlogout otomatis & kembali ke menu overview (landing)
-        setSessionExpiredNotice(true);
+        setSessionExpiredNotice('inactivity');
       }
     };
 
@@ -638,6 +642,62 @@ function App() {
       clearInterval(intervalId);
     };
   }, [token, user, executeLogout]);
+
+  // ─── VALIDASI TOKEN SESI (TOKEN TIDAK SAH / KEDALUWARSA → LOGIN ULANG) ───
+  const handleInvalidSession = useCallback(() => {
+    executeLogout('landing');
+    setSessionExpiredNotice('invalid');
+  }, [executeLogout]);
+
+  // Server menolak token (401) pada request apa pun yang memakai authFetch
+  useEffect(() => {
+    const onUnauthorized = () => {
+      if (token) handleInvalidSession();
+    };
+    window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
+    return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
+  }, [token, handleInvalidSession]);
+
+  // Cek token tersimpan ke server saat aplikasi dibuka / token berganti
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    fetch(`${API_BASE_URL}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } })
+      .then(res => {
+        if (!cancelled && res.status === 401) handleInvalidSession();
+      })
+      .catch(() => { /* server tidak terjangkau: biarkan sesi, request berikutnya akan dicek lagi */ });
+    return () => { cancelled = true; };
+  }, [token, handleInvalidSession]);
+
+  // Token JWT berlaku 8 jam: logout otomatis begitu masa berlakunya habis
+  useEffect(() => {
+    if (!token) return;
+    let expMs = null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+      if (typeof payload.exp === 'number') expMs = payload.exp * 1000;
+    } catch {
+      return; // Bukan JWT valid — akan ditolak oleh pengecekan /api/auth/me
+    }
+    if (!expMs) return;
+    const remaining = expMs - Date.now();
+    if (remaining <= 0) {
+      handleInvalidSession();
+      return;
+    }
+    // setTimeout maksimal ~24.8 hari; token 8 jam aman di bawah batas tersebut
+    const timer = setTimeout(handleInvalidSession, Math.min(remaining, 2147483647));
+    return () => clearTimeout(timer);
+  }, [token, handleInvalidSession]);
+
+  // Akun non-admin tidak boleh berada di halaman Control (mis. lewat URL #admin / tombol Back)
+  useEffect(() => {
+    if (view === 'admin' && user && user.role !== 'ADMIN') {
+      setView('dashboard');
+      window.history.replaceState({ view: 'dashboard', activeBranch: null }, '', `${window.location.pathname}#dashboard`);
+    }
+  }, [view, user]);
 
   // ─── STRICT UNAUTHENTICATED NAVIGATION GUARD ───
   // Pengguna yang belum login hanya dapat mengakses Overview ('landing') dan Login ('login').
@@ -734,7 +794,7 @@ function App() {
     if (keterangan) formData.append('keterangan', keterangan);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/activities`, {
+      const res = await authFetch(`${API_BASE_URL}/api/activities`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -745,13 +805,16 @@ function App() {
         await fetchData();
         return { success: true };
       } else {
-        const errData = await res.json();
-        alert(`❌ ${errData.error || errData.message || 'Gagal menyimpan kegiatan'}`);
+        if (res.status === 401) return { success: false, error: 'Sesi login berakhir.' };
+        const errData = await res.json().catch(() => ({}));
+        const errMsg = errData.error || errData.message || `Gagal menyimpan kegiatan (Status ${res.status}).`;
+        alert(`❌ ${errMsg}`);
         await fetchData();
-        return { success: false, error: errData.error || errData.message };
+        return { success: false, error: errMsg };
       }
     } catch (err) {
       console.error('Error uploading photo:', err);
+      alert('❌ Gagal terhubung ke server saat mengunggah kegiatan. Periksa koneksi lalu coba lagi.');
       await fetchData();
       return { success: false, error: err.message };
     }
@@ -759,10 +822,10 @@ function App() {
 
   // Verify activity at PROJECT level (Admin only)
   const verifyActivity = useCallback(async (branchName, projectName, actType, photoId, projectId) => {
-    if (!isAdmin) return;
+    if (!isAdmin) return false;
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/verify`, {
+      const res = await authFetch(`${API_BASE_URL}/api/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -778,9 +841,17 @@ function App() {
       });
       if (res.ok) {
         await fetchData();
+        return true;
       }
+      if (res.status !== 401) {
+        const data = await res.json().catch(() => ({}));
+        alert(`❌ ${data.message || data.error || `Gagal memverifikasi activity (Status ${res.status}).`}`);
+      }
+      return false;
     } catch (err) {
       console.error('Error verifying activity:', err);
+      alert('❌ Terjadi kesalahan server saat memverifikasi activity.');
+      return false;
     }
   }, [isAdmin, token, fetchData]);
 
@@ -789,7 +860,7 @@ function App() {
     if (!isAdmin) return false;
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/reject`, {
+      const res = await authFetch(`${API_BASE_URL}/api/reject`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -803,12 +874,12 @@ function App() {
           projectId
         })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok && data.success) {
         await fetchData();
         return true;
       } else {
-        alert(`❌ ${data.message || 'Gagal menolak verifikasi activity.'}`);
+        if (res.status !== 401) alert(`❌ ${data.message || 'Gagal menolak verifikasi activity.'}`);
         return false;
       }
     } catch (err) {
@@ -820,7 +891,7 @@ function App() {
 
   const deletePhoto = useCallback(async (branchName, projectName, actType, photoId, projectId) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/activities/delete-photo`, {
+      const res = await authFetch(`${API_BASE_URL}/api/activities/delete-photo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -828,12 +899,12 @@ function App() {
         },
         body: JSON.stringify({ branchName, projectName, type: actType, photoId, projectId })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok && data.success) {
         await fetchData();
         return true;
       } else {
-        alert(`❌ ${data.message || 'Gagal menghapus foto.'}`);
+        if (res.status !== 401) alert(`❌ ${data.message || 'Gagal menghapus foto.'}`);
         return false;
       }
     } catch (err) {
@@ -1692,11 +1763,13 @@ function App() {
             </div>
 
             <h3 style={{ fontSize: '19px', fontWeight: 800, color: '#0F172A', margin: '0 0 8px 0', fontFamily: "'Outfit', sans-serif" }}>
-              Sesi Berakhir (15 Menit)
+              {sessionExpiredNotice === 'invalid' ? 'Sesi Berakhir' : 'Sesi Berakhir (15 Menit)'}
             </h3>
 
             <p style={{ fontSize: '13.5px', color: '#475569', lineHeight: 1.5, margin: '0 0 24px 0', fontWeight: 500 }}>
-              Sesi Anda telah berakhir karena tidak ada aktivitas selama 15 menit. Anda telah ter-logout otomatis dan dikembalikan ke menu Overview.
+              {sessionExpiredNotice === 'invalid'
+                ? 'Sesi login Anda sudah tidak berlaku atau telah kedaluwarsa. Anda telah ter-logout otomatis, silakan login kembali untuk melanjutkan.'
+                : 'Sesi Anda telah berakhir karena tidak ada aktivitas selama 15 menit. Anda telah ter-logout otomatis dan dikembalikan ke menu Overview.'}
             </p>
 
             <button

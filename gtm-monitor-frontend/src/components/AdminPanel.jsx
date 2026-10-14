@@ -2,7 +2,7 @@ import { useState, useMemo, memo, useCallback, useEffect } from 'react';
 import ProjectTable from './ProjectTable';
 import ReviewModal from './ReviewModal';
 import { formatBranch, computeStats } from '../utils';
-import { API_BASE_URL } from '../apiConfig';
+import { API_BASE_URL, authFetch } from '../apiConfig';
 
 const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, verifyActivity, rejectActivity, uploadPhoto, deletePhoto, onProgramUploaded }) {
   const [activeTab, setActiveTab] = useState('monitoring'); // 'monitoring' | 'excel'
@@ -94,7 +94,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
     setShowDeleteConfirmModal(false);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/programs`, {
+      const res = await authFetch(`${API_BASE_URL}/api/admin/programs`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
     formData.append('file', pairingFile);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/upload-pairing-excel`, {
+      const res = await authFetch(`${API_BASE_URL}/api/admin/upload-pairing-excel`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -211,7 +211,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/upload-program-image`, {
+      const res = await authFetch(`${API_BASE_URL}/api/admin/upload-program-image`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -551,7 +551,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
     formData.append('file', file);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/admin/import-excel`, {
+      const response = await authFetch(`${API_BASE_URL}/api/admin/import-excel`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -1171,6 +1171,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
                       <input
                         id="program-image-input"
                         type="file"
+                        onClick={(e) => { e.currentTarget.value = ''; }}
                         accept="image/jpeg, image/png, image/jpg, image/webp"
                         onChange={(e) => {
                           if (e.target.files && e.target.files[0]) {
@@ -1404,6 +1405,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
                       <input 
                         id="excel-upload-input"
                         type="file" 
+                        onClick={(e) => { e.currentTarget.value = ''; }}
                         accept=".xlsx, .xls, .csv" 
                         onChange={handleFileChange}
                         style={{ display: 'none' }}
@@ -1605,6 +1607,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
                       <input 
                         id="pairing-upload-input"
                         type="file" 
+                        onClick={(e) => { e.currentTarget.value = ''; }}
                         accept=".xlsx, .xls, .csv" 
                         onChange={(e) => {
                           if (e.target.files && e.target.files[0]) {
