@@ -14,6 +14,7 @@ const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 const apiRoutes = require('./routes');
 const { startAuthCleanupJob } = require('./services/auth.service');
+const { initQueues } = require('./queues');
 
 const app = express();
 
@@ -53,5 +54,9 @@ if (fs.existsSync(paths.FRONTEND_DIST)) {
 
 // Bersihkan token & sesi kedaluwarsa secara berkala
 startAuthCleanupJob();
+
+// Koneksi antrean kerja (Redis/BullMQ) disiapkan sejak awal; bila Redis mati, server tetap berjalan
+// dan hanya fitur OCR & import ODP yang menjawab 503
+initQueues();
 
 module.exports = app;

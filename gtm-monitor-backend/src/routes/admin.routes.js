@@ -4,7 +4,8 @@ const odpImport = require('../controllers/odpImport.controller');
 const program = require('../controllers/program.controller');
 const pairing = require('../controllers/pairing.controller');
 const { requireAdmin } = require('../middlewares/auth');
-const { odpImportLimiter, programImageLimiter, pairingImportLimiter, odpImportLock } = require('../middlewares/rateLimiters');
+const { odpImportLimiter, programImageLimiter, pairingImportLimiter } = require('../middlewares/rateLimiters');
+const odpImportLock = require('../middlewares/odpImportLock');
 const { excelUpload, programImageUpload, pairingUpload, uploadSingle } = require('../middlewares/uploads');
 const { validate } = require('../middlewares/validate');
 const { schemas } = require('../validation/schemas');
@@ -17,6 +18,10 @@ router.post('/admin/import-excel',
   uploadSingle(excelUpload, 'file', 'ODP excel import', 'Gagal mengunggah file Data ODP.'),
   validate(schemas.fileOnly),
   odpImport.importExcel);
+
+// Status & progres import ODP yang berjalan di worker latar belakang (Server-Sent Events)
+router.get('/admin/import-excel/:jobId', requireAdmin, validate(schemas.importJob), odpImport.importStatus);
+router.get('/admin/import-excel/:jobId/events', requireAdmin, validate(schemas.importJob), odpImport.importEvents);
 
 router.post('/admin/upload-program-image',
   requireAdmin, programImageLimiter,

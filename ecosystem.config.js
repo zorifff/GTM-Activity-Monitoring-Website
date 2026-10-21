@@ -1,6 +1,14 @@
 module.exports = {
   apps: [
     {
+      // Redis di WSL Ubuntu untuk antrean kerja BullMQ (lihat gtm-monitor-backend/scripts/redis-wsl.js)
+      name: 'gtm-redis',
+      script: 'scripts/redis-wsl.js',
+      cwd: './gtm-monitor-backend',
+      autorestart: true,
+      restart_delay: 5000
+    },
+    {
       name: 'gtm-backend',
       script: 'server.js',
       cwd: './gtm-monitor-backend',
@@ -13,6 +21,21 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3001
+      }
+    },
+    {
+      // Worker latar belakang: OCR gambar program & import Excel ODP (ETL)
+      name: 'gtm-worker',
+      script: 'worker.js',
+      cwd: './gtm-monitor-backend',
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '1G',
+      restart_delay: 3000,
+      kill_timeout: 10000,
+      env: {
+        NODE_ENV: 'production'
       }
     },
     {

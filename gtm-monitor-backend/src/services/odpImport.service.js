@@ -6,7 +6,8 @@ const AppError = require('../utils/AppError');
 const { getOdpCoords } = require('../utils/geo');
 
 // Dipindah dari handler server.js baris 1485-2045
-async function importOdpExcel({ file }) {
+// onProgress(stage, percent): laporan progres opsional (dipakai worker antrean untuk notifikasi SSE)
+async function importOdpExcel({ file, onProgress = () => {} }) {
     if (!file || !file.buffer) {
       throw new AppError(400, { error: 'No file uploaded' });
     }
@@ -43,7 +44,9 @@ async function importOdpExcel({ file }) {
   }
 
   // Read from buffer (memoryStorage)
+  onProgress('Membaca file Excel', 2);
   const workbook = xlsx.read(file.buffer, { type: 'buffer' });
+  onProgress('Membaca file Excel', 8);
 
   let totalRowsProcessed = 0;
   let projectsCreated = 0;
@@ -53,6 +56,7 @@ async function importOdpExcel({ file }) {
   const seenOdpKeysInCurrentImport = new Set();
 
   // ─── 1. IN-MEMORY MAPPING (Load semua data dari DB ke RAM sekaligus) ───
+  onProgress('Memuat data database', 10);
   const allDbBranches = await prisma.branch.findMany();
   const branchMap = new Map(); // uppercase name -> branch object
   for (const b of allDbBranches) {
@@ -81,7 +85,7 @@ async function importOdpExcel({ file }) {
   let jatengDiySummary = null; // Baris summary "Jateng DIY"
 
   // ─── 2. PROCESS ROWS IN RAM (Sangat cepat & 100% akurat) ───
-  for (const sheetName of workbook.SheetNames) {
+  for (const [sheetIndex, sheetName] of workbook.SheetNames.entries()) {
     const sheet = workbook.Sheets[sheetName];
     // Convert to 2D array to find the true header row (ignoring titles)
     const rawData = xlsx.utils.sheet_to_json(sheet, { header: 1 });
@@ -117,7 +121,10 @@ async function importOdpExcel({ file }) {
       if (hasData) data.push(rowObj);
     }
 
-    for (const row of data) {
+    for (const [rowIndex, row] of data.entries()) {
+      if (rowIndex % 500 === 0) {
+        onProgress('Memproses baris Excel', 15 + 35 * ((sheetIndex + rowIndex / data.length) / workbook.SheetNames.length));
+      }
       // Headers are already normalized (uppercase & trimmed)
       const normRow = row;
 
@@ -408,6 +415,7 @@ async function importOdpExcel({ file }) {
   console.log(`âš¡ RAM Processing selesai. Menyiapkan Batch DB: ${projectsToCreate.length} project, ${odpsToCreate.length} ODP baru, ${odpsToUpdate.length} update. WOK corrections: ${wokBranchCorrections}.`);
 
   // Batch Insert Project Baru
+  onProgress('Menyimpan proyek baru', 50);
   if (projectsToCreate.length > 0) {
     const BATCH_SIZE = 500;
     for (let i = 0; i < projectsToCreate.length; i += BATCH_SIZE) {
@@ -423,6 +431,7 @@ async function importOdpExcel({ file }) {
   if (odpsToCreate.length > 0) {
     const BATCH_SIZE = 500;
     for (let i = 0; i < odpsToCreate.length; i += BATCH_SIZE) {
+      onProgress('Menyimpan ODP baru', 55 + 15 * (i / odpsToCreate.length));
       const batch = odpsToCreate.slice(i, i + BATCH_SIZE);
       await prisma.odp.createMany({
         data: batch,
@@ -435,6 +444,7 @@ async function importOdpExcel({ file }) {
   if (odpsToUpdate.length > 0) {
     const CONCURRENCY = 50;
     for (let i = 0; i < odpsToUpdate.length; i += CONCURRENCY) {
+      onProgress('Memperbarui ODP', 70 + 15 * (i / odpsToUpdate.length));
       const chunk = odpsToUpdate.slice(i, i + CONCURRENCY);
       await Promise.all(
         chunk.map(item => 
@@ -456,6 +466,7 @@ async function importOdpExcel({ file }) {
 
   // ——— 4. STALE ODP CLEANUP (Hapus ODP lama yang tidak ada di file update baru agar statistik 100% presisi) ———
   // FIX: Gunakan seenOdpKeysInCurrentImport — berisi TEPAT semua ODP yang dibaca dari file Excel terbaru.
+  onProgress('Membersihkan ODP lama', 86);
   const processedOdpNames = seenOdpKeysInCurrentImport;
   const allDbOdps = await prisma.odp.findMany({ select: { id: true, odp: true } });
   const staleOdpIds = allDbOdps
@@ -478,6 +489,7 @@ async function importOdpExcel({ file }) {
 
   // ─── 5. SIMPAN NILAI OCC BRANCH & GAP WOW PER BRANCH KE DATABASE ───
   console.log('📊 Menyimpan OCC BRANCH & GAP WOW per branch...');
+  onProgress('Menyimpan OCC & GAP WoW branch', 92);
   const allBranchesInDb = await prisma.branch.findMany();
   for (const b of allBranchesInDb) {
     const bUpper = b.name.toUpperCase();
@@ -510,6 +522,7 @@ async function importOdpExcel({ file }) {
   }
 
   // ─── 6. SIMPAN SUMMARY JATENG DIY KE ImportMeta ───
+  onProgress('Menyimpan ringkasan Jateng DIY', 97);
   if (jatengDiySummary) {
 
     await prisma.importMeta.upsert({

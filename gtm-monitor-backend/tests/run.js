@@ -3,12 +3,14 @@
 // Opsi: --record-snapshots  → rekam ulang acuan snapshot (tests/.snapshots/)
 //       --only=<nama>       → jalankan satu suite saja, mis. --only=validation
 // Catatan: suite memakai database dari .env & akun admin (ADMIN_USERNAME/ADMIN_PASSWORD). Tidak ada data bisnis yang diubah;
-// sesi login yang dibuat selama uji dicabut di akhir.
+// sesi login yang dibuat selama uji dicabut di akhir. Suite queue butuh Redis aktif (npm run redis / npm run dev di root).
 const path = require('path');
 const net = require('net');
 const { spawn } = require('child_process');
 
 const backendDir = path.resolve(__dirname, '..');
+// Antrean uji memakai awalan key Redis sendiri → antrean asli (awalan "gtm") tidak tersentuh
+process.env.QUEUE_PREFIX = 'gtm-test';
 const args = process.argv.slice(2);
 const RECORD = args.includes('--record-snapshots');
 const only = (args.find(a => a.startsWith('--only=')) || '').split('=')[1];
@@ -20,6 +22,7 @@ const SUITES = [
   { name: 'auth-session', file: 'auth-session.test.js', server: 'main' },
   { name: 'validation', file: 'validation.test.js', server: 'main' },
   { name: 'errors', file: 'errors.test.js', server: 'main' },
+  { name: 'queue', file: 'queue.test.js', server: 'main' },
   { name: 'security-ratelimit', file: 'security-ratelimit.test.js', server: 'isolated' }
 ].filter(s => (RECORD ? s.name === 'snapshot' : !only || s.name === only))
   .filter(s => require('fs').existsSync(path.join(__dirname, s.file)));

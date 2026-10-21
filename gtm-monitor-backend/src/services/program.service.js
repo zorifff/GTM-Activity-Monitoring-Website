@@ -5,7 +5,7 @@ const xlsx = require('xlsx');
 const AppError = require('../utils/AppError');
 const { PROGRAMS_DIR, DEFAULT_PROGRAM_EXCEL } = require('../config/paths');
 const { uploadToCloudinary } = require('../lib/cloudinary');
-const { extractLinkFromImageBuffer } = require('./ocr.service');
+const { assertOcrAvailable, scanLinkInBackground } = require('./ocrJob.service');
 
 // Parse file Excel program (format lama) menjadi data sheet terstruktur
 function parseProgramExcelFile(filePath) {
@@ -251,15 +251,18 @@ async function uploadProgramImage({ body, file }) {
   const sheetName = rawSheetName.trim().replace(/\s+/g, ' ');
   const manualDetailUrl = body.detailUrl || '';
 
+  // Tolak lebih dulu (503) bila antrean OCR tidak aktif, agar tidak ada gambar yatim di Cloudinary
+  await assertOcrAvailable();
+
   // 1. Upload file to Cloudinary (folder 'gtm_programs')
   console.log(`📤 [Cloudinary Upload] Uploading program image "${sheetName}" for ${monthLabel}...`);
   const cloudinaryResult = await uploadToCloudinary(file.buffer, 'gtm_programs');
   const imageUrl = cloudinaryResult.secure_url;
   console.log(`✅ [Cloudinary Upload Success] Image URL: ${imageUrl}`);
 
-  // 2. Perform OCR link scanning
-  console.log(`🔍 [OCR Scanning] Scanning link text from image using Tesseract.js...`);
-  const scannedLink = await extractLinkFromImageBuffer(file.buffer);
+  // 2. Perform OCR link scanning (dikerjakan worker latar belakang dari gambar yang sudah di Cloudinary)
+  console.log(`🔍 [OCR Scanning] Scanning link text from image using Tesseract.js (background worker)...`);
+  const scannedLink = await scanLinkInBackground(imageUrl);
   const detailUrl = manualDetailUrl || scannedLink || '';
 
   console.log(`🔗 [OCR Result] Scanned Link: "${scannedLink || 'Tidak Ditemukan'}", Final Detail URL: "${detailUrl}"`);

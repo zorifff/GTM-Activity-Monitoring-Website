@@ -1,6 +1,5 @@
 // Uji Fase 1 Task 3: helmet/CSP & rate limiting. Dijalankan oleh tests/run.js (npm test); TEST_PORT = port server uji.
 const path = require('path');
-const http = require('http');
 const backendDir = path.resolve(__dirname, '..');
 const PORT = Number(process.env.TEST_PORT);
 process.loadEnvFile(path.join(backendDir, '.env'));
@@ -62,23 +61,12 @@ const statuses = async (n, fn) => { const out = []; for (let i = 0; i < n; i++) 
   const cookie = ok1.headers.getSetCookie().map(c => c.split(';')[0]).join('; ');
   check('Sesi yang sudah login tetap bisa dipakai', (await req('/api/auth/me', { cookie })).status === 200);
 
-  console.log('\n— 4. Import ODP: hanya 1 proses berjalan sekaligus');
+  // Kunci "1 import ODP sekaligus" kini disimpan di Redis (lintas instance) → diuji di tests/queue.test.js
   const accessOnly = cookie.split('; ').find(c => c.startsWith('gtm_access_token'));
-  const slow = http.request({ host: 'localhost', port: PORT, path: '/api/admin/import-excel', method: 'POST', headers: { Cookie: accessOnly, 'Content-Type': 'multipart/form-data; boundary=XYZ', 'Content-Length': 100000 } });
-  slow.on('error', () => {});
-  slow.write('--XYZ\r\nContent-Disposition: form-data; name="file"; filename="a.xlsx"\r\n\r\n');
-  await sleep(400);
-  const second = await req('/api/admin/import-excel', { method: 'POST', cookie: accessOnly });
-  check('Import kedua saat import pertama berjalan → 409', second.status === 409 && second.body.code === 'IMPORT_IN_PROGRESS', second.body.message);
-  slow.destroy();
-  await sleep(400);
-  const after = await req('/api/admin/import-excel', { method: 'POST', cookie: accessOnly });
-  check('Setelah import pertama selesai/putus, kunci terbuka lagi', after.status === 400, `status ${after.status} (${after.body.error})`);
 
-  console.log('\n— 5. Batas per akun: ETL Excel & unggah media (per 15 menit)');
-  // import-excel sudah dipakai 3x di atas
-  const odp = await statuses(8, () => req('/api/admin/import-excel', { method: 'POST', cookie: accessOnly }));
-  check('Import ODP: request ke-11 → 429', odp.slice(0, 7).every(s => s === 400) && odp[7] === 429, odp.join(','));
+  console.log('\n— 4. Batas per akun: ETL Excel & unggah media (per 15 menit)');
+  const odp = await statuses(11, () => req('/api/admin/import-excel', { method: 'POST', cookie: accessOnly }));
+  check('Import ODP: request ke-11 → 429', odp.slice(0, 10).every(s => s === 400) && odp[10] === 429, odp.join(','));
   const pairing = await statuses(11, () => req('/api/admin/upload-pairing-excel', { method: 'POST', cookie: accessOnly }));
   check('Import Pairing: limit terpisah, request ke-11 → 429', pairing.slice(0, 10).every(s => s === 400) && pairing[10] === 429, pairing.join(','));
   const program = await statuses(11, () => req('/api/admin/upload-program-image', { method: 'POST', cookie: accessOnly }));

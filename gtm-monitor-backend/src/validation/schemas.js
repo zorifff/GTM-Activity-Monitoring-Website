@@ -155,6 +155,13 @@ const schemas = {
     body: z.object({})
   },
 
+  // ID job import ODP di URL (/api/admin/import-excel/:jobId[/events])
+  importJob: {
+    params: z.object({
+      jobId: z.uuid({ error: 'ID proses import tidak valid.' })
+    })
+  },
+
   pairingSearch: {
     query: z.object({
       q: optionalText('Kata kunci', 64),

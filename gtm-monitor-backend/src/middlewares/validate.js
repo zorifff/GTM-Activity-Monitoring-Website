@@ -1,4 +1,4 @@
-// Menerapkan skema Zod (src/validation/schemas.js) pada req.body / req.query sebelum masuk ke controller.
+// Menerapkan skema Zod (src/validation/schemas.js) pada req.body / req.query / req.params sebelum masuk ke controller.
 
 const formatIssues = (issues, source) => issues.map(issue => ({
   field: [source, ...issue.path].join('.'),
@@ -11,7 +11,7 @@ function validateRequest(req, res, schema) {
   const errors = [];
   const parsed = {};
 
-  for (const source of ['body', 'query']) {
+  for (const source of ['body', 'query', 'params']) {
     if (!schema[source]) continue;
     const input = req[source] && typeof req[source] === 'object' ? req[source] : {};
     const result = schema[source].safeParse(input);
@@ -31,6 +31,7 @@ function validateRequest(req, res, schema) {
   }
 
   if (parsed.body) req.body = parsed.body;
+  if (parsed.params) Object.assign(req.params, parsed.params);
   // Express 5: req.query adalah getter read-only, jadi diganti lewat defineProperty
   if (parsed.query) Object.defineProperty(req, 'query', { value: parsed.query, writable: true, configurable: true });
   return true;

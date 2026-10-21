@@ -52,28 +52,11 @@ const pairingImportLimiter = createUserLimiter(10, 'Batas import Excel Tsel One 
 const programImageLimiter = createUserLimiter(10, 'Batas unggah gambar program tercapai (10x per 15 menit).');
 const activityUploadLimiter = createUserLimiter(60, 'Batas unggah foto kegiatan tercapai (60x per 15 menit).');
 
-// Import ODP memproses ribuan baris & menulis massal ke DB: hanya satu proses boleh berjalan sekaligus
-let odpImportInProgress = false;
-const odpImportLock = (req, res, next) => {
-  if (odpImportInProgress) {
-    return res.status(409).json({
-      success: false,
-      code: 'IMPORT_IN_PROGRESS',
-      message: 'Import Data ODP lain sedang berjalan. Tunggu hingga selesai lalu coba lagi.',
-      error: 'Import Data ODP lain sedang berjalan. Tunggu hingga selesai lalu coba lagi.'
-    });
-  }
-  odpImportInProgress = true;
-  res.on('close', () => { odpImportInProgress = false; });
-  next();
-};
-
 module.exports = {
   apiLimiter,
   loginLimiter,
   odpImportLimiter,
   pairingImportLimiter,
   programImageLimiter,
-  activityUploadLimiter,
-  odpImportLock
+  activityUploadLimiter
 };

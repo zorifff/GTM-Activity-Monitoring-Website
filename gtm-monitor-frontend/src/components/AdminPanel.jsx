@@ -1,8 +1,9 @@
-import { useState, useMemo, memo, useCallback, useEffect } from 'react';
+import { useState, useMemo, memo, useCallback, useEffect, useRef } from 'react';
 import ProjectTable from './ProjectTable';
 import ReviewModal from './ReviewModal';
 import { formatBranch, computeStats } from '../utils';
 import { API_BASE_URL, authFetch } from '../apiConfig';
+import { watchJobEvents } from '../jobEvents';
 
 const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyActivity, rejectActivity, uploadPhoto, deletePhoto, onProgramUploaded }) {
   const [activeTab, setActiveTab] = useState('monitoring'); // 'monitoring' | 'excel'
@@ -10,6 +11,10 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
   // Excel Upload & Export States (Monitoring ODP)
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  // Progres import ODP dari worker latar belakang (ditampilkan di teks tombol)
+  const [importProgress, setImportProgress] = useState('');
+  const importAbortRef = useRef(null);
+  useEffect(() => () => importAbortRef.current?.abort(), []);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -539,9 +544,12 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
     setLoading(true);
     setMessage(null);
     setError(null);
+    setImportProgress('');
 
     const formData = new FormData();
     formData.append('file', file);
+    const abortController = new AbortController();
+    importAbortRef.current = abortController;
 
     try {
       const response = await authFetch(`${API_BASE_URL}/api/admin/import-excel`, {
@@ -558,7 +566,22 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
         throw new Error(`Server mengembalikan respon non-JSON (${response.status}): ${textErr.slice(0, 120)}...`);
       }
 
-      if (response.ok && result.success) {
+      let succeeded = response.ok && result.success;
+      // 202 = file diterima & diproses worker latar belakang → pantau progres (SSE) sampai selesai
+      if (response.status === 202 && result.jobId) {
+        setImportProgress('Menunggu antrean');
+        const outcome = await watchJobEvents(`${API_BASE_URL}/api/admin/import-excel/${result.jobId}/events`, {
+          signal: abortController.signal,
+          onProgress: (job) => {
+            if (job.state === 'waiting' || job.state === 'delayed') setImportProgress('Menunggu antrean');
+            else if (job.progress?.stage) setImportProgress(`${job.progress.stage} ${job.progress.percent}%`);
+          }
+        });
+        result = outcome.event === 'completed' ? (outcome.data.result || {}) : (outcome.data.error?.body || {});
+        succeeded = outcome.event === 'completed' && !!result.success;
+      }
+
+      if (succeeded) {
         setMessage(result.message || 'Database berhasil diperbarui dengan data Excel baru!');
         setFile(null);
         if (onUpdate) onUpdate();
@@ -568,10 +591,12 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
         setError(result.message || result.error || 'Gagal mengunggah dan memperbarui database.');
       }
     } catch (err) {
+      if (err.name === 'AbortError') return; // panel ditutup; import tetap berjalan di server
       setError(err.message || 'Terjadi kesalahan koneksi ke server. Pastikan server backend sedang berjalan.');
       console.error(err);
     } finally {
       setLoading(false);
+      setImportProgress('');
     }
   };
 
@@ -1437,7 +1462,7 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
                       gap: '8px'
                     }}
                   >
-                    {loading ? 'Sedang Membaca & Memperbarui Database...' : 'Mulai Update ODP'}
+                    {loading ? `Sedang Membaca & Memperbarui Database...${importProgress ? ` (${importProgress})` : ''}` : 'Mulai Update ODP'}
                   </button>
                 </form>
               </div>

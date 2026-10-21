@@ -41,4 +41,9 @@ if (!process.env.REFRESH_TOKEN_SECRET) {
 const CORS_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
   .split(',').map(o => o.trim()).filter(Boolean);
 
-module.exports = { PORT, JWT_SECRET, REFRESH_TOKEN_SECRET, CORS_ORIGINS };
+// Redis untuk antrean kerja BullMQ (OCR & import Excel ODP) — default: Redis di WSL Ubuntu (scripts/redis-wsl.js)
+const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+// Awalan key antrean di Redis (test suite memakai awalan sendiri agar tidak tercampur dengan data asli)
+const QUEUE_PREFIX = process.env.QUEUE_PREFIX || 'gtm';
+
+module.exports = { PORT, JWT_SECRET, REFRESH_TOKEN_SECRET, CORS_ORIGINS, REDIS_URL, QUEUE_PREFIX };
