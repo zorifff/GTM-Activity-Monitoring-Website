@@ -8,7 +8,7 @@ import LoginPage from './components/Auth/LoginPage';
 import ProgramViewerModal from './components/ProgramViewerModal';
 import CekPairingPopover from './components/CekPairingPopover';
 import { formatBranch, flatOdps, computeStats, BRANCH_COLORS } from './utils';
-import { API_BASE_URL, authFetch, UNAUTHORIZED_EVENT } from './apiConfig';
+import { API_BASE_URL, authFetch, UNAUTHORIZED_EVENT, SESSION_REFRESHED_EVENT } from './apiConfig';
 
 // ─── LOADING SCREEN (di-definisikan di level modul agar TIDAK di-remount setiap App re-render) ───
 function LoadingScreen() {
@@ -653,7 +653,20 @@ function App() {
     return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
   }, [handleInvalidSession]);
 
-  // Saat aplikasi dibuka: tanyakan ke server siapa yang login (cookie HttpOnly terkirim otomatis)
+  // Access token diperbarui otomatis (tiap 15 menit): sinkronkan profil & batas sesi terbaru dari server
+  useEffect(() => {
+    const onSessionRefreshed = (event) => {
+      const data = event.detail;
+      if (!userRef.current || !data?.user) return;
+      setUser(data.user);
+      setSessionExpiresAt(data.expiresAt || null);
+    };
+    window.addEventListener(SESSION_REFRESHED_EVENT, onSessionRefreshed);
+    return () => window.removeEventListener(SESSION_REFRESHED_EVENT, onSessionRefreshed);
+  }, []);
+
+  // Saat aplikasi dibuka: tanyakan ke server siapa yang login (cookie HttpOnly terkirim otomatis).
+  // /api/auth/session selalu menjawab 200 dan sekaligus memperbarui sesi bila access token sudah habis.
   useEffect(() => {
     // Bersihkan sisa penyimpanan token/profil versi lama (sebelum migrasi ke cookie HttpOnly)
     try {
@@ -664,10 +677,20 @@ function App() {
     } catch { /* storage diblokir browser: abaikan */ }
 
     let cancelled = false;
-    fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' })
-      .then(res => (res.ok ? res.json() : null))
+    const checkSession = async (attempt = 1) => {
+      const res = await fetch(`${API_BASE_URL}/api/auth/session`, { credentials: 'include' });
+      const data = res.ok ? await res.json() : null;
+      // Tab lain sedang memperbarui sesi yang sama: ulangi sekali setelah jeda singkat
+      if (data?.retry && attempt < 3) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return checkSession(attempt + 1);
+      }
+      return data;
+    };
+
+    checkSession()
       .then(data => {
-        if (cancelled || !data?.success || !data.user) return;
+        if (cancelled || !data?.authenticated || !data.user) return;
         setUser(data.user);
         setSessionExpiresAt(data.expiresAt || null);
         setView(getViewFromHash(data.user));
@@ -679,7 +702,7 @@ function App() {
     return () => { cancelled = true; };
   }, []);
 
-  // Token berlaku 8 jam: logout otomatis begitu masa berlakunya (dari server) habis
+  // Sesi login berlaku 7 hari sejak login: logout otomatis begitu batas sesi (dari server) habis
   useEffect(() => {
     if (!user || !sessionExpiresAt) return;
     const remaining = sessionExpiresAt - Date.now();
@@ -687,7 +710,7 @@ function App() {
       handleInvalidSession();
       return;
     }
-    // setTimeout maksimal ~24.8 hari; token 8 jam aman di bawah batas tersebut
+    // setTimeout maksimal ~24.8 hari; sesi 7 hari aman di bawah batas tersebut
     const timer = setTimeout(handleInvalidSession, Math.min(remaining, 2147483647));
     return () => clearTimeout(timer);
   }, [user, sessionExpiresAt, handleInvalidSession]);

@@ -105,6 +105,37 @@ model User {
   branchId   Int?                   // Null jika ADMIN
   activities ProjectActivity[]
   photos     ProjectActivityPhoto[]
+  sessions   AuthSession[]
   createdAt  DateTime               @default(now())
+}
+
+// Sesi login per perangkat — sekaligus revocation list (revokedAt terisi = sesi dibatalkan paksa)
+model AuthSession {
+  id            String         @id @default(uuid())
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int
+  expiresAt     DateTime       // Batas mutlak sesi (7 hari sejak login)
+  revokedAt     DateTime?
+  revokedReason String?        // "logout" | "reuse_detected" | "admin_revoked" | "password_changed"
+  userAgent     String?
+  ipAddress     String?
+  lastUsedAt    DateTime       @default(now())
+  createdAt     DateTime       @default(now())
+  refreshTokens RefreshToken[]
+
+  @@index([userId])
+}
+
+// Refresh token (rotasi): yang disimpan hanya hash HMAC-SHA256, bukan token aslinya
+model RefreshToken {
+  id        String      @id @default(uuid())
+  tokenHash String      @unique
+  session   AuthSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId String
+  expiresAt DateTime
+  rotatedAt DateTime?   // Terisi saat token sudah ditukar dengan token baru (sekali pakai)
+  createdAt DateTime    @default(now())
+
+  @@index([sessionId])
 }
 

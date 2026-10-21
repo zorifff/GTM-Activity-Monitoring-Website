@@ -328,12 +328,23 @@ const pairingUpload = multer({
   }
 });
 
-// --- Authentication Middlewares ---
+// --- Authentication: Dual-Token (Access Token 15 menit + Refresh Token 7 hari, rotasi & revocation list) ---
 
-// Token JWT hanya disimpan di cookie HttpOnly (tidak dapat dibaca JavaScript di browser)
-const AUTH_COOKIE = 'gtm_access_token';
-const ACCESS_TOKEN_TTL = '8h';
-const ACCESS_TOKEN_TTL_MS = 8 * 60 * 60 * 1000;
+// Kedua token hanya disimpan di cookie HttpOnly (tidak dapat dibaca JavaScript di browser)
+const ACCESS_COOKIE = 'gtm_access_token';
+const REFRESH_COOKIE = 'gtm_refresh_token';
+const REFRESH_COOKIE_PATH = '/api/auth'; // Refresh token hanya ikut terkirim ke endpoint auth
+const ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000;      // 15 menit
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;  // 7 hari sejak login
+// Refresh token lama yang dipakai ulang dalam jendela ini dianggap balapan antar-tab, bukan pencurian
+const REFRESH_REUSE_GRACE_MS = 30 * 1000;
+// Status sesi aktif di-cache sebentar agar pengecekan revocation di tiap request tetap ringan
+const SESSION_CACHE_TTL_MS = 30 * 1000;
+
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || JWT_SECRET;
+if (!process.env.REFRESH_TOKEN_SECRET) {
+  console.warn('⚠️ [Auth] REFRESH_TOKEN_SECRET belum diisi di .env, sementara memakai JWT_SECRET.');
+}
 
 // Secure hanya bisa dipakai di HTTPS / localhost; akses HTTP via IP LAN akan ditolak browser bila Secure dipaksa
 const isSecureRequest = (req) => {
@@ -342,39 +353,109 @@ const isSecureRequest = (req) => {
   return req.secure || req.hostname === 'localhost' || req.hostname === '127.0.0.1';
 };
 
-const getCookieOptions = (req) => ({
+const getCookieOptions = (req, cookiePath = '/') => ({
   httpOnly: true,
   sameSite: 'strict',
   secure: isSecureRequest(req),
-  path: '/'
+  path: cookiePath
 });
 
-const setAuthCookie = (req, res, token) => {
-  res.cookie(AUTH_COOKIE, token, { ...getCookieOptions(req), maxAge: ACCESS_TOKEN_TTL_MS });
+const setAccessCookie = (req, res, token) => {
+  res.cookie(ACCESS_COOKIE, token, { ...getCookieOptions(req), maxAge: ACCESS_TOKEN_TTL_MS });
 };
 
-const clearAuthCookie = (req, res) => {
-  res.clearCookie(AUTH_COOKIE, getCookieOptions(req));
+const setRefreshCookie = (req, res, token, expiresAt) => {
+  res.cookie(REFRESH_COOKIE, token, { ...getCookieOptions(req, REFRESH_COOKIE_PATH), expires: expiresAt });
 };
+
+const clearAccessCookie = (req, res) => {
+  res.clearCookie(ACCESS_COOKIE, getCookieOptions(req));
+};
+
+const clearAuthCookies = (req, res) => {
+  clearAccessCookie(req, res);
+  res.clearCookie(REFRESH_COOKIE, getCookieOptions(req, REFRESH_COOKIE_PATH));
+};
+
+// Database hanya menyimpan sidik jari HMAC-SHA256 — token asli tidak bisa dipulihkan meski database bocor
+const hashRefreshToken = (token) => crypto.createHmac('sha256', REFRESH_TOKEN_SECRET).update(token).digest('hex');
+const generateRefreshToken = () => crypto.randomBytes(48).toString('base64url');
 
 const toPublicUser = ({ id, username, role, branchName, fullName }) => ({ id, username, role, branchName, fullName });
+const buildPublicUser = (dbUser) => toPublicUser({ ...dbUser, branchName: dbUser.branch ? dbUser.branch.name : null });
+
+const signAccessToken = (publicUser, sessionId) =>
+  jwt.sign({ ...publicUser, sid: sessionId }, JWT_SECRET, { expiresIn: Math.floor(ACCESS_TOKEN_TTL_MS / 1000) });
+
+const activeSessionCache = new Map(); // sessionId -> { id, userId, expiresAt, cachedUntil }
+
+// Revocation list: sesi dianggap aktif hanya jika ada di DB, belum dicabut, dan belum kedaluwarsa
+async function getActiveSession(sessionId) {
+  if (!sessionId) return null;
+  const now = Date.now();
+  const cached = activeSessionCache.get(sessionId);
+  if (cached && cached.cachedUntil > now) {
+    return cached.expiresAt > now ? cached : null;
+  }
+
+  const session = await prisma.authSession.findUnique({
+    where: { id: sessionId },
+    select: { id: true, userId: true, expiresAt: true, revokedAt: true }
+  });
+  if (!session || session.revokedAt || session.expiresAt.getTime() <= now) {
+    activeSessionCache.delete(sessionId);
+    return null;
+  }
+
+  const entry = { id: session.id, userId: session.userId, expiresAt: session.expiresAt.getTime(), cachedUntil: now + SESSION_CACHE_TTL_MS };
+  activeSessionCache.set(sessionId, entry);
+  return entry;
+}
+
+// Pembatalan sesi paksa (berlaku seketika di server ini karena cache ikut dihapus)
+async function revokeSessions(where, reason) {
+  const targets = await prisma.authSession.findMany({ where: { ...where, revokedAt: null }, select: { id: true } });
+  if (targets.length === 0) return 0;
+  const ids = targets.map(s => s.id);
+  await prisma.authSession.updateMany({
+    where: { id: { in: ids } },
+    data: { revokedAt: new Date(), revokedReason: reason }
+  });
+  ids.forEach(id => activeSessionCache.delete(id));
+  return ids.length;
+}
+
+const sendUnauthorized = (res, message, code) => res.status(401).json({ success: false, code, message });
 
 const authenticateToken = (req, res, next) => {
-  const token = req.cookies?.[AUTH_COOKIE];
-  if (!token) return res.status(401).json({ success: false, message: 'Akses ditolak. Sesi tidak ditemukan.' });
+  const token = req.cookies?.[ACCESS_COOKIE];
+  if (!token) return sendUnauthorized(res, 'Akses ditolak. Sesi tidak ditemukan.', 'NO_SESSION');
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
+  jwt.verify(token, JWT_SECRET, async (err, payload) => {
     if (err) {
-      clearAuthCookie(req, res);
-      return res.status(401).json({ success: false, message: 'Sesi telah berakhir. Silakan login kembali.' });
+      clearAccessCookie(req, res);
+      const code = err.name === 'TokenExpiredError' ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN';
+      return sendUnauthorized(res, 'Sesi telah berakhir. Silakan login kembali.', code);
     }
-    req.user = user;
-    next();
+
+    try {
+      const session = await getActiveSession(payload.sid);
+      if (!session) {
+        clearAccessCookie(req, res);
+        return sendUnauthorized(res, 'Sesi telah dibatalkan. Silakan login kembali.', 'SESSION_REVOKED');
+      }
+      req.user = payload;
+      req.authSession = session;
+      next();
+    } catch (dbErr) {
+      console.error('Error checking auth session:', dbErr);
+      res.status(503).json({ success: false, message: 'Gagal memverifikasi sesi. Silakan coba lagi.' });
+    }
   });
 };
 
 const optionalAuthenticateToken = (req, res, next) => {
-  const token = req.cookies?.[AUTH_COOKIE];
+  const token = req.cookies?.[ACCESS_COOKIE];
   if (!token) {
     req.user = null;
     return next();
@@ -431,16 +512,28 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Username atau password salah.' });
     }
 
-    const branchName = user.branch ? user.branch.name : null;
-    const publicUser = toPublicUser({ ...user, branchName });
-    const token = jwt.sign(publicUser, JWT_SECRET, { expiresIn: ACCESS_TOKEN_TTL });
-    const { exp } = jwt.decode(token);
+    const publicUser = buildPublicUser(user);
+    const sessionExpiresAt = new Date(Date.now() + SESSION_TTL_MS);
+    const refreshToken = generateRefreshToken();
 
-    setAuthCookie(req, res, token);
+    const session = await prisma.authSession.create({
+      data: {
+        userId: user.id,
+        expiresAt: sessionExpiresAt,
+        userAgent: (req.get('user-agent') || '').slice(0, 255) || null,
+        ipAddress: req.ip || null,
+        refreshTokens: {
+          create: { tokenHash: hashRefreshToken(refreshToken), expiresAt: sessionExpiresAt }
+        }
+      }
+    });
+
+    setAccessCookie(req, res, signAccessToken(publicUser, session.id));
+    setRefreshCookie(req, res, refreshToken, sessionExpiresAt);
     res.json({
       success: true,
       user: publicUser,
-      expiresAt: exp * 1000
+      expiresAt: sessionExpiresAt.getTime()
     });
   } catch (error) {
     console.error('Error in /api/auth/login:', error);
@@ -448,16 +541,201 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Validasi sesi aktif (frontend menanyakan siapa yang sedang login, karena token tidak bisa dibaca JS)
-app.get('/api/auth/me', authenticateToken, (req, res) => {
-  res.json({ success: true, user: toPublicUser(req.user), expiresAt: req.user.exp * 1000 });
+// Refresh Token Rotation: tukar refresh token (cookie) dengan access token + refresh token baru.
+// Hasil: { ok: true, user, expiresAt } atau { ok: false, status, code, message }
+async function rotateRefreshToken(req, res) {
+  const failure = (message, code) => {
+    clearAuthCookies(req, res);
+    return { ok: false, status: 401, code, message };
+  };
+  const race = { ok: false, status: 409, code: 'REFRESH_RACE', message: 'Sesi baru saja diperbarui oleh tab lain.' };
+
+  const rawToken = req.cookies?.[REFRESH_COOKIE];
+  if (!rawToken) return failure('Sesi tidak ditemukan. Silakan login kembali.', 'NO_SESSION');
+
+  const stored = await prisma.refreshToken.findUnique({
+    where: { tokenHash: hashRefreshToken(rawToken) },
+    include: { session: { include: { user: { include: { branch: true } } } } }
+  });
+  if (!stored) return failure('Sesi tidak valid. Silakan login kembali.', 'REFRESH_INVALID');
+
+  const { session } = stored;
+  const now = new Date();
+  if (session.revokedAt || session.expiresAt <= now || stored.expiresAt <= now) {
+    return failure('Sesi telah berakhir. Silakan login kembali.', 'SESSION_REVOKED');
+  }
+
+  // Refresh token sekali pakai: pemakaian ulang di luar jendela toleransi = indikasi token dicuri
+  if (stored.rotatedAt) {
+    if (now.getTime() - stored.rotatedAt.getTime() <= REFRESH_REUSE_GRACE_MS) return race;
+    await revokeSessions({ id: session.id }, 'reuse_detected');
+    console.warn(`🚨 [Auth] Refresh token lama dipakai ulang (sesi ${session.id}, user ${session.userId}). Sesi dicabut.`);
+    return failure('Sesi dibatalkan demi keamanan. Silakan login kembali.', 'SESSION_REVOKED');
+  }
+
+  // Rotasi atomik: hanya satu request yang berhasil menukar token yang sama
+  const newRefreshToken = generateRefreshToken();
+  const rotated = await prisma.$transaction(async (tx) => {
+    const { count } = await tx.refreshToken.updateMany({
+      where: { id: stored.id, rotatedAt: null },
+      data: { rotatedAt: now }
+    });
+    if (count === 0) return false;
+    await tx.refreshToken.create({
+      data: { tokenHash: hashRefreshToken(newRefreshToken), sessionId: session.id, expiresAt: session.expiresAt }
+    });
+    await tx.authSession.update({ where: { id: session.id }, data: { lastUsedAt: now } });
+    return true;
+  });
+  if (!rotated) return race;
+
+  // Data user dibaca ulang dari DB agar perubahan role/branch langsung berlaku
+  const publicUser = buildPublicUser(session.user);
+  setAccessCookie(req, res, signAccessToken(publicUser, session.id));
+  setRefreshCookie(req, res, newRefreshToken, session.expiresAt);
+  return { ok: true, user: publicUser, expiresAt: session.expiresAt.getTime() };
+}
+
+app.post('/api/auth/refresh', async (req, res) => {
+  try {
+    const result = await rotateRefreshToken(req, res);
+    if (result.ok) return res.json({ success: true, user: result.user, expiresAt: result.expiresAt });
+    res.status(result.status).json({ success: false, code: result.code, message: result.message });
+  } catch (error) {
+    console.error('Error in /api/auth/refresh:', error);
+    res.status(500).json({ success: false, message: 'Gagal memperbarui sesi.' });
+  }
 });
 
-// Logout: hapus cookie sesi (cookie HttpOnly hanya bisa dihapus oleh server)
-app.post('/api/auth/logout', (req, res) => {
-  clearAuthCookie(req, res);
+// Status login saat aplikasi dibuka — selalu 200 (pengunjung tanpa sesi bukan error).
+// Bila access token habis tapi refresh token masih sah, sesi diperbarui sekaligus dalam request ini.
+app.get('/api/auth/session', async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  try {
+    const accessToken = req.cookies?.[ACCESS_COOKIE];
+    if (accessToken) {
+      try {
+        const payload = jwt.verify(accessToken, JWT_SECRET);
+        const session = await getActiveSession(payload.sid);
+        if (session) {
+          return res.json({ success: true, authenticated: true, user: toPublicUser(payload), expiresAt: session.expiresAt });
+        }
+      } catch { /* access token habis / tidak sah: lanjut coba refresh token */ }
+    }
+
+    if (req.cookies?.[REFRESH_COOKIE]) {
+      const result = await rotateRefreshToken(req, res);
+      if (result.ok) {
+        return res.json({ success: true, authenticated: true, user: result.user, expiresAt: result.expiresAt });
+      }
+      // Tab lain sedang memperbarui sesi yang sama: frontend cukup mengulang permintaan ini
+      if (result.status === 409) return res.json({ success: true, authenticated: false, retry: true });
+    } else if (accessToken) {
+      clearAccessCookie(req, res);
+    }
+
+    res.json({ success: true, authenticated: false });
+  } catch (error) {
+    console.error('Error in /api/auth/session:', error);
+    res.status(503).json({ success: false, message: 'Gagal memeriksa sesi login.' });
+  }
+});
+
+// Validasi sesi aktif (frontend menanyakan siapa yang sedang login, karena token tidak bisa dibaca JS)
+app.get('/api/auth/me', authenticateToken, (req, res) => {
+  res.json({ success: true, user: toPublicUser(req.user), expiresAt: req.authSession.expiresAt });
+});
+
+// Logout: cabut sesi di server lalu hapus cookie (cookie HttpOnly hanya bisa dihapus oleh server)
+app.post('/api/auth/logout', async (req, res) => {
+  try {
+    let sessionId = null;
+    const rawRefresh = req.cookies?.[REFRESH_COOKIE];
+    if (rawRefresh) {
+      const stored = await prisma.refreshToken.findUnique({
+        where: { tokenHash: hashRefreshToken(rawRefresh) },
+        select: { sessionId: true }
+      });
+      sessionId = stored?.sessionId || null;
+    }
+    if (!sessionId && req.cookies?.[ACCESS_COOKIE]) {
+      try {
+        sessionId = jwt.verify(req.cookies[ACCESS_COOKIE], JWT_SECRET, { ignoreExpiration: true }).sid || null;
+      } catch { /* token tidak sah: tidak ada sesi yang perlu dicabut */ }
+    }
+    if (sessionId) await revokeSessions({ id: sessionId }, 'logout');
+  } catch (error) {
+    console.error('Error revoking session on logout:', error);
+  }
+  clearAuthCookies(req, res);
   res.json({ success: true });
 });
+
+// Admin: daftar sesi login yang masih aktif (tanpa token / hash)
+app.get('/api/admin/sessions', requireAdmin, async (req, res) => {
+  try {
+    const sessions = await prisma.authSession.findMany({
+      where: { revokedAt: null, expiresAt: { gt: new Date() } },
+      orderBy: { lastUsedAt: 'desc' },
+      select: {
+        id: true, userId: true, createdAt: true, lastUsedAt: true, expiresAt: true, userAgent: true, ipAddress: true,
+        user: { select: { username: true, fullName: true, role: true } }
+      }
+    });
+    res.json({ success: true, count: sessions.length, sessions });
+  } catch (error) {
+    console.error('Error listing sessions:', error);
+    res.status(500).json({ success: false, message: 'Gagal memuat daftar sesi.' });
+  }
+});
+
+// Admin: pembatalan sesi paksa — semua sesi milik satu user ({ userId }) atau satu sesi tertentu ({ sessionId })
+app.post('/api/admin/sessions/revoke', requireAdmin, async (req, res) => {
+  try {
+    const { userId, sessionId } = req.body || {};
+    const hasUser = userId !== undefined && userId !== null && userId !== '';
+    const hasSession = typeof sessionId === 'string' && sessionId.trim() !== '';
+    if (hasUser === hasSession) {
+      return res.status(400).json({ success: false, message: 'Isi salah satu: userId atau sessionId.' });
+    }
+
+    let where;
+    if (hasUser) {
+      const parsedUserId = Number(userId);
+      if (!Number.isInteger(parsedUserId) || parsedUserId <= 0) {
+        return res.status(400).json({ success: false, message: 'userId tidak valid.' });
+      }
+      where = { userId: parsedUserId };
+    } else {
+      where = { id: sessionId.trim() };
+    }
+
+    const revokedCount = await revokeSessions(where, 'admin_revoked');
+    console.log(`🔒 [Auth] Admin ${req.user.username} mencabut ${revokedCount} sesi (${JSON.stringify(where)}).`);
+    res.json({ success: true, revokedCount, message: `${revokedCount} sesi berhasil dibatalkan.` });
+  } catch (error) {
+    console.error('Error revoking sessions:', error);
+    res.status(500).json({ success: false, message: 'Gagal membatalkan sesi.' });
+  }
+});
+
+// Bersihkan token & sesi kedaluwarsa secara berkala (riwayat sesi dicabut disimpan 30 hari untuk audit)
+const cleanupAuthRecords = async () => {
+  try {
+    const now = Date.now();
+    const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+    await prisma.refreshToken.deleteMany({
+      where: { OR: [{ expiresAt: { lt: oneDayAgo } }, { rotatedAt: { lt: oneDayAgo } }] }
+    });
+    await prisma.authSession.deleteMany({
+      where: { OR: [{ expiresAt: { lt: thirtyDaysAgo } }, { revokedAt: { lt: thirtyDaysAgo } }] }
+    });
+  } catch (error) {
+    console.error('Auth cleanup error:', error.message);
+  }
+};
+setInterval(cleanupAuthRecords, 60 * 60 * 1000).unref();
 
 // --- Data Endpoints (Protected & Branch-Scoped) ---
 

@@ -36,10 +36,16 @@ async function main() {
         password: hashedPassword
       }
     });
+    // Password berubah: cabut semua sesi login admin (perangkat lain wajib login ulang)
+    const revoked = await prisma.authSession.updateMany({
+      where: { userId: updated.id, revokedAt: null },
+      data: { revokedAt: new Date(), revokedReason: 'password_changed' }
+    });
     console.log(`✅ Admin account updated successfully!`);
     console.log(`   - Username: ${updated.username}`);
     console.log(`   - Full Name: ${updated.fullName}`);
     console.log(`   - Role: ${updated.role}`);
+    console.log(`   - Sesi login yang dicabut: ${revoked.count}`);
   } else {
     const created = await prisma.user.create({
       data: {
