@@ -3,10 +3,11 @@
 // Opsi: --record-snapshots  → rekam ulang acuan snapshot (tests/.snapshots/)
 //       --only=<nama>       → jalankan satu suite saja, mis. --only=validation
 // Catatan: suite memakai database dari .env & akun admin (ADMIN_USERNAME/ADMIN_PASSWORD). Tidak ada data bisnis yang diubah;
-// sesi login yang dibuat selama uji dicabut di akhir. Suite queue butuh Redis aktif (npm run redis / npm run dev di root).
+// sesi login yang dibuat selama uji dicabut di akhir. Suite queue & storage butuh Redis & object storage (Garage):
+// bila belum berjalan, keduanya dinyalakan otomatis lalu dimatikan lagi setelah uji (yang sudah berjalan tidak diganggu).
 const path = require('path');
 const net = require('net');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
 const backendDir = path.resolve(__dirname, '..');
 // Antrean uji memakai awalan key Redis sendiri → antrean asli (awalan "gtm") tidak tersentuh
@@ -23,6 +24,8 @@ const SUITES = [
   { name: 'validation', file: 'validation.test.js', server: 'main' },
   { name: 'errors', file: 'errors.test.js', server: 'main' },
   { name: 'queue', file: 'queue.test.js', server: 'main' },
+  { name: 'storage', file: 'storage.test.js', server: 'main' },
+  { name: 'pairing', file: 'pairing.test.js', server: 'main' },
   { name: 'security-ratelimit', file: 'security-ratelimit.test.js', server: 'isolated' }
 ].filter(s => (RECORD ? s.name === 'snapshot' : !only || s.name === only))
   .filter(s => require('fs').existsSync(path.join(__dirname, s.file)));
@@ -65,6 +68,47 @@ const runSuite = (suite, port) => new Promise(resolve => {
   });
 });
 
+const isPortOpen = (port) => new Promise(resolve => {
+  const socket = net.connect(port, '127.0.0.1');
+  const done = (open) => { socket.destroy(); resolve(open); };
+  socket.setTimeout(1500, () => done(false));
+  socket.once('connect', () => done(true));
+  socket.once('error', () => done(false));
+});
+
+// Layanan pendukung di WSL (launcher yang sama dengan npm run dev)
+const INFRA = [
+  { name: 'Redis', script: 'scripts/redis-wsl.js', url: () => process.env.REDIS_URL || 'redis://127.0.0.1:6379', defaultPort: 6379 },
+  { name: 'Object storage (Garage)', script: 'scripts/storage-wsl.js', url: () => process.env.S3_ENDPOINT || 'http://127.0.0.1:3900', defaultPort: 3900 }
+];
+
+const startInfra = async () => {
+  const started = [];
+  for (const svc of INFRA) {
+    const { hostname, port } = new URL(svc.url());
+    if (!['127.0.0.1', 'localhost'].includes(hostname)) continue; // layanan eksternal (mis. R2) tidak dikelola di sini
+    const servicePort = Number(port || svc.defaultPort);
+    if (await isPortOpen(servicePort)) continue;
+    console.log(`▶️  ${svc.name} belum berjalan — dinyalakan sementara untuk pengujian...`);
+    const proc = spawn(process.execPath, [svc.script], { cwd: backendDir, stdio: 'ignore', windowsHide: true });
+    started.push({ ...svc, proc });
+    let up = false;
+    for (let i = 0; i < 60 && !up; i++) {
+      await new Promise(r => setTimeout(r, 500));
+      up = await isPortOpen(servicePort);
+    }
+    if (!up) console.log(`⚠️  ${svc.name} gagal dinyalakan dalam 30 detik — suite yang membutuhkannya akan gagal.`);
+  }
+  return started;
+};
+
+// Hanya layanan yang dinyalakan oleh test runner ini yang dimatikan
+const stopInfra = (started) => started.forEach(svc => {
+  spawnSync(process.execPath, [svc.script, '--stop'], { cwd: backendDir, stdio: 'ignore', timeout: 20000, windowsHide: true });
+  svc.proc.kill();
+  console.log(`⏹️  ${svc.name} yang dinyalakan untuk pengujian telah dimatikan.`);
+});
+
 const revokeTestSessions = async () => {
   const { PrismaClient } = require(path.join(backendDir, 'node_modules/@prisma/client'));
   const prisma = new PrismaClient();
@@ -77,6 +121,7 @@ const revokeTestSessions = async () => {
 
 (async () => {
   process.loadEnvFile(path.join(backendDir, '.env'));
+  const infra = RECORD ? [] : await startInfra();
   const results = [];
   for (const group of ['main', 'isolated']) {
     const suites = SUITES.filter(s => s.server === group);
@@ -94,6 +139,7 @@ const revokeTestSessions = async () => {
     if (unexpected.length) console.log(`\n⚠️  Error tak terduga di log server (${group}):\n${unexpected.slice(0, 5).join('\n')}`);
   }
   await revokeTestSessions().catch(e => console.error('Gagal mencabut sesi uji:', e.message));
+  stopInfra(infra);
 
   console.log('\n━━━ RINGKASAN ━━━');
   results.forEach(r => console.log(`${r.fail === 0 && r.code === 0 ? '✅' : '❌'} ${r.name.padEnd(20)} ${r.pass} lulus, ${r.fail} gagal`));

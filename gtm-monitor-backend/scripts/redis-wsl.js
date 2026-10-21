@@ -1,6 +1,7 @@
 // Menjalankan Redis (antrean kerja BullMQ) di WSL Ubuntu sebagai proses foreground.
 // Dipakai oleh npm run dev / npm run redis (root) & pm2 app "gtm-redis". Selama proses ini hidup, WSL tetap menyala.
 // Bila Redis sudah berjalan di port yang sama, launcher hanya memantau (tidak menjalankan Redis kedua).
+// --stop : mematikan Redis di WSL dengan rapi lalu keluar (dipakai tests/run.js).
 //
 // Instalasi sekali (PowerShell):
 //   wsl -d Ubuntu -u root -- apt-get install -y redis-server
@@ -18,7 +19,9 @@ const IS_LOCAL = ['127.0.0.1', 'localhost', '[::1]'].includes(hostname);
 // noeviction = syarat BullMQ (data job tidak boleh dibuang saat memori penuh); appendonly = job tetap ada setelah restart
 const REDIS_ARGS = [
   '--port', String(PORT), '--bind', '127.0.0.1', '--protected-mode', 'yes', '--daemonize', 'no',
-  '--appendonly', 'yes', '--maxmemory-policy', 'noeviction'
+  '--appendonly', 'yes', '--maxmemory-policy', 'noeviction',
+  // Port selain default memakai file data sendiri agar dua instance tidak pernah menulis AOF/RDB yang sama
+  ...(PORT === 6379 ? [] : ['--appenddirname', `appendonlydir-${PORT}`, '--dbfilename', `dump-${PORT}.rdb`])
 ];
 const COMMAND = process.platform === 'win32'
   ? ['wsl.exe', ['-d', DISTRO, '-u', 'redis', '--exec', 'redis-server', ...REDIS_ARGS, '--dir', '/var/lib/redis']]
@@ -51,14 +54,20 @@ function startRedis() {
   });
 }
 
+// Matikan Redis dengan rapi (data antrean disimpan ke disk). Proses di WSL tidak ikut mati saat wsl.exe dihentikan.
+const shutdownRedis = () => {
+  if (process.platform === 'win32') {
+    spawnSync('wsl.exe', ['-d', DISTRO, '-u', 'redis', '--exec', 'redis-cli', '-p', String(PORT), 'shutdown'], { timeout: 10000, windowsHide: true });
+  } else {
+    spawnSync('redis-cli', ['-p', String(PORT), 'shutdown'], { timeout: 10000 });
+  }
+};
+
 function stopRedis() {
   if (stopping) return;
   stopping = true;
   if (child) {
-    // Matikan Redis dengan rapi (data antrean disimpan ke disk) lalu tutup proses wsl.exe
-    if (process.platform === 'win32') {
-      spawnSync('wsl.exe', ['-d', DISTRO, '-u', 'redis', '--exec', 'redis-cli', '-p', String(PORT), 'shutdown'], { timeout: 10000, windowsHide: true });
-    }
+    shutdownRedis();
     child.kill();
   }
   process.exit(0);
@@ -67,6 +76,11 @@ process.on('SIGINT', stopRedis);
 process.on('SIGTERM', stopRedis);
 
 (async () => {
+  if (process.argv.includes('--stop')) {
+    shutdownRedis();
+    console.log(`🛑 [Redis] Redis di port ${PORT} dimatikan.`);
+    return;
+  }
   if (!IS_LOCAL) {
     console.log(`ℹ️  [Redis] REDIS_URL menunjuk ke server lain (${hostname}); Redis lokal tidak dijalankan.`);
     setInterval(() => {}, 60 * 60 * 1000);

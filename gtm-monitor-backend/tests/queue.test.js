@@ -18,10 +18,10 @@ if (!process.env.QUEUE_PREFIX || process.env.QUEUE_PREFIX === 'gtm') {
 
 const xlsx = require(path.join(backendDir, 'node_modules/xlsx'));
 const AppError = require(path.join(backendDir, 'src/utils/AppError'));
-const paths = require(path.join(backendDir, 'src/config/paths'));
+const storage = require(path.join(backendDir, 'src/lib/objectStorage'));
 const { startWorkers } = require(path.join(backendDir, 'src/workers'));
 const queues = require(path.join(backendDir, 'src/queues'));
-const { ODP_IMPORT_LOCK_KEY, IMPORT_IN_PROGRESS_BODY } = require(path.join(backendDir, 'src/services/odpImportJob.service'));
+const { ODP_IMPORT_LOCK_KEY, IMPORT_IN_PROGRESS_BODY, TMP_PREFIX } = require(path.join(backendDir, 'src/services/odpImportJob.service'));
 const { scanLinkInBackground } = require(path.join(backendDir, 'src/services/ocrJob.service'));
 const { extractLinkFromImageBuffer } = require(path.join(backendDir, 'src/services/ocr.service'));
 
@@ -45,7 +45,8 @@ const excelBuffer = (() => {
   return xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
 })();
 const excelForm = () => { const f = new FormData(); f.append('file', new Blob([excelBuffer]), 'uji-antrean.xlsx'); return f; };
-const tmpFiles = () => (fs.existsSync(paths.ODP_IMPORT_TMP_DIR) ? fs.readdirSync(paths.ODP_IMPORT_TMP_DIR) : []);
+// File Excel sementara kini di object storage (tmp/odp-import/), bukan di disk server
+const tmpFiles = () => storage.listObjects(TMP_PREFIX);
 
 const parseSse = (block) => {
   let event = 'message'; const data = [];
@@ -96,11 +97,11 @@ const readSse = async (url, cookie, timeoutMs = 20000) => {
   await redis.del(ODP_IMPORT_LOCK_KEY);
 
   console.log('\n— 1. Worker tidak aktif → 503 (tanpa efek samping)');
-  const tmpBefore = tmpFiles().length;
+  const tmpBefore = (await tmpFiles()).length;
   let res = await postImport();
   let body = await res.json();
   check('Import ODP → 503 WORKER_UNAVAILABLE + pesan jelas', res.status === 503 && body.code === 'WORKER_UNAVAILABLE' && /Worker/.test(body.message), `${res.status} ${body.message}`);
-  check('Tidak ada file sementara tertinggal', tmpFiles().length === tmpBefore);
+  check('Tidak ada file sementara tertinggal di object storage', (await tmpFiles()).length === tmpBefore);
   const programsBefore = await (await fetch(`${BASE}/api/programs`)).text();
   const imgForm = new FormData();
   imgForm.append('file', new Blob([fs.readFileSync(path.join(__dirname, 'fixtures/ocr-sample.png'))], { type: 'image/png' }), 'uji.png');
@@ -132,7 +133,7 @@ const readSse = async (url, cookie, timeoutMs = 20000) => {
   check('Event akhir "completed" berisi hasil ETL apa adanya', last && last.event === 'completed' && JSON.stringify(last.data.result) === JSON.stringify({ success: true, message: 'Import uji selesai', stats: { rows: 3 } }));
   check('Stream ditutup server setelah selesai', !sse.timedOut);
   check('Worker menerima isi file utuh', receivedBytes === excelBuffer.length, `${receivedBytes} / ${excelBuffer.length} byte`);
-  check('File sementara dihapus setelah selesai', tmpFiles().length === tmpBefore);
+  check('File sementara di object storage dihapus setelah selesai', (await tmpFiles()).length === tmpBefore && !(await storage.objectExists(`${TMP_PREFIX}${jobId}.xlsx`)));
   check('Kunci import dilepas setelah selesai', (await redis.get(ODP_IMPORT_LOCK_KEY)) === null);
   res = await fetch(`${BASE}/api/admin/import-excel/${jobId}`, { headers: { Cookie: cookie } });
   body = await res.json();
@@ -204,6 +205,7 @@ const readSse = async (url, cookie, timeoutMs = 20000) => {
   for (const name of Object.values(queues.QUEUE_NAMES)) await queues.getQueue(name).obliterate({ force: true }).catch(() => {});
   await redis.del(ODP_IMPORT_LOCK_KEY);
   await queues.closeQueues();
+  storage.closeStorage();
   await fetch(`${BASE}/api/auth/logout`, { method: 'POST', headers: { Cookie: cookie } });
   console.log(`\nHasil: ${pass} lulus, ${fail} gagal`);
   // exitCode (bukan process.exit) agar koneksi fetch selesai ditutup — mencegah crash libuv di Windows

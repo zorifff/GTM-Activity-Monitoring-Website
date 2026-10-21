@@ -1,11 +1,8 @@
 // Kegiatan GTM per proyek: unggah foto (staging Cloudinary), hapus, verifikasi (simpan permanen), tolak
-const fs = require('fs');
-const path = require('path');
 const prisma = require('../lib/prisma');
 const AppError = require('../utils/AppError');
-const { BACKEND_ROOT } = require('../config/paths');
-const { uploadToCloudinary, deleteFromCloudinary } = require('../lib/cloudinary');
-const { saveVerifiedPhotoToLocal } = require('./photoStorage.service');
+const { uploadToCloudinary } = require('../lib/cloudinary');
+const { saveVerifiedPhotoToStorage, isStoredPhotoUrl, deleteStoredPhoto } = require('./photoStorage.service');
 
 // Dipindah dari handler server.js baris 971-1094
 async function createActivity({ body, file, user }) {
@@ -219,16 +216,7 @@ async function deleteActivityPhoto({ body, user }) {
   }
 
   if (targetPhoto) {
-    if (targetPhoto.photoUrl) {
-      if (targetPhoto.photoUrl.includes('res.cloudinary.com')) {
-        await deleteFromCloudinary(targetPhoto.photoUrl).catch(err => console.error('Cloudinary error:', err.message));
-      } else if (targetPhoto.photoUrl.startsWith('/uploads/') || targetPhoto.photoUrl.startsWith('/database foto/') || targetPhoto.photoUrl.startsWith('/database%20foto/')) {
-        const localP = path.join(BACKEND_ROOT, decodeURIComponent(targetPhoto.photoUrl));
-        if (fs.existsSync(localP)) {
-          await fs.promises.unlink(localP).catch(err => console.error('Unlink error:', err.message));
-        }
-      }
-    }
+    await deleteStoredPhoto(targetPhoto.photoUrl);
     await prisma.projectActivityPhoto.delete({ where: { id: targetPhoto.id } }).catch(() => null);
   }
 
@@ -262,14 +250,7 @@ async function deleteActivityPhoto({ body, user }) {
     }).catch(() => null);
 
     if (legacyAct && legacyAct.photoUrl) {
-      if (legacyAct.photoUrl.includes('res.cloudinary.com')) {
-        await deleteFromCloudinary(legacyAct.photoUrl).catch(err => console.error('Cloudinary error:', err.message));
-      } else if (legacyAct.photoUrl.startsWith('/uploads/') || legacyAct.photoUrl.startsWith('/database foto/') || legacyAct.photoUrl.startsWith('/database%20foto/')) {
-        const localP = path.join(BACKEND_ROOT, decodeURIComponent(legacyAct.photoUrl));
-        if (fs.existsSync(localP)) {
-          await fs.promises.unlink(localP).catch(err => console.error('Unlink error:', err.message));
-        }
-      }
+      await deleteStoredPhoto(legacyAct.photoUrl);
     }
 
     await prisma.projectActivityPhoto.deleteMany({
@@ -309,11 +290,11 @@ async function verifyActivity({ body }) {
 
   let finalPhotoUrl = targetPhoto?.photoUrl;
 
-  // Automatically download verified photo from Cloudinary Staging to structured local disk directory
+  // Automatically move verified photo from Cloudinary Staging to object storage (bucket/verified/...)
   if (targetPhoto && targetPhoto.photoUrl && targetPhoto.photoUrl.includes('res.cloudinary.com')) {
     const dateToUse = targetPhoto.planDate || targetPhoto.createdAt;
     const bObj = await prisma.branch.findUnique({ where: { id: project.branchId } }).catch(() => null);
-    finalPhotoUrl = await saveVerifiedPhotoToLocal(
+    finalPhotoUrl = await saveVerifiedPhotoToStorage(
       targetPhoto.photoUrl,
       bObj?.name || body.branchName,
       project.wok,
@@ -321,7 +302,7 @@ async function verifyActivity({ body }) {
       type,
       dateToUse
     );
-  } else if (targetPhoto && targetPhoto.photoUrl && (targetPhoto.photoUrl.startsWith('/uploads/') || targetPhoto.photoUrl.startsWith('/database foto/') || targetPhoto.photoUrl.startsWith('/database%20foto/'))) {
+  } else if (targetPhoto && isStoredPhotoUrl(targetPhoto.photoUrl)) {
     finalPhotoUrl = targetPhoto.photoUrl;
   }
 
@@ -389,17 +370,8 @@ async function rejectActivity({ body }) {
 
   // 1. Physically delete target photo file if it exists
   if (targetPhoto && targetPhoto.photoUrl) {
-    const pUrl = targetPhoto.photoUrl;
-    if (pUrl.includes('res.cloudinary.com')) {
-      console.log('🧹 [Reject] Destroying Cloudinary staging photo:', pUrl);
-      await deleteFromCloudinary(pUrl).catch(err => console.error('Cloudinary cleanup warning:', err.message));
-    } else if (pUrl.startsWith('/uploads/') || pUrl.startsWith('/database foto/') || pUrl.startsWith('/database%20foto/')) {
-      const localP = path.join(BACKEND_ROOT, decodeURIComponent(pUrl));
-      if (fs.existsSync(localP)) {
-        console.log('🧹 [Reject] Unlinking local photo:', localP);
-        await fs.promises.unlink(localP).catch(err => console.error('Unlink error:', err.message));
-      }
-    }
+    console.log('🧹 [Reject] Menghapus foto:', targetPhoto.photoUrl);
+    await deleteStoredPhoto(targetPhoto.photoUrl);
   }
 
   // 2. Delete the target photo record
@@ -459,14 +431,7 @@ async function rejectActivity({ body }) {
     }).catch(() => null);
 
     if (legacyAct && legacyAct.photoUrl) {
-      if (legacyAct.photoUrl.includes('res.cloudinary.com')) {
-        await deleteFromCloudinary(legacyAct.photoUrl).catch(err => console.error('Cloudinary cleanup warning:', err.message));
-      } else if (legacyAct.photoUrl.startsWith('/uploads/') || legacyAct.photoUrl.startsWith('/database foto/') || legacyAct.photoUrl.startsWith('/database%20foto/')) {
-        const localP = path.join(BACKEND_ROOT, decodeURIComponent(legacyAct.photoUrl));
-        if (fs.existsSync(localP)) {
-          await fs.promises.unlink(localP).catch(err => console.error('Unlink error:', err.message));
-        }
-      }
+      await deleteStoredPhoto(legacyAct.photoUrl);
     }
 
     await prisma.projectActivity.upsert({

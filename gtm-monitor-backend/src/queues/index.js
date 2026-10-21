@@ -7,7 +7,8 @@ const AppError = require('../utils/AppError');
 
 const QUEUE_NAMES = {
   OCR: 'ocr-scan',
-  ODP_IMPORT: 'odp-import'
+  ODP_IMPORT: 'odp-import',
+  PAIRING_IMPORT: 'pairing-import'
 };
 
 // Job yang sudah selesai disimpan sebentar agar hasilnya masih bisa dibaca frontend, lalu dibersihkan otomatis

@@ -46,4 +46,19 @@ const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 // Awalan key antrean di Redis (test suite memakai awalan sendiri agar tidak tercampur dengan data asli)
 const QUEUE_PREFIX = process.env.QUEUE_PREFIX || 'gtm';
 
-module.exports = { PORT, JWT_SECRET, REFRESH_TOKEN_SECRET, CORS_ORIGINS, REDIS_URL, QUEUE_PREFIX };
+// Object storage S3-compatible (foto verifikasi & file sementara) — default: Garage di WSL (scripts/storage-wsl.js).
+// Cloudflare R2 / AWS S3 cukup dengan mengganti nilai ini di .env.
+const S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://127.0.0.1:3900';
+const S3_REGION = process.env.S3_REGION || 'garage';
+const S3_BUCKET = process.env.S3_BUCKET || 'gtm-media';
+const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID || '';
+const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY || '';
+const S3_FORCE_PATH_STYLE = (process.env.S3_FORCE_PATH_STYLE || 'true').toLowerCase() === 'true';
+if (!S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY) {
+  console.warn('⚠️ [Storage] S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY belum diisi di .env. Foto verifikasi & import ODP akan gagal.');
+}
+
+module.exports = {
+  PORT, JWT_SECRET, REFRESH_TOKEN_SECRET, CORS_ORIGINS, REDIS_URL, QUEUE_PREFIX,
+  S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_FORCE_PATH_STYLE
+};

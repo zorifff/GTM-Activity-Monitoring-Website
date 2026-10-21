@@ -1,18 +1,34 @@
+// Tsel One Pairing: indeks pencarian O(1) (BB ID / Order ID / MSISDN, termasuk alias 08… ↔ 628…) disimpan di Redis
+// sehingga semua instance server (PM2 cluster / beberapa pod) membaca indeks yang sama.
+// Struktur Redis (awalan <QUEUE_PREFIX>:pairing):
+//   :active                → versi indeks yang sedang dipakai
+//   :v:<versi>:records     Hash  nomor baris → JSON record
+//   :v:<versi>:lookup      Hash  kunci pencarian → "nomor,baris,..." (urutan sama seperti Map versi lama)
+//   :meta                  JSON { updatedAt, totalRows, fileName, version }
+// Upload baru dibangun di versi baru lalu `active` dipindah secara atomik (pencarian tidak pernah melihat indeks setengah jadi).
+// File Excel sumber disimpan di object storage (pairing/<QUEUE_PREFIX>/) → indeks dapat dibangun ulang bila Redis kosong.
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const xlsx = require('xlsx');
 const AppError = require('../utils/AppError');
+const { QUEUE_PREFIX } = require('../config/env');
 const { PAIRING_DIR } = require('../config/paths');
+const { getApiConnection } = require('../queues');
+const { putObject, getObjectBuffer } = require('../lib/objectStorage');
 
-// --- TSEL ONE PAIRING STORAGE & FAST LOOKUP SEARCH SYSTEM ---
+const NS = `${QUEUE_PREFIX}:pairing`;
+const ACTIVE_KEY = `${NS}:active`;
+const META_KEY = `${NS}:meta`;
+const recordsKey = (version) => `${NS}:v:${version}:records`;
+const lookupKey = (version) => `${NS}:v:${version}:lookup`;
+const SOURCE_KEY = `pairing/${QUEUE_PREFIX}/tsel_one_pairing.xlsx`;
+const SOURCE_META_KEY = `pairing/${QUEUE_PREFIX}/meta.json`;
+const WRITE_BATCH = 1000;      // field per HSET
+const PIPELINE_BATCHES = 20;   // HSET per pipeline (±20.000 field per round-trip)
 
-const pairingDir = PAIRING_DIR;
-if (!fs.existsSync(pairingDir)) {
-  try { fs.mkdirSync(pairingDir, { recursive: true }); } catch {}
-}
-
-let cachedPairingRecords = null;
-let pairingLookupMap = null;
+const SEARCH_UNAVAILABLE_MESSAGE = 'Layanan pencarian pairing sedang tidak aktif. Hubungi administrator sistem lalu coba lagi.';
+const PARSE_FAILED_BODY = { error: 'Gagal menguraikan file Excel pairing. Pastikan format tabel dan header sesuai.' };
 
 function formatExcelDate(val) {
   if (val === undefined || val === null || val === '' || val === '\\N' || val === 'N/A') return '';
@@ -34,11 +50,11 @@ function formatExcelDate(val) {
   return String(val).replace(/^\\N$/, '').trim();
 }
 
-function parsePairingExcelFile(filePath) {
-  if (!fs.existsSync(filePath)) return null;
-
+// Excel (buffer) → array record. Pemetaan kolom sama persis dengan versi sebelumnya. null bila gagal / kosong.
+function parsePairingWorkbook(buffer, onProgress = () => {}) {
   try {
-    const workbook = xlsx.readFile(filePath);
+    onProgress('Membaca file Excel', 5);
+    const workbook = xlsx.read(buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames.includes('Unstacked_Pairing_Data')
       ? 'Unstacked_Pairing_Data'
       : workbook.SheetNames[0];
@@ -47,6 +63,7 @@ function parsePairingExcelFile(filePath) {
 
     const rawRows = xlsx.utils.sheet_to_json(sheet, { defval: '' });
     if (!rawRows || rawRows.length === 0) return null;
+    onProgress('Menguraikan baris', 30);
 
     const parsedRecords = rawRows.map(row => {
       const getValRaw = (keys) => {
@@ -109,6 +126,7 @@ function parsePairingExcelFile(filePath) {
       };
     });
 
+
     return parsedRecords;
   } catch (err) {
     console.error('Error parsing pairing excel file:', err);
@@ -116,18 +134,18 @@ function parsePairingExcelFile(filePath) {
   }
 }
 
-function buildPairingLookupMap() {
-  pairingLookupMap = new Map();
-  if (!cachedPairingRecords) return;
+// Kunci pencarian → daftar nomor baris (algoritma sama dengan Map versi sebelumnya, termasuk urutan & alias MSISDN)
+function buildPairingLookup(records) {
+  const lookup = new Map();
 
   const addSingleKey = (key, idx) => {
     if (!key) return;
     const strKey = String(key).trim();
     if (strKey.length < 3) return;
-    if (!pairingLookupMap.has(strKey)) {
-      pairingLookupMap.set(strKey, []);
+    if (!lookup.has(strKey)) {
+      lookup.set(strKey, []);
     }
-    const arr = pairingLookupMap.get(strKey);
+    const arr = lookup.get(strKey);
     if (!arr.includes(idx)) {
       arr.push(idx);
     }
@@ -149,7 +167,7 @@ function buildPairingLookupMap() {
     }
   };
 
-  cachedPairingRecords.forEach((rec, idx) => {
+  records.forEach((rec, idx) => {
     addSingleKey(rec.bb_id, idx);
     addSingleKey(rec.order_id, idx);
 
@@ -161,103 +179,107 @@ function buildPairingLookupMap() {
     addMsisdnKeys(rec.msisdn_child5, idx);
     addMsisdnKeys(rec.msisdn_child6, idx);
   });
+  return lookup;
 }
 
-function getPairingData() {
-  if (cachedPairingRecords) return { records: cachedPairingRecords, lookupMap: pairingLookupMap };
+// Alias MSISDN yang dicoba bila kunci persis tidak ditemukan (08… ↔ 628…)
+function msisdnAlias(cleanQ) {
+  if (cleanQ.startsWith('08')) return '628' + cleanQ.slice(2);
+  if (cleanQ.startsWith('628')) return '08' + cleanQ.slice(3);
+  return '';
+}
 
-  const jsonPath = path.join(pairingDir, 'records.json');
-  const excelPath = path.join(pairingDir, 'tsel_one_pairing.xlsx');
+// ─── Indeks di Redis ───
 
-  if (fs.existsSync(jsonPath)) {
-    try {
-      console.log('⚡ Loading Tsel One Pairing index from disk...');
-      const start = Date.now();
-      const raw = fs.readFileSync(jsonPath, 'utf8');
-      cachedPairingRecords = JSON.parse(raw);
+// Tulis indeks ke versi baru (belum aktif). Mengembalikan nomor versi.
+async function writePairingIndex(redis, records, onProgress = () => {}) {
+  const version = `${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
+  const lookup = buildPairingLookup(records);
+  const totalSteps = records.length + lookup.size;
+  let done = 0;
+  const report = () => onProgress('Membangun indeks pencarian', 55 + 40 * (done / Math.max(1, totalSteps)));
 
-      // Auto upgrade cache if existing records.json lacks source_perdana_parent
-      if (cachedPairingRecords.length > 0 && cachedPairingRecords[0].source_perdana_parent === undefined && fs.existsSync(excelPath)) {
-        console.log('🔄 Upgrading pairing records cache to include Source Perdana fields...');
-        const freshRecords = parsePairingExcelFile(excelPath);
-        if (freshRecords && freshRecords.length > 0) {
-          cachedPairingRecords = freshRecords;
-          fs.writeFileSync(jsonPath, JSON.stringify(cachedPairingRecords));
-          console.log(`✅ Cache upgraded with ${freshRecords.length} records.`);
-        }
+  // Banyak HSET dikirim sekaligus (pipeline) agar tidak menunggu round-trip per batch
+  let pipeline = redis.pipeline();
+  let queued = 0;
+  const enqueue = async (key, fields, size) => {
+    pipeline.hset(key, fields);
+    done += size;
+    if (++queued === PIPELINE_BATCHES) await flush();
+  };
+  const flush = async () => {
+    if (queued === 0) return;
+    const results = await pipeline.exec();
+    const failed = results.find(([err]) => err);
+    if (failed) throw failed[0];
+    pipeline = redis.pipeline();
+    queued = 0;
+    report();
+  };
+
+  try {
+    for (let i = 0; i < records.length; i += WRITE_BATCH) {
+      const fields = {};
+      records.slice(i, i + WRITE_BATCH).forEach((rec, j) => { fields[i + j] = JSON.stringify(rec); });
+      await enqueue(recordsKey(version), fields, Object.keys(fields).length);
+    }
+    let fields = {};
+    let count = 0;
+    for (const [key, indices] of lookup) {
+      fields[key] = indices.join(',');
+      if (++count === WRITE_BATCH) {
+        await enqueue(lookupKey(version), fields, count);
+        fields = {};
+        count = 0;
       }
-
-      buildPairingLookupMap();
-      console.log(`✅ Tsel One Pairing loaded: ${cachedPairingRecords.length} records in ${Date.now() - start}ms`);
-      return { records: cachedPairingRecords, lookupMap: pairingLookupMap };
-    } catch (e) {
-      console.error('Failed to load pairing JSON cache:', e);
     }
+    if (count > 0) await enqueue(lookupKey(version), fields, count);
+    await flush();
+  } catch (err) {
+    await redis.unlink(recordsKey(version), lookupKey(version)).catch(() => {});
+    throw err;
   }
-  return { records: [], lookupMap: new Map() };
+  return version;
 }
 
-function searchPairingData(query) {
-  if (!query || typeof query !== 'string') return [];
-  const cleanQ = query.trim();
-
-  if (cleanQ.length < 6) return [];
-
-  const { records, lookupMap } = getPairingData();
-  if (!records || records.length === 0 || !lookupMap) return [];
-
-  // Strict exact match from Map (O(1))
-  if (lookupMap.has(cleanQ)) {
-    const matchedIndices = lookupMap.get(cleanQ);
-    return matchedIndices.map(i => records[i]);
-  }
-
-  // Alias lookup for MSISDN 08... <-> 628...
-  if (cleanQ.startsWith('08')) {
-    const alias62 = '628' + cleanQ.slice(2);
-    if (lookupMap.has(alias62)) {
-      const matchedIndices = lookupMap.get(alias62);
-      return matchedIndices.map(i => records[i]);
-    }
-  } else if (cleanQ.startsWith('628')) {
-    const alias08 = '08' + cleanQ.slice(3);
-    if (lookupMap.has(alias08)) {
-      const matchedIndices = lookupMap.get(alias08);
-      return matchedIndices.map(i => records[i]);
-    }
-  }
-
-  // Strict exact match requirement: NO substring/partial fallback!
-  return [];
+// Aktifkan versi baru secara atomik, lalu hapus versi lama (UNLINK: dibebaskan Redis di latar belakang)
+async function activatePairingIndex(redis, version, meta) {
+  const previous = await redis.get(ACTIVE_KEY);
+  await redis.multi().set(ACTIVE_KEY, version).set(META_KEY, JSON.stringify({ ...meta, version })).exec();
+  if (previous && previous !== version) await redis.unlink(recordsKey(previous), lookupKey(previous));
 }
 
-// Dipindah dari handler server.js baris 2873-2921
-function uploadPairingExcel({ file }) {
+async function buildAndActivate(redis, records, meta, onProgress) {
+  const version = await writePairingIndex(redis, records, onProgress);
+  onProgress('Mengaktifkan indeks', 97);
+  await activatePairingIndex(redis, version, meta);
+  return version;
+}
+
+// Job worker "Import Excel Tsel One Pairing" (dipanggil processor import bersama)
+async function importPairingExcel({ file, onProgress = () => {}, connection }) {
   if (!file || !file.buffer) {
     throw new AppError(400, { error: 'Tidak ada file Excel pairing yang diunggah.' });
   }
 
-  const targetPath = path.join(pairingDir, 'tsel_one_pairing.xlsx');
-  fs.writeFileSync(targetPath, file.buffer);
-
-  const records = parsePairingExcelFile(targetPath);
+  const records = parsePairingWorkbook(file.buffer, onProgress);
   if (!records || records.length === 0) {
-    throw new AppError(400, { error: 'Gagal menguraikan file Excel pairing. Pastikan format tabel dan header sesuai.' });
+    throw new AppError(400, PARSE_FAILED_BODY);
   }
 
-  const recordsJsonPath = path.join(pairingDir, 'records.json');
-  fs.writeFileSync(recordsJsonPath, JSON.stringify(records), 'utf8');
-
-  cachedPairingRecords = records;
-  buildPairingLookupMap();
-
-  const metaPath = path.join(pairingDir, 'meta.json');
   const meta = {
     updatedAt: new Date().toISOString(),
     totalRows: records.length,
     fileName: file.originalname
   };
-  fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2), 'utf8');
+
+  // File sumber disimpan setelah berhasil diuraikan (file rusak tidak menimpa sumber yang lama)
+  onProgress('Menyimpan file sumber', 52);
+  await putObject(SOURCE_KEY, file.buffer, 'application/octet-stream');
+  await putObject(SOURCE_META_KEY, JSON.stringify(meta), 'application/json');
+
+  await buildAndActivate(connection, records, meta, onProgress);
+  console.log(`✅ [Pairing] Indeks Redis aktif: ${records.length} baris (${file.originalname})`);
 
   return ({
     success: true,
@@ -267,8 +289,78 @@ function uploadPairingExcel({ file }) {
   });
 }
 
+// Dipanggil saat worker menyala: bila Redis belum punya indeks aktif, bangun dari file sumber di object storage;
+// bila belum ada juga, migrasikan data lama dari disk (data/pairing/tsel_one_pairing.xlsx, format sebelum Redis).
+async function ensurePairingIndex(redis) {
+  if (await redis.get(ACTIVE_KEY)) return 'active';
+
+  let buffer = await getObjectBuffer(SOURCE_KEY);
+  let meta = null;
+  if (buffer) {
+    console.log('🔄 [Pairing] Indeks Redis kosong — membangun ulang dari file sumber di object storage...');
+    const rawMeta = await getObjectBuffer(SOURCE_META_KEY);
+    meta = rawMeta ? JSON.parse(rawMeta.toString('utf8')) : null;
+  } else {
+    const legacyPath = path.join(PAIRING_DIR, 'tsel_one_pairing.xlsx');
+    if (!fs.existsSync(legacyPath)) return 'empty';
+    console.log('🔄 [Pairing] Memigrasikan data pairing lama dari disk ke object storage & Redis...');
+    buffer = fs.readFileSync(legacyPath);
+  }
+
+  const records = parsePairingWorkbook(buffer);
+  if (!records || records.length === 0) return 'empty';
+  if (!meta) {
+    meta = { updatedAt: new Date().toISOString(), totalRows: records.length, fileName: 'tsel_one_pairing.xlsx' };
+    await putObject(SOURCE_KEY, buffer, 'application/octet-stream');
+    await putObject(SOURCE_META_KEY, JSON.stringify(meta), 'application/json');
+  }
+  await buildAndActivate(redis, records, meta, () => {});
+  console.log(`✅ [Pairing] Indeks Redis aktif: ${records.length} baris`);
+  return 'rebuilt';
+}
+
+// ─── Pencarian (server API) ───
+
+// Satu round-trip & atomik terhadap pergantian versi: GET active → HGET lookup (persis, lalu alias) → HMGET records
+const SEARCH_SCRIPT = `
+local ns = KEYS[1]
+local version = redis.call('GET', ns .. ':active')
+if not version then return {} end
+local lookup = ns .. ':v:' .. version .. ':lookup'
+local ids = redis.call('HGET', lookup, ARGV[1])
+if (not ids) and ARGV[2] ~= '' then ids = redis.call('HGET', lookup, ARGV[2]) end
+if not ids then return {} end
+local list = {}
+for id in string.gmatch(ids, '[^,]+') do list[#list + 1] = id end
+return redis.call('HMGET', ns .. ':v:' .. version .. ':records', unpack(list))
+`;
+const scriptReady = new WeakSet();
+
+async function searchPairingData(query) {
+  if (!query || typeof query !== 'string') return [];
+  const cleanQ = query.trim();
+
+  if (cleanQ.length < 6) return [];
+
+  const redis = getApiConnection();
+  if (!scriptReady.has(redis)) {
+    redis.defineCommand('pairingSearch', { numberOfKeys: 1, lua: SEARCH_SCRIPT });
+    scriptReady.add(redis);
+  }
+  if (redis.status !== 'ready') throw new AppError(503, SEARCH_UNAVAILABLE_MESSAGE, 'SEARCH_UNAVAILABLE');
+  let rows;
+  try {
+    // Strict exact match requirement: NO substring/partial fallback!
+    rows = await redis.pairingSearch(NS, cleanQ, msisdnAlias(cleanQ));
+  } catch (err) {
+    console.error('❌ [Pairing] Pencarian Redis gagal:', err.message);
+    throw new AppError(503, SEARCH_UNAVAILABLE_MESSAGE, 'SEARCH_UNAVAILABLE');
+  }
+  return rows.filter(Boolean).map(row => JSON.parse(row));
+}
+
 // Dipindah dari handler server.js baris 2924-2951
-function searchPairing({ query }) {
+async function searchPairing({ query }) {
   const q = query.q; // sudah divalidasi & digabung dari ?q= / ?query= oleh skema
   const cleanQ = String(q).trim();
 
@@ -280,7 +372,7 @@ function searchPairing({ query }) {
   }
 
   const start = Date.now();
-  const results = searchPairingData(cleanQ);
+  const results = await searchPairingData(cleanQ);
   const durationMs = Date.now() - start;
 
   return ({
@@ -292,4 +384,14 @@ function searchPairing({ query }) {
   });
 }
 
-module.exports = { getPairingData, searchPairingData, uploadPairingExcel, searchPairing };
+module.exports = {
+  NS,
+  SOURCE_KEY,
+  parsePairingWorkbook,
+  buildPairingLookup,
+  msisdnAlias,
+  importPairingExcel,
+  ensurePairingIndex,
+  searchPairingData,
+  searchPairing
+};

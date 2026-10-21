@@ -9,6 +9,14 @@ module.exports = {
       restart_delay: 5000
     },
     {
+      // Object storage S3-compatible (Garage) di WSL: foto verifikasi & file sementara (scripts/storage-wsl.js)
+      name: 'gtm-storage',
+      script: 'scripts/storage-wsl.js',
+      cwd: './gtm-monitor-backend',
+      autorestart: true,
+      restart_delay: 5000
+    },
+    {
       name: 'gtm-backend',
       script: 'server.js',
       cwd: './gtm-monitor-backend',

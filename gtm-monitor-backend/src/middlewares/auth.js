@@ -56,4 +56,25 @@ const requireAdmin = (req, res, next) => {
   });
 };
 
-module.exports = { sendUnauthorized, authenticateToken, optionalAuthenticateToken, requireAdmin };
+// Khusus berkas foto (/media): <img> tidak bisa memicu refresh token, jadi masa berlaku access token (15 menit)
+// tidak diperiksa. Tanda tangan token tetap wajib sah DAN sesinya masih aktif (belum logout / dicabut / lewat 7 hari),
+// sehingga logout & pencabutan sesi tetap langsung memblokir akses foto.
+const authenticateMedia = (req, res, next) => {
+  const token = req.cookies?.[ACCESS_COOKIE];
+  if (!token) return sendUnauthorized(res, 'Akses ditolak. Silakan login untuk melihat foto.', 'NO_SESSION');
+
+  jwt.verify(token, JWT_SECRET, { ignoreExpiration: true }, async (err, payload) => {
+    if (err) return sendUnauthorized(res, 'Sesi tidak valid. Silakan login kembali.', 'INVALID_TOKEN');
+    try {
+      const session = await getActiveSession(payload.sid);
+      if (!session) return sendUnauthorized(res, 'Sesi telah berakhir. Silakan login kembali.', 'SESSION_REVOKED');
+      req.user = payload;
+      next();
+    } catch (dbErr) {
+      console.error('Error checking auth session (media):', dbErr);
+      res.status(503).json({ success: false, message: 'Gagal memverifikasi sesi. Silakan coba lagi.' });
+    }
+  });
+};
+
+module.exports = { sendUnauthorized, authenticateToken, optionalAuthenticateToken, authenticateMedia, requireAdmin };

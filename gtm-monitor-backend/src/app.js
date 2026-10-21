@@ -13,6 +13,8 @@ const { apiLimiter } = require('./middlewares/rateLimiters');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 const apiRoutes = require('./routes');
+const mediaRoutes = require('./routes/media.routes');
+const { redirectLegacyPhoto } = require('./controllers/media.controller');
 const { startAuthCleanupJob } = require('./services/auth.service');
 const { initQueues } = require('./queues');
 
@@ -31,10 +33,11 @@ app.use(express.json());
 
 app.use('/api', apiLimiter);
 
-// Serve /uploads & /database foto statically for frontend photo rendering (Dual Serving)
+// Foto kegiatan terverifikasi: dialirkan dari object storage (wajib login). URL lama /database foto/... dialihkan.
 app.use('/uploads', express.static(paths.UPLOADS_DIR));
-app.use('/database foto', express.static(paths.PHOTO_DIR));
-app.use('/database%20foto', express.static(paths.PHOTO_DIR));
+app.use('/media', mediaRoutes);
+app.use('/database foto', redirectLegacyPhoto);
+app.use('/database%20foto', redirectLegacyPhoto);
 
 app.use('/api', apiRoutes);
 

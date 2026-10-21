@@ -57,6 +57,10 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
   // Tsel One Pairing Excel Upload States
   const [pairingFile, setPairingFile] = useState(null);
   const [pairingLoading, setPairingLoading] = useState(false);
+  // Progres import pairing dari worker latar belakang (ditampilkan di teks tombol)
+  const [pairingProgress, setPairingProgress] = useState('');
+  const pairingAbortRef = useRef(null);
+  useEffect(() => () => pairingAbortRef.current?.abort(), []);
   const [pairingMessage, setPairingMessage] = useState(null);
   const [pairingError, setPairingError] = useState(null);
 
@@ -149,9 +153,12 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
     setPairingLoading(true);
     setPairingMessage('Sedang mengunggah & mengindeks data pairing... Harap tunggu (±15-20 detik)...');
     setPairingError(null);
+    setPairingProgress('');
 
     const formData = new FormData();
     formData.append('file', pairingFile);
+    const abortController = new AbortController();
+    pairingAbortRef.current = abortController;
 
     try {
       const res = await authFetch(`${API_BASE_URL}/api/admin/upload-pairing-excel`, {
@@ -175,13 +182,32 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
         throw new Error(data.error || data.message || `Gagal mengunggah file Tsel One Pairing (Status ${res.status}).`);
       }
 
+      // 202 = file diterima & diproses worker latar belakang → pantau progres (SSE) sampai selesai
+      if (res.status === 202 && data.jobId) {
+        setPairingProgress('Menunggu antrean');
+        const outcome = await watchJobEvents(`${API_BASE_URL}/api/admin/upload-pairing-excel/${data.jobId}/events`, {
+          signal: abortController.signal,
+          onProgress: (job) => {
+            if (job.state === 'waiting' || job.state === 'delayed') setPairingProgress('Menunggu antrean');
+            else if (job.progress?.stage) setPairingProgress(`${job.progress.stage} ${job.progress.percent}%`);
+          }
+        });
+        if (outcome.event !== 'completed') {
+          const body = outcome.data.error?.body || {};
+          throw new Error(body.error || body.message || 'Gagal memproses file Excel pairing.');
+        }
+        data = outcome.data.result || {};
+      }
+
       setPairingMessage(data.message || 'Berhasil mengimpor Data Tsel One Pairing!');
       setPairingFile(null);
     } catch (err) {
+      if (err.name === 'AbortError') return; // panel ditutup; import tetap berjalan di server
       setPairingMessage(null);
       setPairingError(err.message || 'Terjadi kesalahan saat upload file Tsel One Pairing.');
     } finally {
       setPairingLoading(false);
+      setPairingProgress('');
     }
   };
 
@@ -1669,7 +1695,7 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
                       gap: '8px'
                     }}
                   >
-                    {pairingLoading ? 'Sedang Memproses Data Pairing...' : 'Mulai Update Pairing'}
+                    {pairingLoading ? `Sedang Memproses Data Pairing...${pairingProgress ? ` (${pairingProgress})` : ''}` : 'Mulai Update Pairing'}
                   </button>
                 </form>
               </div>

@@ -32,9 +32,13 @@ router.post('/admin/upload-program-image',
 router.delete('/admin/programs', requireAdmin, validate(schemas.deletePrograms), program.deletePrograms);
 
 router.post('/admin/upload-pairing-excel',
-  requireAdmin, pairingImportLimiter,
+  requireAdmin, pairingImportLimiter, pairing.pairingImportLock,
   uploadSingle(pairingUpload, 'file', 'pairing upload', 'Gagal mengunggah file Excel pairing.'),
   validate(schemas.fileOnly),
   pairing.uploadPairingExcel);
+
+// Status & progres import pairing yang berjalan di worker latar belakang (Server-Sent Events)
+router.get('/admin/upload-pairing-excel/:jobId', requireAdmin, validate(schemas.importJob), pairing.pairingImportStatus);
+router.get('/admin/upload-pairing-excel/:jobId/events', requireAdmin, validate(schemas.importJob), pairing.pairingImportEvents);
 
 module.exports = router;
