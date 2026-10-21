@@ -3,7 +3,7 @@
 //   tmp/odp-import/<jobId>.xlsx                                  file Excel ODP yang menunggu diproses worker
 require('../config/env');
 const {
-  S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand, DeleteObjectCommand, ListObjectsV2Command
+  S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand, DeleteObjectCommand, ListObjectsV2Command, HeadBucketCommand
 } = require('@aws-sdk/client-s3');
 const {
   S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_FORCE_PATH_STYLE
@@ -94,12 +94,27 @@ async function listObjects(prefix) {
   return items;
 }
 
+// Menunggu object storage dapat dijangkau (dipakai saat start: layanan di WSL butuh beberapa detik). true bila siap.
+async function waitForStorage({ timeoutMs = 60 * 1000, intervalMs = 1000 } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      await client.send(new HeadBucketCommand({ Bucket: S3_BUCKET }));
+      return true;
+    } catch {
+      await new Promise(r => setTimeout(r, intervalMs));
+    }
+  }
+  return false;
+}
+
 // Menutup koneksi keep-alive (skrip & test suite agar proses bisa selesai)
 const closeStorage = () => client.destroy();
 
 module.exports = {
   STORAGE_UNAVAILABLE_MESSAGE,
   closeStorage,
+  waitForStorage,
   putObject,
   getObject,
   getObjectBuffer,

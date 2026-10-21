@@ -3,7 +3,7 @@
 const { Worker } = require('bullmq');
 const { QUEUE_PREFIX } = require('../config/env');
 const { createRedisConnection } = require('../lib/redis');
-const { listObjects, deleteObject } = require('../lib/objectStorage');
+const { listObjects, deleteObject, waitForStorage } = require('../lib/objectStorage');
 const { QUEUE_NAMES } = require('../queues');
 const { PAIRING_IMPORT_LOCK_KEY } = require('../services/pairingImportJob.service');
 const { importPairingExcel, ensurePairingIndex } = require('../services/pairing.service');
@@ -27,7 +27,6 @@ async function cleanStaleTempFiles(maxAgeMs = 24 * 60 * 60 * 1000) {
 
 // overrides.odpImport: pengganti fungsi ETL ODP (khusus test suite)
 function startWorkers(overrides = {}) {
-  cleanStaleTempFiles();
   const connection = createRedisConnection({ label: 'Redis worker', blocking: true });
   const common = { connection, prefix: QUEUE_PREFIX, concurrency: 1 };
 
@@ -43,8 +42,17 @@ function startWorkers(overrides = {}) {
     }), { ...common, lockDuration: 5 * 60 * 1000 })
   ];
 
-  // Indeks pencarian pairing di Redis: dibangun ulang dari object storage bila kosong (mis. Redis baru / dikosongkan)
-  const pairingReady = ensurePairingIndex(connection).catch(err => {
+  // Tugas awal dijalankan setelah Redis & object storage siap (keduanya di WSL, butuh beberapa detik saat npm run dev):
+  // bersihkan file sementara basi, lalu bangun ulang indeks pairing dari object storage bila Redis kosong.
+  const pairingReady = (async () => {
+    await connection.ping(); // menunggu Redis tersambung
+    if (!(await waitForStorage())) {
+      console.warn('⚠️ [Worker] Object storage belum dapat dijangkau setelah 60 detik — pembersihan file sementara & pengecekan indeks pairing dilewati.');
+      return 'error';
+    }
+    await cleanStaleTempFiles();
+    return ensurePairingIndex(connection);
+  })().catch(err => {
     console.error('⚠️ [Pairing] Gagal menyiapkan indeks pencarian:', err.message);
     return 'error';
   });

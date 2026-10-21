@@ -13,6 +13,8 @@ const { hostname, port } = new URL(S3_ENDPOINT);
 const PORT = Number(port || 3900);
 const IS_LOCAL = ['127.0.0.1', 'localhost', '[::1]'].includes(hostname);
 const GARAGE_ENV = 'GARAGE_CONFIG_FILE=/etc/garage.toml';
+// Hanya peringatan & error Garage yang ditampilkan (log akses per-request, mis. 404 file belum ada, disembunyikan)
+const GARAGE_LOG = 'RUST_LOG=garage=warn';
 
 const isPortOpen = () => new Promise(resolve => {
   const socket = net.connect(PORT, '127.0.0.1');
@@ -27,7 +29,8 @@ let stopping = false;
 
 function startGarage() {
   console.log(`🚀 [Storage] Menjalankan Garage (S3) di WSL (${DISTRO}) pada port ${PORT}...`);
-  child = spawn('wsl.exe', ['-d', DISTRO, '-u', 'root', '--exec', 'env', GARAGE_ENV, 'garage', 'server'], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+  child = spawn('wsl.exe', ['-d', DISTRO, '-u', 'root', '--exec', 'env', GARAGE_ENV, GARAGE_LOG, 'garage', 'server'], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+  waitUntilReady();
   // Pesan wsl.exe sendiri berformat UTF-16 → karakter NUL dibuang
   const forward = (stream) => (data) => stream.write(data.toString().replace(/\0/g, ''));
   child.stdout.on('data', forward(process.stdout));
@@ -36,6 +39,11 @@ function startGarage() {
   child.on('exit', (code) => {
     child = null;
     if (stopping) return;
+    // 0 / 130 / 143 = dihentikan dengan sengaja (shutdown / SIGINT / SIGTERM), bukan crash
+    if ([0, 130, 143].includes(code)) {
+      console.log(`ℹ️  [Storage] Garage dihentikan (kode ${code}).`);
+      process.exit(0);
+    }
     console.error(`❌ [Storage] Garage berhenti (kode ${code}). Bila belum pernah disiapkan, jalankan: node gtm-monitor-backend/scripts/setup-storage-wsl.js`);
     process.exit(code || 1);
   });
@@ -45,6 +53,17 @@ function startGarage() {
 const shutdownGarage = () => {
   spawnSync('wsl.exe', ['-d', DISTRO, '-u', 'root', '--exec', 'pkill', '-INT', '-x', 'garage'], { timeout: 10000, windowsHide: true });
 };
+
+// Laporkan saat S3 API sudah dapat dijangkau dari Windows (port-forwarding WSL butuh beberapa detik)
+async function waitUntilReady() {
+  for (let i = 0; i < 60 && child; i++) {
+    if (await isPortOpen()) {
+      console.log(`✅ [Storage] Object storage siap di ${S3_ENDPOINT}`);
+      return;
+    }
+    await new Promise(r => setTimeout(r, 1000));
+  }
+}
 
 function stopGarage() {
   if (stopping) return;

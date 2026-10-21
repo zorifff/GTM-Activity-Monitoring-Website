@@ -39,6 +39,10 @@ let child = null;
 let stopping = false;
 
 function startRedis() {
+  // Rekomendasi Redis agar penyimpanan latar belakang (AOF/RDB) tidak gagal: vm.overcommit_memory=1 (kernel WSL)
+  if (process.platform === 'win32') {
+    spawnSync('wsl.exe', ['-d', DISTRO, '-u', 'root', '--exec', 'sysctl', '-q', '-w', 'vm.overcommit_memory=1'], { timeout: 10000, windowsHide: true });
+  }
   console.log(`🚀 [Redis] Menjalankan redis-server${process.platform === 'win32' ? ` di WSL (${DISTRO})` : ''} pada port ${PORT}...`);
   child = spawn(COMMAND[0], COMMAND[1], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
   // Pesan wsl.exe sendiri berformat UTF-16 → karakter NUL dibuang
@@ -49,6 +53,11 @@ function startRedis() {
   child.on('exit', (code) => {
     child = null;
     if (stopping) return;
+    // 0 / 130 / 143 = dihentikan dengan sengaja (shutdown / SIGINT / SIGTERM), bukan crash
+    if ([0, 130, 143].includes(code)) {
+      console.log(`ℹ️  [Redis] redis-server dihentikan (kode ${code}).`);
+      process.exit(0);
+    }
     console.error(`❌ [Redis] redis-server berhenti (kode ${code}). Pastikan Redis terpasang di WSL: wsl -d ${DISTRO} -u root -- apt-get install -y redis-server`);
     process.exit(code || 1);
   });

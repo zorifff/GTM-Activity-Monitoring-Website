@@ -13,6 +13,8 @@ const redisLabel = (() => {
   }
 })();
 
+const STARTUP_GRACE_MS = 20 * 1000;
+
 // blocking = true untuk Worker/QueueEvents (wajib maxRetriesPerRequest: null, menunggu Redis kembali).
 // blocking = false untuk sisi API: perintah langsung gagal saat Redis mati agar request segera mendapat 503, bukan menggantung.
 function createRedisConnection({ label = 'Redis', blocking = false } = {}) {
@@ -22,16 +24,25 @@ function createRedisConnection({ label = 'Redis', blocking = false } = {}) {
     retryStrategy: (times) => Math.min(times * 500, 5000)
   });
 
-  // Peringatan hanya sekali per gangguan (ioredis mencoba menyambung ulang tiap beberapa detik)
+  // Peringatan hanya sekali per gangguan (ioredis mencoba menyambung ulang tiap beberapa detik).
+  // Saat start, Redis (WSL) bisa baru siap beberapa detik kemudian → gagal sambung di masa tunggu awal tidak dilaporkan.
   let disconnected = false;
-  connection.on('error', (err) => {
+  let everReady = false;
+  let lastError = null;
+  const warn = () => {
     if (disconnected) return;
     disconnected = true;
-    console.warn(`⚠️ [${label}] Tidak terhubung ke Redis ${redisLabel}: ${err.code || err.message}. Mencoba menyambung ulang...`);
+    console.warn(`⚠️ [${label}] Tidak terhubung ke Redis ${redisLabel}: ${lastError}. Mencoba menyambung ulang...`);
+  };
+  setTimeout(() => { if (!everReady && lastError) warn(); }, STARTUP_GRACE_MS).unref();
+  connection.on('error', (err) => {
+    lastError = err.code || err.message;
+    if (everReady) warn();
   });
   connection.on('ready', () => {
     if (disconnected) console.log(`✅ [${label}] Terhubung kembali ke Redis ${redisLabel}.`);
     disconnected = false;
+    everReady = true;
   });
 
   return connection;
