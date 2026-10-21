@@ -31,6 +31,7 @@ if (process.env.DATABASE_URL) {
 
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const { PrismaClient } = require('@prisma/client');
 const xlsx = require('xlsx');
@@ -251,7 +252,14 @@ const saveVerifiedPhotoToLocal = async (photoUrl, rawBranch, rawWok, rawProjectN
   }
 };
 
-app.use(cors());
+// cloudflared meneruskan request dari localhost dengan header X-Forwarded-Proto: https
+app.set('trust proxy', 'loopback');
+
+// CORS hanya untuk origin terdaftar (dev Vite); produksi & LAN berjalan same-origin
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
+  .split(',').map(o => o.trim()).filter(Boolean);
+app.use(cors({ origin: CORS_ORIGINS, credentials: true }));
+app.use(cookieParser());
 app.use(express.json());
 
 // Health check endpoint for uptime monitoring & auto-healing watchdog
@@ -322,21 +330,51 @@ const pairingUpload = multer({
 
 // --- Authentication Middlewares ---
 
+// Token JWT hanya disimpan di cookie HttpOnly (tidak dapat dibaca JavaScript di browser)
+const AUTH_COOKIE = 'gtm_access_token';
+const ACCESS_TOKEN_TTL = '8h';
+const ACCESS_TOKEN_TTL_MS = 8 * 60 * 60 * 1000;
+
+// Secure hanya bisa dipakai di HTTPS / localhost; akses HTTP via IP LAN akan ditolak browser bila Secure dipaksa
+const isSecureRequest = (req) => {
+  if (process.env.COOKIE_SECURE === 'true') return true;
+  if (process.env.COOKIE_SECURE === 'false') return false;
+  return req.secure || req.hostname === 'localhost' || req.hostname === '127.0.0.1';
+};
+
+const getCookieOptions = (req) => ({
+  httpOnly: true,
+  sameSite: 'strict',
+  secure: isSecureRequest(req),
+  path: '/'
+});
+
+const setAuthCookie = (req, res, token) => {
+  res.cookie(AUTH_COOKIE, token, { ...getCookieOptions(req), maxAge: ACCESS_TOKEN_TTL_MS });
+};
+
+const clearAuthCookie = (req, res) => {
+  res.clearCookie(AUTH_COOKIE, getCookieOptions(req));
+};
+
+const toPublicUser = ({ id, username, role, branchName, fullName }) => ({ id, username, role, branchName, fullName });
+
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.cookies?.[AUTH_COOKIE];
   if (!token) return res.status(401).json({ success: false, message: 'Akses ditolak. Sesi tidak ditemukan.' });
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(401).json({ success: false, message: 'Sesi telah berakhir. Silakan login kembali.' });
+    if (err) {
+      clearAuthCookie(req, res);
+      return res.status(401).json({ success: false, message: 'Sesi telah berakhir. Silakan login kembali.' });
+    }
     req.user = user;
     next();
   });
 };
 
 const optionalAuthenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.cookies?.[AUTH_COOKIE];
   if (!token) {
     req.user = null;
     return next();
@@ -394,16 +432,15 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     const branchName = user.branch ? user.branch.name : null;
-    const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.role, branchName, fullName: user.fullName },
-      JWT_SECRET,
-      { expiresIn: '8h' }
-    );
+    const publicUser = toPublicUser({ ...user, branchName });
+    const token = jwt.sign(publicUser, JWT_SECRET, { expiresIn: ACCESS_TOKEN_TTL });
+    const { exp } = jwt.decode(token);
 
+    setAuthCookie(req, res, token);
     res.json({
       success: true,
-      token,
-      user: { id: user.id, username: user.username, role: user.role, branchName, fullName: user.fullName }
+      user: publicUser,
+      expiresAt: exp * 1000
     });
   } catch (error) {
     console.error('Error in /api/auth/login:', error);
@@ -411,10 +448,15 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Validasi sesi aktif (dipakai frontend untuk memastikan token tersimpan masih sah)
+// Validasi sesi aktif (frontend menanyakan siapa yang sedang login, karena token tidak bisa dibaca JS)
 app.get('/api/auth/me', authenticateToken, (req, res) => {
-  const { id, username, role, branchName, fullName } = req.user;
-  res.json({ success: true, user: { id, username, role, branchName, fullName } });
+  res.json({ success: true, user: toPublicUser(req.user), expiresAt: req.user.exp * 1000 });
+});
+
+// Logout: hapus cookie sesi (cookie HttpOnly hanya bisa dihapus oleh server)
+app.post('/api/auth/logout', (req, res) => {
+  clearAuthCookie(req, res);
+  res.json({ success: true });
 });
 
 // --- Data Endpoints (Protected & Branch-Scoped) ---

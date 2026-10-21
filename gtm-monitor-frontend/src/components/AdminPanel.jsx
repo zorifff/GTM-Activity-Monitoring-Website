@@ -4,7 +4,7 @@ import ReviewModal from './ReviewModal';
 import { formatBranch, computeStats } from '../utils';
 import { API_BASE_URL, authFetch } from '../apiConfig';
 
-const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, verifyActivity, rejectActivity, uploadPhoto, deletePhoto, onProgramUploaded }) {
+const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyActivity, rejectActivity, uploadPhoto, deletePhoto, onProgramUploaded }) {
   const [activeTab, setActiveTab] = useState('monitoring'); // 'monitoring' | 'excel'
   
   // Excel Upload & Export States (Monitoring ODP)
@@ -97,8 +97,7 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
       const res = await authFetch(`${API_BASE_URL}/api/admin/programs`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           monthLabel: deleteProgramMonth,
@@ -152,9 +151,6 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
     try {
       const res = await authFetch(`${API_BASE_URL}/api/admin/upload-pairing-excel`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData
       });
 
@@ -213,9 +209,6 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
     try {
       const res = await authFetch(`${API_BASE_URL}/api/admin/upload-program-image`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData
       });
 
@@ -553,9 +546,6 @@ const AdminPanel = memo(function AdminPanel({ token, branches = [], onUpdate, ve
     try {
       const response = await authFetch(`${API_BASE_URL}/api/admin/import-excel`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData
       });
 

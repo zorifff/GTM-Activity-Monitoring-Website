@@ -14,6 +14,11 @@ export default defineConfig({
       '/uploads': {
         target: 'http://localhost:3001',
         changeOrigin: true
+      },
+      // Foto kegiatan terverifikasi (disimpan backend di folder "database foto")
+      '^/database(%20| )foto': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
       }
     }
   }

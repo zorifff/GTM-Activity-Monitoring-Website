@@ -24,12 +24,13 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // server memasang cookie sesi HttpOnly
         body: JSON.stringify({ username, password })
       });
       const data = await res.json().catch(() => ({}));
 
-      if (res.ok && data.success && data.token) {
-        if (onLoginSuccess) onLoginSuccess(data.token, data.user);
+      if (res.ok && data.success && data.user) {
+        if (onLoginSuccess) onLoginSuccess(data.user, data.expiresAt);
       } else {
         setError(data.message || 'Login gagal. Periksa kembali username dan password Anda.');
       }

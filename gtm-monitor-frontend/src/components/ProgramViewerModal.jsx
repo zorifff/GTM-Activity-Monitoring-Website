@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import { API_BASE_URL, authFetch } from '../apiConfig';
 
-export default function ProgramViewerModal({ program, monthLabel, onClose, isAdmin, token, onDeleteSuccess }) {
+export default function ProgramViewerModal({ program, monthLabel, onClose, isAdmin, onDeleteSuccess }) {
   // Normalize multi-image slides from program.images or fallback to single imageUrl
   const initialSlides = (Array.isArray(program?.images) && program.images.length > 0)
     ? program.images
@@ -113,8 +113,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
       const res = await authFetch(`${API_BASE_URL}/api/admin/programs`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });

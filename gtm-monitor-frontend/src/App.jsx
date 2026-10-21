@@ -77,36 +77,35 @@ const PROGRAM_PLACEHOLDERS = {
   ]
 };
 
+// Tentukan halaman awal dari hash URL sesuai status login
+function getViewFromHash(currentUser) {
+  const hash = window.location.hash.replace('#', '').toLowerCase();
+  if (currentUser) {
+    if (hash === 'upload') return 'upload';
+    if (hash === 'admin' && currentUser.role === 'ADMIN') return 'admin';
+    return 'dashboard';
+  }
+  if (hash === 'login') return 'login';
+  if (hash === 'dashboard' || hash === 'monitoring') return 'dashboard';
+  return 'landing';
+}
+
 function App() {
   const [branches, setBranches] = useState([]);
   const [importMeta, setImportMeta] = useState(null); // Jateng DIY summary dari ImportMeta
-  const [view, setView] = useState(() => {
-    const hash = window.location.hash.replace('#', '').toLowerCase();
-    const savedUser = sessionStorage.getItem('gtm_user') || localStorage.getItem('gtm_user');
-    if (savedUser) {
-      if (hash === 'upload') return 'upload';
-      if (hash === 'admin') {
-        try {
-          if (JSON.parse(savedUser)?.role === 'ADMIN') return 'admin';
-        } catch { /* data sesi rusak, abaikan */ }
-      }
-      return 'dashboard';
-    }
-    if (hash === 'login') return 'login';
-    if (hash === 'dashboard' || hash === 'monitoring') return 'dashboard';
-    return 'landing';
-  });
+  const [view, setView] = useState(() => getViewFromHash(null));
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [activeBranch, setActiveBranch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [typeDesignFilter, setTypeDesignFilter] = useState('ALL'); // ALL, Greenfield, Brownfield
 
-  // Universal Auth State
-  const [user, setUser] = useState(() => {
-    const saved = sessionStorage.getItem('gtm_user') || localStorage.getItem('gtm_user');
-    return saved ? JSON.parse(saved) : null;
-  });
-  const [token, setToken] = useState(() => sessionStorage.getItem('gtm_token') || localStorage.getItem('gtm_token') || null);
+  // Universal Auth State — token sesi ada di cookie HttpOnly (tidak terbaca JS);
+  // profil user diambil dari server (/api/auth/me), tidak disimpan di localStorage/sessionStorage
+  const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [sessionExpiresAt, setSessionExpiresAt] = useState(null);
+  const userRef = useRef(null);
+  useEffect(() => { userRef.current = user; }, [user]);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showLogoutConfirmModal, setShowLogoutConfirmModal] = useState(false);
   const lastLoginTimestamp = useRef(0);
@@ -269,7 +268,7 @@ function App() {
       clearTimeout(timer2);
       window.removeEventListener('resize', handleResize);
     };
-  }, [view, loading, token, branches, updateIndicator]);
+  }, [view, loading, user, branches, updateIndicator]);
 
   const isAdmin = user && user.role === 'ADMIN';
 
@@ -494,10 +493,9 @@ function App() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
       const [dataRes, metaRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/data`, { headers }),
-        fetch(`${API_BASE_URL}/api/import-meta`, { headers }).catch(() => null)
+        fetch(`${API_BASE_URL}/api/data`, { credentials: 'include' }),
+        fetch(`${API_BASE_URL}/api/import-meta`, { credentials: 'include' }).catch(() => null)
       ]);
       if (dataRes.ok) {
         const data = await dataRes.json();
@@ -514,9 +512,11 @@ function App() {
     }
   };
 
+  // Muat data setelah status login diketahui, dan setiap kali akun login/logout berganti
   useEffect(() => {
+    if (!authChecked) return;
     fetchData();
-  }, [token]);
+  }, [user, authChecked]);
 
   // Sesi pengguna tetap aktif selama tab browser masih dibuka
   // (Pengguna akan ter-logout otomatis hanya jika keluar dari tab/browser atau menekan Log Out di profil)
@@ -533,8 +533,7 @@ function App() {
       } else if (hash === 'monitoring' || hash === 'dashboard') {
         setView('dashboard');
       } else if (!hash || hash === 'overview' || hash === 'landing') {
-        const savedUser = sessionStorage.getItem('gtm_user') || localStorage.getItem('gtm_user');
-        if (savedUser) {
+        if (userRef.current) {
           setView('dashboard');
         } else {
           setView('landing');
@@ -564,20 +563,17 @@ function App() {
     }
   }, [updateIndicator]);
 
-  const handleLoginSuccess = (newToken, newUser) => {
+  // Token sudah dipasang server sebagai cookie HttpOnly; frontend hanya menyimpan profil di memori
+  const handleLoginSuccess = (newUser, expiresAt) => {
     document.activeElement?.blur();
     lastLoginTimestamp.current = Date.now();
     lastActivityRef.current = Date.now(); // Reset timestamp aktivitas saat login berhasil
     setShowProfileModal(false);
     setShowLogoutConfirmModal(false);
     setBranches([]);
-    setToken(newToken);
     setUser(newUser);
-    sessionStorage.setItem('gtm_token', newToken);
-    sessionStorage.setItem('gtm_user', JSON.stringify(newUser));
-    localStorage.setItem('gtm_token', newToken);
-    localStorage.setItem('gtm_user', JSON.stringify(newUser));
-    
+    setSessionExpiresAt(expiresAt || null);
+
     // Semua akun (Admin & User) selalu masuk ke Dashboard terlebih dahulu
     navigateTo('dashboard', null, true);
   };
@@ -587,13 +583,12 @@ function App() {
 
   const executeLogout = useCallback((targetView = 'landing') => {
     lastActivityRef.current = Date.now(); // Reset timestamp aktivitas saat logout
+    // Cookie HttpOnly hanya bisa dihapus oleh server
+    fetch(`${API_BASE_URL}/api/auth/logout`, { method: 'POST', credentials: 'include' })
+      .catch(() => { /* server tidak terjangkau: cookie tetap kedaluwarsa sesuai masa aktifnya */ });
     setUser(null);
-    setToken(null);
+    setSessionExpiresAt(null);
     setBranches([]);
-    sessionStorage.removeItem('gtm_user');
-    sessionStorage.removeItem('gtm_token');
-    localStorage.removeItem('gtm_user');
-    localStorage.removeItem('gtm_token');
     setView(targetView);
     setActiveBranch(null);
     setShowProfileModal(false);
@@ -603,7 +598,7 @@ function App() {
 
   // ─── OPTIMIZED 15-MINUTE INACTIVITY AUTO-LOGOUT EFFECT (ALL ROLES: ADMIN & USER) ───
   useEffect(() => {
-    if (!token || !user) return;
+    if (!user) return;
 
     // Reset timestamp aktivitas saat useEffect sesi diaktifkan untuk akun yang baru login
     lastActivityRef.current = Date.now();
@@ -641,7 +636,7 @@ function App() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearInterval(intervalId);
     };
-  }, [token, user, executeLogout]);
+  }, [user, executeLogout]);
 
   // ─── VALIDASI TOKEN SESI (TOKEN TIDAK SAH / KEDALUWARSA → LOGIN ULANG) ───
   const handleInvalidSession = useCallback(() => {
@@ -649,39 +644,45 @@ function App() {
     setSessionExpiredNotice('invalid');
   }, [executeLogout]);
 
-  // Server menolak token (401) pada request apa pun yang memakai authFetch
+  // Server menolak sesi (401) pada request apa pun yang memakai authFetch
   useEffect(() => {
     const onUnauthorized = () => {
-      if (token) handleInvalidSession();
+      if (userRef.current) handleInvalidSession();
     };
     window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
     return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
-  }, [token, handleInvalidSession]);
+  }, [handleInvalidSession]);
 
-  // Cek token tersimpan ke server saat aplikasi dibuka / token berganti
+  // Saat aplikasi dibuka: tanyakan ke server siapa yang login (cookie HttpOnly terkirim otomatis)
   useEffect(() => {
-    if (!token) return;
-    let cancelled = false;
-    fetch(`${API_BASE_URL}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } })
-      .then(res => {
-        if (!cancelled && res.status === 401) handleInvalidSession();
-      })
-      .catch(() => { /* server tidak terjangkau: biarkan sesi, request berikutnya akan dicek lagi */ });
-    return () => { cancelled = true; };
-  }, [token, handleInvalidSession]);
-
-  // Token JWT berlaku 8 jam: logout otomatis begitu masa berlakunya habis
-  useEffect(() => {
-    if (!token) return;
-    let expMs = null;
+    // Bersihkan sisa penyimpanan token/profil versi lama (sebelum migrasi ke cookie HttpOnly)
     try {
-      const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-      if (typeof payload.exp === 'number') expMs = payload.exp * 1000;
-    } catch {
-      return; // Bukan JWT valid — akan ditolak oleh pengecekan /api/auth/me
-    }
-    if (!expMs) return;
-    const remaining = expMs - Date.now();
+      ['gtm_token', 'gtm_user', 'token'].forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
+    } catch { /* storage diblokir browser: abaikan */ }
+
+    let cancelled = false;
+    fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        if (cancelled || !data?.success || !data.user) return;
+        setUser(data.user);
+        setSessionExpiresAt(data.expiresAt || null);
+        setView(getViewFromHash(data.user));
+      })
+      .catch(() => { /* server tidak terjangkau: tampil sebagai pengunjung */ })
+      .finally(() => {
+        if (!cancelled) setAuthChecked(true);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Token berlaku 8 jam: logout otomatis begitu masa berlakunya (dari server) habis
+  useEffect(() => {
+    if (!user || !sessionExpiresAt) return;
+    const remaining = sessionExpiresAt - Date.now();
     if (remaining <= 0) {
       handleInvalidSession();
       return;
@@ -689,7 +690,7 @@ function App() {
     // setTimeout maksimal ~24.8 hari; token 8 jam aman di bawah batas tersebut
     const timer = setTimeout(handleInvalidSession, Math.min(remaining, 2147483647));
     return () => clearTimeout(timer);
-  }, [token, handleInvalidSession]);
+  }, [user, sessionExpiresAt, handleInvalidSession]);
 
   // Akun non-admin tidak boleh berada di halaman Control (mis. lewat URL #admin / tombol Back)
   useEffect(() => {
@@ -703,12 +704,13 @@ function App() {
   // Pengguna yang belum login hanya dapat mengakses Overview ('landing') dan Login ('login').
   // Mencoba membuka menu lain akan mengarahkan kembali ke 'landing' & memunculkan pop-up login.
   useEffect(() => {
+    if (!authChecked) return; // tunggu hasil pengecekan sesi ke server
     if (!user && view !== 'landing' && view !== 'login') {
       setView('landing');
       setActiveBranch(null);
       window.history.replaceState({ view: 'landing', activeBranch: null }, '');
     }
-  }, [user, view]);
+  }, [user, view, authChecked]);
 
   const handleLogout = (showAlert = true) => {
     if (typeof showAlert !== 'boolean') showAlert = true;
@@ -796,9 +798,6 @@ function App() {
     try {
       const res = await authFetch(`${API_BASE_URL}/api/activities`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData
       });
       if (res.ok) {
@@ -818,7 +817,7 @@ function App() {
       await fetchData();
       return { success: false, error: err.message };
     }
-  }, [token, branches, fetchData]);
+  }, [branches, fetchData]);
 
   // Verify activity at PROJECT level (Admin only)
   const verifyActivity = useCallback(async (branchName, projectName, actType, photoId, projectId) => {
@@ -828,8 +827,7 @@ function App() {
       const res = await authFetch(`${API_BASE_URL}/api/verify`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           branchName,
@@ -853,7 +851,7 @@ function App() {
       alert('❌ Terjadi kesalahan server saat memverifikasi activity.');
       return false;
     }
-  }, [isAdmin, token, fetchData]);
+  }, [isAdmin, fetchData]);
 
   // Reject activity verification at PROJECT level (Admin only)
   const rejectActivity = useCallback(async (branchName, projectName, actType, photoId, projectId) => {
@@ -863,8 +861,7 @@ function App() {
       const res = await authFetch(`${API_BASE_URL}/api/reject`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           branchName,
@@ -887,15 +884,14 @@ function App() {
       alert('❌ Terjadi kesalahan server saat menolak verifikasi.');
       return false;
     }
-  }, [isAdmin, token, fetchData]);
+  }, [isAdmin, fetchData]);
 
   const deletePhoto = useCallback(async (branchName, projectName, actType, photoId, projectId) => {
     try {
       const res = await authFetch(`${API_BASE_URL}/api/activities/delete-photo`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ branchName, projectName, type: actType, photoId, projectId })
       });
@@ -912,10 +908,10 @@ function App() {
       alert('❌ Terjadi kesalahan saat menghapus foto.');
       return false;
     }
-  }, [token, fetchData]);
+  }, [fetchData]);
 
-  // 1. Loading screen
-  if (loading && branches.length === 0) {
+  // 1. Loading screen (juga selama status login masih dicek ke server)
+  if (!authChecked || (loading && branches.length === 0)) {
     return <LoadingScreen />;
   }
 
@@ -925,8 +921,8 @@ function App() {
     return (
       <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#ffffff', overflowY: 'auto' }}>
         <LoginPage
-          onLoginSuccess={(token, user) => {
-            handleLoginSuccess(token, user);
+          onLoginSuccess={(loggedInUser, expiresAt) => {
+            handleLoginSuccess(loggedInUser, expiresAt);
             setShowLoginModal(false);
           }}
           onBackToLanding={() => setShowLoginModal(false)}
@@ -944,7 +940,6 @@ function App() {
           monthLabel={activeProgramModal.monthLabel}
           onClose={() => setActiveProgramModal(null)}
           isAdmin={!!(user && (user.role === 'ADMIN' || user.username === 'admin'))}
-          token={token}
           onDeleteSuccess={() => {
             fetchPrograms();
             setActiveProgramModal(null);
@@ -1089,7 +1084,6 @@ function App() {
                 isOpen={isPairingDropdownOpen}
                 coords={pairingCoords}
                 onClose={() => setIsPairingDropdownOpen(false)}
-                token={token}
               />
             </div>
 
@@ -1512,8 +1506,8 @@ function App() {
           )}
           {view === 'login' && (
             <LoginPage
-              onLoginSuccess={(token, user) => {
-                handleLoginSuccess(token, user);
+              onLoginSuccess={(loggedInUser, expiresAt) => {
+                handleLoginSuccess(loggedInUser, expiresAt);
               }}
               onBackToLanding={() => navigateTo('landing')}
             />
@@ -1553,7 +1547,6 @@ function App() {
           )}
           {view === 'admin' && (
             <AdminPanel 
-              token={token} 
               branches={branches}
               onUpdate={fetchData} 
               onProgramUploaded={fetchPrograms}
