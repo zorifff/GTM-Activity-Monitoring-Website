@@ -1,0 +1,44 @@
+// Memuat .env & konstanta konfigurasi aplikasi. Wajib di-require paling awal (sebelum Prisma, Cloudinary, dll.)
+const fs = require('fs');
+const { BACKEND_ROOT } = require('./paths');
+const path = require('path');
+
+// Auto-load .env file if present
+const envPath = path.join(BACKEND_ROOT, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  envContent.split(/\r?\n/).forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const eqIndex = trimmed.indexOf('=');
+      if (eqIndex > -1) {
+        const key = trimmed.slice(0, eqIndex).trim();
+        let value = trimmed.slice(eqIndex + 1).trim();
+        if ((value.startsWith('"') && value.endsWith('"')) ||
+            (value.startsWith("'") && value.endsWith("'"))) {
+          value = value.slice(1, -1);
+        }
+        process.env[key] = value;
+      }
+    }
+  });
+}
+
+// Clean channel_binding=require if present in DATABASE_URL as it causes connection failure with Neon pooler
+if (process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.DATABASE_URL.replace(/&channel_binding=require/g, '').replace(/\?channel_binding=require/g, '');
+}
+
+const PORT = process.env.PORT || 3001;
+const JWT_SECRET = process.env.JWT_SECRET || 'gtm-super-secret-key-2026';
+
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || JWT_SECRET;
+if (!process.env.REFRESH_TOKEN_SECRET) {
+  console.warn('⚠️ [Auth] REFRESH_TOKEN_SECRET belum diisi di .env, sementara memakai JWT_SECRET.');
+}
+
+// CORS hanya untuk origin terdaftar (dev Vite); produksi & LAN berjalan same-origin
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
+  .split(',').map(o => o.trim()).filter(Boolean);
+
+module.exports = { PORT, JWT_SECRET, REFRESH_TOKEN_SECRET, CORS_ORIGINS };

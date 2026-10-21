@@ -4,3 +4,6 @@ node_modules
 .agents/
 skills-lock.json
 
+
+# Data bahasa OCR Tesseract (diunduh otomatis saat upload gambar program)
+*.traineddata

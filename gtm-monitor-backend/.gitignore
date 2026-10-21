@@ -19,3 +19,6 @@ database%20foto/
 
 # Account credential seed scripts (contains sensitive passwords)
 seed-wok-accounts.js
+
+# Snapshot uji regresi (berisi data bisnis)
+tests/.snapshots/

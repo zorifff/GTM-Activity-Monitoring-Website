@@ -1,4 +1,5 @@
-// ─── VALIDASI SKEMA TERPUSAT (Zod) ───
+// ─── VALIDASI SKEMA TERPUSAT (Zod) — definisi skema ───
+// Middleware penerapnya: src/middlewares/validate.js
 // Semua request body, query parameter & form data diperiksa di sini sebelum masuk ke logika bisnis.
 // Field yang tidak dikenal dibuang otomatis (z.object default = strip), sehingga hanya data yang
 // terdaftar di skema yang bisa mencapai query database.
@@ -166,45 +167,4 @@ const schemas = {
   }
 };
 
-const formatIssues = (issues, source) => issues.map(issue => ({
-  field: [source, ...issue.path].join('.'),
-  message: issue.message
-}));
-
-// Validasi satu request; mengembalikan true bila lolos. Data hasil parsing (sudah dipangkas &
-// tanpa field asing) menggantikan req.body / req.query.
-function validateRequest(req, res, schema) {
-  const errors = [];
-  const parsed = {};
-
-  for (const source of ['body', 'query']) {
-    if (!schema[source]) continue;
-    const input = req[source] && typeof req[source] === 'object' ? req[source] : {};
-    const result = schema[source].safeParse(input);
-    if (result.success) parsed[source] = result.data;
-    else errors.push(...formatIssues(result.error.issues, source));
-  }
-
-  if (errors.length > 0) {
-    res.status(400).json({
-      success: false,
-      code: 'VALIDATION_ERROR',
-      message: errors[0].message,
-      error: errors[0].message,
-      errors
-    });
-    return false;
-  }
-
-  if (parsed.body) req.body = parsed.body;
-  // Express 5: req.query adalah getter read-only, jadi diganti lewat defineProperty
-  if (parsed.query) Object.defineProperty(req, 'query', { value: parsed.query, writable: true, configurable: true });
-  return true;
-}
-
-// Middleware Express: validate(schemas.login)
-const validate = (schema) => (req, res, next) => {
-  if (validateRequest(req, res, schema)) next();
-};
-
-module.exports = { z, schemas, validate, validateRequest, ACTIVITY_TYPES };
+module.exports = { z, schemas, ACTIVITY_TYPES };
