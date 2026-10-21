@@ -34,6 +34,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
+const { schemas, validate, validateRequest } = require('./validation');
 const multer = require('multer');
 const { PrismaClient } = require('@prisma/client');
 const xlsx = require('xlsx');
@@ -316,10 +317,13 @@ const apiLimiter = rateLimit({
 });
 app.use('/api', apiLimiter);
 
-// Anti brute-force login: maksimal 5 percobaan GAGAL per IP dalam 15 menit (login berhasil tidak dihitung)
+// Anti brute-force login: maksimal 10 percobaan GAGAL per IP dalam 10 menit (login berhasil tidak dihitung).
+// Setelah batas tercapai, IP diblokir hingga jendela 10 menit tersebut habis.
+const LOGIN_MAX_FAILED_ATTEMPTS = 10;
+const LOGIN_WINDOW_MS = 10 * 60 * 1000;
 const loginLimiter = rateLimit({
-  windowMs: FIFTEEN_MINUTES_MS,
-  limit: 5,
+  windowMs: LOGIN_WINDOW_MS,
+  limit: LOGIN_MAX_FAILED_ATTEMPTS,
   skipSuccessfulRequests: true,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -374,7 +378,7 @@ const upload = multer({
     if (file.mimetype.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(file.originalname)) {
       cb(null, true);
     } else {
-      cb(new Error('Hanya file gambar (.jpg, .jpeg, .png, .webp) yang diperbolehkan!'));
+      cb(Object.assign(new Error('Hanya file gambar (.jpg, .jpeg, .png, .webp) yang diperbolehkan!'), { status: 400 }));
     }
   }
 });
@@ -575,7 +579,7 @@ const requireAdmin = (req, res, next) => {
 // --- Auth Endpoints ---
 
 // Login User / Admin
-app.post('/api/auth/login', loginLimiter, async (req, res) => {
+app.post('/api/auth/login', loginLimiter, validate(schemas.login), async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -785,25 +789,11 @@ app.get('/api/admin/sessions', requireAdmin, async (req, res) => {
 });
 
 // Admin: pembatalan sesi paksa — semua sesi milik satu user ({ userId }) atau satu sesi tertentu ({ sessionId })
-app.post('/api/admin/sessions/revoke', requireAdmin, async (req, res) => {
+app.post('/api/admin/sessions/revoke', requireAdmin, validate(schemas.revokeSessions), async (req, res) => {
   try {
-    const { userId, sessionId } = req.body || {};
-    const hasUser = userId !== undefined && userId !== null && userId !== '';
-    const hasSession = typeof sessionId === 'string' && sessionId.trim() !== '';
-    if (hasUser === hasSession) {
-      return res.status(400).json({ success: false, message: 'Isi salah satu: userId atau sessionId.' });
-    }
-
-    let where;
-    if (hasUser) {
-      const parsedUserId = Number(userId);
-      if (!Number.isInteger(parsedUserId) || parsedUserId <= 0) {
-        return res.status(400).json({ success: false, message: 'userId tidak valid.' });
-      }
-      where = { userId: parsedUserId };
-    } else {
-      where = { id: sessionId.trim() };
-    }
+    // Sudah divalidasi skema: tepat salah satu dari userId (integer) atau sessionId (UUID)
+    const { userId, sessionId } = req.body;
+    const where = userId !== undefined ? { userId } : { id: sessionId };
 
     const revokedCount = await revokeSessions(where, 'admin_revoked');
     console.log(`🔒 [Auth] Admin ${req.user.username} mencabut ${revokedCount} sesi (${JSON.stringify(where)}).`);
@@ -978,7 +968,7 @@ app.get('/api/import-meta', optionalAuthenticateToken, async (req, res) => {
 });
 
 // 2. Upload/Update Project Activity (Protected & Branch-Scoped — Cloudinary Staging)
-app.post('/api/activities', authenticateToken, activityUploadLimiter, upload.single('photo'), async (req, res) => {
+app.post('/api/activities', authenticateToken, activityUploadLimiter, upload.single('photo'), validate(schemas.createActivity), async (req, res) => {
   try {
     const { projectName, branchName, type, planDate, namaOutlet, namaBumdes, kodeSf, keterangan } = req.body;
     console.log(`[Activity POST] project: ${projectName}, type: ${type}, namaOutlet: ${namaOutlet}, namaBumdes: ${namaBumdes}, planDate: ${planDate}`);
@@ -1166,7 +1156,7 @@ async function findProjectHelper(body) {
 }
 
 // 2b. Delete Activity Photo (Protected - Users & Admin)
-app.post('/api/activities/delete-photo', authenticateToken, async (req, res) => {
+app.post('/api/activities/delete-photo', authenticateToken, validate(schemas.projectAction), async (req, res) => {
   try {
     const { type, photoId } = req.body;
     const project = await findProjectHelper(req.body);
@@ -1271,9 +1261,9 @@ app.post('/api/activities/delete-photo', authenticateToken, async (req, res) => 
 });
 
 // 3a. Verify Project Activity Verification (Admin only)
-app.post('/api/verify', requireAdmin, async (req, res) => {
+app.post('/api/verify', requireAdmin, validate(schemas.projectAction), async (req, res) => {
   try {
-    const { type, photoUrl: reqPhotoUrl, photoId } = req.body;
+    const { type, photoId } = req.body;
     const project = await findProjectHelper(req.body);
     if (!project) return res.status(404).json({ success: false, message: `Proyek "${req.body.projectName || req.body.projectId}" tidak ditemukan.` });
 
@@ -1288,7 +1278,7 @@ app.post('/api/verify', requireAdmin, async (req, res) => {
       }).catch(() => null);
     }
 
-    let finalPhotoUrl = reqPhotoUrl || targetPhoto?.photoUrl;
+    let finalPhotoUrl = targetPhoto?.photoUrl;
 
     // Automatically download verified photo from Cloudinary Staging to structured local disk directory
     if (targetPhoto && targetPhoto.photoUrl && targetPhoto.photoUrl.includes('res.cloudinary.com')) {
@@ -1344,7 +1334,7 @@ app.post('/api/verify', requireAdmin, async (req, res) => {
 });
 
 // 3b. Reject Project Activity Verification (Admin only — rejects target photo and recalculates activity status)
-app.post('/api/reject', requireAdmin, async (req, res) => {
+app.post('/api/reject', requireAdmin, validate(schemas.projectAction), async (req, res) => {
   try {
     const { type, photoId } = req.body;
     const project = await findProjectHelper(req.body);
@@ -1498,6 +1488,9 @@ app.post('/api/admin/import-excel', requireAdmin, odpImportLimiter, odpImportLoc
       console.error('Multer Error in ODP excel import:', err.message);
       return res.status(400).json({ error: err.message || 'Gagal mengunggah file Data ODP.' });
     }
+
+    // Form data hanya berisi file; field lain dibuang oleh skema
+    if (!validateRequest(req, res, schemas.fileOnly)) return;
 
     try {
       if (!req.file || !req.file.buffer) {
@@ -2287,6 +2280,9 @@ app.post('/api/admin/upload-program-image', requireAdmin, programImageLimiter, (
       return res.status(400).json({ error: err.message || 'Gagal mengunggah gambar program.' });
     }
 
+    // Form data (monthLabel, programName, detailUrl) divalidasi setelah multer membaca multipart
+    if (!validateRequest(req, res, schemas.uploadProgramImage)) return;
+
     try {
       if (!req.file || !req.file.buffer) {
         return res.status(400).json({ error: 'Tidak ada file gambar program yang diunggah.' });
@@ -2295,7 +2291,7 @@ app.post('/api/admin/upload-program-image', requireAdmin, programImageLimiter, (
       const monthLabel = req.body.monthLabel || 'Agustus 2026';
       const rawSheetName = req.body.programName || req.body.sheetName || 'Program Tracking';
       const sheetName = rawSheetName.trim().replace(/\s+/g, ' ');
-      const manualDetailUrl = req.body.detailUrl ? req.body.detailUrl.trim() : '';
+      const manualDetailUrl = req.body.detailUrl || '';
 
       // 1. Upload file to Cloudinary (folder 'gtm_programs')
       console.log(`📤 [Cloudinary Upload] Uploading program image "${sheetName}" for ${monthLabel}...`);
@@ -2470,7 +2466,7 @@ function getOrInitializeProgramIndex() {
 }
 
 // --- GET /api/programs: Get program sheet data ---
-app.get('/api/programs', (req, res) => {
+app.get('/api/programs', validate(schemas.listPrograms), (req, res) => {
   const programIndex = getOrInitializeProgramIndex();
 
   const cleanMonthsData = {};
@@ -2504,7 +2500,7 @@ app.get('/api/programs', (req, res) => {
 });
 
 // --- DELETE /api/admin/programs: Admin Delete Registered Program (Specific or All in Month) ---
-app.delete('/api/admin/programs', authenticateToken, requireAdmin, (req, res) => {
+app.delete('/api/admin/programs', requireAdmin, validate(schemas.deletePrograms), (req, res) => {
   try {
     const rawMonthLabel = req.body?.monthLabel || req.query?.monthLabel;
     const programName = req.body?.programName || req.query?.programName;
@@ -2881,6 +2877,9 @@ app.post('/api/admin/upload-pairing-excel', requireAdmin, pairingImportLimiter, 
       return res.status(400).json({ error: err.message || 'Gagal mengunggah file Excel pairing.' });
     }
 
+    // Form data hanya berisi file; field lain dibuang oleh skema
+    if (!validateRequest(req, res, schemas.fileOnly)) return;
+
     try {
       if (!req.file || !req.file.buffer) {
         return res.status(400).json({ error: 'Tidak ada file Excel pairing yang diunggah.' });
@@ -2922,9 +2921,9 @@ app.post('/api/admin/upload-pairing-excel', requireAdmin, pairingImportLimiter, 
 });
 
 // --- GET /api/pairing/search: Cari Data Pairing berdasarkan BB ID / MSISDN / Order ID (Auth Required) ---
-app.get('/api/pairing/search', authenticateToken, (req, res) => {
+app.get('/api/pairing/search', authenticateToken, validate(schemas.pairingSearch), (req, res) => {
   try {
-    const q = req.query.q || req.query.query || '';
+    const q = req.query.q; // sudah divalidasi & digabung dari ?q= / ?query= oleh skema
     const cleanQ = String(q).trim();
 
     if (!cleanQ || cleanQ.length < 6) {
@@ -2958,8 +2957,20 @@ app.use('/api', (req, res) => {
 
 // Dedicated Express error middleware for API & uploads
 app.use((err, req, res, next) => {
-  console.error('Unhandled Server Error:', err);
   if (res.headersSent) return next(err);
+  // Kesalahan form data unggahan (file terlalu besar / tipe salah) = kesalahan input, bukan error server
+  if (err instanceof multer.MulterError) {
+    const message = err.code === 'LIMIT_FILE_SIZE' ? 'Ukuran file melebihi batas yang diizinkan.' : `Form data tidak valid: ${err.message}`;
+    return res.status(400).json({ success: false, message, error: message });
+  }
+  // Body JSON rusak (dari express.json)
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ success: false, message: 'Format data JSON tidak valid.', error: 'Format data JSON tidak valid.' });
+  }
+  if (err.status && err.status < 500) {
+    return res.status(err.status).json({ success: false, message: err.message, error: err.message });
+  }
+  console.error('Unhandled Server Error:', err);
   res.status(err.status || 500).json({ error: err.message || 'Terjadi kesalahan internal pada server.' });
 });
 
