@@ -32,6 +32,8 @@ if (process.env.DATABASE_URL) {
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const multer = require('multer');
 const { PrismaClient } = require('@prisma/client');
 const xlsx = require('xlsx');
@@ -253,7 +255,34 @@ const saveVerifiedPhotoToLocal = async (photoUrl, rawBranch, rawWok, rawProjectN
 };
 
 // cloudflared meneruskan request dari localhost dengan header X-Forwarded-Proto: https
+// & X-Forwarded-For (IP asli pengguna, dipakai rate limiter)
 app.set('trust proxy', 'loopback');
+
+// ─── HELMET: header keamanan HTTP standar + Content Security Policy ───
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      // 'unsafe-inline' hanya untuk style (gaya inline React/html2canvas); script inline tetap diblokir
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
+      // Foto kegiatan & gambar program tersimpan di Cloudinary; ikon favicon berupa data URI
+      imgSrc: ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com'],
+      // fetch gambar Cloudinary untuk tombol unduh gambar program
+      connectSrc: ["'self'", 'https://res.cloudinary.com'],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      frameAncestors: ["'none'"],
+      // Dinonaktifkan: akses lewat IP LAN masih HTTP, upgrade otomatis ke HTTPS akan merusaknya
+      upgradeInsecureRequests: null
+    }
+  },
+  // HSTS hanya berlaku saat diakses via HTTPS (Cloudflare); tidak memaksa subdomain lain
+  strictTransportSecurity: { maxAge: 31536000, includeSubDomains: false }
+}));
 
 // CORS hanya untuk origin terdaftar (dev Vite); produksi & LAN berjalan same-origin
 const CORS_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
@@ -261,6 +290,72 @@ const CORS_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://
 app.use(cors({ origin: CORS_ORIGINS, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
+
+// ─── RATE LIMITING (penyimpanan di memori; aplikasi berjalan 1 instance) ───
+const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
+
+const rateLimitHandler = (message) => (req, res, next, options) => {
+  const resetTime = req.rateLimit?.resetTime;
+  const minutes = resetTime ? Math.max(1, Math.ceil((resetTime.getTime() - Date.now()) / 60000)) : Math.ceil(options.windowMs / 60000);
+  res.status(options.statusCode).json({
+    success: false,
+    code: 'RATE_LIMITED',
+    message: `${message} Coba lagi dalam ${minutes} menit.`,
+    error: `${message} Coba lagi dalam ${minutes} menit.`
+  });
+};
+
+// Batas umum seluruh API per IP — menahan banjir request (bot/scraping) tanpa mengganggu pemakaian normal
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 300,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  skip: (req) => req.path === '/health',
+  handler: rateLimitHandler('Terlalu banyak permintaan ke server.')
+});
+app.use('/api', apiLimiter);
+
+// Anti brute-force login: maksimal 5 percobaan GAGAL per IP dalam 15 menit (login berhasil tidak dihitung)
+const loginLimiter = rateLimit({
+  windowMs: FIFTEEN_MINUTES_MS,
+  limit: 5,
+  skipSuccessfulRequests: true,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: rateLimitHandler('Terlalu banyak percobaan login gagal dari jaringan Anda.')
+});
+
+// Batas per akun (bukan per IP) untuk endpoint berat, agar user satu kantor/NAT tidak saling memblokir.
+// Wajib dipasang SETELAH authenticateToken / requireAdmin.
+const createUserLimiter = (limit, message) => rateLimit({
+  windowMs: FIFTEEN_MINUTES_MS,
+  limit,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  keyGenerator: (req) => `user:${req.user?.id ?? ipKeyGenerator(req.ip)}`,
+  handler: rateLimitHandler(message)
+});
+const odpImportLimiter = createUserLimiter(10, 'Batas import Excel Data ODP tercapai (10x per 15 menit).');
+const pairingImportLimiter = createUserLimiter(10, 'Batas import Excel Tsel One Pairing tercapai (10x per 15 menit).');
+const programImageLimiter = createUserLimiter(10, 'Batas unggah gambar program tercapai (10x per 15 menit).');
+const activityUploadLimiter = createUserLimiter(60, 'Batas unggah foto kegiatan tercapai (60x per 15 menit).');
+
+// Import ODP memproses ribuan baris & menulis massal ke DB: hanya satu proses boleh berjalan sekaligus
+let odpImportInProgress = false;
+const odpImportLock = (req, res, next) => {
+  if (odpImportInProgress) {
+    return res.status(409).json({
+      success: false,
+      code: 'IMPORT_IN_PROGRESS',
+      message: 'Import Data ODP lain sedang berjalan. Tunggu hingga selesai lalu coba lagi.',
+      error: 'Import Data ODP lain sedang berjalan. Tunggu hingga selesai lalu coba lagi.'
+    });
+  }
+  odpImportInProgress = true;
+  res.on('close', () => { odpImportInProgress = false; });
+  next();
+};
 
 // Health check endpoint for uptime monitoring & auto-healing watchdog
 app.get('/api/health', (req, res) => {
@@ -480,7 +575,7 @@ const requireAdmin = (req, res, next) => {
 // --- Auth Endpoints ---
 
 // Login User / Admin
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -883,7 +978,7 @@ app.get('/api/import-meta', optionalAuthenticateToken, async (req, res) => {
 });
 
 // 2. Upload/Update Project Activity (Protected & Branch-Scoped — Cloudinary Staging)
-app.post('/api/activities', authenticateToken, upload.single('photo'), async (req, res) => {
+app.post('/api/activities', authenticateToken, activityUploadLimiter, upload.single('photo'), async (req, res) => {
   try {
     const { projectName, branchName, type, planDate, namaOutlet, namaBumdes, kodeSf, keterangan } = req.body;
     console.log(`[Activity POST] project: ${projectName}, type: ${type}, namaOutlet: ${namaOutlet}, namaBumdes: ${namaBumdes}, planDate: ${planDate}`);
@@ -1397,7 +1492,7 @@ app.post('/api/reject', requireAdmin, async (req, res) => {
 });
 
 // 4. Import Excel (Admin only) — updates ODP data and creates Projects/Branches robustly & super fast
-app.post('/api/admin/import-excel', requireAdmin, (req, res) => {
+app.post('/api/admin/import-excel', requireAdmin, odpImportLimiter, odpImportLock, (req, res) => {
   excelUpload.single('file')(req, res, async (err) => {
     if (err) {
       console.error('Multer Error in ODP excel import:', err.message);
@@ -2185,7 +2280,7 @@ async function extractLinkFromImageBuffer(buffer) {
 }
 
 // --- POST /api/admin/upload-program-image: Admin Upload Image Tracking Program (JPG/PNG to Cloudinary + OCR Link Scan) ---
-app.post('/api/admin/upload-program-image', authenticateToken, requireAdmin, (req, res) => {
+app.post('/api/admin/upload-program-image', requireAdmin, programImageLimiter, (req, res) => {
   programImageUpload.single('file')(req, res, async (err) => {
     if (err) {
       console.error('Multer Error in program image upload:', err.message);
@@ -2779,7 +2874,7 @@ function searchPairingData(query) {
 }
 
 // --- POST /api/admin/upload-pairing-excel: Upload Data Tsel One Pairing ---
-app.post('/api/admin/upload-pairing-excel', authenticateToken, requireAdmin, (req, res) => {
+app.post('/api/admin/upload-pairing-excel', requireAdmin, pairingImportLimiter, (req, res) => {
   pairingUpload.single('file')(req, res, (err) => {
     if (err) {
       console.error('Multer Error in pairing upload:', err.message);
