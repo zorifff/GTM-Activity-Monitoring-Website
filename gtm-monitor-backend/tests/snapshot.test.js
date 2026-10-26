@@ -32,8 +32,8 @@ const computeFingerprints = async () => {
   try {
     const rows = async (model) => JSON.stringify(await model.findMany({ orderBy: { id: 'asc' } }));
     return {
-      data: sha256([await rows(prisma.branch), await rows(prisma.project), await rows(prisma.odp), await rows(prisma.projectActivity), await rows(prisma.projectActivityPhoto)].join('\n')),
-      importMeta: sha256(await rows(prisma.importMeta)),
+      data: sha256([await rows(prisma.branch), await rows(prisma.project), await rows(prisma.odp), await rows(prisma.projectActivity), await rows(prisma.projectActivityPhoto), await rows(prisma.reportedMetric)].join('\n')),
+      importMeta: sha256([await rows(prisma.importMeta), await rows(prisma.reportedMetric)].join('\n')),
       programs: hashFiles(paths.PROGRAMS_DIR, paths.DEFAULT_PROGRAM_EXCEL),
       pairing: sha256(pairing.version || '-')
     };

@@ -7,3 +7,6 @@ skills-lock.json
 
 # Data bahasa OCR Tesseract (diunduh otomatis saat upload gambar program)
 *.traineddata
+
+# Cadangan database (pg_dump) — berisi data bisnis
+gtm-monitor-backend/backups/

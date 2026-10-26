@@ -18,6 +18,10 @@ const DEFAULT_JOB_OPTIONS = {
   removeOnFail: { age: 24 * 60 * 60, count: 200 }
 };
 
+// Antrean tugas terjadwal milik worker (refresh materialized view). Tidak ada request API yang menunggu hasilnya,
+// jadi tidak ikut QUEUE_NAMES (tanpa QueueEvents / pengecekan worker di proses API).
+const MAINTENANCE_QUEUE = 'maintenance';
+
 const FINAL_STATES = ['completed', 'failed'];
 
 const QUEUE_UNAVAILABLE_MESSAGE = 'Layanan antrean (Redis) sedang tidak aktif. Hubungi administrator sistem lalu coba lagi.';
@@ -181,6 +185,7 @@ const releaseLock = (connection, key, owner) => connection.eval(RELEASE_LOCK_SCR
 
 module.exports = {
   QUEUE_NAMES,
+  MAINTENANCE_QUEUE,
   FINAL_STATES,
   getApiConnection,
   getQueue,

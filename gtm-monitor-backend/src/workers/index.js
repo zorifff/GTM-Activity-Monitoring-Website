@@ -1,15 +1,16 @@
 // Menjalankan worker BullMQ untuk seluruh antrean (dipanggil worker.js). Satu job per antrean sekaligus:
 // OCR & ETL sama-sama berat, dan import ODP / pairing memang tidak boleh berjalan bersamaan.
-const { Worker } = require('bullmq');
+const { Queue, Worker } = require('bullmq');
 const { QUEUE_PREFIX } = require('../config/env');
 const { createRedisConnection } = require('../lib/redis');
 const { listObjects, deleteObject, waitForStorage } = require('../lib/objectStorage');
-const { QUEUE_NAMES } = require('../queues');
+const { QUEUE_NAMES, MAINTENANCE_QUEUE } = require('../queues');
 const { PAIRING_IMPORT_LOCK_KEY } = require('../services/pairingImportJob.service');
 const { importPairingExcel, ensurePairingIndex } = require('../services/pairing.service');
 const { processOcrJob } = require('./ocr.processor');
 const { createOdpImportProcessor } = require('./odpImport.processor');
 const { createImportProcessor } = require('./importJob.processor');
+const { schedulePerformanceRefresh, processMaintenanceJob } = require('./maintenance');
 
 // Semua file sementara import (tmp/odp-import/, tmp/pairing-import/)
 const TMP_ROOT = 'tmp/';
@@ -39,8 +40,17 @@ function startWorkers(overrides = {}) {
     }),
     new Worker(QUEUE_NAMES.PAIRING_IMPORT, createImportProcessor({
       connection, lockKey: PAIRING_IMPORT_LOCK_KEY, label: 'Pairing Import', importFn: importPairingExcel
-    }), { ...common, lockDuration: 5 * 60 * 1000 })
+    }), { ...common, lockDuration: 5 * 60 * 1000 }),
+    new Worker(MAINTENANCE_QUEUE, processMaintenanceJob, { ...common, lockDuration: 2 * 60 * 1000 })
   ];
+
+  // Jadwal refresh materialized view metrik performa (tersimpan di Redis; upsert = aman dipanggil tiap worker menyala)
+  const schedulerConnection = createRedisConnection({ label: 'Redis scheduler' });
+  const maintenanceQueue = new Queue(MAINTENANCE_QUEUE, { connection: schedulerConnection, prefix: QUEUE_PREFIX });
+  maintenanceQueue.on('error', () => {});
+  connection.ping()
+    .then(() => schedulePerformanceRefresh(maintenanceQueue))
+    .catch(err => console.error('⚠️ [Worker] Gagal menjadwalkan refresh metrik performa:', err.message));
 
   // Tugas awal dijalankan setelah Redis & object storage siap (keduanya di WSL, butuh beberapa detik saat npm run dev):
   // bersihkan file sementara basi, lalu bangun ulang indeks pairing dari object storage bila Redis kosong.
@@ -68,6 +78,8 @@ function startWorkers(overrides = {}) {
     pairingReady,
     close: async () => {
       await Promise.all(workers.map(worker => worker.close()));
+      await maintenanceQueue.close().catch(() => {});
+      await schedulerConnection.quit().catch(() => {});
       await connection.quit().catch(() => {});
     }
   };

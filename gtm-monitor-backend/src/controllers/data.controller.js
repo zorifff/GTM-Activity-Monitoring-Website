@@ -16,4 +16,9 @@ const getImportMeta = async (req, res) => {
   }
 };
 
-module.exports = { getData, getImportMeta };
+// GET /api/performance — metrik performa branch & regional (materialized view BranchPerformance & RegionalPerformance)
+const getPerformance = asyncHandler(async (req, res) => {
+  res.json(await dataService.getPerformanceSummary());
+}, 'Gagal memuat metrik performa');
+
+module.exports = { getData, getImportMeta, getPerformance };

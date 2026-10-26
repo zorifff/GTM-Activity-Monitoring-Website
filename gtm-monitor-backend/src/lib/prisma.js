@@ -1,13 +1,17 @@
-// Satu instance PrismaClient untuk seluruh aplikasi
+// Satu instance PrismaClient untuk seluruh aplikasi, terhubung lewat connection pooler (Neon PgBouncer mode transaction)
 require('../config/env');
 const { PrismaClient } = require('@prisma/client');
+const { buildDatasourceUrl } = require('../config/database');
 
-const prisma = new PrismaClient(process.env.DATABASE_URL ? {
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL
-    }
+let datasourceUrl;
+if (process.env.DATABASE_URL) {
+  const config = buildDatasourceUrl(process.env.DATABASE_URL);
+  datasourceUrl = config.url;
+  if (!config.pooled) {
+    console.warn('⚠️ [Database] DATABASE_URL tidak melewati connection pooler. Untuk Neon gunakan host "-pooler" (Dashboard → Connect → Connection pooling).');
   }
-} : undefined);
+}
+
+const prisma = new PrismaClient(datasourceUrl ? { datasources: { db: { url: datasourceUrl } } } : undefined);
 
 module.exports = prisma;

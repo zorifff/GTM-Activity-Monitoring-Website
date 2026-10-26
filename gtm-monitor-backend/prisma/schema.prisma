@@ -1,30 +1,45 @@
+// url       : pooled connection (Neon PgBouncer, host "-pooler") — dipakai aplikasi; parameter pool diatur src/config/database.js
+// directUrl : koneksi langsung — dipakai prisma migrate (butuh fitur sesi yang tidak didukung PgBouncer mode transaction)
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
+// Metrik hasil hitung (port, OCC, jumlah ODP per status) tidak disimpan di tabel: tersedia di materialized view
+// "BranchPerformance" & "RegionalPerformance" (lihat migrasi 20261026120000 & src/services/performance.service.js)
 model Branch {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  occRate  Float?    // Nilai OCC BRANCH langsung dari file Excel (0.0 - 1.0)
-  gapWoW   Float?    // Nilai GAP WOW dari file Excel (delta minggu ke minggu)
-  projects Project[]
-  users    User[]
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  projects       Project[]
+  users          User[]
+  reportedMetric ReportedMetric?
 }
 
+// Waktu import terakhir per kunci (mis. "jateng_diy_summary") — angka ringkasannya ada di ReportedMetric
 model ImportMeta {
   id            Int      @id @default(autoincrement())
-  key           String   @unique  // e.g. "jateng_diy_summary"
-  occRate       Float?   // Total Occupancy Rate Jateng DIY
-  available     Int?     // Total Port Tersedia Jateng DIY
-  used          Int?     // Total Port Terpakai
-  total         Int?     // Total Port Keseluruhan
-  gapWoW        Float?   // GAP WOW regional
+  key           String   @unique
   updatedAt     DateTime @updatedAt
+}
+
+// Angka resmi yang DILAPORKAN file Excel (bukan hasil hitung): OCC BRANCH & GAP WOW per branch, baris ringkasan Jateng DIY.
+// Satu baris per cakupan: scope "region" (branchId kosong) atau "branch:<branchId>" (dijaga CHECK constraint di migrasi).
+model ReportedMetric {
+  id        Int      @id @default(autoincrement())
+  scope     String   @unique
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  branchId  Int?     @unique
+  occRate   Float?   // OCC (0.0 - 1.0)
+  gapWoW    Float?   // Delta OCC minggu ke minggu
+  available Int?     // Khusus region: total port tersedia
+  used      Int?     // Khusus region: total port terpakai
+  total     Int?     // Khusus region: total port
+  updatedAt DateTime @updatedAt
 }
 
 
@@ -38,6 +53,8 @@ model Project {
   odps       Odp[]
   activities ProjectActivity[]
   photos     ProjectActivityPhoto[]
+
+  @@index([branchId])
 }
 
 model Odp {
@@ -46,11 +63,17 @@ model Odp {
   avai       Int
   used       Int
   total      Int
-  lat        Float?
-  lon        Float?
+  // Sumber koordinat (PostGIS, SRID 4326 / WGS84) + indeks spasial GiST. Ditulis lewat SQL (src/services/odpGeo.service.js)
+  location   Unsupported("geometry(Point,4326)")?
+  // lat/lon = GENERATED ALWAYS AS (ST_Y/ST_X(location)) STORED → hanya-baca; jangan diisi lewat create/update
+  lat        Float?     @default(dbgenerated("st_y(location)"))
+  lon        Float?     @default(dbgenerated("st_x(location)"))
   occStatus  String?    @default("GREEN")
   project    Project    @relation(fields: [projectId], references: [id])
   projectId  String
+
+  @@index([location], type: Gist)
+  @@index([projectId])
 }
 
 model ProjectActivity {

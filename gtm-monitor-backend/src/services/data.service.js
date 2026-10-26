@@ -4,28 +4,35 @@ const path = require('path');
 const prisma = require('../lib/prisma');
 const { BACKEND_ROOT } = require('../config/paths');
 const { getOdpCoords } = require('../utils/geo');
+const { resolveOdpStatus } = require('../utils/odpStatus');
+const { getBranchPerformance, getRegionalPerformance } = require('./performance.service');
 
 // Dipindah dari handler server.js baris 828-955
 async function getDashboardData() {
-  const branches = await prisma.branch.findMany({
-    include: {
-      projects: {
-        include: {
-          odps: true,
-          activities: true,
-          photos: {
-            orderBy: { createdAt: 'asc' }
+  const [branches, branchPerformance] = await Promise.all([
+    prisma.branch.findMany({
+      include: {
+        projects: {
+          include: {
+            odps: true,
+            activities: true,
+            photos: {
+              orderBy: { createdAt: 'asc' }
+            }
           }
         }
       }
-    }
-  });
+    }),
+    getBranchPerformance()
+  ]);
+  // Angka resmi OCC BRANCH & GAP WOW dari Excel (materialized view BranchPerformance, sumber: tabel ReportedMetric)
+  const performanceByBranch = new Map(branchPerformance.map(row => [row.branchId, row]));
 
   // Transform data to match what the frontend expects (Return all projects for Dashboard & typeDesign support)
   const formattedBranches = branches.map(b => ({
     name: b.name,
-    occRate: b.occRate,   // Nilai OCC BRANCH langsung dari Excel (0.0 - 1.0)
-    gapWoW: b.gapWoW,    // Nilai GAP WOW dari Excel
+    occRate: performanceByBranch.get(b.id)?.reportedOccRate ?? null,   // Nilai OCC BRANCH langsung dari Excel (0.0 - 1.0)
+    gapWoW: performanceByBranch.get(b.id)?.reportedGapWoW ?? null,     // Nilai GAP WOW dari Excel
     projects: b.projects.map(p => {
       // Pre-kalkulasi total per proyek
       const usedTotal = p.odps.reduce((s, o) => s + o.used, 0);
@@ -108,9 +115,7 @@ async function getDashboardData() {
         odpCount,
         odps: p.odps.map(o => {
           const coords = getOdpCoords(o.odp, b.name, o.lat, o.lon);
-          const pct = o.total > 0 ? o.used / o.total : 0;
-          const calcStatus = o.used === 0 ? 'BLACK' : pct < 0.25 ? 'GREEN' : pct < 0.50 ? 'YELLOW' : pct < 0.75 ? 'ORANGE' : 'RED';
-          const occStatus = o.occStatus ? o.occStatus.toUpperCase() : calcStatus;
+          const occStatus = resolveOdpStatus(o);
 
           return {
             odp: o.odp,
@@ -130,12 +135,30 @@ async function getDashboardData() {
   return (formattedBranches);
 }
 
-// Ringkasan Jateng DIY (KPI dashboard) dari ImportMeta
+// Ringkasan Jateng DIY (KPI dashboard): waktu import dari ImportMeta + angka resmi baris ringkasan Excel
+// (materialized view RegionalPerformance). Bentuk respons sama seperti sebelum normalisasi.
 async function getImportMeta() {
-  const meta = await prisma.importMeta.findUnique({
-    where: { key: 'jateng_diy_summary' }
-  });
-  return meta || {};
+  const [meta, region] = await Promise.all([
+    prisma.importMeta.findUnique({ where: { key: 'jateng_diy_summary' } }),
+    getRegionalPerformance()
+  ]);
+  if (!meta) return {};
+  return {
+    id: meta.id,
+    key: meta.key,
+    occRate: region?.reportedOccRate ?? null,
+    available: region?.reportedAvailable ?? null,
+    used: region?.reportedUsed ?? null,
+    total: region?.reportedTotal ?? null,
+    gapWoW: region?.reportedGapWoW ?? null,
+    updatedAt: meta.updatedAt
+  };
 }
 
-module.exports = { getDashboardData, getImportMeta };
+// Metrik performa branch & regional dari materialized view (hasil hitung dari data ODP + angka resmi Excel)
+async function getPerformanceSummary() {
+  const [region, branches] = await Promise.all([getRegionalPerformance(), getBranchPerformance()]);
+  return { region, branches };
+}
+
+module.exports = { getDashboardData, getImportMeta, getPerformanceSummary };

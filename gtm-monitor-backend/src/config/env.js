@@ -3,7 +3,7 @@ const fs = require('fs');
 const { BACKEND_ROOT } = require('./paths');
 const path = require('path');
 
-// Auto-load .env file if present
+// Auto-load .env file if present. Variabel yang sudah di-set proses (pm2, test suite) tidak ditimpa — perilaku dotenv standar
 const envPath = path.join(BACKEND_ROOT, '.env');
 if (fs.existsSync(envPath)) {
   const envContent = fs.readFileSync(envPath, 'utf8');
@@ -18,7 +18,7 @@ if (fs.existsSync(envPath)) {
             (value.startsWith("'") && value.endsWith("'"))) {
           value = value.slice(1, -1);
         }
-        process.env[key] = value;
+        if (process.env[key] === undefined) process.env[key] = value;
       }
     }
   });
@@ -58,7 +58,16 @@ if (!S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY) {
   console.warn('⚠️ [Storage] S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY belum diisi di .env. Foto verifikasi & import ODP akan gagal.');
 }
 
+// Koneksi database lewat pooler (Neon PgBouncer, host "-pooler"). Batas koneksi per proses (API & worker masing-masing);
+// detail penerapannya di src/config/database.js
+const DB_CONNECTION_LIMIT = Number(process.env.DB_CONNECTION_LIMIT) || 10;
+const DB_POOL_TIMEOUT_SEC = Number(process.env.DB_POOL_TIMEOUT_SEC) || 20;
+
+// Materialized view metrik performa di-refresh terjadwal oleh worker (selain di akhir setiap import ODP)
+const PERFORMANCE_REFRESH_MINUTES = Number(process.env.PERFORMANCE_REFRESH_MINUTES) || 60;
+
 module.exports = {
   PORT, JWT_SECRET, REFRESH_TOKEN_SECRET, CORS_ORIGINS, REDIS_URL, QUEUE_PREFIX,
-  S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_FORCE_PATH_STYLE
+  S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_FORCE_PATH_STYLE,
+  DB_CONNECTION_LIMIT, DB_POOL_TIMEOUT_SEC, PERFORMANCE_REFRESH_MINUTES
 };

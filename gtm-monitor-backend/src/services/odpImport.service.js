@@ -1,12 +1,23 @@
-// ETL Excel Data ODP: baca file → mapping in-memory → batch insert/update → bersihkan ODP lama → OCC & GAP WoW per branch
+// ETL Excel Data ODP: baca file → mapping in-memory → batch insert/update → bersihkan ODP lama → angka resmi Excel
+// → refresh materialized view metrik performa. Seluruh tahap database berjalan dalam SATU transaksi atomik (ACID):
+// gagal di tahap mana pun (error, server/worker mati, batas waktu) → database kembali persis seperti sebelum import.
 const xlsx = require('xlsx');
 const crypto = require('crypto');
 const prisma = require('../lib/prisma');
 const AppError = require('../utils/AppError');
 const { getOdpCoords } = require('../utils/geo');
+const { insertOdps, updateOdps } = require('./odpGeo.service');
+const { refreshPerformanceViews } = require('./performance.service');
+
+// Batas waktu transaksi import (ms). maxWait = lama menunggu koneksi dari pool sebelum transaksi dimulai.
+const IMPORT_TRANSACTION_OPTIONS = {
+  maxWait: 15 * 1000,
+  timeout: Number(process.env.ODP_IMPORT_TX_TIMEOUT_MS) || 4 * 60 * 1000
+};
 
 // Dipindah dari handler server.js baris 1485-2045
-// onProgress(stage, percent): laporan progres opsional (dipakai worker antrean untuk notifikasi SSE)
+// onProgress(stage, percent): laporan progres opsional (dipakai worker antrean untuk notifikasi SSE).
+// Dipanggil juga di dalam transaksi — error yang dilempar onProgress membatalkan seluruh import.
 async function importOdpExcel({ file, onProgress = () => {} }) {
     if (!file || !file.buffer) {
       throw new AppError(400, { error: 'No file uploaded' });
@@ -15,6 +26,16 @@ async function importOdpExcel({ file, onProgress = () => {} }) {
   const startTime = Date.now();
   console.log('📦 Memulai import Excel dengan In-Memory Mapping & Batch Processing...');
 
+  // Read from buffer (memoryStorage) — di luar transaksi: parsing Excel murni CPU, tidak perlu menahan koneksi database
+  onProgress('Membaca file Excel', 2);
+  const workbook = xlsx.read(file.buffer, { type: 'buffer' });
+  onProgress('Membaca file Excel', 8);
+
+  return prisma.$transaction((tx) => applyWorkbook(tx, workbook, { onProgress, startTime }), IMPORT_TRANSACTION_OPTIONS);
+}
+
+// Seluruh baca-tulis database import (tx = klien transaksi Prisma)
+async function applyWorkbook(tx, workbook, { onProgress, startTime }) {
   // ─── PETA & NORMALISASI WOK → BRANCH YANG BENAR (WOK menentukan Branch) ───
   function getCorrectBranchForWok(rawWok) {
     if (!rawWok) return null;
@@ -43,11 +64,6 @@ async function importOdpExcel({ file, onProgress = () => {} }) {
     return null;
   }
 
-  // Read from buffer (memoryStorage)
-  onProgress('Membaca file Excel', 2);
-  const workbook = xlsx.read(file.buffer, { type: 'buffer' });
-  onProgress('Membaca file Excel', 8);
-
   let totalRowsProcessed = 0;
   let projectsCreated = 0;
   let odpsUnchanged = 0;
@@ -57,13 +73,13 @@ async function importOdpExcel({ file, onProgress = () => {} }) {
 
   // ─── 1. IN-MEMORY MAPPING (Load semua data dari DB ke RAM sekaligus) ───
   onProgress('Memuat data database', 10);
-  const allDbBranches = await prisma.branch.findMany();
+  const allDbBranches = await tx.branch.findMany();
   const branchMap = new Map(); // uppercase name -> branch object
   for (const b of allDbBranches) {
     branchMap.set(b.name.toUpperCase(), b);
   }
 
-  const allProjects = await prisma.project.findMany({
+  const allProjects = await tx.project.findMany({
     include: { odps: true }
   });
   const projectMap = new Map(); // `${branchId}||${projectName.toUpperCase()}` -> project object
@@ -259,7 +275,7 @@ async function importOdpExcel({ file, onProgress = () => {} }) {
       // Get or create branch
       let branch = branchMap.get(branchName);
       if (!branch) {
-        branch = await prisma.branch.upsert({
+        branch = await tx.branch.upsert({
           where: { name: branchName },
           update: {},
           create: { name: branchName }
@@ -411,8 +427,8 @@ async function importOdpExcel({ file, onProgress = () => {} }) {
     }
   }
 
-  // â”€â”€â”€ 3. BATCH EXECUTION (Kirim ke DB sekaligus dengan aman) â”€â”€â”€
-  console.log(`âš¡ RAM Processing selesai. Menyiapkan Batch DB: ${projectsToCreate.length} project, ${odpsToCreate.length} ODP baru, ${odpsToUpdate.length} update. WOK corrections: ${wokBranchCorrections}.`);
+  // ─── 3. BATCH EXECUTION (Kirim ke DB sekaligus, di dalam transaksi) ───
+  console.log(`⚡ RAM Processing selesai. Menyiapkan Batch DB: ${projectsToCreate.length} project, ${odpsToCreate.length} ODP baru, ${odpsToUpdate.length} update. WOK corrections: ${wokBranchCorrections}.`);
 
   // Batch Insert Project Baru
   onProgress('Menyimpan proyek baru', 50);
@@ -420,55 +436,25 @@ async function importOdpExcel({ file, onProgress = () => {} }) {
     const BATCH_SIZE = 500;
     for (let i = 0; i < projectsToCreate.length; i += BATCH_SIZE) {
       const batch = projectsToCreate.slice(i, i + BATCH_SIZE);
-      await prisma.project.createMany({
+      await tx.project.createMany({
         data: batch,
         skipDuplicates: true
       });
     }
   }
 
-  // Batch Insert ODP Baru (dalam grup 500 baris)
-  if (odpsToCreate.length > 0) {
-    const BATCH_SIZE = 500;
-    for (let i = 0; i < odpsToCreate.length; i += BATCH_SIZE) {
-      onProgress('Menyimpan ODP baru', 55 + 15 * (i / odpsToCreate.length));
-      const batch = odpsToCreate.slice(i, i + BATCH_SIZE);
-      await prisma.odp.createMany({
-        data: batch,
-        skipDuplicates: true
-      });
-    }
-  }
+  // Batch Insert ODP Baru (koordinat → kolom geometri PostGIS; duplikat dilewati seperti skipDuplicates)
+  await insertOdps(tx, odpsToCreate, (done) => onProgress('Menyimpan ODP baru', 55 + 15 * (done / odpsToCreate.length)));
 
-  // Batch Update ODP yang Berubah (diproses paralel 50 request serentak)
-  if (odpsToUpdate.length > 0) {
-    const CONCURRENCY = 50;
-    for (let i = 0; i < odpsToUpdate.length; i += CONCURRENCY) {
-      onProgress('Memperbarui ODP', 70 + 15 * (i / odpsToUpdate.length));
-      const chunk = odpsToUpdate.slice(i, i + CONCURRENCY);
-      await Promise.all(
-        chunk.map(item => 
-          prisma.odp.update({
-            where: { id: item.id },
-            data: {
-              avai: item.avai,
-              used: item.used,
-              total: item.total,
-              projectId: item.projectId,
-              ...(item.lat !== undefined ? { lat: item.lat, lon: item.lon } : {}),
-              ...(item.occStatus ? { occStatus: item.occStatus } : {})
-            }
-          }).catch(err => console.error(`Gagal update ODP ${item.odp}:`, err.message))
-        )
-      );
-    }
-  }
+  // Batch Update ODP yang Berubah (satu statement per 1000 baris). Gagal = seluruh import dibatalkan,
+  // bukan dilewati per baris seperti sebelumnya (yang dapat meninggalkan data setengah jalan).
+  await updateOdps(tx, odpsToUpdate, (done) => onProgress('Memperbarui ODP', 70 + 15 * (done / odpsToUpdate.length)));
 
   // ——— 4. STALE ODP CLEANUP (Hapus ODP lama yang tidak ada di file update baru agar statistik 100% presisi) ———
   // FIX: Gunakan seenOdpKeysInCurrentImport — berisi TEPAT semua ODP yang dibaca dari file Excel terbaru.
   onProgress('Membersihkan ODP lama', 86);
   const processedOdpNames = seenOdpKeysInCurrentImport;
-  const allDbOdps = await prisma.odp.findMany({ select: { id: true, odp: true } });
+  const allDbOdps = await tx.odp.findMany({ select: { id: true, odp: true } });
   const staleOdpIds = allDbOdps
     .filter(o => !processedOdpNames.has(o.odp.toUpperCase()))
     .map(o => o.id);
@@ -476,78 +462,82 @@ async function importOdpExcel({ file, onProgress = () => {} }) {
   if (staleOdpIds.length > 0) {
     console.log(`🧹 Membersihkan ${staleOdpIds.length} ODP lama yang tidak ada di file Excel terbaru...`);
     for (let i = 0; i < staleOdpIds.length; i += 500) {
-      await prisma.odp.deleteMany({
+      await tx.odp.deleteMany({
         where: { id: { in: staleOdpIds.slice(i, i + 500) } }
       });
     }
   }
 
   // Hapus proyek kosong tanpa ODP
-  await prisma.project.deleteMany({
+  await tx.project.deleteMany({
     where: { odps: { none: {} } }
   });
 
-  // ─── 5. SIMPAN NILAI OCC BRANCH & GAP WOW PER BRANCH KE DATABASE ───
+  // ─── 5. SIMPAN ANGKA RESMI OCC BRANCH & GAP WOW PER BRANCH (ReportedMetric) ───
+  // Nilai Excel (bukan nol) menggantikan nilai sebelumnya; bila Excel tidak memuatnya, nilai sebelumnya dipertahankan.
   console.log('📊 Menyimpan OCC BRANCH & GAP WOW per branch...');
   onProgress('Menyimpan OCC & GAP WoW branch', 92);
-  const allBranchesInDb = await prisma.branch.findMany();
+  const allBranchesInDb = await tx.branch.findMany({ include: { reportedMetric: true } });
   for (const b of allBranchesInDb) {
     const bUpper = b.name.toUpperCase();
     const excelVals = branchOccFromExcel[bUpper];
+    const previous = b.reportedMetric || { occRate: null, gapWoW: null };
 
     const finalOccRate = (excelVals && excelVals.occRate !== undefined && excelVals.occRate !== null && excelVals.occRate !== 0)
       ? excelVals.occRate
-      : b.occRate;
+      : previous.occRate;
 
     // Ambil nilai raw GAP WOW dari file Excel yang baru saja di-upload
     const newRawGap = (excelVals && excelVals.gapWoW !== undefined && excelVals.gapWoW !== null && excelVals.gapWoW !== 0)
       ? excelVals.gapWoW
       : null;
 
-    let finalGapWoWDelta = b.gapWoW; // Fallback jika tidak ada gap di excel
+    let finalGapWoWDelta = previous.gapWoW; // Fallback jika tidak ada gap di excel
 
     if (newRawGap !== null) {
       // Kolom Gap WoW di Excel sudah berisi nilai bersih kenaikan/penurunan WoW
       finalGapWoWDelta = newRawGap;
     }
 
-    await prisma.branch.update({
-      where: { id: b.id },
-      data: {
-        occRate: finalOccRate,
-        gapWoW: finalGapWoWDelta,
-      }
-    });
+    if (finalOccRate !== previous.occRate || finalGapWoWDelta !== previous.gapWoW) {
+      await tx.reportedMetric.upsert({
+        where: { branchId: b.id },
+        update: { occRate: finalOccRate, gapWoW: finalGapWoWDelta },
+        create: { scope: `branch:${b.id}`, branchId: b.id, occRate: finalOccRate, gapWoW: finalGapWoWDelta }
+      });
+    }
     console.log(`  ${bUpper}: OCC=${finalOccRate ? (finalOccRate * 100).toFixed(1) + '%' : 'N/A'} GAP_DELTA=${finalGapWoWDelta !== null ? (finalGapWoWDelta * 100).toFixed(2) + '%' : '0%'}`);
   }
 
-  // ─── 6. SIMPAN SUMMARY JATENG DIY KE ImportMeta ───
-  onProgress('Menyimpan ringkasan Jateng DIY', 97);
+  // ─── 6. SIMPAN SUMMARY JATENG DIY (ReportedMetric "region") & WAKTU IMPORT (ImportMeta) ───
+  onProgress('Menyimpan ringkasan Jateng DIY', 96);
   if (jatengDiySummary) {
-
-    await prisma.importMeta.upsert({
-      where: { key: 'jateng_diy_summary' },
-      update: {
-        occRate: jatengDiySummary.occRate,
-        available: jatengDiySummary.available,
-        used: jatengDiySummary.used,
-        total: jatengDiySummary.total,
-        gapWoW: jatengDiySummary.gapWoW,
-      },
-      create: {
-        key: 'jateng_diy_summary',
-        occRate: jatengDiySummary.occRate,
-        available: jatengDiySummary.available,
-        used: jatengDiySummary.used,
-        total: jatengDiySummary.total,
-        gapWoW: jatengDiySummary.gapWoW,
-      }
+    const regionValues = {
+      occRate: jatengDiySummary.occRate,
+      available: jatengDiySummary.available,
+      used: jatengDiySummary.used,
+      total: jatengDiySummary.total,
+      gapWoW: jatengDiySummary.gapWoW,
+    };
+    await tx.reportedMetric.upsert({
+      where: { scope: 'region' },
+      update: regionValues,
+      create: { scope: 'region', ...regionValues }
     });
-    console.log('ðŸ“Š Jateng DIY Summary disimpan ke ImportMeta.');
+    await tx.importMeta.upsert({
+      where: { key: 'jateng_diy_summary' },
+      update: { updatedAt: new Date() },
+      create: { key: 'jateng_diy_summary' }
+    });
+    console.log('📊 Jateng DIY Summary disimpan ke ReportedMetric.');
   }
 
+  // ─── 7. REFRESH MATERIALIZED VIEW METRIK PERFORMA (ikut transaksi: data & ringkasan berubah bersamaan) ───
+  onProgress('Memperbarui ringkasan performa', 98);
+  await refreshPerformanceViews(tx);
+
   const durationSec = ((Date.now() - startTime) / 1000).toFixed(2);
-  console.log(`âœ… Excel Import selesai dalam ${durationSec} detik! (Processed ${totalRowsProcessed} rows across ${branchesFound.size} branches, ${wokBranchCorrections} WOK corrections)`);
+  console.log(`✅ Excel Import selesai dalam ${durationSec} detik! (Processed ${totalRowsProcessed} rows across ${branchesFound.size} branches, ${wokBranchCorrections} WOK corrections)`);
 
   return ({ 
     success: true, 

@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "node tests/run.js",
-    "test:record": "node tests/run.js --record-snapshots"
+    "test:record": "node tests/run.js --record-snapshots",
+    "db:migrate": "prisma migrate deploy",
+    "db:status": "prisma migrate status",
+    "db:backup": "node scripts/backup-db-wsl.js"
   },
   "keywords": [],
   "author": "",

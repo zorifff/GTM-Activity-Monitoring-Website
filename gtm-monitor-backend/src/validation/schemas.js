@@ -31,6 +31,19 @@ const optionalText = (label, max) => z.preprocess(
     .optional()
 );
 
+// Koordinat WGS84 dari query string (teks → angka) dengan batas nilai
+const coordinate = (label, min, max) => z.preprocess(emptyToUndefined, z.coerce
+  .number({ error: `${label} wajib diisi dengan angka.` })
+  .min(min, { error: `${label} harus di antara ${min} dan ${max}.` })
+  .max(max, { error: `${label} harus di antara ${min} dan ${max}.` }));
+
+const resultLimit = (fallback) => z.preprocess(emptyToUndefined, z.coerce
+  .number({ error: 'limit harus berupa angka.' })
+  .int({ error: 'limit harus bilangan bulat.' })
+  .min(1, { error: 'limit minimal 1.' })
+  .max(2000, { error: 'limit maksimal 2000.' })
+  .default(fallback));
+
 // Label periode program, dinormalisasi ke penulisan baku (mis. "agustus 2026" → "Agustus 2026")
 const monthLabel = (label = 'Periode') => z
   .string({ error: `${label} wajib diisi.` })
@@ -160,6 +173,32 @@ const schemas = {
     params: z.object({
       jobId: z.uuid({ error: 'ID proses import tidak valid.' })
     })
+  },
+
+  // Query spasial ODP: dalam radius (meter) dari satu titik
+  odpNearby: {
+    query: z.object({
+      lat: coordinate('lat', -90, 90),
+      lon: coordinate('lon', -180, 180),
+      radius: z.preprocess(emptyToUndefined, z.coerce
+        .number({ error: 'radius harus berupa angka (meter).' })
+        .positive({ error: 'radius harus lebih dari 0 meter.' })
+        .max(50000, { error: 'radius maksimal 50000 meter (50 km).' })
+        .default(1000)),
+      limit: resultLimit(200)
+    })
+  },
+
+  // Query spasial ODP: di dalam kotak batas wilayah (bounding box)
+  odpWithin: {
+    query: z.object({
+      minLat: coordinate('minLat', -90, 90),
+      minLon: coordinate('minLon', -180, 180),
+      maxLat: coordinate('maxLat', -90, 90),
+      maxLon: coordinate('maxLon', -180, 180),
+      limit: resultLimit(500)
+    }).refine(({ minLat, maxLat }) => minLat < maxLat, { error: 'minLat harus lebih kecil dari maxLat.', path: ['minLat'] })
+      .refine(({ minLon, maxLon }) => minLon < maxLon, { error: 'minLon harus lebih kecil dari maxLon.', path: ['minLon'] })
   },
 
   pairingSearch: {

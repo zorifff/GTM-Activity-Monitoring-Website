@@ -5,6 +5,8 @@
 // Catatan: suite memakai database dari .env & akun admin (ADMIN_USERNAME/ADMIN_PASSWORD). Tidak ada data bisnis yang diubah;
 // sesi login yang dibuat selama uji dicabut di akhir. Suite queue & storage butuh Redis & object storage (Garage):
 // bila belum berjalan, keduanya dinyalakan otomatis lalu dimatikan lagi setelah uji (yang sudah berjalan tidak diganggu).
+// Suite database (migrasi, import transaksional, PostGIS, materialized view, pooling) menulis data, jadi berjalan di
+// database UJI lokal (TEST_DATABASE_URL: PostgreSQL + PostGIS di WSL di belakang PgBouncer), bukan di Neon.
 const path = require('path');
 const net = require('net');
 const { spawn, spawnSync } = require('child_process');
@@ -26,7 +28,9 @@ const SUITES = [
   { name: 'queue', file: 'queue.test.js', server: 'main' },
   { name: 'storage', file: 'storage.test.js', server: 'main' },
   { name: 'pairing', file: 'pairing.test.js', server: 'main' },
-  { name: 'security-ratelimit', file: 'security-ratelimit.test.js', server: 'isolated' }
+  { name: 'spatial', file: 'spatial.test.js', server: 'main' },
+  { name: 'security-ratelimit', file: 'security-ratelimit.test.js', server: 'isolated' },
+  { name: 'database', file: 'database.test.js', server: 'none' }
 ].filter(s => (RECORD ? s.name === 'snapshot' : !only || s.name === only))
   .filter(s => require('fs').existsSync(path.join(__dirname, s.file)));
 
@@ -56,7 +60,7 @@ const startServer = async () => {
 const runSuite = (suite, port) => new Promise(resolve => {
   const proc = spawn(process.execPath, [path.join(__dirname, suite.file)], {
     cwd: backendDir,
-    env: { ...process.env, TEST_PORT: String(port), RECORD_SNAPSHOTS: RECORD ? '1' : '' },
+    env: { ...process.env, TEST_PORT: port ? String(port) : '', RECORD_SNAPSHOTS: RECORD ? '1' : '' },
     stdio: ['ignore', 'pipe', 'pipe']
   });
   let out = '';
@@ -79,12 +83,15 @@ const isPortOpen = (port) => new Promise(resolve => {
 // Layanan pendukung di WSL (launcher yang sama dengan npm run dev)
 const INFRA = [
   { name: 'Redis', script: 'scripts/redis-wsl.js', url: () => process.env.REDIS_URL || 'redis://127.0.0.1:6379', defaultPort: 6379 },
-  { name: 'Object storage (Garage)', script: 'scripts/storage-wsl.js', url: () => process.env.S3_ENDPOINT || 'http://127.0.0.1:3900', defaultPort: 3900 }
+  { name: 'Object storage (Garage)', script: 'scripts/storage-wsl.js', url: () => process.env.S3_ENDPOINT || 'http://127.0.0.1:3900', defaultPort: 3900 },
+  // Database uji (belum disiapkan = dilewati; suite database melaporkan cara menyiapkannya)
+  { name: 'PostgreSQL uji (WSL)', script: 'scripts/postgres-wsl.js', url: () => process.env.TEST_DATABASE_URL, defaultPort: 6433 }
 ];
 
 const startInfra = async () => {
   const started = [];
   for (const svc of INFRA) {
+    if (!svc.url()) continue;
     const { hostname, port } = new URL(svc.url());
     if (!['127.0.0.1', 'localhost'].includes(hostname)) continue; // layanan eksternal (mis. R2) tidak dikelola di sini
     const servicePort = Number(port || svc.defaultPort);
@@ -123,9 +130,17 @@ const revokeTestSessions = async () => {
   process.loadEnvFile(path.join(backendDir, '.env'));
   const infra = RECORD ? [] : await startInfra();
   const results = [];
-  for (const group of ['main', 'isolated']) {
+  for (const group of ['main', 'isolated', 'none']) {
     const suites = SUITES.filter(s => s.server === group);
     if (suites.length === 0) continue;
+    if (group === 'none') {
+      for (const suite of suites) {
+        console.log(`
+━━━ ${suite.name} (tanpa server HTTP) ━━━`);
+        results.push(await runSuite(suite, null));
+      }
+      continue;
+    }
     const server = await startServer();
     try {
       for (const suite of suites) {
