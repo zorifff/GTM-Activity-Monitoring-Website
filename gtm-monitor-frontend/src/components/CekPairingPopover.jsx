@@ -1,10 +1,11 @@
 import { useState, memo } from 'react';
 import { createPortal } from 'react-dom';
-import { API_BASE_URL, authFetch } from '../apiConfig';
+import { usePairingSearch } from '../hooks/usePairingSearch';
 
 const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onClose }) {
   const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
+  const pairingSearch = usePairingSearch();
+  const loading = pairingSearch.isPending;
   const [error, setError] = useState(null);
   const [results, setResults] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(0);
@@ -21,24 +22,10 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
       return;
     }
 
-    setLoading(true);
     setError(null);
 
     try {
-      const res = await authFetch(`${API_BASE_URL}/api/pairing/search?q=${encodeURIComponent(cleanQ)}`);
-      const contentType = res.headers.get('content-type') || '';
-
-      let data = {};
-      if (contentType.includes('application/json')) {
-        data = await res.json();
-      } else {
-        const text = await res.text();
-        throw new Error(`Server mengembalikan respon non-JSON (${res.status}): ${text.slice(0, 100)}`);
-      }
-
-      if (!res.ok) {
-        throw new Error(data.error || data.message || `Terjadi kesalahan saat mencari data pairing (Status ${res.status}).`);
-      }
+      const data = await pairingSearch.mutateAsync(cleanQ);
 
       if (!data.results || data.results.length === 0) {
         setError(`Data pairing tidak ditemukan untuk kata kunci "${cleanQ}". Pastikan penulisan ID/nomor telepon sudah sesuai.`);
@@ -55,8 +42,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
       setError(err.message || 'Gagal melakukan pencarian.');
       setResults([]);
       setIsModalOpen(false);
-    } finally {
-      setLoading(false);
     }
   };
 

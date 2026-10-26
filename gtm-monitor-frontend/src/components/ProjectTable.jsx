@@ -1,7 +1,14 @@
 import { useState, useMemo, memo, useEffect, useCallback, useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { ACT_TYPES, actMeta, formatBranch } from '../utils';
 import UploadModal from './UploadModal';
 import ConfirmSubmitModal from './ConfirmSubmitModal';
+
+// Pilihan "Semua proyek" pada jumlah per halaman: seluruh baris ditampilkan dengan virtual scroll
+// (hanya baris yang terlihat di layar yang dirender) agar ribuan proyek tetap ringan.
+const PAGE_SIZE_ALL = 'all';
+const PAGE_SIZE_OPTIONS = [15, 25, 50, PAGE_SIZE_ALL];
+const ESTIMATED_ROW_HEIGHT = 64;
 
 const FilterIcon = () => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -286,11 +293,44 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
     setCurrentPage(1);
   }, [displayProjects.length, filters]);
 
-  const totalPages = Math.ceil(displayProjects.length / pageSize) || 1;
+  const isShowAll = pageSize === PAGE_SIZE_ALL;
+  const totalPages = isShowAll ? 1 : (Math.ceil(displayProjects.length / pageSize) || 1);
   const paginatedProjects = useMemo(() => {
+    if (isShowAll) return displayProjects;
     const start = (currentPage - 1) * pageSize;
     return displayProjects.slice(start, start + pageSize);
-  }, [displayProjects, currentPage, pageSize]);
+  }, [displayProjects, currentPage, pageSize, isShowAll]);
+  const rangeStart = displayProjects.length > 0 ? (isShowAll ? 1 : (currentPage - 1) * pageSize + 1) : 0;
+  const rangeEnd = isShowAll ? displayProjects.length : Math.min(currentPage * pageSize, displayProjects.length);
+
+  // ─── OPTIMASI 4: VIRTUALISASI BARIS (mode "Semua proyek") ───
+  // Tinggi tiap baris diukur otomatis (baris yang di-expand menampilkan daftar ODP sehingga lebih tinggi)
+  const scrollRef = useRef(null);
+  const rowVirtualizer = useVirtualizer({
+    count: isShowAll ? displayProjects.length : 0,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => ESTIMATED_ROW_HEIGHT,
+    getItemKey: (index) => displayProjects[index]?.name ?? index,
+    overscan: 10,
+    enabled: isShowAll
+  });
+  const virtualRows = isShowAll ? rowVirtualizer.getVirtualItems() : [];
+  const virtualPaddingTop = virtualRows.length > 0 ? virtualRows[0].start : 0;
+  const virtualPaddingBottom = virtualRows.length > 0 ? rowVirtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end : 0;
+
+  const renderProjectRow = (p) => (
+    <ProjectRow
+      key={p.name}
+      p={p}
+      branchName={branchName}
+      isExpanded={Boolean(expanded[p.name])}
+      toggleProject={toggleProject}
+      onReview={onReview}
+      onOpenUploadModal={setActiveUploadData}
+      tableGrid={tableGrid}
+      odpGrid={odpGrid}
+    />
+  );
 
   const updateFilter = (col, key, val) => {
     setFilters(prev => {
@@ -436,7 +476,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
 
   return (
     <div className="card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
-      <div style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', maxHeight: '75vh' }}>
+      <div ref={scrollRef} style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', maxHeight: '75vh' }}>
         <div style={{ minWidth: 'max-content', paddingBottom: filterPopup ? '400px' : '0' }}>
           {/* Header */}
           <div className="table-header" style={{ gridTemplateColumns: tableGrid }}>
@@ -469,19 +509,19 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           </div>
 
           {/* Rows */}
-          {paginatedProjects.map((p) => (
-            <ProjectRow
-              key={p.name}
-              p={p}
-              branchName={branchName}
-              isExpanded={Boolean(expanded[p.name])}
-              toggleProject={toggleProject}
-              onReview={onReview}
-              onOpenUploadModal={setActiveUploadData}
-              tableGrid={tableGrid}
-              odpGrid={odpGrid}
-            />
-          ))}
+          {isShowAll ? (
+            <>
+              <div style={{ height: `${virtualPaddingTop}px` }} />
+              {virtualRows.map(virtualRow => (
+                <div key={virtualRow.key} data-index={virtualRow.index} ref={rowVirtualizer.measureElement}>
+                  {renderProjectRow(displayProjects[virtualRow.index])}
+                </div>
+              ))}
+              <div style={{ height: `${virtualPaddingBottom}px` }} />
+            </>
+          ) : (
+            paginatedProjects.map(renderProjectRow)
+          )}
 
           {paginatedProjects.length === 0 && (
             <div style={{ padding: '32px 16px', textAlign: 'center', color: '#94a3b8', fontSize: '13.5px', borderBottom: '1px solid #f1f5f9' }}>
@@ -541,7 +581,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
       {/* Pagination Footer */}
       <div className="table-pagination-footer">
         <div style={{ fontSize: '13px', color: '#64748b', fontWeight: 600 }}>
-          Menampilkan <span style={{ color: '#0f172a', fontWeight: 700 }}>{displayProjects.length > 0 ? (currentPage - 1) * pageSize + 1 : 0}</span> - <span style={{ color: '#0f172a', fontWeight: 700 }}>{Math.min(currentPage * pageSize, displayProjects.length)}</span> dari <span style={{ color: '#0f172a', fontWeight: 700 }}>{displayProjects.length}</span> proyek
+          Menampilkan <span style={{ color: '#0f172a', fontWeight: 700 }}>{rangeStart}</span> - <span style={{ color: '#0f172a', fontWeight: 700 }}>{rangeEnd}</span> dari <span style={{ color: '#0f172a', fontWeight: 700 }}>{displayProjects.length}</span> proyek
         </div>
 
         <div className="table-pagination-controls">
@@ -567,7 +607,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   color: '#0f172a'
                 }}
               >
-                <span>{pageSize} proyek</span>
+                <span>{isShowAll ? 'Semua' : pageSize} proyek</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isPageSizeOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
@@ -587,14 +627,14 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   zIndex: 50,
                   overflow: 'hidden'
                 }}>
-                  {[15, 25, 50].map(size => (
+                  {PAGE_SIZE_OPTIONS.map(size => (
                     <div
                       key={size}
                       className={`dropdown-item ${pageSize === size ? 'active' : ''}`}
                       onClick={() => { setPageSize(size); setCurrentPage(1); setIsPageSizeOpen(false); }}
                       style={{ padding: '8px 14px', fontSize: '13px' }}
                     >
-                      {size} proyek
+                      {size === PAGE_SIZE_ALL ? 'Semua' : size} proyek
                     </div>
                   ))}
                 </div>

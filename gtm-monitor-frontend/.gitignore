@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Hasil uji E2E Playwright (acuan screenshot e2e/__screenshots__/ tetap di-commit)
+test-results/
+playwright-report/
+e2e/.infra-started.json
