@@ -43,7 +43,9 @@ export function getOdpCoords(odpName, branchName, existingLat, existingLon) {
 export function actMeta(status) {
   if (status === 'verified') return { label: 'Terverifikasi', bg: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0' };
   if (status === 'upload') return { label: 'Menunggu Verifikasi', bg: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' };
-  return { label: 'Belum Dikerjakan', bg: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca' };
+  if (status === 'gagal' || status === 'rejected') return { label: 'Ditolak', bg: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca' };
+  if (status === 'proses' || status === 'processing') return { label: 'Diproses', bg: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe' };
+  return { label: 'Belum Dikerjakan', bg: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0' };
 }
 
 export function flatOdps(branches, typeDesignFilter) {

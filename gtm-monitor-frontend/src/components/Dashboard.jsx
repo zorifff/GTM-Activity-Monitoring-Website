@@ -6,6 +6,7 @@ import BranchProjectsPieCard from './dashboard/BranchProjectsPieCard';
 import SearchFilterToolbar from './dashboard/SearchFilterToolbar';
 import ExecutiveSummarySection from './dashboard/ExecutiveSummarySection';
 import RightWidgetPanel from './dashboard/RightWidgetPanel';
+import DashboardHeader from './dashboard/DashboardHeader';
 import { useLastUpdateLabel } from '../hooks/useLastUpdateLabel';
 import { useInView } from '../hooks/useInView';
 
@@ -17,8 +18,8 @@ const Dashboard = memo(function Dashboard({
   importMeta,
   statusChips,
   ranking,
-  _typeDesignFilter = 'ALL',
-  _setTypeDesignFilter
+  typeDesignFilter = 'ALL',
+  setTypeDesignFilter
 }) {
   const lastUpdateFormatted = useLastUpdateLabel(importMeta, branches);
 
@@ -69,6 +70,13 @@ const Dashboard = memo(function Dashboard({
         boxSizing: 'border-box'
       }}
     >
+      {/* ─── 0. HEADER HALAMAN & FILTER SWITCH TYPE (DESAIN RAPI & TERSTRUKTUR) ─── */}
+      <DashboardHeader
+        lastUpdateFormatted={lastUpdateFormatted}
+        typeDesignFilter={typeDesignFilter}
+        setTypeDesignFilter={setTypeDesignFilter}
+      />
+
       {/* ─── BARIS ATAS: HERO ACCENT CARD + ANALYTICS BAR CHART ─── */}
       <section
         ref={refTopRow}

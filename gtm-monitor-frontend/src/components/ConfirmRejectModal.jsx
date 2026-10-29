@@ -1,12 +1,40 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, isRejecting }) {
+  const modalRef = useRef(null);
+
+  // Focus trap & Escape listener (R-32 & R-39)
   useEffect(() => {
     if (!isOpen) return;
+    const modalEl = modalRef.current;
+    if (!modalEl) return;
+
+    const focusableElements = modalEl.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const firstEl = focusableElements[0];
+    const lastEl = focusableElements[focusableElements.length - 1];
+
+    firstEl?.focus();
+
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isRejecting) {
         onCancel?.();
+        return;
+      }
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstEl) {
+            e.preventDefault();
+            lastEl?.focus();
+          }
+        } else {
+          if (document.activeElement === lastEl) {
+            e.preventDefault();
+            firstEl?.focus();
+          }
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -29,9 +57,7 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
         position: 'fixed',
         inset: 0,
         zIndex: 100005,
-        background: 'rgba(15, 23, 42, 0.75)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        background: 'rgba(15, 23, 42, 0.65)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -40,13 +66,14 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
       }}
     >
       <div
+        ref={modalRef}
         onClick={(e) => e.stopPropagation()}
         style={{
           position: 'relative',
           width: '100%',
           maxWidth: '440px',
           background: '#FFFFFF',
-          borderRadius: '24px',
+          borderRadius: '16px',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
           padding: '30px 26px 26px 26px',
           boxSizing: 'border-box',
@@ -60,14 +87,14 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)',
+            background: '#FEF2F2',
             border: '1px solid #FCA5A5',
             color: '#DC2626',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 18px auto',
-            boxShadow: '0 6px 16px rgba(220, 38, 38, 0.15)'
+            boxShadow: '0 4px 12px rgba(220, 38, 38, 0.12)'
           }}
         >
           <svg
@@ -158,7 +185,7 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
             style={{
               flex: 1,
               padding: '12px 16px',
-              borderRadius: '12px',
+              borderRadius: '10px',
               border: '1px solid #E2E8F0',
               background: '#F8FAFC',
               color: '#475569',
@@ -177,14 +204,14 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
             style={{
               flex: 1,
               padding: '12px 16px',
-              borderRadius: '12px',
-              border: 'none',
-              background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
+              borderRadius: '10px',
+              border: '1px solid #B91C1C',
+              background: '#DC2626',
               color: '#FFFFFF',
               fontSize: '13.5px',
               fontWeight: 800,
               cursor: isRejecting ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 14px rgba(220, 38, 38, 0.35)',
+              boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)',
               opacity: isRejecting ? 0.7 : 1,
               transition: 'all 0.15s ease'
             }}

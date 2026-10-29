@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export default function UploadModal({ data, onClose, onSubmit }) {
@@ -16,9 +16,38 @@ export default function UploadModal({ data, onClose, onSubmit }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
+  const modalRef = useRef(null);
+
+  // Focus trap & Escape listener (R-32 & R-39)
   useEffect(() => {
+    const modalEl = modalRef.current;
+    if (!modalEl) return;
+    const focusableElements = modalEl.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const firstEl = focusableElements[0];
+    const lastEl = focusableElements[focusableElements.length - 1];
+
+    firstEl?.focus();
+
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose?.();
+      if (e.key === 'Escape') {
+        onClose?.();
+        return;
+      }
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstEl) {
+            e.preventDefault();
+            lastEl?.focus();
+          }
+        } else {
+          if (document.activeElement === lastEl) {
+            e.preventDefault();
+            firstEl?.focus();
+          }
+        }
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -95,19 +124,21 @@ export default function UploadModal({ data, onClose, onSubmit }) {
       aria-labelledby="upload-modal-title"
       style={{
         position: 'fixed', inset: 0, zIndex: 99999,
-        background: 'rgba(15, 23, 42, 0.75)',
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(15, 23, 42, 0.65)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '20px', boxSizing: 'border-box'
       }}
     >
-      <div style={{
-        position: 'relative', width: '100%', maxWidth: '480px',
-        background: '#FFFFFF', borderRadius: '24px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
-        padding: '26px 28px', boxSizing: 'border-box',
-        animation: 'fadeIn 0.2s ease-out'
-      }}>
+      <div 
+        ref={modalRef}
+        style={{
+          position: 'relative', width: '100%', maxWidth: '480px',
+          background: '#FFFFFF', borderRadius: '16px',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+          padding: '26px 28px', boxSizing: 'border-box',
+          animation: 'fadeIn 0.2s ease-out'
+        }}
+      >
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
           <div>
@@ -239,13 +270,13 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {/* Upload Foto Dropzone — disembunyikan untuk Rekrutmen SF */}
           {actKey !== 'rekrutmen_sf' && (
             <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+              <label htmlFor="upload-modal-file-input" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
                 Foto Bukti Kegiatan {['branding_outlet', 'open_table', 'tsel_menyapa', 'bumdes'].includes(actKey) && <span style={{ color: '#DC2626' }}>*</span>}
               </label>
 
               {previewUrl ? (
                 <div style={{
-                  position: 'relative', width: '100%', height: '180px', borderRadius: '14px',
+                  position: 'relative', width: '100%', height: '180px', borderRadius: '12px',
                   overflow: 'hidden', border: '2px solid #10B981', background: '#0F172A'
                 }}>
                   <img src={previewUrl} alt="Preview Bukti Unggahan" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -263,11 +294,14 @@ export default function UploadModal({ data, onClose, onSubmit }) {
                   </button>
                 </div>
               ) : (
-                <label style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  height: '140px', borderRadius: '14px', border: '2px dashed #CBD5E1',
-                  background: '#F8FAFC', cursor: 'pointer', transition: 'all 0.2s', padding: '16px'
-                }}>
+                <label 
+                  htmlFor="upload-modal-file-input"
+                  style={{
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    height: '140px', borderRadius: '12px', border: '2px dashed #CBD5E1',
+                    background: '#F8FAFC', cursor: 'pointer', transition: 'all 0.2s', padding: '16px'
+                  }}
+                >
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '8px' }}>
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                     <polyline points="17 8 12 3 7 8" />
@@ -276,6 +310,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
                   <span style={{ fontSize: '13px', fontWeight: 700, color: '#334155' }}>Pilih File Foto Bukti</span>
                   <span style={{ fontSize: '11.5px', color: '#64748B', marginTop: '2px' }}>Format JPG, PNG (Max 5MB)</span>
                   <input
+                    id="upload-modal-file-input"
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
@@ -292,7 +327,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
               type="button"
               onClick={onClose}
               style={{
-                padding: '11px 20px', borderRadius: '12px',
+                padding: '11px 20px', borderRadius: '10px',
                 border: '1px solid #E2E8F0', background: '#F8FAFC',
                 color: '#475569', fontSize: '13.5px', fontWeight: 700,
                 cursor: 'pointer'
@@ -303,10 +338,10 @@ export default function UploadModal({ data, onClose, onSubmit }) {
             <button
               type="submit"
               style={{
-                padding: '11px 22px', borderRadius: '12px', border: 'none',
-                background: 'linear-gradient(135deg, #FF5E00 0%, #C8102E 100%)',
+                padding: '11px 22px', borderRadius: '10px', border: '1px solid #991B1B',
+                background: '#C8102E',
                 color: '#FFFFFF', fontSize: '13.5px', fontWeight: 800,
-                cursor: 'pointer', boxShadow: '0 4px 14px rgba(200, 16, 46, 0.35)'
+                cursor: 'pointer', boxShadow: '0 2px 8px rgba(200, 16, 46, 0.25)'
               }}
             >
               Kirim

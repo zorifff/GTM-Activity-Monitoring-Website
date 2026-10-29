@@ -160,8 +160,6 @@ export default function AppLayout() {
             isAdmin={isAdmin}
             onLoginClick={() => navigate(PATHS.login)}
             handleLogout={handleLogout}
-            typeDesignFilter={typeDesignFilter}
-            setTypeDesignFilter={setTypeDesignFilter}
             goDashboard={goDashboard}
             goUpload={goUpload}
             goAdmin={goAdmin}

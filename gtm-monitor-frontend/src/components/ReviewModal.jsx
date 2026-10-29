@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ACT_TYPES, actMeta } from '../utils';
 import ConfirmRejectModal from './ConfirmRejectModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
@@ -12,20 +12,48 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
   const [isDeleting, setIsDeleting] = useState(false);
   const [verifyingId, setVerifyingId] = useState(null);
 
+  const modalRef = useRef(null);
+
   useEffect(() => {
     if (modalData?.activities) {
       setLocalActivities(modalData.activities);
     }
   }, [modalData]);
 
-  // Keyboard Escape listener for dialog closing (R-32)
+  // Focus trap & Escape listener for dialog and lightbox (R-32 & R-39)
   useEffect(() => {
+    const modalEl = modalRef.current;
+    if (!modalEl) return;
+    const focusableElements = modalEl.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const firstEl = focusableElements[0];
+    const lastEl = focusableElements[focusableElements.length - 1];
+
+    if (!previewPhoto) {
+      firstEl?.focus();
+    }
+
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         if (previewPhoto) {
           setPreviewPhoto(null);
         } else {
           closeModal();
+        }
+        return;
+      }
+      if (e.key === 'Tab' && !previewPhoto) {
+        if (e.shiftKey) {
+          if (document.activeElement === firstEl) {
+            e.preventDefault();
+            lastEl?.focus();
+          }
+        } else {
+          if (document.activeElement === lastEl) {
+            e.preventDefault();
+            firstEl?.focus();
+          }
         }
       }
     };
@@ -158,12 +186,16 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
       aria-modal="true"
       aria-labelledby="review-modal-title"
       onClick={closeModal}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '24px' }}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '24px' }}
     >
-      <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '14px', width: '100%', maxWidth: '720px', maxHeight: '85vh', overflowY: 'auto' }}>
+      <div 
+        ref={modalRef}
+        onClick={e => e.stopPropagation()} 
+        style={{ background: '#fff', borderRadius: '16px', width: '100%', maxWidth: '720px', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)' }}
+      >
         <div style={{ padding: '22px 26px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <div id="review-modal-title" style={{ fontSize: '17px', fontWeight: 800, color: '#0f172a' }}>{modalData.pName}</div>
+            <div id="review-modal-title" style={{ fontFamily: "var(--font-heading)", fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.pName}</div>
             <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '3px' }}>{modalData.wok} · {modalData.bName}</div>
           </div>
           <button
@@ -181,19 +213,19 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '22px' }}>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
               <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Available</div>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.totalAvai}</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalAvai}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
               <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Used</div>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.totalUsed}</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalUsed}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
               <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Port</div>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.totalPort}</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalPort}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
               <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Jumlah ODP</div>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.odpCount}</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.odpCount}</div>
             </div>
           </div>
 
@@ -240,7 +272,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                 </div>
 
                 {photoList.length === 0 ? (
-                  <div style={{ fontSize: '12.5px', color: '#94a3b8', fontStyle: 'italic' }}>
+                  <div style={{ fontSize: '12.5px', color: '#64748B', fontStyle: 'italic' }}>
                     {actType.key === 'rekrutmen_sf' ? 'Belum ada data kegiatan' : 'Belum ada data / foto kegiatan'}
                   </div>
                 ) : (
@@ -415,8 +447,10 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '16px' }}>
               <div style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a' }}>{previewPhoto.title}</div>
               <button 
+                type="button"
                 onClick={() => setPreviewPhoto(null)} 
-                style={{ border: 'none', background: '#f1f5f9', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontWeight: 700, fontSize: '14px', color: '#64748b' }}
+                aria-label="Tutup pratinjau foto"
+                style={{ border: 'none', background: '#f1f5f9', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontWeight: 700, fontSize: '14px', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 ✕
               </button>
@@ -431,9 +465,14 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                 href={previewPhoto.url} 
                 target="_blank" 
                 rel="noreferrer" 
-                style={{ fontSize: '13px', color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}
+                style={{ fontSize: '13px', color: '#2563EB', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
-                🔗 Buka Foto Ukuran Asli di Tab Baru
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                <span>Buka Foto Ukuran Asli di Tab Baru</span>
               </a>
             </div>
           </div>

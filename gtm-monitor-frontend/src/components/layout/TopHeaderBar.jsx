@@ -7,8 +7,6 @@ export default function TopHeaderBar({
   isAdmin,
   onLoginClick,
   handleLogout,
-  typeDesignFilter = 'ALL',
-  setTypeDesignFilter,
   goDashboard,
   goUpload,
   goAdmin,
@@ -119,60 +117,9 @@ export default function TopHeaderBar({
         </div>
       </div>
 
-      {/* ─── KANAN: Filter Segmented + Lonceng Notifikasi + Profil Pengguna ─── */}
+      {/* ─── KANAN: Lonceng Notifikasi + Profil Pengguna ─── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        {/* 1. Filter Tipe Proyek: Segmented pill toggle */}
-        {setTypeDesignFilter && (
-          <div
-            className="header-segmented-filter"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              background: '#F1F5F9',
-              padding: '3px',
-              borderRadius: '10px',
-              border: '1px solid #E2E8F0'
-            }}
-          >
-            {[
-              { id: 'ALL', label: 'Semua Tipe' },
-              { id: 'Greenfield', label: 'Greenfield' },
-              { id: 'Brownfield', label: 'Brownfield' }
-            ].map((f) => {
-              const isActive = typeDesignFilter === f.id;
-              return (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setTypeDesignFilter(f.id)}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    fontSize: '12px',
-                    fontWeight: isActive ? 700 : 500,
-                    cursor: 'pointer',
-                    background: isActive ? '#FFFFFF' : 'transparent',
-                    color: isActive ? '#0F172A' : '#64748B',
-                    boxShadow: isActive ? '0 1px 3px rgba(15, 23, 42, 0.08)' : 'none',
-                    transition: 'all 0.15s ease',
-                    whiteSpace: 'nowrap'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.color = '#0F172A';
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.color = '#64748B';
-                  }}
-                >
-                  {f.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* 2. Lonceng Notifikasi: Menampilkan badge jumlah aktivitas menunggu verifikasi */}
+        {/* 1. Lonceng Notifikasi: Menampilkan badge jumlah aktivitas menunggu verifikasi */}
         <div ref={notifRef} style={{ position: 'relative' }}>
           <button
             type="button"
