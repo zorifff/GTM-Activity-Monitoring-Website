@@ -72,7 +72,13 @@ export function useExecutiveSummary(branches) {
       grandTotalLop,
       grandTotalDone,
       grandTotalNotYet,
-      grandProgressPct
+      grandProgressPct,
+      grandTotals: {
+        lop: grandTotalLop,
+        done: grandTotalDone,
+        notYet: grandTotalNotYet,
+        progressPct: grandProgressPct
+      }
     };
   }, [branches]);
 }

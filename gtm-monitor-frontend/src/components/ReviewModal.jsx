@@ -18,6 +18,21 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
     }
   }, [modalData]);
 
+  // Keyboard Escape listener for dialog closing (R-32)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (previewPhoto) {
+          setPreviewPhoto(null);
+        } else {
+          closeModal();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [closeModal, previewPhoto]);
+
   if (!modalData) return null;
 
   const handleVerify = async (actKey, photoId) => {
@@ -138,33 +153,46 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
   };
 
   return (
-    <div onClick={closeModal} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '24px' }}>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="review-modal-title"
+      onClick={closeModal}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '24px' }}
+    >
       <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '14px', width: '100%', maxWidth: '720px', maxHeight: '85vh', overflowY: 'auto' }}>
         <div style={{ padding: '22px 26px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <div style={{ fontSize: '17px', fontWeight: 800, color: '#0f172a' }}>{modalData.pName}</div>
+            <div id="review-modal-title" style={{ fontSize: '17px', fontWeight: 800, color: '#0f172a' }}>{modalData.pName}</div>
             <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '3px' }}>{modalData.wok} · {modalData.bName}</div>
           </div>
-          <button onClick={closeModal} style={{ border: 'none', background: '#f1f5f9', width: '28px', height: '28px', borderRadius: '8px', cursor: 'pointer', color: '#64748b' }}>✕</button>
+          <button
+            type="button"
+            onClick={closeModal}
+            aria-label="Tutup dialog review proyek"
+            style={{ border: 'none', background: '#f1f5f9', width: '32px', height: '32px', borderRadius: '8px', cursor: 'pointer', color: '#64748b', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            ✕
+          </button>
         </div>
         
         <div style={{ padding: '20px 26px' }}>
           {/* Project Stats Summary */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '22px' }}>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Total Available</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Available</div>
               <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.totalAvai}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Total Used</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Used</div>
               <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.totalUsed}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Total Port</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Port</div>
               <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.totalPort}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Jumlah ODP</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Jumlah ODP</div>
               <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.odpCount}</div>
             </div>
           </div>
@@ -223,16 +251,18 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                         <div key={ph.id || idx} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px 12px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
                           {actType.key !== 'rekrutmen_sf' && (
                             ph.photoUrl && ph.photoUrl !== 'uploading...' ? (
-                              <div
+                              <button
+                                type="button"
                                 onClick={() => setPreviewPhoto({ url: ph.photoUrl, title: `${actType.label} (${idx + 1}) - ${modalData.pName}` })}
-                                style={{ position: 'relative', width: '90px', height: '65px', borderRadius: '6px', overflow: 'hidden', border: '1px solid #cbd5e1', cursor: 'pointer', flexShrink: 0 }}
+                                aria-label={`Lihat foto bukti ${actType.label} #${idx + 1}`}
+                                style={{ position: 'relative', width: '90px', height: '65px', borderRadius: '6px', overflow: 'hidden', border: '1px solid #cbd5e1', cursor: 'pointer', flexShrink: 0, padding: 0, background: 'none' }}
                                 title="Klik untuk melihat foto lebih besar"
                               >
-                                <img src={ph.photoUrl} alt="Foto Bukti" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={ph.photoUrl} alt={`Foto Bukti ${actType.label}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                                 <div style={{ position: 'absolute', bottom: 0, inset: 'auto 0 0 0', background: 'rgba(15,23,42,0.75)', color: '#fff', fontSize: '9px', fontWeight: 700, textAlign: 'center', padding: '2px 0' }}>
-                                  🔍 Lihat
+                                  Lihat
                                 </div>
-                              </div>
+                              </button>
                             ) : (
                               <div style={{ width: '90px', height: '65px', borderRadius: '6px', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#64748b', fontWeight: 600, textAlign: 'center' }}>
                                 Tanpa Foto

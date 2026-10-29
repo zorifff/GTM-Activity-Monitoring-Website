@@ -1,11 +1,26 @@
+import { useEffect } from 'react';
+
 // ─── SESSION EXPIRED (15 MIN INACTIVITY / SESI TIDAK SAH) POPUP MODAL ───
 export default function SessionExpiredModal({ sessionExpiredNotice, setSessionExpiredNotice }) {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setSessionExpiredNotice(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setSessionExpiredNotice]);
+
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 100000,
-      background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(8px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
-    }}>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="session-expired-title"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 100000,
+        background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(8px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
+      }}
+    >
       <div style={{
         position: 'relative', width: '100%', maxWidth: '420px',
         background: '#FFFFFF', borderRadius: '24px',
@@ -25,7 +40,7 @@ export default function SessionExpiredModal({ sessionExpiredNotice, setSessionEx
           </svg>
         </div>
 
-        <h3 style={{ fontSize: '19px', fontWeight: 800, color: '#0F172A', margin: '0 0 8px 0', fontFamily: "'Outfit', sans-serif" }}>
+        <h3 id="session-expired-title" style={{ fontSize: '19px', fontWeight: 800, color: '#0F172A', margin: '0 0 8px 0', fontFamily: "var(--font-heading)" }}>
           {sessionExpiredNotice === 'invalid' ? 'Sesi Berakhir' : 'Sesi Berakhir (15 Menit)'}
         </h3>
 

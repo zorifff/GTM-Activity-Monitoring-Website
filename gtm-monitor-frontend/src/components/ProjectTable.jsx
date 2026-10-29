@@ -62,8 +62,11 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
         className="table-row"
         style={{ gridTemplateColumns: tableGrid }}
       >
-        <div
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' }}
+        <button
+          type="button"
+          aria-label={isExpanded ? `Ciutkan detail proyek ${p.name}` : `Perluas detail proyek ${p.name}`}
+          aria-expanded={isExpanded}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', background: 'transparent', border: 'none', padding: 0 }}
           onClick={() => toggleProject(p.name)}
         >
           <svg
@@ -82,7 +85,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
           >
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
-        </div>
+        </button>
         <div
           style={{ fontSize: '13.5px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'pointer' }}
           onClick={() => toggleProject(p.name)}
@@ -405,9 +408,10 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         <input
           type="text"
           placeholder={`Cari ${col === 'wok' ? 'WOK' : 'nilai'}...`}
+          aria-label={`Cari filter ${col}`}
           value={filters[col].search}
           onChange={e => updateFilter(col, 'search', e.target.value)}
-          style={{ width: '100%', boxSizing: 'border-box', padding: '6px 12px', border: '1px solid #CBD5E1', borderRadius: '50px', marginBottom: '8px', fontSize: '11.5px', outline: 'none' }}
+          style={{ width: '100%', boxSizing: 'border-box', padding: '6px 12px', border: '1px solid #CBD5E1', borderRadius: '8px', marginBottom: '8px', fontSize: '11.5px' }}
         />
 
         <div style={{ maxHeight: '160px', overflowY: 'auto', paddingRight: '2px' }}>
@@ -440,7 +444,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   }}
                 />
                 <span style={{ lineHeight: '1.3', fontSize: '11.5px', color: '#0F172A' }}>
-                  {strVal} <span style={{ color: '#94A3B8', fontSize: '10.5px', fontWeight: 600 }}>({valueCounts[v]})</span>
+                  {strVal} <span style={{ color: '#64748B', fontSize: '10.5px', fontWeight: 600 }}>({valueCounts[v]})</span>
                 </span>
               </label>
             );
@@ -484,22 +488,50 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             <div>Nama Proyek</div>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span style={{ display: 'flex', alignItems: 'center', paddingTop: '2px' }}>Branch / WOK</span>
-              <div onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === 'wok' ? null : 'wok'); }} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: filters.wok.sort || filters.wok.unchecked.length > 0 ? '#C8102E' : '#94a3b8', padding: '2px' }}><FilterIcon /></div>
+              <button
+                type="button"
+                aria-label="Filter kolom Branch dan WOK"
+                onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === 'wok' ? null : 'wok'); }}
+                style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', color: filters.wok.sort || filters.wok.unchecked.length > 0 ? '#C8102E' : '#64748b', padding: '2px' }}
+              >
+                <FilterIcon />
+              </button>
               {renderFilterPopup('wok')}
             </div>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span style={{ display: 'flex', alignItems: 'center', paddingTop: '2px' }}>Used</span>
-              <div onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === 'usedTotal' ? null : 'usedTotal'); }} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: filters.usedTotal.sort || filters.usedTotal.unchecked.length > 0 ? '#C8102E' : '#94a3b8', padding: '2px' }}><FilterIcon /></div>
+              <button
+                type="button"
+                aria-label="Filter kolom Used"
+                onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === 'usedTotal' ? null : 'usedTotal'); }}
+                style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', color: filters.usedTotal.sort || filters.usedTotal.unchecked.length > 0 ? '#C8102E' : '#64748b', padding: '2px' }}
+              >
+                <FilterIcon />
+              </button>
               {renderFilterPopup('usedTotal')}
             </div>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span style={{ display: 'flex', alignItems: 'center', paddingTop: '2px' }}>Available</span>
-              <div onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === 'avaiTotal' ? null : 'avaiTotal'); }} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: filters.avaiTotal.sort || filters.avaiTotal.unchecked.length > 0 ? '#C8102E' : '#94a3b8', padding: '2px' }}><FilterIcon /></div>
+              <button
+                type="button"
+                aria-label="Filter kolom Available"
+                onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === 'avaiTotal' ? null : 'avaiTotal'); }}
+                style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', color: filters.avaiTotal.sort || filters.avaiTotal.unchecked.length > 0 ? '#C8102E' : '#64748b', padding: '2px' }}
+              >
+                <FilterIcon />
+              </button>
               {renderFilterPopup('avaiTotal')}
             </div>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span style={{ display: 'flex', alignItems: 'center', paddingTop: '2px' }}>Total</span>
-              <div onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === 'totalPort' ? null : 'totalPort'); }} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: filters.totalPort.sort || filters.totalPort.unchecked.length > 0 ? '#C8102E' : '#94a3b8', padding: '2px' }}><FilterIcon /></div>
+              <button
+                type="button"
+                aria-label="Filter kolom Total"
+                onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === 'totalPort' ? null : 'totalPort'); }}
+                style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', color: filters.totalPort.sort || filters.totalPort.unchecked.length > 0 ? '#C8102E' : '#64748b', padding: '2px' }}
+              >
+                <FilterIcon />
+              </button>
               {renderFilterPopup('totalPort')}
             </div>
             {ACT_TYPES.map(t => (

@@ -1,7 +1,20 @@
+import { useEffect } from 'react';
+
 // Custom Logout Confirmation Modal
 export default function LogoutConfirmModal({ setShowLogoutConfirmModal, executeLogout }) {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setShowLogoutConfirmModal(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setShowLogoutConfirmModal]);
+
   return (
     <div 
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="logout-confirm-title"
       onClick={() => setShowLogoutConfirmModal(false)}
       style={{ 
         position: 'fixed', 

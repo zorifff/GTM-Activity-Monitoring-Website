@@ -1,8 +1,23 @@
+import { useEffect } from 'react';
+
 // Modal Konfirmasi Hapus Program
 export default function DeleteProgramConfirmModal({ deleteProgramMonth, deleteProgramTarget, deleteLoading, setShowDeleteConfirmModal, handleExecuteDeleteProgram }) {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !deleteLoading) {
+        setShowDeleteConfirmModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [deleteLoading, setShowDeleteConfirmModal]);
+
   return (
     <div
-      onClick={() => setShowDeleteConfirmModal(false)}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-prog-title"
+      onClick={() => { if (!deleteLoading) setShowDeleteConfirmModal(false); }}
       style={{
         position: 'fixed',
         inset: 0,
@@ -53,7 +68,7 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
           </svg>
         </div>
 
-        <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#0F172A', margin: '0 0 10px 0', fontFamily: "'Outfit', sans-serif" }}>
+        <h3 id="delete-prog-title" style={{ fontSize: '20px', fontWeight: 900, color: '#0F172A', margin: '0 0 10px 0', fontFamily: "var(--font-heading)" }}>
           Konfirmasi Hapus Program
         </h3>
 

@@ -1,6 +1,18 @@
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, isDeleting }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isDeleting) {
+        onCancel?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isDeleting, onCancel]);
+
   if (!isOpen || !data) return null;
 
   const projectName = data.projectName || data.pName;
@@ -9,7 +21,10 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
 
   return createPortal(
     <div
-      onClick={(e) => { e.stopPropagation(); onCancel(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-delete-title"
+      onClick={(e) => { e.stopPropagation(); if (!isDeleting) onCancel(); }}
       style={{
         position: 'fixed',
         inset: 0,
@@ -74,12 +89,13 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
 
         {/* Title */}
         <h3
+          id="confirm-delete-title"
           style={{
             fontSize: '20px',
             fontWeight: 900,
             color: '#0F172A',
             margin: '0 0 10px 0',
-            fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif"
+            fontFamily: "var(--font-heading)"
           }}
         >
           Hapus Kegiatan Ini?

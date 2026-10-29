@@ -37,7 +37,7 @@ export function useOdpSummary(branches, importMeta, typeDesignFilter) {
     });
     return [
       { label: 'Green', count: counts.GREEN || 0, color: '#16a34a' },
-      { label: 'Yellow', count: counts.YELLOW || 0, color: '#d97706' },
+      { label: 'Yellow', count: counts.YELLOW || 0, color: '#FFFF00' },
       { label: 'Orange', count: counts.ORANGE || 0, color: '#f97316' },
       { label: 'Red', count: counts.RED || 0, color: '#dc2626' },
       { label: 'Black', count: counts.BLACK || 0, color: '#334155' }

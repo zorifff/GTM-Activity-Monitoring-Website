@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback, useLayoutEffect, useEffect } from 'react';
 import { SESSION_1_MONTHS, SESSION_2_MONTHS, PROGRAM_PLACEHOLDERS } from '../../constants/programs';
 
-// Menu PROGRAM di navigasi atas: dropdown periode (level 1) + daftar program per bulan (level 2)
-export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData, setActiveProgramModal }) {
+// Menu PROGRAM di navigasi: dropdown periode (level 1) + daftar program per bulan (level 2)
+export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData, setActiveProgramModal, customButton }) {
   const programTabRef = useRef(null);
   const programMenuRef = useRef(null);
   const [isProgramDropdownOpen, setIsProgramDropdownOpen] = useState(false);
@@ -12,6 +12,13 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
   const updateDropdownCoords = useCallback(() => {
     if (programTabRef.current) {
       const rect = programTabRef.current.getBoundingClientRect();
+      if (rect.left < 280) {
+        setDropdownCoords({
+          top: Math.min(rect.top, window.innerHeight - 380),
+          left: rect.right + 115
+        });
+        return;
+      }
       const dropdownWidth = 220;
       let targetLeft = rect.left + rect.width / 2;
       const margin = 12;
@@ -58,6 +65,20 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
 
   return (
     <div ref={programMenuRef} style={{ position: 'relative' }}>
+      {customButton ? (
+        customButton({
+          onClick: () => {
+            if (!user) {
+              setShowLoginModal(true);
+              return;
+            }
+            if (!isProgramDropdownOpen) updateDropdownCoords();
+            setIsProgramDropdownOpen(!isProgramDropdownOpen);
+          },
+          isOpen: isProgramDropdownOpen,
+          btnRef: programTabRef
+        })
+      ) : (
       <button
         ref={programTabRef}
         type="button"
@@ -96,6 +117,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>
+      )}
 
       {/* LEVEL 1 DROPDOWN (FIXED POSITIONING UNTUK MENGHINDARI OVERFLOW CLIPPING) */}
       {user && isProgramDropdownOpen && dropdownCoords.top > 0 && (

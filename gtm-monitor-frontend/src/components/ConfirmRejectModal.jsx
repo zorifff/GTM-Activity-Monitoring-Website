@@ -1,6 +1,18 @@
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, isRejecting }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isRejecting) {
+        onCancel?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isRejecting, onCancel]);
+
   if (!isOpen || !data) return null;
 
   const projectName = data.projectName || data.pName;
@@ -9,7 +21,10 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
 
   return createPortal(
     <div
-      onClick={(e) => { e.stopPropagation(); onCancel(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-reject-title"
+      onClick={(e) => { e.stopPropagation(); if (!isRejecting) onCancel(); }}
       style={{
         position: 'fixed',
         inset: 0,
@@ -73,12 +88,13 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
 
         {/* Title */}
         <h3
+          id="confirm-reject-title"
           style={{
             fontSize: '20px',
             fontWeight: 900,
             color: '#0F172A',
             margin: '0 0 10px 0',
-            fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif"
+            fontFamily: "var(--font-heading)"
           }}
         >
           Tolak Verifikasi Kegiatan?
