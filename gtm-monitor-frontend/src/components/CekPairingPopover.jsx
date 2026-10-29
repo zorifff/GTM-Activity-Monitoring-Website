@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { usePairingSearch } from '../hooks/usePairingSearch';
 
@@ -10,6 +10,21 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
   const [results, setResults] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen && !isModalOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (isModalOpen) {
+          setIsModalOpen(false);
+        } else if (isOpen) {
+          onClose?.();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isModalOpen, onClose]);
 
   const handleSearch = async (e) => {
     if (e) e.preventDefault();
@@ -182,7 +197,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
               <div style={{ fontSize: '10px', fontWeight: 800, color: '#C8102E', textTransform: 'uppercase', letterSpacing: '1.2px' }}>
                 TELKOMSEL ONE PAIRING
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 900, color: '#0F172A', fontFamily: "'Outfit', sans-serif" }}>
+              <div style={{ fontSize: '15px', fontWeight: 900, color: '#0F172A', fontFamily: "var(--font-heading)" }}>
                 Pencarian Data Pairing
               </div>
             </div>
@@ -190,6 +205,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             <button
               type="button"
               onClick={onClose}
+              aria-label="Tutup menu pencarian pairing"
               style={{
                 border: 'none',
                 background: '#F1F5F9',
@@ -213,6 +229,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
+                aria-label="Kata kunci pencarian pairing"
                 placeholder="Cari bb_id, msisdn, atau order_id..."
                 value={query}
                 onChange={(e) => {
@@ -227,7 +244,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                   border: '1px solid #CBD5E1',
                   fontSize: '13px',
                   fontWeight: 600,
-                  outline: 'none',
                   background: '#F8FAFC',
                   color: '#0F172A',
                   boxSizing: 'border-box'
@@ -270,7 +286,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
               style={{
                 width: '100%',
                 padding: '11px 20px',
-                borderRadius: '50px',
+                borderRadius: '10px',
                 border: 'none',
                 background: loading || !query.trim() ? '#CBD5E1' : 'linear-gradient(135deg, #C8102E 0%, #FF5E00 100%)',
                 color: '#FFFFFF',
@@ -293,6 +309,9 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
       {/* ─── TRANSPOSED TELKOMSEL RESULT POP-UP MODAL (Mounted to document.body via createPortal) ─── */}
       {isModalOpen && activeRecord && createPortal(
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pairing-modal-title"
           className="pairing-transposed-modal"
           onClick={() => setIsModalOpen(false)}
           style={{
@@ -334,7 +353,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 <div style={{ fontSize: '11px', fontWeight: 800, color: '#C8102E', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>
                   TELKOMSEL ONE PAIRING DATA
                 </div>
-                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#0F172A', fontFamily: "'Outfit', sans-serif" }}>
+                <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#0F172A', fontFamily: "var(--font-heading)" }}>
                   Hasil Deteksi Pairing
                 </h3>
               </div>
@@ -342,6 +361,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
+                aria-label="Tutup dialog hasil pairing"
                 style={{
                   border: 'none',
                   background: '#E2E8F0',

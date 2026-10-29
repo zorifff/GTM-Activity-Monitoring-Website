@@ -27,9 +27,9 @@ export const BRANCH_WOK_MATRIX = [
 ];
 
 export const ACT_TYPES_ORDER = [
-  { key: 'tsel_menyapa', shortLabel: 'Tsel Menyapa' },
-  { key: 'branding_outlet', shortLabel: 'Branding Outlet' },
-  { key: 'bumdes', shortLabel: 'BUMDES' },
-  { key: 'rekrutmen_sf', shortLabel: 'Rekrut SF' },
-  { key: 'open_table', shortLabel: 'Open Table' }
+  { key: 'tsel_menyapa', shortLabel: 'Tsel Menyapa', label: 'Tsel Menyapa' },
+  { key: 'branding_outlet', shortLabel: 'Branding Outlet', label: 'Branding Outlet' },
+  { key: 'bumdes', shortLabel: 'BUMDES', label: 'BUMDES' },
+  { key: 'rekrutmen_sf', shortLabel: 'Rekrut SF', label: 'Rekrut SF' },
+  { key: 'open_table', shortLabel: 'Open Table', label: 'Open Table' }
 ];

@@ -207,38 +207,38 @@ export default function TopNav({
                 background: showProfileModal ? '#F1F5F9' : 'rgba(248, 250, 252, 0.8)',
                 padding: '6px 14px 6px 6px',
                 borderRadius: '50px',
-                border: '1px solid #E2E8F0',
+                border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 outline: 'none'
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = '#F1F5F9'; e.currentTarget.style.borderColor = '#CBD5E1'; }}
-              onMouseLeave={(e) => { if (!showProfileModal) { e.currentTarget.style.background = 'rgba(248, 250, 252, 0.8)'; e.currentTarget.style.borderColor = '#E2E8F0'; } }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#F1F5F9'; }}
+              onMouseLeave={(e) => { if (!showProfileModal) { e.currentTarget.style.background = 'transparent'; } }}
             >
               <div 
                 className="nav-avatar-circle"
                 style={{
-                  width: '32px',
-                  height: '32px',
+                  width: '30px',
+                  height: '30px',
                   borderRadius: '50%',
-                  background: '#ED0226',
-                  color: '#FFFFFF',
-                  fontWeight: 800,
-                  fontSize: '13px',
+                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0
                 }}
               >
-                {(user.fullName || user.username || 'User').charAt(0).toUpperCase()}
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
               </div>
               <div className="nav-profile-text-container" style={{ textAlign: 'left' }}>
                 <div className="nav-profile-name" style={{ fontSize: '12.5px', fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>
-                  {user.fullName || user.username}
+                  admin
                 </div>
                 <div className="nav-profile-role" style={{ fontSize: '10px', color: '#64748B', fontWeight: 600 }}>
-                  {isAdmin ? 'Administrator Pusat GTM' : formatBranch(user.branchName || user.branch?.name)}
+                  admin 1
                 </div>
               </div>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: showProfileModal ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease', marginLeft: '4px', flexShrink: 0 }}>

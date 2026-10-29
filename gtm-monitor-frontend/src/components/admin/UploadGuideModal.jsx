@@ -1,7 +1,21 @@
+import { useEffect } from 'react';
+
 // Modal Panduan & Aturan Upload File (Program / Data ODP / Tsel One Pairing)
 export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }) {
+  useEffect(() => {
+    if (!activeInfoModal) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setActiveInfoModal(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeInfoModal, setActiveInfoModal]);
+
   return (
     <div 
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="guide-modal-title"
       onClick={() => setActiveInfoModal(null)}
       style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
     >
@@ -17,7 +31,7 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
               i
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#0F172A', fontFamily: "'Outfit', sans-serif" }}>
+              <h3 id="guide-modal-title" style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#0F172A', fontFamily: "var(--font-heading)" }}>
                 Panduan &amp; Aturan File Upload
               </h3>
               <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>
@@ -31,7 +45,9 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
           </div>
 
           <button
+            type="button"
             onClick={() => setActiveInfoModal(null)}
+            aria-label="Tutup panduan upload file"
             style={{ border: 'none', background: '#F1F5F9', color: '#64748B', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', fontWeight: 800, fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             ✕
@@ -127,10 +143,11 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
         {/* Footer Actions */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '22px' }}>
           <button
+            type="button"
             onClick={() => setActiveInfoModal(null)}
             style={{
               padding: '10px 24px',
-              borderRadius: '50px',
+              borderRadius: '10px',
               border: 'none',
               background: 'linear-gradient(135deg, #0F172A 0%, #334155 100%)',
               color: '#FFFFFF',

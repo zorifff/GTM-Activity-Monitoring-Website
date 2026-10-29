@@ -107,7 +107,7 @@ const BranchView = memo(function BranchView({
             <button
               type="button"
               onClick={goDashboard}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '50px', border: '1px solid #E2E8F0', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#64748B', cursor: 'pointer', marginBottom: '10px' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '10px', border: '1px solid #E2E8F0', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#64748B', cursor: 'pointer', marginBottom: '10px' }}
             >
               ← Kembali ke Monitoring
             </button>
@@ -115,7 +115,7 @@ const BranchView = memo(function BranchView({
           <div style={{ textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2.5px', color: '#FF5E00', fontWeight: 800, marginBottom: '2px' }}>
             DETAIL BRANCH GTM
           </div>
-          <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '28px', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.5px' }}>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.5px' }}>
             Branch {formatBranch(branch.name)}
           </h1>
         </div>
@@ -127,20 +127,20 @@ const BranchView = memo(function BranchView({
           <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
             Total Proyek Greenfield
           </div>
-          <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 900, color: '#0F172A', marginTop: '4px' }}>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: '24px', fontWeight: 900, color: '#0F172A', marginTop: '4px' }}>
             {priorityProjects.length} <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 600 }}>Proyek</span>
           </div>
-          <div style={{ fontSize: '12px', color: '#94A3B8', marginTop: '2px', fontWeight: 500 }}>OCC &lt; 35% &amp; ODP &gt; 1</div>
+          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>OCC &lt; 35% &amp; ODP &gt; 1</div>
         </div>
 
         <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.02)' }}>
           <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
             Total ODP &amp; Kapasitas
           </div>
-          <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 900, color: '#0F172A', marginTop: '4px' }}>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: '24px', fontWeight: 900, color: '#0F172A', marginTop: '4px' }}>
             {stats.odpCount} <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 600 }}>ODP</span>
           </div>
-          <div style={{ fontSize: '12px', color: '#94A3B8', marginTop: '2px', fontWeight: 500 }}>
+          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
             {stats.totalUsed} / {stats.totalPort} port ({stats.occRate}%)
           </div>
         </div>
@@ -149,10 +149,10 @@ const BranchView = memo(function BranchView({
           <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
             Status Verifikasi Aktivitas
           </div>
-          <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 900, color: '#16A34A', marginTop: '4px' }}>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: '24px', fontWeight: 900, color: '#16A34A', marginTop: '4px' }}>
             {stats.actVerified} <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 600 }}>Terverifikasi</span>
           </div>
-          <div style={{ fontSize: '12px', color: '#94A3B8', marginTop: '2px', fontWeight: 500 }}>
+          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
             {stats.actUploaded} Menunggu Verifikasi
           </div>
         </div>
@@ -179,7 +179,7 @@ const BranchView = memo(function BranchView({
             fontWeight: 800,
             fontSize: '13px',
             padding: '8px 18px',
-            borderRadius: '50px',
+            borderRadius: '10px',
             boxShadow: '0 2px 8px rgba(16, 185, 129, 0.15)',
             transition: 'all 0.2s ease',
             flexShrink: 0
@@ -199,7 +199,8 @@ const BranchView = memo(function BranchView({
           <input
             type="text"
             className="search-input-field"
-            placeholder={`🔍 Cari proyek / WOK / ODP di branch ${formatBranch(branch.name)}...`}
+            aria-label={`Cari proyek di branch ${formatBranch(branch.name)}`}
+            placeholder={`Cari proyek, WOK, atau ODP di branch ${formatBranch(branch.name)}...`}
             value={search}
             onChange={e => setSearch(e.target.value)}
           />

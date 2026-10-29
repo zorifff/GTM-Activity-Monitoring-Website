@@ -75,6 +75,8 @@ export function useGtmMonitoring(branches, typeDesignFilter) {
         return {
           name: wokName,
           occRate: wokOccRate,
+          totalUsed: wokUsed,
+          totalPort: wokTotal,
           delta: wokDelta,
           projCount: wokProjCount,
           actPct: wokActPct
@@ -83,6 +85,7 @@ export function useGtmMonitoring(branches, typeDesignFilter) {
 
       return {
         name: b.name, occRate, projCount: filteredProjs.length, actPct: st.actCompletionPct,
+        totalUsed: st.totalUsed, totalPort: st.totalPort,
         color: BRANCH_COLORS[bUpper] || BRANCH_COLORS[b.name] || '#64748b', delta, woks
       };
     }).sort((a, b) => a.occRate - b.occRate);

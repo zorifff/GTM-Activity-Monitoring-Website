@@ -873,7 +873,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                   TELKOMSEL GTM ACTIVITY MONITORING
                 </h4>
                 <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A', marginTop: '2px' }}>
-                  {program.sheetName} — {monthLabel || 'Agustus 2026'}
+                  {program.sheetName} · {monthLabel || 'Agustus 2026'}
                 </div>
               </div>
               <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', background: '#F8FAFC', padding: '4px 10px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>

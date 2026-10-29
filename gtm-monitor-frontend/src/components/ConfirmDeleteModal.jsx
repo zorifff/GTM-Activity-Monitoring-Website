@@ -1,6 +1,46 @@
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, isDeleting }) {
+  const modalRef = useRef(null);
+
+  // Focus trap & Escape listener (R-32 & R-39)
+  useEffect(() => {
+    if (!isOpen) return;
+    const modalEl = modalRef.current;
+    if (!modalEl) return;
+
+    const focusableElements = modalEl.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const firstEl = focusableElements[0];
+    const lastEl = focusableElements[focusableElements.length - 1];
+
+    firstEl?.focus();
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isDeleting) {
+        onCancel?.();
+        return;
+      }
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstEl) {
+            e.preventDefault();
+            lastEl?.focus();
+          }
+        } else {
+          if (document.activeElement === lastEl) {
+            e.preventDefault();
+            firstEl?.focus();
+          }
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isDeleting, onCancel]);
+
   if (!isOpen || !data) return null;
 
   const projectName = data.projectName || data.pName;
@@ -9,14 +49,15 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
 
   return createPortal(
     <div
-      onClick={(e) => { e.stopPropagation(); onCancel(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-delete-title"
+      onClick={(e) => { e.stopPropagation(); if (!isDeleting) onCancel(); }}
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 100006,
-        background: 'rgba(15, 23, 42, 0.75)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        background: 'rgba(15, 23, 42, 0.65)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -25,13 +66,14 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
       }}
     >
       <div
+        ref={modalRef}
         onClick={(e) => e.stopPropagation()}
         style={{
           position: 'relative',
           width: '100%',
           maxWidth: '440px',
           background: '#FFFFFF',
-          borderRadius: '24px',
+          borderRadius: '16px',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
           padding: '30px 26px 26px 26px',
           boxSizing: 'border-box',
@@ -45,14 +87,14 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
+            background: '#FFE4E6',
             border: '1px solid #FDA4AF',
             color: '#E11D48',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 18px auto',
-            boxShadow: '0 6px 16px rgba(225, 29, 72, 0.15)'
+            boxShadow: '0 4px 12px rgba(225, 29, 72, 0.12)'
           }}
         >
           <svg
@@ -74,12 +116,13 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
 
         {/* Title */}
         <h3
+          id="confirm-delete-title"
           style={{
             fontSize: '20px',
             fontWeight: 900,
             color: '#0F172A',
             margin: '0 0 10px 0',
-            fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif"
+            fontFamily: "var(--font-heading)"
           }}
         >
           Hapus Kegiatan Ini?
@@ -143,7 +186,7 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
             style={{
               flex: 1,
               padding: '12px 16px',
-              borderRadius: '12px',
+              borderRadius: '10px',
               border: '1px solid #E2E8F0',
               background: '#F8FAFC',
               color: '#475569',
@@ -162,14 +205,14 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
             style={{
               flex: 1,
               padding: '12px 16px',
-              borderRadius: '12px',
-              border: 'none',
-              background: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+              borderRadius: '10px',
+              border: '1px solid #BE123C',
+              background: '#E11D48',
               color: '#FFFFFF',
               fontSize: '13.5px',
               fontWeight: 800,
               cursor: isDeleting ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 14px rgba(225, 29, 72, 0.35)',
+              boxShadow: '0 2px 8px rgba(225, 29, 72, 0.25)',
               opacity: isDeleting ? 0.7 : 1,
               transition: 'all 0.15s ease'
             }}
