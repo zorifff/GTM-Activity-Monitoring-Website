@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "GTM Activity Monitoring — Pengujian API",
-    "description": "Pengujian black-box REST API GTM Activity Monitoring Jateng DIY. Jalankan terhadap server pengujian (npm run postman:server, port 3200) yang memakai SALINAN database — data Neon tidak berubah. Panduan: postman/PANDUAN-PENGUJIAN-POSTMAN.md",
+    "description": "Pengujian black-box REST API GTM Activity Monitoring Jateng DIY. Jalankan terhadap server pengujian (npm run postman:server, port 3200) yang memakai SALINAN database — data Neon tidak berubah. Panduan: postman/PANDUAN-PENGUJIAN-POSTMAN.md. Fitur Tsel One Pairing dan Program Bulanan tidak termasuk cakupan pengujian ini.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "event": [
@@ -19,7 +19,7 @@
   "item": [
     {
       "name": "00 Persiapan & Endpoint Umum",
-      "description": "Server menyala, header keamanan, 404 API, data program publik.",
+      "description": "Server menyala, header keamanan (Helmet/CSP), dan 404 API tetap berupa JSON.",
       "item": [
         {
           "name": "00.1 Health check",
@@ -61,49 +61,6 @@
                 "exec": [
                   "pm.test('Status 404', () => pm.response.to.have.status(404));",
                   "pm.test('Respons JSON (bukan halaman HTML)', () => pm.expect(pm.response.json().error).to.include('tidak ditemukan'));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "00.3 Daftar program (publik)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/programs"
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Berisi monthsData', () => pm.expect(pm.response.json()).to.have.property('monthsData'));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "00.4 Daftar program - format periode salah → 400",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/programs?month=bulan-salah"
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
-                  "const body = pm.response.json();",
-                  "pm.test('Kode VALIDATION_ERROR', () => pm.expect(body.code).to.eql('VALIDATION_ERROR'));",
-                  "pm.test('Field bermasalah: query.month', () => pm.expect(body.errors.map(e => e.field)).to.include('query.month'));",
-                  "console.log('Pesan validasi:', body.message);"
                 ]
               }
             }
@@ -282,30 +239,7 @@
           }
         },
         {
-          "name": "01.7 Cari pairing tanpa login → 401",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/pairing/search?q=081200000001"
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 401', () => pm.response.to.have.status(401));",
-                  "pm.test('Kode error NO_SESSION', () => pm.expect(pm.response.json().code).to.eql('NO_SESSION'));"
-                ]
-              }
-            }
-          ],
-          "protocolProfileBehavior": {
-            "disableCookies": true
-          }
-        },
-        {
-          "name": "01.8 Foto terverifikasi tanpa login → 401",
+          "name": "01.7 Foto terverifikasi tanpa login → 401",
           "request": {
             "method": "GET",
             "header": [],
@@ -328,7 +262,7 @@
           }
         },
         {
-          "name": "01.9 Cek sesi tanpa login → 200 authenticated false",
+          "name": "01.8 Cek sesi tanpa login → 200 authenticated false",
           "request": {
             "method": "GET",
             "header": [],
@@ -351,7 +285,7 @@
           }
         },
         {
-          "name": "01.10 Data dashboard (publik sesuai desain) → 200",
+          "name": "01.9 Data dashboard (publik sesuai desain) → 200",
           "request": {
             "method": "GET",
             "header": [],
@@ -1636,8 +1570,8 @@
       ]
     },
     {
-      "name": "08 Import Excel (Antrean Kerja) & Pencarian Pairing",
-      "description": "Import diproses worker latar belakang: 202 + jobId → status/SSE → hasil. File dari folder postman/fixtures (working directory Postman).",
+      "name": "08 Import Excel ODP (Antrean Kerja)",
+      "description": "Import Excel ODP diproses worker latar belakang: 202 + jobId → status/SSE → hasil. File dari folder postman/fixtures (working directory Postman).",
       "item": [
         {
           "name": "08.1 Import ODP tanpa file → 400",
@@ -1828,343 +1762,15 @@
               }
             }
           ]
-        },
-        {
-          "name": "08.8 Import pairing (pairing-uji.xlsx) → 202",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": "{{baseUrl}}/api/admin/upload-pairing-excel",
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "file",
-                  "type": "file",
-                  "src": "pairing-uji.xlsx"
-                }
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 202', () => pm.response.to.have.status(202));",
-                  "pm.collectionVariables.set('pairingJobId', pm.response.json().jobId);"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "08.9 Status job import pairing (diulang otomatis sampai selesai)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/admin/upload-pairing-excel/{{pairingJobId}}"
-          },
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "// Jeda sebelum request (memberi waktu worker memproses)",
-                  "setTimeout(() => {}, 1500);"
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const body = pm.response.json();",
-                  "const key = 'poll_' + pm.info.requestName;",
-                  "const attempts = Number(pm.collectionVariables.get(key) || 0) + 1;",
-                  "pm.collectionVariables.set(key, attempts);",
-                  "console.log('Status job:', body.state, JSON.stringify(body.progress));",
-                  "if (!['completed', 'failed'].includes(body.state) && attempts < 40) {",
-                  "  postman.setNextRequest(pm.info.requestName); // Collection Runner: ulangi sampai job selesai",
-                  "  return;",
-                  "}",
-                  "pm.collectionVariables.unset(key);",
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Job selesai (completed)', () => pm.expect(body.state).to.eql('completed'));",
-                  "pm.test('3 baris pairing terimpor', () => pm.expect(body.result.totalRows).to.eql(3));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "08.10 Cari pairing - kata kunci < 6 karakter → 400",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/pairing/search?q=12345"
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "08.11 Cari pairing berdasarkan Order ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/pairing/search?q=ORD-POSTMAN-0002"
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                  "const b = pm.response.json();",
-                  "pm.test('Tepat 1 hasil (exact match)', () => { pm.expect(b.count).to.eql(1); pm.expect(b.results[0].bb_id).to.eql('131900000002'); });",
-                  "console.log('Waktu pencarian:', b.durationMs, 'ms');"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "08.12 Cari pairing MSISDN format 08… (tersimpan 628…)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/pairing/search?q=081200000001"
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Alias 08 ↔ 628 ditemukan', () => pm.expect(pm.response.json().results[0].msisdn_parent).to.eql('6281200000001'));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "08.13 Cari pairing sebagian nomor → 0 hasil (tanpa partial match)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/pairing/search?q=6281200000"
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Tidak ada pencocokan sebagian', () => pm.expect(pm.response.json().count).to.eql(0));"
-                ]
-              }
-            }
-          ]
         }
       ]
     },
     {
-      "name": "09 Program Bulanan (Validasi)",
-      "description": "Validasi input program tanpa mengubah data program asli.",
-      "item": [
-        {
-          "name": "09.1 Upload gambar program tanpa file → 400",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": "{{baseUrl}}/api/admin/upload-program-image",
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "monthLabel",
-                  "value": "Agustus 2026",
-                  "type": "text"
-                }
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "09.2 Link detail javascript: ditolak → 400",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": "{{baseUrl}}/api/admin/upload-program-image",
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "monthLabel",
-                  "value": "Agustus 2026",
-                  "type": "text"
-                },
-                {
-                  "key": "detailUrl",
-                  "value": "javascript:alert(1)",
-                  "type": "text"
-                }
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
-                  "const body = pm.response.json();",
-                  "pm.test('Kode VALIDATION_ERROR', () => pm.expect(body.code).to.eql('VALIDATION_ERROR'));",
-                  "pm.test('Field bermasalah: body.detailUrl', () => pm.expect(body.errors.map(e => e.field)).to.include('body.detailUrl'));",
-                  "console.log('Pesan validasi:', body.message);"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "09.3 Hapus program tanpa periode → 400",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/admin/programs",
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 400', () => pm.response.to.have.status(400));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "09.4 Hapus program format periode salah → 400",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/admin/programs",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"monthLabel\": \"Agustus\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
-                  "const body = pm.response.json();",
-                  "pm.test('Kode VALIDATION_ERROR', () => pm.expect(body.code).to.eql('VALIDATION_ERROR'));",
-                  "pm.test('Field bermasalah: body.monthLabel', () => pm.expect(body.errors.map(e => e.field)).to.include('body.monthLabel'));",
-                  "console.log('Pesan validasi:', body.message);"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "09.5 Hapus program periode tidak ada → 404",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/admin/programs",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"monthLabel\": \"Januari 2020\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "10 Akses Foto (Object Storage)",
+      "name": "09 Akses Foto (Object Storage)",
       "description": "Foto hanya dari prefix verified/, URL lama dialihkan.",
       "item": [
         {
-          "name": "10.1 Foto yang tidak ada → 404",
+          "name": "09.1 Foto yang tidak ada → 404",
           "request": {
             "method": "GET",
             "header": [],
@@ -2184,7 +1790,7 @@
           ]
         },
         {
-          "name": "10.2 File sementara (tmp/) tidak boleh dibuka → 404",
+          "name": "09.2 File sementara (tmp/) tidak boleh dibuka → 404",
           "request": {
             "method": "GET",
             "header": [],
@@ -2204,7 +1810,7 @@
           ]
         },
         {
-          "name": "10.3 URL lama /database foto/... → 301 ke /media/verified/...",
+          "name": "09.3 URL lama /database foto/... → 301 ke /media/verified/...",
           "request": {
             "method": "GET",
             "header": [],
@@ -2229,11 +1835,11 @@
       ]
     },
     {
-      "name": "11 Manajemen Sesi & Logout",
+      "name": "10 Manajemen Sesi & Logout",
       "description": "Admin mencabut sesi user (berlaku seketika), logout mencabut sesi di server.",
       "item": [
         {
-          "name": "11.1 Daftar sesi aktif (admin)",
+          "name": "10.1 Daftar sesi aktif (admin)",
           "request": {
             "method": "GET",
             "header": [],
@@ -2255,7 +1861,7 @@
           ]
         },
         {
-          "name": "11.2 Revoke tanpa userId/sessionId → 400",
+          "name": "10.2 Revoke tanpa userId/sessionId → 400",
           "request": {
             "method": "POST",
             "header": [
@@ -2288,7 +1894,7 @@
           ]
         },
         {
-          "name": "11.3 Cabut semua sesi user WOK",
+          "name": "10.3 Cabut semua sesi user WOK",
           "request": {
             "method": "POST",
             "header": [
@@ -2332,7 +1938,7 @@
           ]
         },
         {
-          "name": "11.4 Token user yang sesinya dicabut → 401",
+          "name": "10.4 Token user yang sesinya dicabut → 401",
           "request": {
             "method": "GET",
             "header": [
@@ -2360,7 +1966,7 @@
           }
         },
         {
-          "name": "11.5 Logout admin",
+          "name": "10.5 Logout admin",
           "request": {
             "method": "POST",
             "header": [],
@@ -2390,7 +1996,7 @@
           ]
         },
         {
-          "name": "11.6 Akses setelah logout → 401",
+          "name": "10.6 Akses setelah logout → 401",
           "request": {
             "method": "GET",
             "header": [],
@@ -2410,7 +2016,7 @@
           ]
         },
         {
-          "name": "11.7 Token lama setelah logout → 401 (dicabut di server)",
+          "name": "10.7 Token lama setelah logout → 401 (dicabut di server)",
           "request": {
             "method": "GET",
             "header": [
@@ -2440,11 +2046,11 @@
       ]
     },
     {
-      "name": "12 [Opsional] Deteksi Pencurian Refresh Token",
-      "description": "Refresh token lama dipakai ulang > 30 detik setelah dirotasi → seluruh sesi dicabut. Request 12.3 menunggu 31 detik.",
+      "name": "11 [Opsional] Deteksi Pencurian Refresh Token",
+      "description": "Refresh token lama dipakai ulang > 30 detik setelah dirotasi → seluruh sesi dicabut. Request 11.3 menunggu 31 detik.",
       "item": [
         {
-          "name": "12.1 Login admin",
+          "name": "11.1 Login admin",
           "request": {
             "method": "POST",
             "header": [
@@ -2498,7 +2104,7 @@
           ]
         },
         {
-          "name": "12.2 Rotasi refresh token",
+          "name": "11.2 Rotasi refresh token",
           "request": {
             "method": "POST",
             "header": [],
@@ -2518,7 +2124,7 @@
           ]
         },
         {
-          "name": "12.3 Token lama dipakai ulang setelah 31 detik → sesi dicabut",
+          "name": "11.3 Token lama dipakai ulang setelah 31 detik → sesi dicabut",
           "request": {
             "method": "POST",
             "header": [
@@ -2556,7 +2162,7 @@
           }
         },
         {
-          "name": "12.4 Sesi admin ikut dicabut (token terbaru pun ditolak)",
+          "name": "11.4 Sesi admin ikut dicabut (token terbaru pun ditolak)",
           "request": {
             "method": "GET",
             "header": [],
@@ -2578,11 +2184,11 @@
       ]
     },
     {
-      "name": "13 [Opsional] Rate Limit Login (Anti Brute-Force)",
+      "name": "12 [Opsional] Rate Limit Login (Anti Brute-Force)",
       "description": "Login gagal berulang dari IP yang sama → 429 setelah 10 kali dalam 10 menit. Jalankan PALING AKHIR: login dari IP ini terblokir ±10 menit (restart server pengujian untuk membuka).",
       "item": [
         {
-          "name": "13.1 Login gagal berulang sampai diblokir",
+          "name": "12.1 Login gagal berulang sampai diblokir",
           "request": {
             "method": "POST",
             "header": [
@@ -2627,11 +2233,11 @@
       ]
     },
     {
-      "name": "14 [Opsional] Captcha Turnstile (server dev port 3001)",
+      "name": "13 [Opsional] Captcha Turnstile (server dev port 3001)",
       "description": "Server pengujian (3200) mematikan captcha. Request ini memakai server development (npm run dev) yang mewajibkan captcha: login lewat API tanpa token ditolak SEBELUM password diperiksa.",
       "item": [
         {
-          "name": "14.1 Login tanpa token captcha → 400 CAPTCHA_REQUIRED",
+          "name": "13.1 Login tanpa token captcha → 400 CAPTCHA_REQUIRED",
           "request": {
             "method": "POST",
             "header": [
