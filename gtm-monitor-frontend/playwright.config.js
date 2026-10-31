@@ -30,7 +30,8 @@ export default defineConfig({
   webServer: {
     command: 'node ../gtm-monitor-backend/server.js',
     url: `http://localhost:${E2E_PORT}/api/health`,
-    env: { PORT: String(E2E_PORT), QUEUE_PREFIX: 'gtm-test' },
+    // Captcha Turnstile memakai pasangan kunci UJI resmi Cloudflare (selalu lolos); site key ada di .env.e2e
+    env: { PORT: String(E2E_PORT), QUEUE_PREFIX: 'gtm-test', TURNSTILE_SECRET_KEY: '1x0000000000000000000000000000000AA' },
     reuseExistingServer: false,
     timeout: 60 * 1000
   }

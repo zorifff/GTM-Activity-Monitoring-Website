@@ -8,7 +8,9 @@ const helmetMiddleware = helmet({
     useDefaults: true,
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
+      // Cloudflare Turnstile (captcha login): script widget + iframe tantangan
+      scriptSrc: ["'self'", 'https://challenges.cloudflare.com'],
+      frameSrc: ["'self'", 'https://challenges.cloudflare.com'],
       // 'unsafe-inline' hanya untuk style (gaya inline React/html2canvas); script inline tetap diblokir
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],

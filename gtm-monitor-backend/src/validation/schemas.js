@@ -105,7 +105,9 @@ const schemas = {
       password: z.string({ error: 'Password wajib diisi.' })
         .trim()
         .min(1, { error: 'Password wajib diisi.' })
-        .max(128, { error: 'Password maksimal 128 karakter.' })
+        .max(128, { error: 'Password maksimal 128 karakter.' }),
+      // Token Cloudflare Turnstile dari widget captcha; wajib/tidaknya diatur middleware requireTurnstile
+      turnstileToken: optionalText('Token captcha', 2048)
     })
   },
 

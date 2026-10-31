@@ -21,6 +21,7 @@ export async function login(page, { username, password }) {
   await page.locator('#landing-login-btn').click();
   await page.locator('input[type="text"]').first().fill(username);
   await page.locator('input[placeholder="••••••••••••"]').fill(password);
+  await waitForCaptcha(page);
   await page.locator('#login-submit-btn').click();
   await expect(page.locator('.main-top-nav')).toBeVisible({ timeout: 30000 });
   await settle(page);
@@ -35,6 +36,11 @@ export async function logout(page) {
     page.getByRole('button', { name: 'Ya, Log Out' }).click()
   ]);
   await expect(page.locator('#landing-login-btn')).toBeVisible();
+}
+
+// Widget Turnstile (kunci uji Cloudflare) lolos otomatis: tunggu token captcha terisi sebelum login
+export async function waitForCaptcha(page) {
+  await expect(page.locator('.cf-turnstile input[name="cf-turnstile-response"]')).not.toHaveValue('', { timeout: 30000 });
 }
 
 export const navTab = (page, label) => page.locator('.main-top-nav').getByText(label, { exact: true });

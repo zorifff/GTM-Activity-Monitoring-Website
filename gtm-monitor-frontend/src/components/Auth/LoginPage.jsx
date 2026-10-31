@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { API_BASE_URL } from '../../apiConfig';
+import TurnstileWidget, { TURNSTILE_SITE_KEY } from './TurnstileWidget';
 
 export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
   const [username, setUsername] = useState('');
@@ -8,12 +9,18 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
   const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [turnstileToken, setTurnstileToken] = useState(null);
+  const turnstileRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
     if (!username.trim() || !password) {
       setError('Silakan masukkan username dan password Anda.');
+      return;
+    }
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError('Selesaikan verifikasi keamanan (captcha) terlebih dahulu.');
       return;
     }
 
@@ -25,7 +32,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // server memasang cookie sesi HttpOnly
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, turnstileToken })
       });
       const data = await res.json().catch(() => ({}));
 
@@ -33,10 +40,12 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
         if (onLoginSuccess) onLoginSuccess(data.user, data.expiresAt);
       } else {
         setError(data.message || 'Login gagal. Periksa kembali username dan password Anda.');
+        turnstileRef.current?.reset(); // token captcha hanya berlaku sekali
       }
     } catch (err) {
       console.error(err);
       setError('Gagal terhubung ke server. Pastikan server backend sedang aktif.');
+      turnstileRef.current?.reset();
     } finally {
       setLoading(false);
     }
@@ -243,7 +252,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
             </div>
 
             {/* Password Field */}
-            <div style={{ marginBottom: '40px' }}>
+            <div style={{ marginBottom: TURNSTILE_SITE_KEY ? '28px' : '40px' }}>
               <label
                 style={{
                   display: 'block',
@@ -314,6 +323,29 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 </button>
               </div>
             </div>
+
+            {/* Captcha Cloudflare Turnstile (lebar penuh, sejajar field di atasnya) */}
+            {TURNSTILE_SITE_KEY && (
+              <div style={{ marginBottom: '40px' }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    color: '#1F2937',
+                    marginBottom: '8px'
+                  }}
+                >
+                  Captcha
+                </label>
+                <TurnstileWidget
+                  ref={turnstileRef}
+                  action="login"
+                  onToken={setTurnstileToken}
+                  onError={() => setError('Captcha gagal dimuat. Periksa koneksi internet, lalu muat ulang halaman.')}
+                />
+              </div>
+            )}
 
             {/* Interactive Login Button:
                 - Width: 100% of container (542px)

@@ -3,12 +3,13 @@ const express = require('express');
 const auth = require('../controllers/auth.controller');
 const { authenticateToken, requireAdmin } = require('../middlewares/auth');
 const { loginLimiter } = require('../middlewares/rateLimiters');
+const { requireTurnstile } = require('../middlewares/turnstile');
 const { validate } = require('../middlewares/validate');
 const { schemas } = require('../validation/schemas');
 
 const router = express.Router();
 
-router.post('/auth/login', loginLimiter, validate(schemas.login), auth.login);
+router.post('/auth/login', loginLimiter, validate(schemas.login), requireTurnstile('login'), auth.login);
 router.post('/auth/refresh', auth.refresh);
 router.get('/auth/session', auth.session);
 router.get('/auth/me', authenticateToken, auth.me);

@@ -2,7 +2,7 @@
 // (direkam dari kode SEBELUM refaktor Fase 3). Rekam ulang acuan: npm run test:e2e -- --update-snapshots
 // Navigasi sengaja lewat klik UI (bukan URL) agar skenario yang sama berlaku untuk kode lama & baru.
 import { test, expect } from '@playwright/test';
-import { ADMIN, USER, login, logout, settle, navTab } from './helpers.js';
+import { ADMIN, USER, login, logout, settle, navTab, waitForCaptcha } from './helpers.js';
 
 const shot = (page, name, options = {}) => expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true, ...options });
 
@@ -15,7 +15,9 @@ test.describe('Pengunjung (belum login)', () => {
     await shot(page, '01-landing');
     await page.locator('#landing-login-btn').click();
     await settle(page);
-    await shot(page, '02-login');
+    // Isi iframe captcha milik Cloudflare (animasi, teks bahasa) tidak deterministik → area widget ditutup mask
+    await waitForCaptcha(page);
+    await shot(page, '02-login', { mask: [page.locator('.cf-turnstile')] });
   });
 });
 

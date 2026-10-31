@@ -144,7 +144,9 @@ function startApp(name, entry) {
     DATABASE_URL: POOLED_URL,
     DIRECT_URL,
     QUEUE_PREFIX,
-    COOKIE_SECURE: 'false'
+    COOKIE_SECURE: 'false',
+    // Postman tidak dapat menyelesaikan widget captcha → verifikasi Turnstile dimatikan di server pengujian ini
+    TURNSTILE_SECRET_KEY: ''
   };
   const proc = spawn(process.execPath, [entry], { cwd: BACKEND_DIR, env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
   const forward = (stream) => (data) => data.toString().split(/\r?\n/).filter(Boolean).forEach(line => stream.write(`[${name}] ${line}\n`));

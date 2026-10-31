@@ -11,3 +11,5 @@ skills-lock.json
 # Cadangan database (pg_dump) — berisi data bisnis
 gtm-monitor-backend/backups/
 dokumentasi-backend-database.md
+# File uji Postman berisi salinan data ODP asli — dibuat ulang otomatis oleh npm run postman:server
+postman/fixtures/odp-uji.xlsx

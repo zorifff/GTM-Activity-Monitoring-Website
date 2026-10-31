@@ -66,8 +66,14 @@ const DB_POOL_TIMEOUT_SEC = Number(process.env.DB_POOL_TIMEOUT_SEC) || 20;
 // Materialized view metrik performa di-refresh terjadwal oleh worker (selain di akhir setiap import ODP)
 const PERFORMANCE_REFRESH_MINUTES = Number(process.env.PERFORMANCE_REFRESH_MINUTES) || 60;
 
+// Cloudflare Turnstile (captcha halaman login). Kosong = verifikasi captcha dimatikan (dipakai test suite backend)
+const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY || '';
+if (!TURNSTILE_SECRET_KEY) {
+  console.warn('⚠️ [Turnstile] TURNSTILE_SECRET_KEY belum diisi di .env. Login berjalan TANPA verifikasi captcha.');
+}
+
 module.exports = {
   PORT, JWT_SECRET, REFRESH_TOKEN_SECRET, CORS_ORIGINS, REDIS_URL, QUEUE_PREFIX,
   S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_FORCE_PATH_STYLE,
-  DB_CONNECTION_LIMIT, DB_POOL_TIMEOUT_SEC, PERFORMANCE_REFRESH_MINUTES
+  DB_CONNECTION_LIMIT, DB_POOL_TIMEOUT_SEC, PERFORMANCE_REFRESH_MINUTES, TURNSTILE_SECRET_KEY
 };

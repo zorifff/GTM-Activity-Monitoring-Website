@@ -30,7 +30,8 @@ const SUITES = [
   { name: 'pairing', file: 'pairing.test.js', server: 'main' },
   { name: 'spatial', file: 'spatial.test.js', server: 'main' },
   { name: 'security-ratelimit', file: 'security-ratelimit.test.js', server: 'isolated' },
-  { name: 'database', file: 'database.test.js', server: 'none' }
+  { name: 'database', file: 'database.test.js', server: 'none' },
+  { name: 'turnstile', file: 'turnstile.test.js', server: 'none' }
 ].filter(s => (RECORD ? s.name === 'snapshot' : !only || s.name === only))
   .filter(s => require('fs').existsSync(path.join(__dirname, s.file)));
 
@@ -42,7 +43,8 @@ const freePort = () => new Promise((resolve, reject) => {
 
 const startServer = async () => {
   const port = await freePort();
-  const proc = spawn(process.execPath, ['server.js'], { cwd: backendDir, env: { ...process.env, PORT: String(port) }, stdio: ['ignore', 'pipe', 'pipe'] });
+  // Suite memanggil API langsung (tanpa widget captcha) → Turnstile dimatikan di server uji; diuji terpisah di turnstile.test.js
+  const proc = spawn(process.execPath, ['server.js'], { cwd: backendDir, env: { ...process.env, PORT: String(port), TURNSTILE_SECRET_KEY: '' }, stdio: ['ignore', 'pipe', 'pipe'] });
   let log = '';
   proc.stdout.on('data', d => { log += d; });
   proc.stderr.on('data', d => { log += d; });

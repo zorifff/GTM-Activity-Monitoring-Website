@@ -15,6 +15,7 @@
     "db:backup": "node gtm-monitor-backend/scripts/backup-db-wsl.js",
     "db:test:setup": "node gtm-monitor-backend/scripts/setup-postgres-wsl.js",
     "db:test": "node gtm-monitor-backend/scripts/postgres-wsl.js",
+    "postman:server": "node gtm-monitor-backend/scripts/postman-server.js",
     "frontend": "npm run dev --prefix gtm-monitor-frontend",
     "pm2:start": "pm2 start ecosystem.config.js && pm2 save",
     "pm2:stop": "pm2 stop ecosystem.config.js",
