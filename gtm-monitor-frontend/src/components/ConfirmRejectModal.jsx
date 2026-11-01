@@ -118,7 +118,7 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
           id="confirm-reject-title"
           style={{
             fontSize: '20px',
-            fontWeight: 900,
+            fontWeight: 600,
             color: '#0F172A',
             margin: '0 0 10px 0',
             fontFamily: "var(--font-heading)"
@@ -209,7 +209,7 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
               background: '#DC2626',
               color: '#FFFFFF',
               fontSize: '13.5px',
-              fontWeight: 800,
+              fontWeight: 600,
               cursor: isRejecting ? 'not-allowed' : 'pointer',
               boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)',
               opacity: isRejecting ? 0.7 : 1,

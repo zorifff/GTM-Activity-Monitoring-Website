@@ -1,6 +1,4 @@
-// Kerangka aplikasi untuk semua halaman: persistent dark sidebar, top header bar, modal global
-// & area konten (<Outlet />). Mengadopsi arsitektur modern SaaS (Pagescreen layout).
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import LoginPage from '../components/Auth/LoginPage';
 import ProgramViewerModal from '../components/ProgramViewerModal';
@@ -28,21 +26,64 @@ export default function AppLayout() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showLogoutConfirmModal, setShowLogoutConfirmModal] = useState(false);
-  const [activeProgramModal, setActiveProgramModal] = useState(null); // { program, monthLabel }
-  const [typeDesignFilter, setTypeDesignFilter] = useState('ALL'); // ALL, Greenfield, Brownfield
+  const [activeProgramModal, setActiveProgramModal] = useState(null);
+  const [typeDesignFilter, setTypeDesignFilter] = useState('ALL');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  // Menu profil & konfirmasi logout selalu tertutup saat akun berganti (login / logout)
+  const contentAreaRef = useRef(null);
+  const [activeSection, setActiveSection] = useState('dashboard');
+
   useEffect(() => {
     setShowProfileModal(false);
     setShowLogoutConfirmModal(false);
   }, [user]);
 
-  // Link lama berbasis hash (#dashboard, #upload, #admin, …) dialihkan ke alamat baru
   useEffect(() => {
     const target = LEGACY_HASH_PATHS[location.hash.toLowerCase()];
     if (target) navigate(target, { replace: true });
   }, [location.hash, navigate]);
+
+  // Scroll spy untuk menentukan section mana yang sedang aktif saat halaman continuous di-scroll
+  useEffect(() => {
+    if (view !== 'dashboard') return;
+
+    const container = contentAreaRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const activityEl = document.getElementById('activity-section');
+      if (!activityEl) return;
+
+      const rect = activityEl.getBoundingClientRect();
+      // Bila batas atas section Activity berada di posisi 200px dari atas viewport (di bawah header 64px)
+      if (rect.top <= 200) {
+        setActiveSection('activity');
+      } else {
+        setActiveSection('dashboard');
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, [view]);
+
+  // Auto-scroll saat pertama kali membuka tautan ber-hash #activity
+  useEffect(() => {
+    if (view === 'dashboard' && location.hash === '#activity') {
+      const timer = setTimeout(() => {
+        const el = document.getElementById('activity-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setActiveSection('activity');
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [view, location.hash]);
 
   const handleLogout = (showAlert = true) => {
     if (typeof showAlert !== 'boolean') showAlert = true;
@@ -62,16 +103,38 @@ export default function AppLayout() {
       setShowLoginModal(true);
       return;
     }
-    navigate(PATHS.dashboard);
-  }, [user, navigate]);
+    if (view === 'dashboard') {
+      if (contentAreaRef.current) {
+        contentAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const el = document.getElementById('dashboard-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (window.location.hash) {
+        window.history.replaceState(null, '', '/dashboard');
+      }
+      setActiveSection('dashboard');
+    } else {
+      navigate(PATHS.dashboard);
+    }
+  }, [user, view, navigate]);
 
   const goUpload = useCallback(() => {
     if (!user) {
       setShowLoginModal(true);
       return;
     }
-    navigate(PATHS.upload);
-  }, [user, navigate]);
+    if (view === 'dashboard') {
+      const el = document.getElementById('activity-section');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.history.replaceState(null, '', '/dashboard#activity');
+        setActiveSection('activity');
+      }
+    } else {
+      navigate('/dashboard#activity');
+    }
+  }, [user, view, navigate]);
 
   const goAdmin = useCallback(() => {
     if (!user) {
@@ -85,7 +148,6 @@ export default function AppLayout() {
     navigate(PATHS.admin);
   }, [user, isAdmin, navigate]);
 
-  // Derive pending verification count
   const pendingCount = useMemo(() => {
     const count = (branches || []).reduce((acc, b) => {
       return acc + (b.projects || []).reduce((pAcc, p) => {
@@ -95,12 +157,10 @@ export default function AppLayout() {
     return count;
   }, [branches]);
 
-  // 1. Loading screen (juga selama status login masih dicek ke server)
   if (!authChecked || isInitialLoading) {
     return <LoadingScreen />;
   }
 
-  // 2. Login Modal Overlay (when triggered by user)
   const renderLoginModal = () => {
     if (!showLoginModal) return null;
     return (
@@ -135,17 +195,15 @@ export default function AppLayout() {
       )}
 
       {isFullPage ? (
-        // Fullpage route (Landing / Login)
         <div className="main-content-full">
           <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
         </div>
       ) : (
-        // SaaS Multi-Section Shell: Persistent Dark Navy Sidebar + Content Area
         <div
           className="saas-shell"
           style={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             height: '100vh',
             minHeight: '100dvh',
             maxHeight: '100dvh',
@@ -154,71 +212,63 @@ export default function AppLayout() {
             overflow: 'hidden'
           }}
         >
-          {/* Top Header Bar Ramping (Full width spanning to far left above sidebar) */}
-          <TopHeaderBar
+          <AppSidebar
             user={user}
             isAdmin={isAdmin}
-            onLoginClick={() => navigate(PATHS.login)}
-            handleLogout={handleLogout}
+            activeSection={activeSection}
             goDashboard={goDashboard}
             goUpload={goUpload}
             goAdmin={goAdmin}
-            pendingCount={pendingCount}
-            onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+            onLoginClick={() => navigate(PATHS.login)}
+            setShowLoginModal={setShowLoginModal}
+            dynamicMonthsData={dynamicMonthsData}
+            setActiveProgramModal={setActiveProgramModal}
+            isMobileOpen={isMobileSidebarOpen}
+            setIsMobileOpen={setIsMobileSidebarOpen}
+            handleLogout={handleLogout}
           />
 
-          {/* Body Flex Row: Red Sidebar (Left) + Content Area (Right) */}
           <div
+            ref={contentAreaRef}
+            className="saas-content-area"
             style={{
-              display: 'flex',
               flex: 1,
-              minHeight: 0,
-              width: '100%',
-              overflow: 'hidden'
+              minWidth: 0,
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: '#F8FAFC',
+              overflowY: 'auto',
+              scrollPaddingTop: '80px',
+              scrollBehavior: 'smooth'
             }}
           >
-            {/* 1. Sidebar Navigasi Kiri Tetap (Solid Telkomsel Red #C8102E, w-64) */}
-            <AppSidebar
+            <TopHeaderBar
               user={user}
               isAdmin={isAdmin}
+              activeSection={activeSection}
+              onLoginClick={() => navigate(PATHS.login)}
               goDashboard={goDashboard}
               goUpload={goUpload}
               goAdmin={goAdmin}
-              onLoginClick={() => navigate(PATHS.login)}
-              setShowLoginModal={setShowLoginModal}
-              dynamicMonthsData={dynamicMonthsData}
-              setActiveProgramModal={setActiveProgramModal}
-              isMobileOpen={isMobileSidebarOpen}
-              setIsMobileOpen={setIsMobileSidebarOpen}
+              pendingCount={pendingCount}
+              onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+              typeDesignFilter={typeDesignFilter}
+              setTypeDesignFilter={setTypeDesignFilter}
             />
 
-            {/* 2. Area Konten Kanan: Latar belakang abu-abu sangat muda/bersih (#f8fafc), scrollable */}
-            <div
-              className="saas-content-area"
+            <main
+              className="saas-main-viewport"
               style={{
                 flex: 1,
-                minWidth: 0,
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: '#F8FAFC',
-                overflowY: 'auto'
+                padding: '24px 32px 48px',
+                boxSizing: 'border-box'
               }}
             >
-              {/* Scrollable Main Body Content */}
-              <main
-                className="saas-main-viewport"
-                style={{
-                  flex: 1,
-                  padding: '24px 32px 48px',
-                  boxSizing: 'border-box'
-                }}
-              >
-                <div className="fade-in" key={view}>
-                  <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
-                </div>
-              </main>
-            </div>
+              <div className="fade-in" key={view}>
+                <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
+              </div>
+            </main>
           </div>
         </div>
       )}

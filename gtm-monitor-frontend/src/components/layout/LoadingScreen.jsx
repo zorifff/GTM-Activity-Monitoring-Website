@@ -19,19 +19,19 @@ export default function LoadingScreen() {
         width: '56px',
         height: '56px',
         borderRadius: '50%',
-        background: 'linear-gradient(135deg, #C8102E 0%, #FF5E00 100%)',
+        background: 'linear-gradient(135deg, #800000 0%, #FF5E00 100%)',
         color: '#ffffff',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         fontWeight: 900,
         fontSize: '18px',
-        boxShadow: '0 8px 24px rgba(200, 16, 46, 0.35)',
+        boxShadow: '0 8px 24px rgba(128, 0, 0, 0.35)',
         letterSpacing: '-0.5px'
       }}>
         GTM
       </div>
-      <div style={{ fontWeight: 700, fontSize: '15px', color: '#0F172A', fontFamily: "'Outfit', sans-serif" }}>
+      <div style={{ fontWeight: 700, fontSize: '15px', color: '#0F172A', fontFamily: 'inherit' }}>
         Memuat data dari server<span style={{ display: 'inline-block', width: '24px', textAlign: 'left' }}>{dots}</span>
       </div>
     </div>

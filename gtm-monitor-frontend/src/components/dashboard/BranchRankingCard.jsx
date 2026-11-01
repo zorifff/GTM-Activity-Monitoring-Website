@@ -148,7 +148,7 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
           display: 'flex', 
           alignItems: 'center', 
           gap: '8px', 
-          fontWeight: 700, 
+          fontWeight: 500, 
           fontSize: '13.5px', 
           color: '#0F172A',
           minWidth: 0, 
@@ -187,7 +187,7 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
         {/* Occupancy % */}
         <div style={{ 
           fontSize: '13px', 
-          fontWeight: 700, 
+          fontWeight: 500, 
           color: '#0F172A', 
           textAlign: 'right',
           fontVariantNumeric: 'tabular-nums'
@@ -240,11 +240,11 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
               fontWeight: 600,
               cursor: 'pointer',
               padding: '4px 6px',
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontFamily: 'inherit',
               transition: 'color 0.15s ease'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#C8102E';
+              e.currentTarget.style.color = '#800000';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color = '#0F172A';
@@ -297,20 +297,15 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
     <div className="ranking-card-container">
       {/* Header Container: px-6 py-4 border-b border-slate-100 flex items-center justify-between */}
       <div className="ranking-card-header">
-        <div>
-          <h2 style={{ 
-            fontSize: '18px', 
-            fontWeight: 600, 
-            color: '#1E293B', 
-            margin: '0 0 2px 0',
-            letterSpacing: '-0.2px'
-          }}>
-            Ranking Branch Berdasarkan Occupancy
-          </h2>
-          <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
-            Diurutkan dari occupancy terendah untuk prioritas intervensi
-          </div>
-        </div>
+        <h2 style={{ 
+          fontSize: '15px', 
+          fontWeight: 600, 
+          color: '#475569', 
+          margin: 0,
+          letterSpacing: '-0.1px'
+        }}>
+          Ranking Branch Berdasarkan Occupancy
+        </h2>
       </div>
 
       <div className="table-responsive-wrapper custom-table-scrollbar" style={{ overflowX: 'auto' }}>
@@ -325,7 +320,7 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
             background: '#0F172A',
             color: '#FFFFFF',
             fontSize: '11px',
-            fontWeight: 700,
+            fontWeight: 500,
             letterSpacing: '0.05em',
             textTransform: 'uppercase'
           }}>

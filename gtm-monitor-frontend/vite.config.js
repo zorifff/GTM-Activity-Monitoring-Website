@@ -8,21 +8,21 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'http://127.0.0.1:3001',
         changeOrigin: true
       },
       '/uploads': {
-        target: 'http://localhost:3001',
+        target: 'http://127.0.0.1:3001',
         changeOrigin: true
       },
       // Foto kegiatan terverifikasi (object storage, disajikan backend lewat /media/verified/...)
       '/media': {
-        target: 'http://localhost:3001',
+        target: 'http://127.0.0.1:3001',
         changeOrigin: true
       },
       // URL foto format lama — dialihkan backend ke /media/verified/...
       '^/database(%20| )foto': {
-        target: 'http://localhost:3001',
+        target: 'http://127.0.0.1:3001',
         changeOrigin: true
       }
     }

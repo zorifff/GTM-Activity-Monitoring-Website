@@ -229,7 +229,7 @@ export function exportProjectsToExcel(branches, selectedBranchName = null) {
     // AutoFilter across A4:N...
     ws['!autofilter'] = { ref: `A4:N${3 + dataRows.length}` };
 
-    // Style Header A4:N4 with Telkomsel Red (#C8102E) & White Bold Text (#FFFFFF)
+    // Style Header A4:N4 with Telkomsel Red (#800000) & White Bold Text (#FFFFFF)
     const headerCols = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N'];
     headerCols.forEach(col => {
       const cellRef = `${col}4`;
@@ -237,7 +237,7 @@ export function exportProjectsToExcel(branches, selectedBranchName = null) {
         ws[cellRef].s = {
           fill: {
             patternType: "solid",
-            fgColor: { rgb: "C8102E" } // Telkomsel Red (#C8102E)
+            fgColor: { rgb: "C8102E" } // Telkomsel Red (#800000)
           },
           font: {
             name: "Calibri",

@@ -142,10 +142,10 @@ export default function UploadModal({ data, onClose, onSubmit }) {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: 800, color: '#FF5E00', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 600, color: '#FF5E00', textTransform: 'uppercase', letterSpacing: '1px' }}>
               Upload Kegiatan GTM
             </div>
-            <h3 id="upload-modal-title" style={{ fontSize: '18px', fontWeight: 900, color: '#0F172A', margin: '4px 0 2px 0', fontFamily: "var(--font-heading)" }}>
+            <h3 id="upload-modal-title" style={{ fontSize: '18px', fontWeight: 600, color: '#0F172A', margin: '4px 0 2px 0', fontFamily: "var(--font-heading)" }}>
               {actLabel}
             </h3>
             <div style={{ fontSize: '12.5px', color: '#64748B', fontWeight: 600 }}>
@@ -159,7 +159,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
             style={{
               width: '32px', height: '32px', borderRadius: '50%', border: 'none',
               background: '#F1F5F9', color: '#64748B', fontSize: '15px',
-              fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+              fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}
           >
             ✕
@@ -339,9 +339,9 @@ export default function UploadModal({ data, onClose, onSubmit }) {
               type="submit"
               style={{
                 padding: '11px 22px', borderRadius: '10px', border: '1px solid #991B1B',
-                background: '#C8102E',
-                color: '#FFFFFF', fontSize: '13.5px', fontWeight: 800,
-                cursor: 'pointer', boxShadow: '0 2px 8px rgba(200, 16, 46, 0.25)'
+                background: '#800000',
+                color: '#FFFFFF', fontSize: '13.5px', fontWeight: 600,
+                cursor: 'pointer', boxShadow: '0 2px 8px rgba(128, 0, 0, 0.25)'
               }}
             >
               Kirim

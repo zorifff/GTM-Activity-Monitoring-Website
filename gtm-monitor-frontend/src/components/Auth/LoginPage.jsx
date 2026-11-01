@@ -58,7 +58,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
         minHeight: '100dvh',
         width: '100%',
         backgroundColor: '#FFFFFF',
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        fontFamily: 'var(--font-body)',
         position: 'relative',
         overflow: 'hidden'
       }}
@@ -175,8 +175,8 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               outline: 'none'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#FF0000';
-              e.currentTarget.style.borderColor = '#FF0000';
+              e.currentTarget.style.color = '#800000';
+              e.currentTarget.style.borderColor = '#800000';
               e.currentTarget.style.backgroundColor = '#FFF5F5';
             }}
             onMouseLeave={(e) => {
@@ -207,7 +207,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               textAlign: 'center',
               margin: '0 0 44px 0',
               letterSpacing: '-0.5px',
-              fontFamily: "'Plus Jakarta Sans', sans-serif"
+              fontFamily: 'var(--font-heading)'
             }}
           >
             Welcome!
@@ -243,10 +243,10 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                   fontSize: '14px',
                   color: '#1F2937',
                   outline: 'none',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontFamily: 'var(--font-body)',
                   transition: 'border-color 0.2s ease'
                 }}
-                onFocus={(e) => { e.target.style.borderBottomColor = '#FF0000'; }}
+                onFocus={(e) => { e.target.style.borderBottomColor = '#800000'; }}
                 onBlur={(e) => { e.target.style.borderBottomColor = '#2B2B2B'; }}
               />
             </div>
@@ -282,10 +282,10 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                     color: '#1F2937',
                     letterSpacing: showPassword ? 'normal' : '4px',
                     outline: 'none',
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontFamily: 'var(--font-body)',
                     transition: 'border-color 0.2s ease'
                   }}
-                  onFocus={(e) => { e.target.style.borderBottomColor = '#FF0000'; }}
+                  onFocus={(e) => { e.target.style.borderBottomColor = '#800000'; }}
                   onBlur={(e) => { e.target.style.borderBottomColor = '#2B2B2B'; }}
                 />
 
@@ -351,7 +351,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 - Width: 100% of container (542px)
                 - Height: 54px
                 - Unhovered: Background Putih, Border Merah, Teks Hitam
-                - Hovered: Background Merah Solid (#FF0000), Border Merah, Teks Putih
+                - Hovered: Background Merah Solid (#800000), Border Merah, Teks Putih
             */}
             {error && (
               <div
@@ -362,7 +362,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                   fontWeight: 500,
                   color: '#DC2626',
                   textAlign: 'center',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif"
+                  fontFamily: 'var(--font-body)'
                 }}
               >
                 {error}
@@ -379,8 +379,8 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 width: '100%',
                 height: '54px',
                 borderRadius: '12px',
-                border: '1.5px solid #FF0000',
-                backgroundColor: isHovered ? '#FF0000' : '#FFFFFF',
+                border: '1.5px solid #800000',
+                backgroundColor: isHovered ? '#800000' : '#FFFFFF',
                 color: isHovered ? '#FFFFFF' : '#111827',
                 fontSize: '15px',
                 fontWeight: isHovered ? 600 : 500,
@@ -389,7 +389,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 outline: 'none',
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontFamily: 'var(--font-body)',
                 boxShadow: 'none',
                 transition: 'background-color 0.22s ease, color 0.22s ease'
               }}

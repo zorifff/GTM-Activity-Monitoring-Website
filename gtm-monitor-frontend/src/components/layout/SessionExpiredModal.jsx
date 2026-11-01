@@ -55,9 +55,9 @@ export default function SessionExpiredModal({ sessionExpiredNotice, setSessionEx
           onClick={() => setSessionExpiredNotice(false)}
           style={{
             width: '100%', padding: '12px', borderRadius: '12px',
-            border: 'none', background: 'linear-gradient(135deg, #C8102E 0%, #FF5E00 100%)',
+            border: 'none', background: 'linear-gradient(135deg, #800000 0%, #FF5E00 100%)',
             color: '#FFFFFF', fontSize: '14px', fontWeight: 700,
-            cursor: 'pointer', boxShadow: '0 4px 14px rgba(200, 16, 46, 0.35)',
+            cursor: 'pointer', boxShadow: '0 4px 14px rgba(128, 0, 0, 0.35)',
             transition: 'all 0.2s'
           }}
         >

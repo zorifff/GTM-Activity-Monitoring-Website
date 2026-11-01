@@ -195,7 +195,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
       >
         <div style={{ padding: '22px 26px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <div id="review-modal-title" style={{ fontFamily: "var(--font-heading)", fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{modalData.pName}</div>
+            <div id="review-modal-title" style={{ fontFamily: "var(--font-heading)", fontSize: '18px', fontWeight: 600, color: '#0f172a' }}>{modalData.pName}</div>
             <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '3px' }}>{modalData.wok} · {modalData.bName}</div>
           </div>
           <button
@@ -213,19 +213,19 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '22px' }}>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
               <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Available</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalAvai}</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalAvai}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
               <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Used</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalUsed}</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalUsed}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
               <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Port</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalPort}</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalPort}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
               <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Jumlah ODP</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.odpCount}</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.odpCount}</div>
             </div>
           </div>
 
@@ -265,7 +265,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             return (
               <div key={actType.key} style={{ border: '1px solid #f1f5f9', borderRadius: '10px', padding: '14px 16px', marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>{actType.label}</div>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{actType.label}</div>
                   <div style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, backgroundColor: meta.bg, color: meta.color }}>
                     {meta.label} {photoList.length > 0 && (actType.key === 'rekrutmen_sf' ? '' : `(${photoList.length} Foto)`)}
                   </div>
@@ -304,7 +304,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
 
                           <div style={{ flex: 1, minWidth: '160px', fontSize: '12px', color: '#334155', lineHeight: 1.5 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '2px 8px', borderRadius: '4px', background: phMeta.bg, color: phMeta.color }}>
+                              <span style={{ fontSize: '10.5px', fontWeight: 600, padding: '2px 8px', borderRadius: '4px', background: phMeta.bg, color: phMeta.color }}>
                                 {actType.key === 'rekrutmen_sf' ? phMeta.label : `Foto #${idx + 1}: ${phMeta.label}`}
                               </span>
                             </div>
@@ -445,7 +445,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             }}
           >
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '16px' }}>
-              <div style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a' }}>{previewPhoto.title}</div>
+              <div style={{ fontSize: '14.5px', fontWeight: 600, color: '#0f172a' }}>{previewPhoto.title}</div>
               <button 
                 type="button"
                 onClick={() => setPreviewPhoto(null)} 

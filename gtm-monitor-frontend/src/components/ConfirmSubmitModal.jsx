@@ -81,7 +81,7 @@ export default function ConfirmSubmitModal({ data, onConfirm, onCancel, isSubmit
           </svg>
         </div>
 
-        <h3 id="confirm-submit-title" style={{ fontSize: '19px', fontWeight: 900, color: '#0F172A', margin: '0 0 10px 0', fontFamily: "var(--font-heading)" }}>
+        <h3 id="confirm-submit-title" style={{ fontSize: '19px', fontWeight: 600, color: '#0F172A', margin: '0 0 10px 0', fontFamily: "var(--font-heading)" }}>
           Konfirmasi Pengiriman
         </h3>
 
@@ -110,10 +110,10 @@ export default function ConfirmSubmitModal({ data, onConfirm, onCancel, isSubmit
             disabled={isSubmitting}
             style={{
               flex: 1, padding: '12px', borderRadius: '10px',
-              border: '1px solid #991B1B', background: '#C8102E',
-              color: '#FFFFFF', fontSize: '13.5px', fontWeight: 800,
+              border: '1px solid #991B1B', background: '#800000',
+              color: '#FFFFFF', fontSize: '13.5px', fontWeight: 600,
               cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 8px rgba(200, 16, 46, 0.25)',
+              boxShadow: '0 2px 8px rgba(128, 0, 0, 0.25)',
               opacity: isSubmitting ? 0.7 : 1
             }}
           >

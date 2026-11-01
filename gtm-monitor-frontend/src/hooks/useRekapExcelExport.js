@@ -112,7 +112,7 @@ export function useRekapExcelExport(branches) {
       worksheet['!autofilter'] = { ref: `A4:N${3 + dataRows.length}` };
     }
 
-    // Styling background Telkomsel Red (#C8102E) & bold putih untuk baris header A4:N4
+    // Styling background Telkomsel Red (#800000) & bold putih untuk baris header A4:N4
     const headerCols = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N'];
     headerCols.forEach(col => {
       const cellRef = `${col}4`;
@@ -120,7 +120,7 @@ export function useRekapExcelExport(branches) {
         worksheet[cellRef].s = {
           fill: {
             patternType: "solid",
-            fgColor: { rgb: "C8102E" } // Telkomsel Red (#C8102E)
+            fgColor: { rgb: "C8102E" } // Telkomsel Red (#800000)
           },
           font: {
             name: "Calibri",

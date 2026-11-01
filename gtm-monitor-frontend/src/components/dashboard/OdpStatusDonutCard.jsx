@@ -38,7 +38,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
   // Calculate arc slices
   const slices = useMemo(() => {
     let accumulatedOffset = 0;
-    return statusChips.map((chip, idx) => {
+    return statusChips.map((chip) => {
       const count = chip.count || 0;
       const pct = (count / safeTotal);
       const strokeLength = pct * circumference;
@@ -74,25 +74,20 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        minHeight: '260px',
+        minHeight: '320px',
         boxSizing: 'border-box'
       }}
     >
       {/* ─── HEADER KARTU ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
-        <div>
-          <div style={{ fontSize: '14.5px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.2px' }}>
-            Profil Status Utilisasi ODP
-          </div>
-          <div style={{ fontSize: '11.5px', color: '#64748B', fontWeight: 500, marginTop: '2px' }}>
-            Distribusi 5 level kesehatan okupansi ODP regional
-          </div>
+        <div style={{ fontSize: '15px', fontWeight: 600, color: '#475569', letterSpacing: '-0.1px' }}>
+          Profil Status Utilisasi ODP
         </div>
 
         <span
           style={{
             fontSize: '12px',
-            fontWeight: 700,
+            fontWeight: 500,
             color: '#475569',
             fontVariantNumeric: 'tabular-nums'
           }}
@@ -103,11 +98,11 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
 
       {/* ─── KONTEN: DONUT SVG (KIRI) + INTERACTIVE LEGEND (KANAN) ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap' }}>
-        {/* SVG Donut Chart */}
-        <div style={{ position: 'relative', width: '170px', height: '170px', flexShrink: 0, margin: '0 auto' }}>
+        {/* SVG Donut Chart (~50% diperbesar dari 170px ke 255px) */}
+        <div style={{ position: 'relative', width: '255px', height: '255px', flexShrink: 0, margin: '0 auto' }}>
           <svg
-            width="170"
-            height="170"
+            width="255"
+            height="255"
             viewBox="0 0 200 200"
             style={{
               overflow: 'visible',
@@ -172,8 +167,8 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
               <>
                 <div
                   style={{
-                    fontSize: '18px',
-                    fontWeight: 900,
+                    fontSize: '26px',
+                    fontWeight: 600,
                     color: activeChip.label?.toLowerCase() === 'yellow' ? '#CA8A04' : activeChip.color,
                     fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1.1
@@ -183,12 +178,12 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 </div>
                 <div
                   style={{
-                    fontSize: '10px',
-                    fontWeight: 800,
+                    fontSize: '12px',
+                    fontWeight: 500,
                     color: '#475569',
                     letterSpacing: '0.4px',
                     textTransform: 'uppercase',
-                    marginTop: '2px'
+                    marginTop: '3px'
                   }}
                 >
                   {activeChip.label} ({activeChip.pct}%)
@@ -198,8 +193,8 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
               <>
                 <div
                   style={{
-                    fontSize: '20px',
-                    fontWeight: 900,
+                    fontSize: '28px',
+                    fontWeight: 600,
                     color: '#0F172A',
                     fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1.1
@@ -209,12 +204,12 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 </div>
                 <div
                   style={{
-                    fontSize: '9.5px',
-                    fontWeight: 800,
+                    fontSize: '11px',
+                    fontWeight: 500,
                     color: '#64748B',
                     letterSpacing: '0.8px',
                     textTransform: 'uppercase',
-                    marginTop: '2px'
+                    marginTop: '3px'
                   }}
                 >
                   TOTAL ODP
@@ -260,7 +255,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: isHovered ? 700 : 600,
+                      fontWeight: isHovered ? 600 : 500,
                       color: isHovered ? '#0F172A' : '#334155',
                       whiteSpace: 'nowrap'
                     }}
@@ -273,7 +268,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: 700,
+                      fontWeight: 500,
                       color: '#0F172A',
                       fontVariantNumeric: 'tabular-nums'
                     }}

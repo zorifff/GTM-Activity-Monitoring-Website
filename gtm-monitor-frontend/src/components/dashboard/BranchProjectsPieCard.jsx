@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useCountUp } from '../../hooks/useCountUp';
 import { BRANCH_COLORS } from '../../utils';
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -60,12 +59,11 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
     return branchData.reduce((acc, b) => acc + (b.count || 0), 0) || 1;
   }, [branchData]);
 
-  const countTotal = useCountUp(totalProjects, { enabled: isInView, duration: 800 });
 
   // Compute angles for each pie slice
   const slices = useMemo(() => {
     let currentAngle = 0;
-    return branchData.map((b, idx) => {
+    return branchData.map((b) => {
       const share = b.count / totalProjects;
       const angle = share * 360;
       const startAngle = currentAngle;
@@ -90,8 +88,6 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
     });
   }, [branchData, totalProjects]);
 
-  const activeSlice = hoveredIndex !== null ? slices[hoveredIndex] : null;
-
   return (
     <div
       className="saas-card"
@@ -105,25 +101,20 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        minHeight: '260px',
+        minHeight: '320px',
         boxSizing: 'border-box'
       }}
     >
       {/* ─── HEADER KARTU ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
-        <div>
-          <div style={{ fontSize: '14.5px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.2px' }}>
-            Sebaran Volume Proyek per Branch
-          </div>
-          <div style={{ fontSize: '11.5px', color: '#64748B', fontWeight: 500, marginTop: '2px' }}>
-            Proporsi alokasi {countTotal} proyek se-Regional Jateng & DIY
-          </div>
+        <div style={{ fontSize: '15px', fontWeight: 600, color: '#475569', letterSpacing: '-0.1px' }}>
+          Sebaran Volume Proyek per Branch
         </div>
 
         <span
           style={{
             fontSize: '12px',
-            fontWeight: 700,
+            fontWeight: 500,
             color: '#475569'
           }}
         >
@@ -133,11 +124,11 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
 
       {/* ─── KONTEN: PIE CHART SVG (KIRI) + LEGEND PER BRANCH (KANAN) ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap' }}>
-        {/* SVG Pie Chart */}
-        <div style={{ position: 'relative', width: '170px', height: '170px', flexShrink: 0, margin: '0 auto' }}>
+        {/* SVG Pie Chart (~50% diperbesar dari 170px ke 255px) */}
+        <div style={{ position: 'relative', width: '255px', height: '255px', flexShrink: 0, margin: '0 auto' }}>
           <svg
-            width="170"
-            height="170"
+            width="255"
+            height="255"
             viewBox="0 0 200 200"
             style={{
               overflow: 'visible',
@@ -213,7 +204,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: isHovered ? 700 : 600,
+                      fontWeight: isHovered ? 600 : 500,
                       color: isHovered ? '#0F172A' : '#334155',
                       whiteSpace: 'nowrap'
                     }}
@@ -226,7 +217,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: 700,
+                      fontWeight: 500,
                       color: '#0F172A',
                       fontVariantNumeric: 'tabular-nums'
                     }}

@@ -119,7 +119,7 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
           id="confirm-delete-title"
           style={{
             fontSize: '20px',
-            fontWeight: 900,
+            fontWeight: 600,
             color: '#0F172A',
             margin: '0 0 10px 0',
             fontFamily: "var(--font-heading)"
@@ -210,7 +210,7 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
               background: '#E11D48',
               color: '#FFFFFF',
               fontSize: '13.5px',
-              fontWeight: 800,
+              fontWeight: 600,
               cursor: isDeleting ? 'not-allowed' : 'pointer',
               boxShadow: '0 2px 8px rgba(225, 29, 72, 0.25)',
               opacity: isDeleting ? 0.7 : 1,

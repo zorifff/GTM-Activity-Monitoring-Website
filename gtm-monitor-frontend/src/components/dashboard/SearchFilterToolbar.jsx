@@ -129,7 +129,7 @@ export default function SearchFilterToolbar({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: isFocused ? '#C8102E' : '#64748B',
+          color: isFocused ? '#800000' : '#64748B',
           transition: 'color 0.15s ease'
         }}
       >

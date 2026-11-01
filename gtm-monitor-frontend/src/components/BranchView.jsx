@@ -90,7 +90,7 @@ const BranchView = memo(function BranchView({
         </div>
         <button
           onClick={goDashboard}
-          style={{ padding: '8px 20px', borderRadius: '50px', background: '#C8102E', color: '#FFF', border: 'none', fontWeight: 700, cursor: 'pointer', marginTop: '12px' }}
+          style={{ padding: '8px 20px', borderRadius: '50px', background: '#800000', color: '#FFF', border: 'none', fontWeight: 700, cursor: 'pointer', marginTop: '12px' }}
         >
           ← Kembali ke Dashboard
         </button>
@@ -160,7 +160,7 @@ const BranchView = memo(function BranchView({
 
       {/* Controls Bar */}
       <div className="controls-bar-container" style={{ marginBottom: '20px' }}>
-        <div className="branch-filter-capsule" style={{ border: '1px solid rgba(200, 16, 46, 0.2)', color: '#C8102E' }}>
+        <div className="branch-filter-capsule" style={{ border: '1px solid rgba(128, 0, 0, 0.2)', color: '#800000' }}>
           <span className="branch-text-label" style={{ fontWeight: 800 }}>Branch: {formatBranch(branch.name)}</span>
         </div>
 

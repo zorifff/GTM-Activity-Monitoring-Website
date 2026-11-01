@@ -28,17 +28,14 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
       >
         <div>
           <h2 style={{ 
-            fontSize: '18px', 
+            fontSize: '15px', 
             fontWeight: 600, 
-            color: '#1E293B', 
-            margin: '0 0 2px 0',
-            letterSpacing: '-0.2px'
+            color: '#475569', 
+            margin: 0,
+            letterSpacing: '-0.1px'
           }}>
             Executive Summary
           </h2>
-          <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
-            Rekapitulasi 5 aktivitas prioritas per Branch dan WOK
-          </div>
         </div>
 
         {/* Tombol Ekspor PNG (Outline rapi dengan ikon unduh) */}
@@ -59,7 +56,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
             padding: '7px 14px',
             borderRadius: '8px',
             transition: 'all 0.15s ease',
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontFamily: 'inherit',
             opacity: isExportingPng ? 0.7 : 1,
             boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04)'
           }}
@@ -102,7 +99,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'center', minWidth: '1100px' }}>
           <thead>
             {/* Primary Header Row */}
-            <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 700 }}>
+            <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 500 }}>
               <th style={{ 
                 padding: '12px 10px', 
                 width: '130px', 
@@ -208,7 +205,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                     rowSpan={row.branchRowSpan} 
                     style={{ 
                       padding: '10px 12px', 
-                      fontWeight: 700, 
+                      fontWeight: 500, 
                       fontSize: '12.5px',
                       color: '#0F172A', 
                       borderRight: '1px solid #E2E8F0', 
@@ -239,7 +236,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 {/* LOP Count (Rata Kanan) */}
                 <td style={{ 
                   padding: '9px 8px', 
-                  fontWeight: 700, 
+                  fontWeight: 500, 
                   color: '#0F172A', 
                   textAlign: 'right',
                   borderRight: '1px solid #E2E8F0', 
@@ -257,7 +254,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                       key={`done-${item.key}`} 
                       style={{ 
                         padding: '9px 6px', 
-                        fontWeight: val > 0 ? 700 : 400, 
+                        fontWeight: val > 0 ? 600 : 400, 
                         color: val > 0 ? '#0F172A' : '#94A3B8', 
                         borderRight: '1px solid #E2E8F0', 
                         borderBottom: row.isLastInBranch ? '2px solid #CBD5E1' : '1px solid #F1F5F9',
@@ -294,7 +291,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 {/* Progress % (Rata Kanan) */}
                 <td style={{ 
                   padding: '9px 10px', 
-                  fontWeight: 700,
+                  fontWeight: 500,
                   color: '#0F172A', 
                   textAlign: 'right',
                   borderBottom: row.isLastInBranch ? '2px solid #CBD5E1' : '1px solid #F1F5F9',
@@ -308,7 +305,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
 
           {/* Table Footer: Grand Totals Regional Jateng DIY */}
           <tfoot>
-            <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 700, borderTop: '2px solid #0F172A' }}>
+            <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 500, borderTop: '2px solid #0F172A' }}>
               <td colSpan={2} style={{ padding: '12px 14px', textAlign: 'left', fontSize: '11.5px', letterSpacing: '0.05em' }}>
                 TOTAL REGIONAL JATENG DIY
               </td>
@@ -323,7 +320,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                   style={{ 
                     padding: '12px 6px', 
                     color: '#FFFFFF', 
-                    fontWeight: 700,
+                    fontWeight: 500,
                     fontVariantNumeric: 'tabular-nums',
                     textAlign: 'center'
                   }}
@@ -339,7 +336,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                   style={{ 
                     padding: '12px 6px', 
                     color: '#FFFFFF', 
-                    fontWeight: 700,
+                    fontWeight: 500,
                     fontVariantNumeric: 'tabular-nums',
                     textAlign: 'center'
                   }}
@@ -353,7 +350,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 padding: '12px 10px', 
                 fontSize: '12.5px', 
                 color: '#FFFFFF', 
-                fontWeight: 800,
+                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 textAlign: 'right' 
               }}>

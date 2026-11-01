@@ -10,12 +10,15 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
   const [results, setResults] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   useEffect(() => {
-    if (!isOpen && !isModalOpen) return;
+    if (!isOpen && !isModalOpen && !showGuide) return;
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        if (isModalOpen) {
+        if (showGuide) {
+          setShowGuide(false);
+        } else if (isModalOpen) {
           setIsModalOpen(false);
         } else if (isOpen) {
           onClose?.();
@@ -24,14 +27,26 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isModalOpen, onClose]);
+  }, [isOpen, isModalOpen, showGuide, onClose]);
+
+  // Klik di luar untuk menutup hint panduan penggunaan
+  useEffect(() => {
+    if (!showGuide) return;
+    const handleClickOutsideGuide = (e) => {
+      if (!e.target.closest('[data-pairing-hint]')) {
+        setShowGuide(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutsideGuide);
+    return () => document.removeEventListener('mousedown', handleClickOutsideGuide);
+  }, [showGuide]);
 
   const handleSearch = async (e) => {
     if (e) e.preventDefault();
     const cleanQ = query.trim();
 
     if (!cleanQ || cleanQ.length < 6) {
-      setError('Kata kunci terlalu umum. Masukkan nilai yang akurat dan lengkap (minimal 6 karakter).');
+      setError('Kata kunci terlalu umum. Masukkan minimal 6 karakter yang akurat.');
       setResults([]);
       setIsModalOpen(false);
       return;
@@ -43,7 +58,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
       const data = await pairingSearch.mutateAsync(cleanQ);
 
       if (!data.results || data.results.length === 0) {
-        setError(`Data pairing tidak ditemukan untuk kata kunci "${cleanQ}". Pastikan penulisan ID/nomor telepon sudah sesuai.`);
+        setError(`Data pairing tidak ditemukan untuk kata kunci "${cleanQ}". Pastikan penulisan ID atau nomor telepon sudah sesuai.`);
         setResults([]);
         setIsModalOpen(false);
       } else {
@@ -51,7 +66,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
         setResults(grouped);
         setSelectedIdx(0);
         setIsModalOpen(true);
-        onClose(); // Close the dropdown popover when modal opens
+        onClose(); // Tutup dropdown popover saat modal hasil dibuka
       }
     } catch (err) {
       setError(err.message || 'Gagal melakukan pencarian.');
@@ -180,25 +195,131 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             top: `${coords.top}px`,
             left: `${coords.left}px`,
             transform: 'translateX(-50%)',
-            width: '380px',
+            width: '390px',
             maxWidth: 'calc(100vw - 24px)',
             boxSizing: 'border-box',
             background: '#FFFFFF',
-            borderRadius: '18px',
+            borderRadius: '16px',
             border: '1px solid #E2E8F0',
-            boxShadow: '0 16px 40px rgba(15, 23, 42, 0.18)',
-            padding: '20px',
+            boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.18), 0 8px 16px -4px rgba(15, 23, 42, 0.08)',
+            padding: '20px 22px',
             zIndex: 999999,
-            animation: 'programDropdownFadeIn 0.15s ease-out'
+            animation: 'programDropdownFadeIn 0.15s ease-out',
+            fontFamily: 'var(--font-body)',
+            color: '#334155'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid #F1F5F9', paddingBottom: '10px' }}>
+          {/* Header Popover */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
             <div>
-              <div style={{ fontSize: '10px', fontWeight: 800, color: '#C8102E', textTransform: 'uppercase', letterSpacing: '1.2px' }}>
-                TELKOMSEL ONE PAIRING
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
+                  Pencarian Data Pairing
+                </h3>
+
+                {/* Tanda Hint 'i' Panduan Penggunaan yang Disembunyikan */}
+                <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }} data-pairing-hint>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowGuide((prev) => !prev);
+                    }}
+                    aria-label="Lihat panduan penggunaan pencarian pairing"
+                    title="Panduan penggunaan pencarian"
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      background: showGuide ? '#EFF6FF' : '#FFFFFF',
+                      color: showGuide ? '#1D4ED8' : '#64748B',
+                      border: showGuide ? '1px solid #93C5FD' : '1px solid #CBD5E1',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      padding: 0,
+                      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)',
+                      transition: 'all 0.15s ease',
+                      flexShrink: 0
+                    }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="16" x2="12" y2="12" />
+                      <line x1="12" y1="8" x2="12.01" y2="8" />
+                    </svg>
+                  </button>
+
+                  {/* Popover Panduan Penggunaan */}
+                  {showGuide && (
+                    <div
+                      role="tooltip"
+                      style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 8px)',
+                        left: 0,
+                        zIndex: 60,
+                        width: '320px',
+                        maxWidth: 'calc(100vw - 36px)',
+                        backgroundColor: '#FFFFFF',
+                        borderRadius: '12px',
+                        border: '1px solid #E2E8F0',
+                        boxShadow: '0 12px 28px -4px rgba(15, 23, 42, 0.16), 0 4px 10px -2px rgba(15, 23, 42, 0.08)',
+                        padding: '14px 16px',
+                        boxSizing: 'border-box',
+                        fontFamily: 'var(--font-body)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
+                        <div style={{ fontFamily: 'var(--font-heading)', fontSize: '12.5px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                          Panduan Penggunaan
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowGuide(false);
+                          }}
+                          aria-label="Tutup panduan"
+                          style={{
+                            border: 'none',
+                            background: '#F1F5F9',
+                            color: '#64748B',
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '50%',
+                            cursor: 'pointer',
+                            fontSize: '11px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: 0,
+                            transition: 'all 0.15s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#E2E8F0';
+                            e.currentTarget.style.color = '#0F172A';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = '#F1F5F9';
+                            e.currentTarget.style.color = '#64748B';
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      <ul style={{ margin: 0, paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '11.5px', color: '#475569', lineHeight: 1.5 }}>
+                        <li>Masukkan <strong style={{ color: '#0F172A' }}>bb_id</strong>, nomor HP (<strong style={{ color: '#0F172A' }}>08...</strong> / <strong style={{ color: '#0F172A' }}>62...</strong>), atau <strong style={{ color: '#0F172A' }}>order_id</strong> lengkap.</li>
+                        <li>Penulisan harus akurat sesuai data (minimal 6 karakter).</li>
+                        <li>Tekan <strong style={{ color: '#0F172A' }}>Enter</strong> atau klik tombol <strong style={{ color: '#800000' }}>Cari Data Pairing</strong>.</li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 900, color: '#0F172A', fontFamily: "var(--font-heading)" }}>
-                Pencarian Data Pairing
+              <div style={{ fontSize: '12px', color: '#64748B', marginTop: '3px' }}>
+                Cek relasi pelanggan Telkomsel One
               </div>
             </div>
 
@@ -214,11 +335,20 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 height: '26px',
                 borderRadius: '50%',
                 cursor: 'pointer',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: '12px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#E2E8F0';
+                e.currentTarget.style.color = '#0F172A';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#F1F5F9';
+                e.currentTarget.style.color = '#64748B';
               }}
             >
               ✕
@@ -239,43 +369,45 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 autoFocus
                 style={{
                   width: '100%',
-                  padding: '11px 14px 11px 38px',
-                  borderRadius: '12px',
+                  padding: '10px 14px 10px 38px',
+                  borderRadius: '10px',
                   border: '1px solid #CBD5E1',
                   fontSize: '13px',
-                  fontWeight: 600,
+                  fontWeight: 500,
+                  fontFamily: 'var(--font-body)',
                   background: '#F8FAFC',
                   color: '#0F172A',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                  transition: 'border-color 0.15s ease, background 0.15s ease'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = '#800000';
+                  e.currentTarget.style.background = '#FFFFFF';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = '#CBD5E1';
+                  e.currentTarget.style.background = '#F8FAFC';
                 }}
               />
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}>
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#64748B"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
+              >
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </div>
 
-            <div style={{
-              background: '#F8FAFC',
-              border: '1px solid #E2E8F0',
-              borderRadius: '10px',
-              padding: '10px 12px',
-              fontSize: '11.5px',
-              color: '#475569',
-              lineHeight: 1.45
-            }}>
-              <div style={{ fontWeight: 800, color: '#0F172A', marginBottom: '4px', fontSize: '11.5px' }}>
-                Panduan Penggunaan:
-              </div>
-              <ul style={{ margin: 0, paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <li>Masukkan <strong style={{ color: '#0F172A' }}>bb_id</strong>, nomor HP (<strong style={{ color: '#0F172A' }}>08...</strong> / <strong style={{ color: '#0F172A' }}>62...</strong>), atau <strong style={{ color: '#0F172A' }}>order_id</strong> secara lengkap.</li>
-                <li>Penulisan harus akurat (persis) sesuai data.</li>
-                <li>Tekan <strong style={{ color: '#0F172A' }}>Enter</strong> atau tombol <strong style={{ color: '#C8102E' }}>Konfirmasi Pencarian</strong>.</li>
-              </ul>
-            </div>
-
             {error && (
-              <div style={{ padding: '10px 12px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '12px', fontWeight: 700 }}>
+              <div style={{ padding: '10px 12px', borderRadius: '8px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '12px', fontWeight: 500, lineHeight: 1.45 }}>
                 {error}
               </div>
             )}
@@ -285,21 +417,33 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
               disabled={loading || !query.trim()}
               style={{
                 width: '100%',
-                padding: '11px 20px',
-                borderRadius: '10px',
+                height: '38px',
+                borderRadius: '8px',
                 border: 'none',
-                background: loading || !query.trim() ? '#CBD5E1' : 'linear-gradient(135deg, #C8102E 0%, #FF5E00 100%)',
-                color: '#FFFFFF',
-                fontSize: '12.5px',
-                fontWeight: 800,
-                letterSpacing: '0.5px',
+                background: loading || !query.trim() ? '#E2E8F0' : '#800000',
+                color: loading || !query.trim() ? '#94A3B8' : '#FFFFFF',
+                fontFamily: 'var(--font-body)',
+                fontSize: '13px',
+                fontWeight: 600,
                 cursor: loading || !query.trim() ? 'not-allowed' : 'pointer',
-                boxShadow: loading || !query.trim() ? 'none' : '0 4px 14px rgba(200, 16, 46, 0.3)',
-                transition: 'all 0.2s ease',
-                marginTop: '4px'
+                boxShadow: loading || !query.trim() ? 'none' : '0 1px 2px rgba(128, 0, 0, 0.2)',
+                transition: 'all 0.15s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => {
+                if (!loading && query.trim()) {
+                  e.currentTarget.style.background = '#990000';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loading && query.trim()) {
+                  e.currentTarget.style.background = '#800000';
+                }
               }}
             >
-              {loading ? 'Mencari Data Pairing...' : 'Konfirmasi Pencarian'}
+              {loading ? 'Mencari Data Pairing...' : 'Cari Data Pairing'}
             </button>
           </form>
         </div>,
@@ -316,10 +460,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
           onClick={() => setIsModalOpen(false)}
           style={{
             position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            inset: 0,
             zIndex: 9999999,
             background: 'rgba(15, 23, 42, 0.65)',
             backdropFilter: 'blur(4px)',
@@ -335,27 +476,28 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             onClick={(e) => e.stopPropagation()}
             style={{
               background: '#FFFFFF',
-              borderRadius: '20px',
+              borderRadius: '16px',
               border: '1px solid #E2E8F0',
               width: '100%',
               maxWidth: '680px',
               maxHeight: '85vh',
               display: 'flex',
               flexDirection: 'column',
-              boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
               overflow: 'hidden',
-              margin: 'auto'
+              margin: 'auto',
+              fontFamily: 'var(--font-body)'
             }}
           >
             {/* Modal Header */}
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFC' }}>
+            <div style={{ padding: '18px 24px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFC' }}>
               <div>
-                <div style={{ fontSize: '11px', fontWeight: 800, color: '#C8102E', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>
-                  TELKOMSEL ONE PAIRING DATA
-                </div>
-                <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#0F172A', fontFamily: "var(--font-heading)" }}>
+                <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
                   Hasil Deteksi Pairing
                 </h3>
+                <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px' }}>
+                  Detail data relasi pelanggan Telkomsel One
+                </div>
               </div>
 
               <button
@@ -364,17 +506,26 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 aria-label="Tutup dialog hasil pairing"
                 style={{
                   border: 'none',
-                  background: '#E2E8F0',
-                  color: '#475569',
-                  width: '30px',
-                  height: '30px',
+                  background: '#F1F5F9',
+                  color: '#64748B',
+                  width: '28px',
+                  height: '28px',
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  fontWeight: 800,
-                  fontSize: '14px',
+                  fontWeight: 600,
+                  fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#E2E8F0';
+                  e.currentTarget.style.color = '#0F172A';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#F1F5F9';
+                  e.currentTarget.style.color = '#64748B';
                 }}
               >
                 ✕
@@ -383,22 +534,42 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
 
             {/* Multiple Results Selector (if results count > 1) */}
             {results.length > 1 && (
-              <div style={{ padding: '10px 24px', background: '#F1F5F9', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
-                <span style={{ fontWeight: '700', color: '#475569' }}>
-                  Ditemukan {results.length} data cocok. Menampilkan ({selectedIdx + 1} dari {results.length}):
+              <div style={{ padding: '10px 24px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
+                <span style={{ fontWeight: 600, color: '#475569' }}>
+                  Ditemukan {results.length} data cocok ({selectedIdx + 1} dari {results.length}):
                 </span>
                 <div style={{ display: 'flex', gap: '6px' }}>
                   <button
+                    type="button"
                     disabled={selectedIdx === 0}
                     onClick={() => setSelectedIdx(prev => prev - 1)}
-                    style={{ padding: '4px 10px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#FFF', fontSize: '11.5px', fontWeight: 700, cursor: selectedIdx === 0 ? 'not-allowed' : 'pointer' }}
+                    style={{
+                      padding: '5px 12px',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      background: '#FFFFFF',
+                      fontSize: '11.5px',
+                      fontWeight: 600,
+                      cursor: selectedIdx === 0 ? 'not-allowed' : 'pointer',
+                      opacity: selectedIdx === 0 ? 0.5 : 1
+                    }}
                   >
                     Sebelumnya
                   </button>
                   <button
+                    type="button"
                     disabled={selectedIdx === results.length - 1}
                     onClick={() => setSelectedIdx(prev => prev + 1)}
-                    style={{ padding: '4px 10px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#FFF', fontSize: '11.5px', fontWeight: 700, cursor: selectedIdx === results.length - 1 ? 'not-allowed' : 'pointer' }}
+                    style={{
+                      padding: '5px 12px',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      background: '#FFFFFF',
+                      fontSize: '11.5px',
+                      fontWeight: 600,
+                      cursor: selectedIdx === results.length - 1 ? 'not-allowed' : 'pointer',
+                      opacity: selectedIdx === results.length - 1 ? 0.5 : 1
+                    }}
                   >
                     Selanjutnya
                   </button>
@@ -408,23 +579,23 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
 
             {/* Modal Body: Transposed Table Telkomsel Style */}
             <div style={{ padding: '24px', overflowY: 'auto', flex: 1 }}>
-              <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 6px', fontSize: '13px' }}>
+              <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 6px', fontSize: '12.5px' }}>
                 <tbody>
                   {transposedFields.map((f, i) => (
                     <tr key={i}>
-                      {/* Left Header Column (Vertical Transposed) - Maroon Telkomsel */}
+                      {/* Left Header Column - Maroon Telkomsel */}
                       <td
                         style={{
-                          width: '42%',
-                          padding: '12px 16px',
-                          background: '#C8102E',
+                          width: '40%',
+                          padding: '10px 14px',
+                          background: '#800000',
                           color: '#FFFFFF',
-                          fontWeight: 800,
+                          fontWeight: 600,
                           fontSize: '12px',
-                          fontFamily: "'Outfit', sans-serif",
-                          letterSpacing: '0.3px',
-                          borderTopLeftRadius: '10px',
-                          borderBottomLeftRadius: '10px',
+                          fontFamily: 'var(--font-body)',
+                          letterSpacing: '-0.1px',
+                          borderTopLeftRadius: '8px',
+                          borderBottomLeftRadius: '8px',
                           verticalAlign: 'middle'
                         }}
                       >
@@ -434,16 +605,17 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       {/* Right Value Column - Clean Crisp Card */}
                       <td
                         style={{
-                          padding: '12px 16px',
+                          padding: '10px 14px',
                           background: '#F8FAFC',
                           border: '1px solid #E2E8F0',
                           borderLeft: 'none',
-                          borderTopRightRadius: '10px',
-                          borderBottomRightRadius: '10px',
+                          borderTopRightRadius: '8px',
+                          borderBottomRightRadius: '8px',
                           color: '#0F172A',
-                          fontWeight: 700,
+                          fontWeight: 500,
                           wordBreak: 'break-all',
-                          verticalAlign: 'middle'
+                          verticalAlign: 'middle',
+                          fontFamily: 'var(--font-body)'
                         }}
                       >
                         {f.val || '-'}
@@ -455,20 +627,27 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             </div>
 
             {/* Modal Footer */}
-            <div style={{ padding: '16px 24px', borderTop: '1px solid #F1F5F9', background: '#F8FAFC', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ padding: '14px 24px', borderTop: '1px solid #F1F5F9', background: '#F8FAFC', display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
                 style={{
-                  padding: '10px 24px',
-                  borderRadius: '50px',
+                  padding: '8px 22px',
+                  borderRadius: '8px',
                   border: 'none',
-                  background: 'linear-gradient(135deg, #0F172A 0%, #334155 100%)',
+                  background: '#800000',
                   color: '#FFFFFF',
-                  fontWeight: 800,
-                  fontSize: '13px',
+                  fontWeight: 600,
+                  fontSize: '12.5px',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(15, 23, 42, 0.2)'
+                  boxShadow: '0 1px 2px rgba(128, 0, 0, 0.2)',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#990000';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#800000';
                 }}
               >
                 Tutup

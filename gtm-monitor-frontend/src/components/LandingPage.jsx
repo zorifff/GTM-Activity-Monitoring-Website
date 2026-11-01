@@ -26,7 +26,7 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        fontFamily: 'var(--font-body)',
         boxSizing: 'border-box'
       }}
     >
@@ -85,6 +85,7 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
       >
         <h1
           style={{
+            fontFamily: 'var(--font-heading)',
             color: '#FFFFFF',
             fontSize: 'clamp(32px, 3.8vw, 52px)',
             fontWeight: 800,
@@ -106,7 +107,7 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
           id="landing-login-btn"
           onClick={handleLogin}
           style={{
-            backgroundColor: '#FF0000',
+            backgroundColor: '#800000',
             color: '#FFFFFF',
             border: 'none',
             borderRadius: '12px',
@@ -115,18 +116,18 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
             fontWeight: 700,
             cursor: 'pointer',
             boxShadow: 'none', // Strictly no glow effect
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontFamily: 'var(--font-body)',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             transition: 'background-color 0.2s ease, transform 0.15s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#E50000';
+            e.currentTarget.style.backgroundColor = '#660000';
             e.currentTarget.style.boxShadow = 'none';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#FF0000';
+            e.currentTarget.style.backgroundColor = '#800000';
             e.currentTarget.style.boxShadow = 'none';
           }}
         >

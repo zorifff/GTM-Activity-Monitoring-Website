@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback, useLayoutEffect, useEffect } from 'react';
 import CekPairingPopover from '../CekPairingPopover';
 
-// Menu CEK PAIRING di navigasi atas + popover pencarian (posisi fixed mengikuti tombol)
-export default function CekPairingNavItem({ user, setShowLoginModal }) {
+// Menu CEK PAIRING di navigasi (TopNav / Sidebar) + popover pencarian
+export default function CekPairingNavItem({ user, setShowLoginModal, customButton }) {
   const cekPairingTabRef = useRef(null);
   // Tsel One Pairing Popover States
   const [isPairingDropdownOpen, setIsPairingDropdownOpen] = useState(false);
@@ -11,6 +11,13 @@ export default function CekPairingNavItem({ user, setShowLoginModal }) {
   const updatePairingCoords = useCallback(() => {
     if (cekPairingTabRef.current) {
       const rect = cekPairingTabRef.current.getBoundingClientRect();
+      if (rect.left < 280) {
+        setPairingCoords({
+          top: Math.min(Math.max(rect.top, 16), window.innerHeight - 440),
+          left: Math.min(rect.right + 200, window.innerWidth - 200)
+        });
+        return;
+      }
       const popoverWidth = Math.min(380, window.innerWidth - 24);
       let targetLeft = rect.left + rect.width / 2;
       const margin = 12;
@@ -57,48 +64,63 @@ export default function CekPairingNavItem({ user, setShowLoginModal }) {
   }, []);
 
   return (
-    <div ref={cekPairingTabRef} style={{ position: 'relative' }}>
-      <button
-        type="button"
-        className="nav-tab-btn"
-        onClick={() => {
-          if (!user) {
-            setShowLoginModal(true);
-            return;
-          }
-          if (!isPairingDropdownOpen && cekPairingTabRef.current) {
-            const rect = cekPairingTabRef.current.getBoundingClientRect();
-            setPairingCoords({
-              top: rect.bottom + 8,
-              left: rect.left + rect.width / 2
-            });
-          }
-          setIsPairingDropdownOpen(!isPairingDropdownOpen);
-        }}
-        style={{
-          background: 'none',
-          border: 'none',
-          color: isPairingDropdownOpen ? '#ED0226' : '#64748B',
-          fontSize: '12px',
-          fontWeight: 800,
-          letterSpacing: '1.5px',
-          cursor: 'pointer',
-          transition: 'color 0.2s ease',
-          padding: '6px 4px',
-          outline: 'none',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '4px',
-          whiteSpace: 'nowrap'
-        }}
-        onMouseEnter={(e) => { if (!isPairingDropdownOpen) e.currentTarget.style.color = '#0F172A'; }}
-        onMouseLeave={(e) => { if (!isPairingDropdownOpen) e.currentTarget.style.color = '#64748B'; }}
-      >
-        <span>CEK PAIRING</span>
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isPairingDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }}>
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
+    <div ref={cekPairingTabRef} style={{ position: 'relative', width: '100%' }}>
+      {customButton ? (
+        customButton({
+          onClick: () => {
+            if (!user) {
+              if (setShowLoginModal) setShowLoginModal(true);
+              return;
+            }
+            if (!isPairingDropdownOpen) updatePairingCoords();
+            setIsPairingDropdownOpen(!isPairingDropdownOpen);
+          },
+          isOpen: isPairingDropdownOpen,
+          btnRef: cekPairingTabRef
+        })
+      ) : (
+        <button
+          type="button"
+          className="nav-tab-btn"
+          onClick={() => {
+            if (!user) {
+              if (setShowLoginModal) setShowLoginModal(true);
+              return;
+            }
+            if (!isPairingDropdownOpen && cekPairingTabRef.current) {
+              const rect = cekPairingTabRef.current.getBoundingClientRect();
+              setPairingCoords({
+                top: rect.bottom + 8,
+                left: rect.left + rect.width / 2
+              });
+            }
+            setIsPairingDropdownOpen(!isPairingDropdownOpen);
+          }}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: isPairingDropdownOpen ? '#800000' : '#64748B',
+            fontSize: '12px',
+            fontWeight: 800,
+            letterSpacing: '1.5px',
+            cursor: 'pointer',
+            transition: 'color 0.2s ease',
+            padding: '6px 4px',
+            outline: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            whiteSpace: 'nowrap'
+          }}
+          onMouseEnter={(e) => { if (!isPairingDropdownOpen) e.currentTarget.style.color = '#0F172A'; }}
+          onMouseLeave={(e) => { if (!isPairingDropdownOpen) e.currentTarget.style.color = '#64748B'; }}
+        >
+          <span>CEK PAIRING</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isPairingDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+      )}
 
       <CekPairingPopover
         isOpen={isPairingDropdownOpen}

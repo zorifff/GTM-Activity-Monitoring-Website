@@ -101,7 +101,7 @@ export default function TopNav({
             style={{
               background: 'none',
               border: 'none',
-              color: (view === 'dashboard' || view === 'branch') ? '#ED0226' : '#64748B',
+              color: (view === 'dashboard' || view === 'branch') ? '#800000' : '#64748B',
               fontSize: '12px',
               fontWeight: 800,
               letterSpacing: '1.5px',
@@ -125,7 +125,7 @@ export default function TopNav({
             style={{
               background: 'none',
               border: 'none',
-              color: view === 'upload' ? '#ED0226' : '#64748B',
+              color: view === 'upload' ? '#800000' : '#64748B',
               fontSize: '12px',
               fontWeight: 800,
               letterSpacing: '1.5px',
@@ -152,7 +152,7 @@ export default function TopNav({
               style={{
                 background: 'none',
                 border: 'none',
-                color: view === 'admin' ? '#ED0226' : '#64748B',
+                color: view === 'admin' ? '#800000' : '#64748B',
                 fontSize: '12px',
                 fontWeight: 800,
                 letterSpacing: '1.5px',
@@ -182,7 +182,7 @@ export default function TopNav({
               left: `${indicatorStyle.left}px`,
               width: `${indicatorStyle.width}px`,
               height: '2.5px',
-              background: '#ED0226',
+              background: '#800000',
               borderRadius: '2px 2px 0 0',
               opacity: indicatorStyle.opacity,
               transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -254,19 +254,19 @@ export default function TopNav({
             style={{
               padding: '8px 20px',
               borderRadius: '50px',
-              background: 'linear-gradient(135deg, #C8102E 0%, #FF5E00 100%)',
+              background: 'linear-gradient(135deg, #800000 0%, #FF5E00 100%)',
               color: '#FFFFFF',
               fontSize: '12px',
               fontWeight: 800,
               letterSpacing: '0.5px',
               border: 'none',
               cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(200, 16, 46, 0.3)',
+              boxShadow: '0 4px 14px rgba(128, 0, 0, 0.3)',
               transition: 'all 0.25s ease',
               flexShrink: 0
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 18px rgba(200, 16, 46, 0.4)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(200, 16, 46, 0.3)'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 18px rgba(128, 0, 0, 0.4)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(128, 0, 0, 0.3)'; }}
           >
             Masuk / Login
           </button>

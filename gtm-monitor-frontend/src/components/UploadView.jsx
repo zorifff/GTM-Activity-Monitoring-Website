@@ -112,154 +112,241 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
     };
   }, [isDropdownOpen]);
 
-  // Calibrated discrete status color tokens (R-18 & R-37)
-  const getStatusColor35 = (val) => {
-    const numeric = parseFloat(val) || 0;
-    if (numeric >= 35) return '#16A34A'; // Target reached (>= 35%)
-    if (numeric >= 20) return '#D97706'; // Moderate
-    return '#DC2626'; // Low occupancy (< 20%)
-  };
-
-  const getCompletionColor = (val) => {
-    const numeric = parseFloat(val) || 0;
-    if (numeric >= 80) return '#16A34A'; // High completion (green)
-    if (numeric > 0) return '#D97706'; // In progress (amber)
-    return '#0F172A'; // 0% is normal initial state -> neutral slate (never red)
-  };
-
-  const getProgressBarColor = (val) => {
-    const numeric = parseFloat(val) || 0;
-    if (numeric >= 80) return '#16A34A';
-    if (numeric > 0) return '#D97706';
-    return '#94A3B8';
-  };
-
   const usedPct = useMemo(() => {
     return stats.totalPort > 0 ? (stats.totalUsed / stats.totalPort) * 100 : 0;
   }, [stats.totalUsed, stats.totalPort]);
 
   return (
     <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
-      {/* ─── 1. HEADER TITLE (MATCHING MONITORING PAGE STYLE) ─── */}
-      <div className="page-title-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <div>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.5px' }}>
-            GTM Activity LOP Greenfield Priority
-          </h1>
-        </div>
-      </div>
+      
 
-      {/* ─── 2. KPI SUMMARY GRID (3 CARDS PROPORTIONALLY BALANCED) ─── */}
+      {/* ─── 2. KPI SUMMARY GRID (3 CARDS MATCHING DASHBOARD METRICS STYLE) ─── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', marginBottom: '24px' }}>
-        {/* Card 1: Port Avai / Used / Total */}
-        <div style={{
-          background: '#FFFFFF',
-          borderRadius: '18px',
-          border: '1px solid #E2E8F0',
-          padding: '20px 24px',
-          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.02)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          transition: 'transform 0.2s ease, boxShadow 0.2s ease'
-        }}>
-          <div>
-            <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
-              Ketersediaan Port
-            </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '8px' }}>
-              <span className="tabular-nums" style={{ fontFamily: "var(--font-heading)", fontSize: '26px', fontWeight: 900, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
-                {stats.totalAvai.toLocaleString('id-ID')}
-              </span>
-              <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#64748B' }}>
-                Port tersedia
-              </span>
-            </div>
+        {/* Card 1: Port Tersedia */}
+        <div
+          className="saas-card"
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '16px',
+            border: '1px solid rgba(226, 232, 240, 0.9)',
+            boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+            padding: '24px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            boxSizing: 'border-box'
+          }}
+        >
+          <div
+            style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#475569',
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.1px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            Port Tersedia
           </div>
-          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '10px', fontWeight: 500 }}>
-            <span style={{ fontWeight: 700, color: '#0F172A' }}>{stats.totalUsed.toLocaleString('id-ID')}</span> terpakai dari <span style={{ fontWeight: 700, color: '#0F172A' }}>{stats.totalPort.toLocaleString('id-ID')}</span> total ({usedPct.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: 600,
+              color: '#0F172A',
+              letterSpacing: '-1.5px',
+              margin: '18px 0 16px 0',
+              fontVariantNumeric: 'tabular-nums',
+              fontFeatureSettings: '"tnum"',
+              lineHeight: 1,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {stats.totalAvai.toLocaleString('id-ID')}
           </div>
-        </div>
-
-        {/* Card 2: Jumlah Proyek / ODP */}
-        <div style={{
-          background: '#FFFFFF',
-          borderRadius: '18px',
-          border: '1px solid #E2E8F0',
-          padding: '20px 24px',
-          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.02)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          transition: 'transform 0.2s ease, boxShadow 0.2s ease'
-        }}>
-          <div>
-            <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
-              Cakupan Proyek & ODP
-            </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '8px' }}>
-              <span className="tabular-nums" style={{ fontFamily: "var(--font-heading)", fontSize: '26px', fontWeight: 900, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
-                {totalProjectsInFilter.toLocaleString('id-ID')}
-              </span>
-              <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#64748B' }}>
-                Proyek
-              </span>
-            </div>
-          </div>
-          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '10px', fontWeight: 500 }}>
-            Mencakup <span style={{ fontWeight: 700, color: '#0F172A' }}>{stats.odpCount.toLocaleString('id-ID')}</span> total titik ODP prioritas
-          </div>
-        </div>
-
-        {/* Card 3: Aktivitas GTM Selesai (Mini Progress Bar & Neutral 0%) */}
-        <div style={{
-          background: '#FFFFFF',
-          borderRadius: '18px',
-          border: '1px solid #E2E8F0',
-          padding: '20px 24px',
-          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.02)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          transition: 'transform 0.2s ease, boxShadow 0.2s ease'
-        }}>
-          <div>
-            <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.2px' }}>
-              Aktivitas GTM Selesai
-            </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '8px' }}>
-              <span className="tabular-nums" style={{ fontFamily: "var(--font-heading)", fontSize: '26px', fontWeight: 900, color: getCompletionColor(stats.actCompletionPct), fontVariantNumeric: 'tabular-nums', transition: 'color 0.2s ease' }}>
-                {stats.actCompletionPct.toLocaleString('id-ID')}%
-              </span>
-              <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#64748B' }}>
-                Selesai
-              </span>
-            </div>
-            {/* Mini Progress Bar */}
-            <div
+          <div
+            style={{
+              fontSize: '13px',
+              color: '#64748B',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            Kapasitas:{' '}
+            <span
               style={{
-                width: '100%',
-                height: '6px',
-                backgroundColor: '#E2E8F0',
-                borderRadius: '9999px',
-                marginTop: '10px',
-                overflow: 'hidden'
+                fontWeight: 600,
+                color: '#1E293B',
+                fontVariantNumeric: 'tabular-nums',
+                fontFeatureSettings: '"tnum"',
+                marginLeft: '4px'
               }}
-              title={`Progres Aktivitas GTM: ${stats.actCompletionPct}% selesai`}
             >
-              <div
-                style={{
-                  width: `${Math.min(stats.actCompletionPct, 100)}%`,
-                  height: '100%',
-                  backgroundColor: getProgressBarColor(stats.actCompletionPct),
-                  borderRadius: '9999px',
-                  transition: 'width 0.4s ease'
-                }}
-              />
-            </div>
+              {stats.totalPort.toLocaleString('id-ID')}
+            </span>
+            <span style={{ marginLeft: '6px', color: '#64748B' }}>
+              ({stats.totalUsed.toLocaleString('id-ID')} terpakai • {usedPct.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
+            </span>
           </div>
-          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '10px', fontWeight: 500 }}>
-            <span style={{ fontWeight: 700, color: '#0F172A' }}>{stats.actVerified.toLocaleString('id-ID')}</span> dari <span style={{ fontWeight: 700, color: '#0F172A' }}>{stats.totalActivitySlots.toLocaleString('id-ID')}</span> aktivitas terverifikasi
+        </div>
+
+        {/* Card 2: Cakupan Proyek & ODP */}
+        <div
+          className="saas-card"
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '16px',
+            border: '1px solid rgba(226, 232, 240, 0.9)',
+            boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+            padding: '24px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            boxSizing: 'border-box'
+          }}
+        >
+          <div
+            style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#475569',
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.1px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            Cakupan Proyek & ODP
+          </div>
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: 600,
+              color: '#0F172A',
+              letterSpacing: '-1.5px',
+              margin: '18px 0 16px 0',
+              fontVariantNumeric: 'tabular-nums',
+              fontFeatureSettings: '"tnum"',
+              lineHeight: 1,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {totalProjectsInFilter.toLocaleString('id-ID')}
+            <span
+              style={{
+                fontSize: '20px',
+                fontWeight: 500,
+                color: '#64748B',
+                letterSpacing: '-0.2px',
+                marginLeft: '6px'
+              }}
+            >
+              Proyek
+            </span>
+          </div>
+          <div
+            style={{
+              fontSize: '13px',
+              color: '#64748B',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            Mencakup{' '}
+            <span
+              style={{
+                fontWeight: 600,
+                color: '#1E293B',
+                fontVariantNumeric: 'tabular-nums',
+                fontFeatureSettings: '"tnum"',
+                margin: '0 4px'
+              }}
+            >
+              {stats.odpCount.toLocaleString('id-ID')}
+            </span>{' '}
+            total titik ODP prioritas
+          </div>
+        </div>
+
+        {/* Card 3: Aktivitas GTM Selesai */}
+        <div
+          className="saas-card"
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '16px',
+            border: '1px solid rgba(226, 232, 240, 0.9)',
+            boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+            padding: '24px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            boxSizing: 'border-box'
+          }}
+        >
+          <div
+            style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#475569',
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.1px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            Aktivitas GTM Selesai
+          </div>
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: 600,
+              color: '#0F172A',
+              letterSpacing: '-1.5px',
+              margin: '18px 0 16px 0',
+              fontVariantNumeric: 'tabular-nums',
+              fontFeatureSettings: '"tnum"',
+              lineHeight: 1,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {stats.actCompletionPct.toLocaleString('id-ID')}%
+          </div>
+          <div
+            style={{
+              fontSize: '13px',
+              color: '#64748B',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            Terverifikasi:{' '}
+            <span
+              style={{
+                fontWeight: 600,
+                color: '#1E293B',
+                fontVariantNumeric: 'tabular-nums',
+                fontFeatureSettings: '"tnum"',
+                marginLeft: '4px'
+              }}
+            >
+              {stats.actVerified.toLocaleString('id-ID')}
+            </span>
+            <span style={{ marginLeft: '4px', color: '#64748B' }}>
+              dari {stats.totalActivitySlots.toLocaleString('id-ID')} aktivitas
+            </span>
           </div>
         </div>
       </div>
@@ -269,7 +356,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         {/* Branch Dropdown */}
         {branches.length === 1 ? (
           <div className="branch-filter-capsule" style={{ height: '42px', minWidth: 'auto', border: '1px solid #CBD5E1', color: '#0F172A', display: 'flex', alignItems: 'center', padding: '0 16px', borderRadius: '10px', background: '#FFFFFF', boxSizing: 'border-box' }}>
-            <span className="branch-text-label" style={{ fontWeight: 700, fontSize: '13px' }}>Branch: {formatBranch(branches[0].name)}</span>
+            <span className="branch-text-label" style={{ fontWeight: 600, fontSize: '13px' }}>Branch: {formatBranch(branches[0].name)}</span>
           </div>
         ) : (
           <div ref={branchDropdownRef} style={{ position: 'relative' }}>
@@ -298,7 +385,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#94A3B8'; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#CBD5E1'; }}
             >
-              <span className="branch-text-label" style={{ flex: 1, fontWeight: 700, color: '#0F172A', fontSize: '13px' }}>
+              <span className="branch-text-label" style={{ flex: 1, fontWeight: 600, color: '#0F172A', fontSize: '13px' }}>
                 {selectedBranch === 'Semua Branch' 
                   ? `Semua Branch (${totalProjects})` 
                   : `${formatBranch(selectedBranch)} (${priorityBranches.find(x => x.name === selectedBranch)?.projects?.length || 0})`}
@@ -315,7 +402,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                   aria-selected={selectedBranch === 'Semua Branch'}
                   className={`dropdown-item ${selectedBranch === 'Semua Branch' ? 'active' : ''}`}
                   onClick={() => { setSelectedBranch('Semua Branch'); setIsDropdownOpen(false); }}
-                  style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === 'Semua Branch' ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', fontWeight: selectedBranch === 'Semua Branch' ? 700 : 500, color: '#0F172A', cursor: 'pointer' }}
+                  style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === 'Semua Branch' ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', fontWeight: selectedBranch === 'Semua Branch' ? 600 : 500, color: '#0F172A', cursor: 'pointer' }}
                 >
                   Semua Branch ({totalProjects})
                 </button>
@@ -327,7 +414,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                     aria-selected={selectedBranch === b.name}
                     className={`dropdown-item ${selectedBranch === b.name ? 'active' : ''}`}
                     onClick={() => { setSelectedBranch(b.name); setIsDropdownOpen(false); }}
-                    style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === b.name ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', fontWeight: selectedBranch === b.name ? 700 : 500, color: '#0F172A', cursor: 'pointer' }}
+                    style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === b.name ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', fontWeight: selectedBranch === b.name ? 600 : 500, color: '#0F172A', cursor: 'pointer' }}
                   >
                     {formatBranch(b.name)} ({b.projects?.length || 0})
                   </button>
@@ -392,7 +479,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
             color: '#0F172A',
-            fontWeight: 700,
+            fontWeight: 600,
             fontSize: '13px',
             padding: '0 18px',
             height: '42px',
@@ -476,7 +563,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </div>
-          <div style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
+          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A' }}>
             Tidak ada proyek yang sesuai kriteria
           </div>
           <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '420px', lineHeight: 1.5 }}>
@@ -497,7 +584,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 borderRadius: '8px',
                 border: 'none',
                 fontSize: '12.5px',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',

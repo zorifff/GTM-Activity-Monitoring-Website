@@ -1,30 +1,54 @@
 // Kartu: Kelola & Hapus Program Terdaftar
-export default function ProgramDeleteCard({ deleteProgramMonth, setDeleteProgramMonth, deleteProgramTarget, setDeleteProgramTarget, deleteAvailablePrograms, deleteLoading, deleteMessage, setDeleteMessage, deleteError, setDeleteError, setShowDeleteConfirmModal }) {
+export default function ProgramDeleteCard({
+  deleteProgramMonth,
+  setDeleteProgramMonth,
+  deleteProgramTarget,
+  setDeleteProgramTarget,
+  deleteAvailablePrograms = [],
+  deleteLoading,
+  deleteMessage,
+  setDeleteMessage,
+  deleteError,
+  setDeleteError,
+  setShowDeleteConfirmModal
+}) {
   return (
-    <div style={{ padding: '28px', background: '#FFFFFF', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 4px 14px rgba(0, 0, 0, 0.02)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+    <div
+      className="saas-card"
+      style={{
+        padding: '24px 28px',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '16px',
+        border: '1px solid rgba(226, 232, 240, 0.9)',
+        boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        boxSizing: 'border-box'
+      }}
+    >
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
         {/* Header Zone */}
-        <div style={{ marginBottom: '20px', minHeight: '92px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div style={{ marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '18px', fontWeight: 900, color: '#0F172A', margin: '0' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px', color: '#0F172A', margin: '0' }}>
               Hapus Program Terdaftar
             </h3>
-            <p style={{ margin: '4px 0 0', fontSize: '12.5px', color: '#64748B', lineHeight: 1.4 }}>
-              Hapus program yang terdaftar di menu Program secara spesifik berdasarkan bulan atau hapus seluruh program pada periode tersebut.
-            </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569' }}>Status Periode:</span>
-            <div style={{
-              padding: '4px 12px',
-              borderRadius: '10px',
-              background: deleteAvailablePrograms.length > 0 ? '#ECFDF5' : '#F1F5F9',
-              border: deleteAvailablePrograms.length > 0 ? '1px solid #A7F3D0' : '1px solid #E2E8F0',
-              color: deleteAvailablePrograms.length > 0 ? '#047857' : '#64748B',
-              fontSize: '12px',
-              fontWeight: 700
-            }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>Status Periode:</span>
+            <div
+              style={{
+                padding: '5px 12px',
+                borderRadius: '8px',
+                background: deleteAvailablePrograms.length > 0 ? '#ECFDF5' : '#F1F5F9',
+                border: deleteAvailablePrograms.length > 0 ? '1px solid #A7F3D0' : '1px solid #E2E8F0',
+                color: deleteAvailablePrograms.length > 0 ? '#047857' : '#64748B',
+                fontSize: '12.5px',
+                fontWeight: 600
+              }}
+            >
               {deleteAvailablePrograms.length > 0 ? `${deleteAvailablePrograms.length} Program Ditemukan` : 'Tidak Ada Program'}
             </div>
           </div>
@@ -32,27 +56,27 @@ export default function ProgramDeleteCard({ deleteProgramMonth, setDeleteProgram
 
         {/* Form Zone */}
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
             {/* Select Month */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>1. Pilih Periode Bulan:</label>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>1. Pilih Periode Bulan:</label>
               <select
                 value={deleteProgramMonth}
                 onChange={(e) => {
                   setDeleteProgramMonth(e.target.value);
                   setDeleteProgramTarget('ALL');
-                  setDeleteMessage(null);
-                  setDeleteError(null);
+                  if (setDeleteMessage) setDeleteMessage(null);
+                  if (setDeleteError) setDeleteError(null);
                 }}
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
-                  borderRadius: '12px',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
                   border: '1px solid #CBD5E1',
                   background: '#F8FAFC',
                   color: '#0F172A',
-                  fontSize: '13px',
-                  fontWeight: 700,
+                  fontSize: '12.5px',
+                  fontWeight: 600,
                   outline: 'none',
                   cursor: 'pointer'
                 }}
@@ -70,78 +94,67 @@ export default function ProgramDeleteCard({ deleteProgramMonth, setDeleteProgram
               </select>
             </div>
 
-            {/* Select Specific Program or ALL */}
+            {/* Select Program Option */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
               <select
                 value={deleteProgramTarget}
                 onChange={(e) => {
                   setDeleteProgramTarget(e.target.value);
-                  setDeleteMessage(null);
-                  setDeleteError(null);
+                  if (setDeleteMessage) setDeleteMessage(null);
+                  if (setDeleteError) setDeleteError(null);
                 }}
+                disabled={deleteAvailablePrograms.length === 0}
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
-                  borderRadius: '12px',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
                   border: '1px solid #CBD5E1',
-                  background: '#F8FAFC',
-                  color: '#0F172A',
-                  fontSize: '13px',
-                  fontWeight: 700,
+                  background: deleteAvailablePrograms.length === 0 ? '#F1F5F9' : '#FFFFFF',
+                  color: deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#0F172A',
+                  fontSize: '12.5px',
+                  fontWeight: 600,
                   outline: 'none',
-                  cursor: 'pointer'
+                  cursor: deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer'
                 }}
               >
-                <option value="ALL">Semua Program di Bulan {deleteProgramMonth}</option>
-                {deleteAvailablePrograms.map((p, idx) => {
-                  const pName = p.sheetName || p.name || `Program #${idx + 1}`;
-                  const slideCount = Array.isArray(p.images) && p.images.length > 0 ? p.images.length : (p.imageUrl ? 1 : 0);
-                  const slideLabel = slideCount > 1 ? ` (${slideCount} Slide Gambar)` : '';
-                  return (
-                    <option key={idx} value={pName}>
-                      {pName}{slideLabel}
-                    </option>
-                  );
-                })}
+                <option value="ALL">Seluruh Program di Periode Ini ({deleteAvailablePrograms.length} Program)</option>
+                {deleteAvailablePrograms.map((p, idx) => (
+                  <option key={idx} value={p.sheetName || p.name}>
+                    Hanya: {p.sheetName || p.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
           {deleteMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '12px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 700, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
               {deleteMessage}
             </div>
           )}
 
           {deleteError && (
-            <div style={{ padding: '12px 16px', borderRadius: '12px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 700, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
               {deleteError}
             </div>
           )}
 
-          {/* Telkomsel Red Gradient Delete Button */}
           <button
             type="button"
-            onClick={() => {
-              setDeleteMessage(null);
-              setDeleteError(null);
-              setShowDeleteConfirmModal(true);
-            }}
-            disabled={deleteLoading}
+            onClick={() => setShowDeleteConfirmModal(true)}
+            disabled={deleteLoading || deleteAvailablePrograms.length === 0}
             style={{
               width: '100%',
-              padding: '13px 24px',
-              background: deleteLoading ? '#CBD5E1' : 'linear-gradient(135deg, #C8102E 0%, #FF5E00 100%)',
-              color: '#FFFFFF',
+              padding: '12px 20px',
+              background: deleteLoading || deleteAvailablePrograms.length === 0 ? '#E2E8F0' : '#DC2626',
+              color: deleteLoading || deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#FFFFFF',
               border: 'none',
-              borderRadius: '50px',
-              fontWeight: 800,
+              borderRadius: '10px',
+              fontWeight: 600,
               fontSize: '13px',
-              letterSpacing: '1px',
-              cursor: deleteLoading ? 'not-allowed' : 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: deleteLoading ? 'none' : '0 4px 16px rgba(200, 16, 46, 0.3)',
+              cursor: deleteLoading || deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s ease',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

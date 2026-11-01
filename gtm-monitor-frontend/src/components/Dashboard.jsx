@@ -1,13 +1,12 @@
 import { memo, useState } from 'react';
 import HeroOccupancyCard from './dashboard/HeroOccupancyCard';
-import AnalyticsBarChartCard from './dashboard/AnalyticsBarChartCard';
+import RegionalMetricsSummaryCard from './dashboard/RegionalMetricsSummaryCard';
+import PortDistributionChartCard from './dashboard/PortDistributionChartCard';
 import OdpStatusDonutCard from './dashboard/OdpStatusDonutCard';
 import BranchProjectsPieCard from './dashboard/BranchProjectsPieCard';
-import SearchFilterToolbar from './dashboard/SearchFilterToolbar';
 import ExecutiveSummarySection from './dashboard/ExecutiveSummarySection';
 import RightWidgetPanel from './dashboard/RightWidgetPanel';
-import DashboardHeader from './dashboard/DashboardHeader';
-import { useLastUpdateLabel } from '../hooks/useLastUpdateLabel';
+import GtmExecutionInsightCard from './dashboard/GtmExecutionInsightCard';
 import { useInView } from '../hooks/useInView';
 
 // ─── HALAMAN MONITORING (DASHBOARD) SAAS TOTAL REDESIGN ───
@@ -15,21 +14,15 @@ const Dashboard = memo(function Dashboard({
   branches,
   goBranch,
   kpi,
-  importMeta,
   statusChips,
-  ranking,
-  typeDesignFilter = 'ALL',
-  setTypeDesignFilter
+  ranking
 }) {
-  const lastUpdateFormatted = useLastUpdateLabel(importMeta, branches);
-
   // In-view observer triggers for smooth entry animations
   const [refTopRow, inViewTopRow] = useInView({ threshold: 0.1, triggerOnce: true });
   const [refChartsRow, inViewChartsRow] = useInView({ threshold: 0.08, triggerOnce: true });
   const [refBottomGrid, inViewBottomGrid] = useInView({ threshold: 0.08, triggerOnce: true });
 
   // Search & Scope Filter State
-  const [searchQuery, setSearchQuery] = useState('');
   const [scopeFilter, setScopeFilter] = useState('ALL');
 
   const safeKpi = kpi || {
@@ -64,20 +57,11 @@ const Dashboard = memo(function Dashboard({
         flexDirection: 'column',
         gap: '24px',
         width: '100%',
-        maxWidth: '1440px',
-        margin: '0 auto',
-        padding: '4px 0 48px',
+        padding: 0,
         boxSizing: 'border-box'
       }}
     >
-      {/* ─── 0. HEADER HALAMAN & FILTER SWITCH TYPE (DESAIN RAPI & TERSTRUKTUR) ─── */}
-      <DashboardHeader
-        lastUpdateFormatted={lastUpdateFormatted}
-        typeDesignFilter={typeDesignFilter}
-        setTypeDesignFilter={setTypeDesignFilter}
-      />
-
-      {/* ─── BARIS ATAS: HERO ACCENT CARD + ANALYTICS BAR CHART ─── */}
+      {/* ─── BARIS ATAS (ROW 1): HERO OKUPANSI + SECTION 1 (METRIK UTAMA REGIONAL) ─── */}
       <section
         ref={refTopRow}
         id="top-analytics-row"
@@ -91,20 +75,30 @@ const Dashboard = memo(function Dashboard({
           width: '100%'
         }}
       >
-        {/* A. Hero Card Kiri (Telkomsel Red SaaS Hero) */}
+        {/* A. Hero Card Kiri (Okupansi Regional Jateng & DIY) */}
         <HeroOccupancyCard
           safeKpi={safeKpi}
           onReviewBranch={handleReviewPriority}
           isInView={inViewTopRow}
         />
 
-        {/* B. Kartu Analitik Kanan (Capacity & Histogram Bar Chart) */}
-        <AnalyticsBarChartCard
+        {/* B. Section 1: Port Tersedia, Total ODP Terpantau, Verifikasi Kegiatan */}
+        <RegionalMetricsSummaryCard
           safeKpi={safeKpi}
           safeStatusChips={safeStatusChips}
+          isInView={inViewTopRow}
+        />
+      </section>
+
+      {/* ─── BARIS TENGAH (ROW 2): SECTION 2 (DISTRIBUSI UTILISASI PORT PER BRANCH & WOK) ─── */}
+      <section
+        id="port-distribution-row"
+        aria-label="Distribusi Utilisasi Kapasitas Port per Branch dan WOK"
+        style={{ width: '100%' }}
+      >
+        <PortDistributionChartCard
           ranking={safeRanking}
           branches={branches}
-          lastUpdateFormatted={lastUpdateFormatted}
           isInView={inViewTopRow}
           onSelectBranch={(branchName) => {
             if (goBranch) goBranch(branchName);
@@ -112,7 +106,7 @@ const Dashboard = memo(function Dashboard({
         />
       </section>
 
-      {/* ─── BARIS ANALITIK PROPORSI (DONUT STATUS ODP & PIE SEBARAN PROYEK) ─── */}
+      {/* ─── BARIS ANALITIK PROPORSI (ROW 3: DONUT STATUS ODP & PIE SEBARAN PROYEK) ─── */}
       <section
         ref={refChartsRow}
         id="distribution-charts-row"
@@ -137,18 +131,7 @@ const Dashboard = memo(function Dashboard({
         />
       </section>
 
-      {/* ─── TOOLBAR PENCARIAN & FILTER TENGAH ─── */}
-      <section aria-label="Pencarian dan Filter">
-        <SearchFilterToolbar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          scopeFilter={scopeFilter}
-          onScopeChange={setScopeFilter}
-          branchList={safeRanking}
-        />
-      </section>
-
-      {/* ─── GRID BAWAH TERBAGI DUA KOLOM (MAIN CONTENT VS SIDEBAR WIDGET) ─── */}
+      {/* ─── GRID BAWAH TERBAGI DUA KOLOM (ROW 4: MAIN CONTENT VS SIDEBAR WIDGET) ─── */}
       <section
         ref={refBottomGrid}
         id="bottom-content-grid"
@@ -158,26 +141,30 @@ const Dashboard = memo(function Dashboard({
           display: 'grid',
           gridTemplateColumns: 'minmax(0, 1fr) 360px',
           gap: '20px',
-          alignItems: 'start',
+          alignItems: 'stretch',
           width: '100%'
         }}
       >
         {/* Kolom Kiri (~68%): Matriks Executive Summary */}
-        <div style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0, height: '100%' }}>
           <ExecutiveSummarySection
             branches={branches}
-            searchQuery={searchQuery}
             scopeFilter={scopeFilter}
+            onScopeChange={setScopeFilter}
+            branchList={safeRanking}
             isInView={inViewBottomGrid}
           />
         </div>
 
-        {/* Kolom Kanan (~32%): Right Widget Panel (Ranking Branch & Live Feed) */}
-        <div style={{ minWidth: 0 }}>
+        {/* Kolom Kanan (~32%): Ranking Branch + 5 Pilar Aktivitas GTM */}
+        <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '20px', height: '100%' }}>
           <RightWidgetPanel
             ranking={safeRanking}
             goBranch={goBranch}
-            safeKpi={safeKpi}
+            isInView={inViewBottomGrid}
+          />
+          <GtmExecutionInsightCard
+            branches={branches}
             isInView={inViewBottomGrid}
           />
         </div>

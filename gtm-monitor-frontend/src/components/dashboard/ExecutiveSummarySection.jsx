@@ -14,6 +14,8 @@ export default function ExecutiveSummarySection({
   branches,
   searchQuery = '',
   scopeFilter = 'ALL',
+  onScopeChange,
+  branchList = [],
   isInView = true
 }) {
   const executiveSummary = useExecutiveSummary(branches);
@@ -85,22 +87,68 @@ export default function ExecutiveSummarySection({
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h2
               style={{
-                fontSize: '16px',
-                fontWeight: 800,
-                color: '#0F172A',
+                fontSize: '15px',
+                fontWeight: 600,
+                color: '#475569',
                 margin: 0,
-                letterSpacing: '-0.3px'
+                letterSpacing: '-0.1px'
               }}
             >
               Executive Summary
             </h2>
           </div>
-          <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500, marginTop: '2px' }}>
-            Rekapitulasi 5 aktivitas prioritas per Branch & WOK
-          </div>
         </div>
 
-        {/* Clean Outline Ekspor PNG Button with Download Icon */}
+        {/* Actions Toolbar (Scope Dropdown & Ekspor PNG) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {onScopeChange && (
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <select
+                value={scopeFilter}
+                onChange={(e) => onScopeChange(e.target.value)}
+                aria-label="Pilih cakupan branch"
+                style={{
+                  background: '#F8FAFC',
+                  border: '1px solid #CBD5E1',
+                  borderRadius: '8px',
+                  padding: '6px 28px 6px 10px',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: '#334155',
+                  cursor: 'pointer',
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  transition: 'border-color 0.15s ease'
+                }}
+              >
+                <option value="ALL">Semua Cakupan</option>
+                {branchList.map((b) => (
+                  <option key={b.name || b} value={b.name || b}>
+                    Branch {b.name || b}
+                  </option>
+                ))}
+              </select>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#64748B"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  right: '9px',
+                  pointerEvents: 'none'
+                }}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+          )}
+          {/* Clean Outline Ekspor PNG Button with Download Icon */}
         <button
           id="btn-export-png"
           type="button"
@@ -144,6 +192,7 @@ export default function ExecutiveSummarySection({
           </svg>
           <span>{isExportingPng ? 'Mengekspor...' : 'Ekspor PNG'}</span>
         </button>
+        </div>
       </div>
 
       {/* ─── Body Data: Multi-Tier Table Container ─── */}
@@ -161,7 +210,7 @@ export default function ExecutiveSummarySection({
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px', textAlign: 'center', minWidth: '1120px' }}>
           <thead>
             {/* Row 1 Header (Telkomsel Red Branding) */}
-            <tr style={{ background: '#C8102E', color: '#FFFFFF', fontWeight: 700 }}>
+            <tr style={{ background: '#800000', color: '#FFFFFF', fontWeight: 500 }}>
               <th
                 rowSpan={2}
                 style={{
@@ -171,7 +220,7 @@ export default function ExecutiveSummarySection({
                   borderRight: '1px solid rgba(255, 255, 255, 0.2)',
                   borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                   textAlign: 'left',
-                  background: '#C8102E'
+                  background: '#800000'
                 }}
               >
                 Branch
@@ -185,7 +234,7 @@ export default function ExecutiveSummarySection({
                   borderRight: '1px solid rgba(255, 255, 255, 0.2)',
                   borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                   textAlign: 'left',
-                  background: '#C8102E'
+                  background: '#800000'
                 }}
               >
                 WOK
@@ -199,7 +248,7 @@ export default function ExecutiveSummarySection({
                   borderRight: '1px solid rgba(255, 255, 255, 0.2)',
                   borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                   textAlign: 'right',
-                  background: '#C8102E'
+                  background: '#800000'
                 }}
               >
                 LOP
@@ -209,11 +258,11 @@ export default function ExecutiveSummarySection({
               <th
                 colSpan={5}
                 style={{
-                  background: '#B9001D',
+                  background: '#800000',
                   color: '#FFFFFF',
                   padding: '9px 10px',
                   fontSize: '11.5px',
-                  fontWeight: 700,
+                  fontWeight: 500,
                   borderRight: '1px solid rgba(255, 255, 255, 0.25)',
                   borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                   letterSpacing: '0.02em'
@@ -226,11 +275,11 @@ export default function ExecutiveSummarySection({
               <th
                 colSpan={5}
                 style={{
-                  background: '#A5001A',
+                  background: '#800000',
                   color: '#FFFFFF',
                   padding: '9px 10px',
                   fontSize: '11.5px',
-                  fontWeight: 700,
+                  fontWeight: 500,
                   borderRight: '1px solid rgba(255, 255, 255, 0.25)',
                   borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                   letterSpacing: '0.02em'
@@ -247,7 +296,7 @@ export default function ExecutiveSummarySection({
                   width: '95px',
                   verticalAlign: 'middle',
                   textAlign: 'center',
-                  background: '#C8102E',
+                  background: '#800000',
                   borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
                 }}
               >
@@ -256,7 +305,7 @@ export default function ExecutiveSummarySection({
             </tr>
 
             {/* Row 2 Header Sub-Columns (5 Kegiatan Prioritas) */}
-            <tr style={{ background: '#B9001D', color: '#FFFFFF', fontSize: '10px', fontWeight: 600 }}>
+            <tr style={{ background: '#800000', color: '#FFFFFF', fontSize: '10px', fontWeight: 500 }}>
               {ACT_TYPES_ORDER.map((item) => (
                 <th
                   key={`done-${item.key}`}
@@ -265,7 +314,7 @@ export default function ExecutiveSummarySection({
                     borderRight: '1px solid rgba(255, 255, 255, 0.2)',
                     borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                     minWidth: '68px',
-                    background: '#B9001D',
+                    background: '#800000',
                     color: '#FFFFFF',
                     textAlign: 'center',
                     verticalAlign: 'middle',
@@ -284,7 +333,7 @@ export default function ExecutiveSummarySection({
                     borderRight: idx === ACT_TYPES_ORDER.length - 1 ? '1px solid rgba(255, 255, 255, 0.25)' : '1px solid rgba(255, 255, 255, 0.15)',
                     borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                     minWidth: '68px',
-                    background: '#A5001A',
+                    background: '#800000',
                     color: '#FFFFFF',
                     textAlign: 'center',
                     verticalAlign: 'middle',
@@ -330,7 +379,7 @@ export default function ExecutiveSummarySection({
                         style={{
                           padding: '10px 10px',
                           textAlign: 'left',
-                          fontWeight: 700,
+                          fontWeight: 500,
                           color: '#0F172A',
                           verticalAlign: 'top',
                           borderRight: '1px solid #E2E8F0',
@@ -360,7 +409,7 @@ export default function ExecutiveSummarySection({
                       style={{
                         padding: '8px 8px',
                         textAlign: 'right',
-                        fontWeight: 700,
+                        fontWeight: 500,
                         color: '#0F172A',
                         borderRight: '1px solid #F1F5F9',
                         fontVariantNumeric: 'tabular-nums'
@@ -377,10 +426,9 @@ export default function ExecutiveSummarySection({
                           key={`row-done-${item.key}`}
                           style={{
                             padding: '8px 4px',
-                            fontWeight: val > 0 ? 700 : 500,
-                            color: val > 0 ? '#059669' : '#94A3B8',
+                            fontWeight: 500,
+                            color: '#334155',
                             borderRight: '1px solid #F1F5F9',
-                            background: val > 0 ? 'rgba(16, 185, 129, 0.05)' : 'transparent',
                             fontVariantNumeric: 'tabular-nums'
                           }}
                         >
@@ -397,8 +445,8 @@ export default function ExecutiveSummarySection({
                           key={`row-notyet-${item.key}`}
                           style={{
                             padding: '8px 4px',
-                            fontWeight: val > 0 ? 600 : 400,
-                            color: val > 0 ? '#475569' : '#CBD5E1',
+                            fontWeight: 500,
+                            color: '#334155',
                             borderRight: iIdx === ACT_TYPES_ORDER.length - 1 ? '1px solid #E2E8F0' : '1px solid #F1F5F9',
                             fontVariantNumeric: 'tabular-nums'
                           }}
@@ -416,13 +464,13 @@ export default function ExecutiveSummarySection({
                             style={{
                               height: '100%',
                               width: `${Math.min(r.progressPct, 100)}%`,
-                              background: r.progressPct > 50 ? '#059669' : '#C8102E',
+                              background: r.progressPct > 50 ? '#059669' : '#800000',
                               borderRadius: '999px',
                               transition: 'width 0.8s ease'
                             }}
                           />
                         </div>
-                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#334155', minWidth: '32px', textAlign: 'right' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#334155', minWidth: '32px', textAlign: 'right' }}>
                           {r.progressPct}%
                         </span>
                       </div>
@@ -436,15 +484,15 @@ export default function ExecutiveSummarySection({
           {/* Table Footer: Grand Totals Regional Jateng DIY */}
           {((executiveSummary?.grandTotals) || (executiveSummary?.grandTotalLop !== undefined)) && (
             <tfoot>
-              <tr style={{ background: '#C8102E', color: '#FFFFFF', fontWeight: 800, borderTop: '2px solid #A5001A' }}>
+              <tr style={{ background: '#800000', color: '#FFFFFF', fontWeight: 600, borderTop: '2px solid #550000' }}>
                 <td colSpan={2} style={{ padding: '11px 12px', textAlign: 'left', borderRight: '1px solid rgba(255, 255, 255, 0.2)', fontSize: '11.5px', letterSpacing: '0.03em' }}>
                   GRAND TOTAL
                 </td>
-                <td style={{ padding: '11px 8px', textAlign: 'right', borderRight: '1px solid rgba(255, 255, 255, 0.2)', fontVariantNumeric: 'tabular-nums', fontWeight: 800 }}>
+                <td style={{ padding: '11px 8px', textAlign: 'right', borderRight: '1px solid rgba(255, 255, 255, 0.2)', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
                   <AnimatedNumber value={executiveSummary.grandTotals?.lop ?? executiveSummary.grandTotalLop} enabled={isInView} />
                 </td>
                 {ACT_TYPES_ORDER.map((item) => (
-                  <td key={`grand-done-${item.key}`} style={{ padding: '11px 4px', borderRight: '1px solid rgba(255, 255, 255, 0.2)', color: '#A7F3D0', fontWeight: 800, fontVariantNumeric: 'tabular-nums', textAlign: 'center' }}>
+                  <td key={`grand-done-${item.key}`} style={{ padding: '11px 4px', borderRight: '1px solid rgba(255, 255, 255, 0.2)', color: '#FFFFFF', fontWeight: 600, fontVariantNumeric: 'tabular-nums', textAlign: 'center' }}>
                     <AnimatedNumber value={(executiveSummary.grandTotals?.done?.[item.key]) ?? executiveSummary.grandTotalDone?.[item.key] ?? 0} enabled={isInView} />
                   </td>
                 ))}
@@ -455,7 +503,7 @@ export default function ExecutiveSummarySection({
                       padding: '11px 4px',
                       borderRight: idx === ACT_TYPES_ORDER.length - 1 ? '1px solid rgba(255, 255, 255, 0.25)' : '1px solid rgba(255, 255, 255, 0.2)',
                       color: '#FFFFFF',
-                      fontWeight: 700,
+                      fontWeight: 500,
                       fontVariantNumeric: 'tabular-nums',
                       textAlign: 'center'
                     }}
@@ -463,7 +511,7 @@ export default function ExecutiveSummarySection({
                     <AnimatedNumber value={(executiveSummary.grandTotals?.notYet?.[item.key]) ?? executiveSummary.grandTotalNotYet?.[item.key] ?? 0} enabled={isInView} />
                   </td>
                 ))}
-                <td style={{ padding: '11px 8px', textAlign: 'center', color: '#FFFFFF', fontWeight: 800 }}>
+                <td style={{ padding: '11px 8px', textAlign: 'center', color: '#FFFFFF', fontWeight: 600 }}>
                   {(executiveSummary.grandTotals?.progressPct) ?? executiveSummary.grandProgressPct ?? 0}%
                 </td>
               </tr>

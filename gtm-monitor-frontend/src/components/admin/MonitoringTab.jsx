@@ -44,7 +44,7 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
               <div 
                 className={`dropdown-item ${selectedBranch === 'Semua Branch' ? 'active' : ''}`}
                 onClick={() => { setSelectedBranch('Semua Branch'); setIsBranchDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: selectedBranch === 'Semua Branch' ? 800 : 600, color: selectedBranch === 'Semua Branch' ? '#C8102E' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: selectedBranch === 'Semua Branch' ? 800 : 600, color: selectedBranch === 'Semua Branch' ? '#800000' : '#334155', cursor: 'pointer' }}
               >
                 Semua Branch ({totalProjects})
               </div>
@@ -53,7 +53,7 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
                   key={b.name}
                   className={`dropdown-item ${selectedBranch === b.name ? 'active' : ''}`}
                   onClick={() => { setSelectedBranch(b.name); setIsBranchDropdownOpen(false); }}
-                  style={{ padding: '12px 18px', fontSize: '13px', fontWeight: selectedBranch === b.name ? 800 : 600, color: selectedBranch === b.name ? '#C8102E' : '#334155', cursor: 'pointer' }}
+                  style={{ padding: '12px 18px', fontSize: '13px', fontWeight: selectedBranch === b.name ? 800 : 600, color: selectedBranch === b.name ? '#800000' : '#334155', cursor: 'pointer' }}
                 >
                   {formatBranch(b.name)} ({b.projects?.length || 0})
                 </div>
@@ -103,28 +103,28 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
               <div 
                 className={`dropdown-item ${statusFilter === 'all' ? 'active' : ''}`}
                 onClick={() => { setStatusFilter('all'); setIsStatusDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'all' ? 800 : 600, color: statusFilter === 'all' ? '#C8102E' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'all' ? 800 : 600, color: statusFilter === 'all' ? '#800000' : '#334155', cursor: 'pointer' }}
               >
                 Semua Status ({statusCounts.all})
               </div>
               <div 
                 className={`dropdown-item ${statusFilter === 'need_review' ? 'active' : ''}`}
                 onClick={() => { setStatusFilter('need_review'); setIsStatusDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'need_review' ? 800 : 600, color: statusFilter === 'need_review' ? '#C8102E' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'need_review' ? 800 : 600, color: statusFilter === 'need_review' ? '#800000' : '#334155', cursor: 'pointer' }}
               >
                 Menunggu Verifikasi ({statusCounts.need_review})
               </div>
               <div 
                 className={`dropdown-item ${statusFilter === 'verified' ? 'active' : ''}`}
                 onClick={() => { setStatusFilter('verified'); setIsStatusDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'verified' ? 800 : 600, color: statusFilter === 'verified' ? '#C8102E' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'verified' ? 800 : 600, color: statusFilter === 'verified' ? '#800000' : '#334155', cursor: 'pointer' }}
               >
                 Sudah Terverifikasi ({statusCounts.verified})
               </div>
               <div 
                 className={`dropdown-item ${statusFilter === 'pending' ? 'active' : ''}`}
                 onClick={() => { setStatusFilter('pending'); setIsStatusDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'pending' ? 800 : 600, color: statusFilter === 'pending' ? '#C8102E' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'pending' ? 800 : 600, color: statusFilter === 'pending' ? '#800000' : '#334155', cursor: 'pointer' }}
               >
                 Belum Dikerjakan ({statusCounts.pending})
               </div>

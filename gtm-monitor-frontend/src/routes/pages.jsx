@@ -1,6 +1,6 @@
 // Halaman-halaman rute: menghubungkan URL & data (TanStack Query, lewat AppLayout) ke komponen tampilan
 import { useCallback, useMemo } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router';
+import { Navigate, useNavigate, useOutletContext, useParams } from 'react-router';
 import LandingPage from '../components/LandingPage';
 import LoginPage from '../components/Auth/LoginPage';
 import Dashboard from '../components/Dashboard';
@@ -38,10 +38,11 @@ export function LoginRoute() {
 
 export function DashboardRoute() {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { branches, importMeta, typeDesignFilter, setTypeDesignFilter } = useOutletContext();
   const { kpi, statusChips } = useOdpSummary(branches, importMeta, typeDesignFilter);
   const ranking = useGtmMonitoring(branches, typeDesignFilter);
+  const { uploadPhoto, verifyActivity, rejectActivity, deletePhoto } = useActivityActions();
 
   // Detail branch hanya untuk Admin (akun branch tetap di Dashboard)
   const goBranch = useCallback((name) => {
@@ -49,17 +50,41 @@ export function DashboardRoute() {
     navigate(PATHS.branch(name));
   }, [isAdmin, navigate]);
 
+  // Untuk aktivitas/upload: Akun User (Non-Admin) HANYA menerima data branch tempat ia bertugas
+  const uploadBranches = useMemo(() => {
+    if (user && user.role === 'USER' && user.branchName) {
+      const filtered = branches.filter(b => b.name === user.branchName);
+      return filtered.length > 0 ? filtered : branches;
+    }
+    return branches;
+  }, [branches, user]);
+
   return (
-    <Dashboard
-      branches={branches}
-      goBranch={goBranch}
-      kpi={kpi}
-      importMeta={importMeta}
-      statusChips={statusChips}
-      ranking={ranking}
-      typeDesignFilter={typeDesignFilter}
-      setTypeDesignFilter={setTypeDesignFilter}
-    />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <section id="dashboard-section" style={{ scrollMarginTop: '80px' }}>
+        <Dashboard
+          branches={branches}
+          goBranch={goBranch}
+          kpi={kpi}
+          importMeta={importMeta}
+          statusChips={statusChips}
+          ranking={ranking}
+          typeDesignFilter={typeDesignFilter}
+          setTypeDesignFilter={setTypeDesignFilter}
+        />
+      </section>
+
+      <section id="activity-section" style={{ scrollMarginTop: '80px' }}>
+        <UploadView
+          branches={uploadBranches}
+          initialBranch={null}
+          uploadPhoto={uploadPhoto}
+          verifyActivity={isAdmin ? verifyActivity : null}
+          rejectActivity={isAdmin ? rejectActivity : null}
+          deletePhoto={deletePhoto}
+        />
+      </section>
+    </div>
   );
 }
 
@@ -85,29 +110,7 @@ export function BranchRoute() {
 }
 
 export function UploadRoute() {
-  const { user, isAdmin } = useAuth();
-  const { branches } = useOutletContext();
-  const { uploadPhoto, verifyActivity, rejectActivity, deletePhoto } = useActivityActions();
-
-  // Untuk halaman Upload Activity: Akun User (Non-Admin) HANYA menerima data branch tempat ia bertugas
-  const uploadBranches = useMemo(() => {
-    if (user && user.role === 'USER' && user.branchName) {
-      const filtered = branches.filter(b => b.name === user.branchName);
-      return filtered.length > 0 ? filtered : branches;
-    }
-    return branches;
-  }, [branches, user]);
-
-  return (
-    <UploadView
-      branches={uploadBranches}
-      initialBranch={null}
-      uploadPhoto={uploadPhoto}
-      verifyActivity={isAdmin ? verifyActivity : null}
-      rejectActivity={isAdmin ? rejectActivity : null}
-      deletePhoto={deletePhoto}
-    />
-  );
+  return <Navigate to="/dashboard#activity" replace />;
 }
 
 export function AdminRoute() {

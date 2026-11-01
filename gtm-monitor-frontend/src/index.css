@@ -1,15 +1,15 @@
 :root {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: #1e293b;
   background-color: #ffffff;
-  --font-heading: 'Plus Jakarta Sans', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
   /* Spektrum Merah - Jingga - Hitam - Putih */
-  --primary-red: #C8102E;
+  --primary-red: #800000;
   --primary-orange: #FF5E00;
-  --grad-red-orange: linear-gradient(135deg, #C8102E 0%, #FF5E00 100%);
-  --grad-orange-red: linear-gradient(135deg, #FF5E00 0%, #C8102E 100%);
+  --grad-red-orange: linear-gradient(135deg, #800000 0%, #FF5E00 100%);
+  --grad-orange-red: linear-gradient(135deg, #FF5E00 0%, #800000 100%);
   --bg-dark: #090A0F;
   --bg-dark-card: rgba(255, 255, 255, 0.04);
 }
@@ -25,6 +25,8 @@ html, body {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
 #root {
@@ -37,15 +39,15 @@ html, body {
 @keyframes portalPulse {
   0% {
     transform: scale(0.99);
-    box-shadow: 0 4px 20px rgba(200, 16, 46, 0.15);
+    box-shadow: 0 4px 20px rgba(128, 0, 0, 0.15);
   }
   50% {
     transform: scale(1.01);
-    box-shadow: 0 8px 30px rgba(200, 16, 46, 0.25);
+    box-shadow: 0 8px 30px rgba(128, 0, 0, 0.25);
   }
   100% {
     transform: scale(0.99);
-    box-shadow: 0 4px 20px rgba(200, 16, 46, 0.15);
+    box-shadow: 0 4px 20px rgba(128, 0, 0, 0.15);
   }
 }
 
@@ -98,7 +100,7 @@ button {
 
 /* Accessible focus ring replacement for keyboard navigation (R-32) */
 :focus-visible {
-  outline: 2px solid #C8102E !important;
+  outline: 2px solid #800000 !important;
   outline-offset: 2px !important;
 }
 
@@ -152,7 +154,7 @@ button {
   padding: 12px 16px;
   background: #f8fafc;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   color: #475569;
   text-transform: uppercase;
   letter-spacing: .04em;
@@ -920,81 +922,137 @@ button {
   line-height: 1.2;
 }
 
-/* ─── TELKOMSEL RED SIDEBAR & SOLID WHITE POPPING INTERACTION ─── */
 .sidebar-nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 14px;
-  border-radius: 12px;
+  padding: 0;
+  border-radius: 0;
   border: none !important;
-  background-color: transparent;
-  color: #FFFFFF;
-  font-size: 13px;
-  font-weight: 600;
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13.5px;
+  font-weight: 500;
   cursor: pointer;
   text-align: left;
   width: 100%;
+  min-height: 44px;
   position: relative;
-  transition: transform 0.16s ease, background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease !important;
-  will-change: transform, box-shadow;
+  box-shadow: none !important;
+  transition: color 0.16s ease;
+}
+
+.sidebar-nav-item .sidebar-left-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0.35);
+  width: 5px;
+  height: 25px;
+  border-radius: 0 6px 6px 0;
+  background-color: #FF1E27;
+  box-shadow: 0 0 12px rgba(255, 30, 39, 0.75);
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.sidebar-nav-item .sidebar-nav-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 11px 24px;
+  min-height: 44px;
+  border-radius: 0;
+  background-color: transparent;
+  border: none !important;
+  box-sizing: border-box;
+  transition: background-color 0.18s ease;
+}
+
+.sidebar-nav-item .nav-icon-outline {
+  display: block;
+  color: rgba(255, 255, 255, 0.72);
+  flex-shrink: 0;
+  transition: color 0.16s ease;
+}
+
+.sidebar-nav-item .nav-icon-filled {
+  display: none;
+  color: #FF1E27;
+  flex-shrink: 0;
+  transition: color 0.16s ease;
 }
 
 .sidebar-nav-item .sidebar-nav-label {
   display: inline-block;
-  font-size: 13px;
-  font-weight: 600;
-  color: inherit;
-  transition: transform 0.16s ease, font-weight 0.16s ease;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  transition: color 0.16s ease, font-weight 0.16s ease;
 }
 
-.sidebar-nav-item svg {
-  color: inherit;
-  flex-shrink: 0;
-  transition: transform 0.16s ease;
+.sidebar-nav-item.active,
+.sidebar-nav-item:hover,
+.sidebar-nav-item:focus-visible {
+  background-color: transparent !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+  outline: none;
 }
 
-/* Active State: Solid Pure White Card with Telkomsel Red Text & Icon */
-.sidebar-nav-item.active {
-  background-color: #FFFFFF !important;
-  color: #C8102E !important;
-  font-weight: 700 !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+.sidebar-nav-item.active .sidebar-left-indicator,
+.sidebar-nav-item:hover .sidebar-left-indicator,
+.sidebar-nav-item:focus-visible .sidebar-left-indicator {
+  opacity: 1;
+  transform: translateY(-50%) scaleY(1);
+  background-color: #FF1E27 !important;
+}
+
+.sidebar-nav-item.active .sidebar-nav-box {
+  background: linear-gradient(90deg, rgba(255, 30, 39, 0.24) 0%, rgba(255, 30, 39, 0.06) 100%) !important;
+}
+
+.sidebar-nav-item:hover .sidebar-nav-box,
+.sidebar-nav-item:focus-visible .sidebar-nav-box {
+  background: rgba(255, 30, 39, 0.14) !important;
+}
+
+.sidebar-nav-item:focus-visible .sidebar-nav-box {
+  outline: 2px solid #FF1E27;
+  outline-offset: -2px;
+}
+
+.sidebar-nav-item.active .nav-icon-outline,
+.sidebar-nav-item:hover .nav-icon-outline,
+.sidebar-nav-item:focus-visible .nav-icon-outline {
+  display: none;
+}
+
+.sidebar-nav-item.active .nav-icon-filled,
+.sidebar-nav-item:hover .nav-icon-filled,
+.sidebar-nav-item:focus-visible .nav-icon-filled {
+  display: block;
+  color: #FF1E27 !important;
 }
 
 .sidebar-nav-item.active .sidebar-nav-label {
-  font-weight: 700 !important;
-  color: #C8102E !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
 }
 
-.sidebar-nav-item.active svg {
-  color: #C8102E !important;
+.sidebar-nav-item:hover .sidebar-nav-label,
+.sidebar-nav-item:focus-visible .sidebar-nav-label {
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
 }
 
-/* Hover: Solid Pure White Pop-Up Effect (Membesar & Popping Up) */
-.sidebar-nav-item:hover {
-  background-color: #FFFFFF !important;
-  color: #C8102E !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
-  transform: translateX(4px) scale(1.02);
-  z-index: 5;
-}
-
-.sidebar-nav-item:hover .sidebar-nav-label {
-  color: #C8102E !important;
-  font-weight: 700 !important;
-  transform: scale(1.04);
-  transform-origin: left center;
-}
-
-.sidebar-nav-item:hover svg {
-  color: #C8102E !important;
-  transform: scale(1.10);
-  transform-origin: center center;
-}
-
-.sidebar-nav-item:active {
-  transform: translateX(2px) scale(0.99) !important;
+.sidebar-brand-btn:focus-visible {
+  outline: 2px solid #FF1E27;
+  outline-offset: 4px;
+  border-radius: 8px;
 }
 
 .sidebar-login-btn {
@@ -1003,8 +1061,8 @@ button {
 
 .sidebar-login-btn:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
-  color: #C8102E !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35) !important;
+  color: #021329 !important;
   background-color: #FFFFFF !important;
 }
 
@@ -1040,9 +1098,11 @@ button {
   .dashboard-bottom-grid {
     grid-template-columns: 1fr !important;
   }
+}
+
 .app-sidebar {
-  height: 100%;
-  min-height: 100%;
+  height: 100vh;
+  min-height: 100dvh;
 }
 
 @media (max-width: 1024px) {
@@ -1055,7 +1115,7 @@ button {
     min-height: 100vh !important;
     transform: translateX(-100%);
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 35px rgba(50, 0, 8, 0.5);
+    box-shadow: 0 0 35px rgba(2, 19, 41, 0.7);
   }
 
   .app-sidebar.mobile-open {
@@ -1069,7 +1129,6 @@ button {
   .header-left-zone {
     width: auto !important;
     min-width: auto !important;
-    padding-left: 56px !important;
   }
 
   .dashboard-top-row {

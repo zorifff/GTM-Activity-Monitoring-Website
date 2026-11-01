@@ -55,7 +55,7 @@ const OdpRow = memo(({ o, odpGrid }) => {
       <div style={{ fontSize: '13px', fontWeight: 600, paddingLeft: '14px', textAlign: 'left' }}>{o.odp}</div>
 
       <div style={{
-        fontSize: '11.5px', fontWeight: 700, padding: '3px 9px', borderRadius: '6px',
+        fontSize: '11.5px', fontWeight: 600, padding: '3px 9px', borderRadius: '6px',
         display: 'inline-block',
         backgroundColor: badgeBg,
         color: badgeColor,
@@ -115,7 +115,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
           type="button"
           aria-label={`Toggle detail proyek ${p.name}`}
           style={{
-            fontSize: '13.5px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis',
+            fontSize: '13.5px', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis',
             cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'left',
             color: '#0F172A', display: 'block', width: '100%'
           }}
@@ -217,7 +217,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
               <span
                 style={{
                   fontSize: '11px',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   color: completedCount === ACT_TYPES.length ? '#15803D' : completedCount > 0 ? '#B45309' : '#64748B',
                   whiteSpace: 'nowrap'
                 }}
@@ -261,7 +261,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
               borderRadius: '8px',
               padding: '6px 14px',
               fontSize: '12px',
-              fontWeight: 700,
+              fontWeight: 600,
               color: '#0F172A',
               cursor: 'pointer',
               display: 'inline-flex',
@@ -514,7 +514,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             gap: '4px',
             font: 'inherit',
             color: sort ? '#0F172A' : '#475569',
-            fontWeight: sort ? 900 : 800,
+            fontWeight: 600,
             textTransform: 'inherit',
             letterSpacing: 'inherit'
           }}
@@ -534,7 +534,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              color: isFiltered ? '#C8102E' : '#94A3B8',
+              color: isFiltered ? '#800000' : '#94A3B8',
               padding: '2px',
               borderRadius: '4px',
               marginLeft: '2px'
@@ -595,14 +595,14 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         <button
           type="button"
           onClick={() => { updateFilter(col, 'sort', filters[col].sort === 'asc' ? null : 'asc'); setFilterPopup(null); }}
-          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'asc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: filters[col].sort === 'asc' ? '#C8102E' : '#334155', textAlign: 'left' }}
+          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'asc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: filters[col].sort === 'asc' ? '#800000' : '#334155', textAlign: 'left' }}
         >
           <span style={{ fontSize: '14px' }}>↓</span> {isStringCol ? 'Sort A to Z' : 'Sort Kecil ke Besar'}
         </button>
         <button
           type="button"
           onClick={() => { updateFilter(col, 'sort', filters[col].sort === 'desc' ? null : 'desc'); setFilterPopup(null); }}
-          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'desc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: filters[col].sort === 'desc' ? '#C8102E' : '#334155', textAlign: 'left' }}
+          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'desc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: filters[col].sort === 'desc' ? '#800000' : '#334155', textAlign: 'left' }}
         >
           <span style={{ fontSize: '14px' }}>↑</span> {isStringCol ? 'Sort Z to A' : 'Sort Besar ke Kecil'}
         </button>
@@ -619,7 +619,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         />
 
         <div style={{ maxHeight: '160px', overflowY: 'auto', paddingRight: '2px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 2px', cursor: 'pointer', fontWeight: 700, borderBottom: '1px solid #F1F5F9', marginBottom: '4px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 2px', cursor: 'pointer', fontWeight: 600, borderBottom: '1px solid #F1F5F9', marginBottom: '4px' }}>
             <input
               type="checkbox"
               checked={currentUncheckedStr.length === 0}
@@ -670,7 +670,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           <button
             type="button"
             onClick={() => setFilterPopup(null)}
-            style={{ padding: '4px 12px', border: 'none', borderRadius: '6px', background: '#0F172A', color: '#FFFFFF', cursor: 'pointer', fontSize: '11px', fontWeight: 700 }}
+            style={{ padding: '4px 12px', border: 'none', borderRadius: '6px', background: '#0F172A', color: '#FFFFFF', cursor: 'pointer', fontSize: '11px', fontWeight: 600 }}
           >
             Terapkan
           </button>
@@ -708,8 +708,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             {ACT_TYPES.map(t => (
               <div key={t.key} className="activity-col-header">{t.label}</div>
             ))}
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progres</div>
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detail</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progres</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detail</div>
           </div>
 
           {/* Rows / Skeleton / Empty State */}
@@ -758,7 +758,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   <line x1="8" y1="11" x2="14" y2="11"></line>
                 </svg>
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 700, color: '#0F172A' }}>
+              <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A' }}>
                 Tidak ada proyek yang sesuai dengan filter
               </div>
               <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '420px', lineHeight: 1.5 }}>
@@ -785,7 +785,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   background: '#FFFFFF',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   cursor: 'pointer',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
                   display: 'inline-flex',
@@ -857,7 +857,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
       {/* Pagination Footer */}
       <div className="table-pagination-footer">
         <div className="tabular-nums" style={{ fontSize: '13px', color: '#64748b', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-          Menampilkan <span style={{ color: '#0f172a', fontWeight: 700 }}>{rangeStart}</span> - <span style={{ color: '#0f172a', fontWeight: 700 }}>{rangeEnd}</span> dari <span style={{ color: '#0f172a', fontWeight: 700 }}>{displayProjects.length}</span> proyek
+          Menampilkan <span style={{ color: '#0f172a', fontWeight: 600 }}>{rangeStart}</span> - <span style={{ color: '#0f172a', fontWeight: 600 }}>{rangeEnd}</span> dari <span style={{ color: '#0f172a', fontWeight: 600 }}>{displayProjects.length}</span> proyek
         </div>
 
         <div className="table-pagination-controls">
@@ -924,8 +924,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                         textAlign: 'left',
                         padding: '8px 14px',
                         fontSize: '13px',
-                        fontWeight: pageSize === size ? 800 : 600,
-                        color: pageSize === size ? '#C8102E' : '#334155',
+                        fontWeight: pageSize === size ? 600 : 500,
+                        color: pageSize === size ? '#800000' : '#334155',
                         background: pageSize === size ? '#FEF2F2' : 'transparent',
                         cursor: 'pointer'
                       }}
@@ -965,7 +965,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               </svg>
             </button>
 
-            <span className="tabular-nums" style={{ padding: '0 6px', fontSize: '13px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+            <span className="tabular-nums" style={{ padding: '0 6px', fontSize: '13px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
               {currentPage} / {totalPages}
             </span>
 
