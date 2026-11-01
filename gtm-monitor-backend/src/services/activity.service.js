@@ -277,15 +277,20 @@ async function verifyActivity({ body }) {
   const project = await findProjectHelper(body);
   if (!project) throw new AppError(404, { success: false, message: `Proyek "${body.projectName || body.projectId}" tidak ditemukan.` });
 
+  // Hanya bukti milik proyek & jenis kegiatan ini yang masih menunggu verifikasi
+  const pendingWhere = { projectId: project.id, type: type, status: 'upload' };
   let targetPhoto = null;
   if (photoId && typeof photoId === 'string' && photoId.length > 15) {
-    targetPhoto = await prisma.projectActivityPhoto.findUnique({ where: { id: photoId } }).catch(() => null);
+    targetPhoto = await prisma.projectActivityPhoto.findFirst({ where: { ...pendingWhere, id: photoId } }).catch(() => null);
   }
   if (!targetPhoto) {
     targetPhoto = await prisma.projectActivityPhoto.findFirst({
-      where: { projectId: project.id, type: type, status: 'upload' },
+      where: pendingWhere,
       orderBy: { createdAt: 'desc' }
     }).catch(() => null);
+  }
+  if (!targetPhoto) {
+    throw new AppError(404, { success: false, code: 'NO_PENDING_PHOTO', message: 'Tidak ada bukti yang menunggu verifikasi.' });
   }
 
   let finalPhotoUrl = targetPhoto?.photoUrl;

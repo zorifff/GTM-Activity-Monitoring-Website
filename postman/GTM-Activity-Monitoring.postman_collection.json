@@ -1388,7 +1388,42 @@
           ]
         },
         {
-          "name": "07.4 Status kegiatan setelah verifikasi = verified",
+          "name": "07.4 Verifikasi ulang bukti yang sudah verified → 404",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/verify",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchName\": \"{{userBranch}}\",\n  \"projectName\": \"{{userProject}}\",\n  \"type\": \"rekrutmen_sf\",\n  \"photoId\": \"{{photoId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Bukti 07.3 sudah verified dan tidak ada bukti lain yang menunggu → tidak boleh diverifikasi lagi",
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Kode NO_PENDING_PHOTO', () => pm.expect(pm.response.json().code).to.eql('NO_PENDING_PHOTO'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07.5 Status kegiatan setelah verifikasi = verified",
           "request": {
             "method": "GET",
             "header": [],
@@ -1410,7 +1445,7 @@
           ]
         },
         {
-          "name": "07.5 Hapus bukti → kegiatan kembali belum",
+          "name": "07.6 Hapus bukti → kegiatan kembali belum",
           "request": {
             "method": "POST",
             "header": [
@@ -1444,7 +1479,7 @@
           ]
         },
         {
-          "name": "07.6 Status kegiatan setelah dihapus = belum",
+          "name": "07.7 Status kegiatan setelah dihapus = belum",
           "request": {
             "method": "GET",
             "header": [],
@@ -1466,7 +1501,7 @@
           ]
         },
         {
-          "name": "07.7 Upload bukti baru (oleh admin)",
+          "name": "07.8 Upload bukti baru (oleh admin)",
           "request": {
             "method": "POST",
             "header": [
@@ -1500,7 +1535,7 @@
           ]
         },
         {
-          "name": "07.8 Tolak bukti → kegiatan kembali belum",
+          "name": "07.9 Tolak bukti → kegiatan kembali belum",
           "request": {
             "method": "POST",
             "header": [
@@ -1535,7 +1570,7 @@
           ]
         },
         {
-          "name": "07.9 Verifikasi proyek yang tidak ada → 404",
+          "name": "07.10 Verifikasi proyek yang tidak ada → 404",
           "request": {
             "method": "POST",
             "header": [
@@ -2046,7 +2081,7 @@
       ]
     },
     {
-      "name": "11 [Opsional] Deteksi Pencurian Refresh Token",
+      "name": "11 Deteksi Pencurian Refresh Token",
       "description": "Refresh token lama dipakai ulang > 30 detik setelah dirotasi → seluruh sesi dicabut. Request 11.3 menunggu 31 detik.",
       "item": [
         {
@@ -2184,7 +2219,7 @@
       ]
     },
     {
-      "name": "12 [Opsional] Rate Limit Login (Anti Brute-Force)",
+      "name": "12 Rate Limit Login (Anti Brute-Force)",
       "description": "Login gagal berulang dari IP yang sama → 429 setelah 10 kali dalam 10 menit. Jalankan PALING AKHIR: login dari IP ini terblokir ±10 menit (restart server pengujian untuk membuka).",
       "item": [
         {
@@ -2233,7 +2268,7 @@
       ]
     },
     {
-      "name": "13 [Opsional] Captcha Turnstile (server dev port 3001)",
+      "name": "13 Captcha Turnstile (server dev port 3001)",
       "description": "Server pengujian (3200) mematikan captcha. Request ini memakai server development (npm run dev) yang mewajibkan captcha: login lewat API tanpa token ditolak SEBELUM password diperiksa.",
       "item": [
         {

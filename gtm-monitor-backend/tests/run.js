@@ -130,6 +130,12 @@ const revokeTestSessions = async () => {
 
 (async () => {
   process.loadEnvFile(path.join(backendDir, '.env'));
+  // Klien Prisma di dalam suite memakai DATABASE_URL mentah → beri connect_timeout yang sama dengan server (Neon bangun dari tidur)
+  if (process.env.DATABASE_URL && !/[?&]connect_timeout=/.test(process.env.DATABASE_URL)) {
+    const dbUrl = new URL(process.env.DATABASE_URL);
+    dbUrl.searchParams.set('connect_timeout', '30');
+    process.env.DATABASE_URL = dbUrl.toString();
+  }
   const infra = RECORD ? [] : await startInfra();
   const results = [];
   for (const group of ['main', 'isolated', 'none']) {

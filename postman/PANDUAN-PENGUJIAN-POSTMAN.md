@@ -1,6 +1,6 @@
 # Panduan Pengujian API dengan Postman — GTM Activity Monitoring
 
-Pengujian *black-box* seluruh REST API backend dengan aplikasi **Postman**. Koleksi berisi **73 request** dalam **14 folder**. Setiap request membawa uji otomatis (`pm.test`), sehingga hasil **lulus/gagal** langsung tampil di Postman dan bisa di-screenshot untuk laporan.
+Pengujian *black-box* seluruh REST API backend dengan aplikasi **Postman**. Koleksi berisi **74 request** dalam **14 folder**. Setiap request membawa uji otomatis (`pm.test`), sehingga hasil **lulus/gagal** langsung tampil di Postman dan bisa di-screenshot untuk laporan.
 
 | File | Isi |
 |---|---|
@@ -62,7 +62,7 @@ Tunggu sampai muncul (±1 menit):
 - **Mengulang dari data bersih:** matikan lalu nyalakan lagi. Salinan database dibuat ulang dari Neon.
 - **Lebih cepat (tanpa membuat salinan ulang):** `node gtm-monitor-backend/scripts/postman-server.js --reuse`.
 
-> Server development (`npm run dev`) **boleh** tetap berjalan bersamaan, karena port, database, dan antreannya berbeda.
+> Server development (`npm run dev`) **wajib** ikut menyala di terminal lain, karena folder **13** (captcha Turnstile) diuji ke port 3001. Keduanya aman berjalan bersamaan karena port, database, dan antreannya berbeda.
 
 ---
 
@@ -96,8 +96,7 @@ Tunggu sampai muncul (±1 menit):
 1. Klik kanan koleksi **GTM Activity Monitoring — Pengujian API** → **Run collection**.
 2. Di panel Runner:
    - urutan request **jangan diubah**, karena request berikutnya memakai data yang disimpan request sebelumnya (mis. ID bukti, jobId, token);
-   - folder **11** (menunggu 31 detik) dan **12** (memblokir login 10 menit) bersifat opsional; centang bila ingin diuji;
-   - folder **13** butuh `npm run dev` berjalan; hilangkan centangnya bila server development tidak menyala;
+   - **semua folder (00–13) wajib dicentang**. Folder **11** menunggu 31 detik, folder **12** memblokir login dari IP ini selama 10 menit (karena itu ditaruh di akhir), dan folder **13** butuh server development (`npm run dev`, port 3001) menyala;
    - **Delay**: 0 ms; **Iterations**: 1.
 3. Klik tombol **Run**.
 4. Hasil: jumlah **Passed / Failed** di atas, lalu daftar setiap request beserta uji-ujinya. Klik sebuah request untuk melihat request & respons lengkapnya.
@@ -215,19 +214,20 @@ Kolom **Jumlah uji** sudah termasuk uji global "Header `X-Request-Id` ada", yang
 | 06.10 | Upload bukti Rekrutmen SF (Kode SF) → 200 | `POST /api/activities` | 3 |
 | 06.11 | Upload lagi saat masih menunggu verifikasi → 400 | `POST /api/activities` | 3 |
 
-**07 Admin: Verifikasi, Tolak & Hapus Bukti**: Siklus status kegiatan: upload → verified → (hapus) belum; upload → tolak → belum.
+**07 Admin: Verifikasi, Tolak & Hapus Bukti**: Siklus status kegiatan: upload → verified → (hapus) belum; upload → tolak → belum. Bukti yang sudah verified tidak bisa diverifikasi ulang (404 `NO_PENDING_PHOTO`).
 
 | No | Skenario | Method & Endpoint | Jumlah uji |
 |---|---|---|---|
 | 07.1 | Login admin | `POST /api/auth/login` | 6 |
 | 07.2 | Status kegiatan sebelum verifikasi = upload | `GET /api/data` | 3 |
 | 07.3 | Verifikasi bukti → verified | `POST /api/verify` | 3 |
-| 07.4 | Status kegiatan setelah verifikasi = verified | `GET /api/data` | 3 |
-| 07.5 | Hapus bukti → kegiatan kembali belum | `POST /api/activities/delete-photo` | 3 |
-| 07.6 | Status kegiatan setelah dihapus = belum | `GET /api/data` | 3 |
-| 07.7 | Upload bukti baru (oleh admin) | `POST /api/activities` | 2 |
-| 07.8 | Tolak bukti → kegiatan kembali belum | `POST /api/reject` | 3 |
-| 07.9 | Verifikasi proyek yang tidak ada → 404 | `POST /api/verify` | 2 |
+| 07.4 | Verifikasi ulang bukti yang sudah verified → 404 | `POST /api/verify` | 3 |
+| 07.5 | Status kegiatan setelah verifikasi = verified | `GET /api/data` | 3 |
+| 07.6 | Hapus bukti → kegiatan kembali belum | `POST /api/activities/delete-photo` | 3 |
+| 07.7 | Status kegiatan setelah dihapus = belum | `GET /api/data` | 3 |
+| 07.8 | Upload bukti baru (oleh admin) | `POST /api/activities` | 2 |
+| 07.9 | Tolak bukti → kegiatan kembali belum | `POST /api/reject` | 3 |
+| 07.10 | Verifikasi proyek yang tidak ada → 404 | `POST /api/verify` | 2 |
 
 **08 Import Excel ODP (Antrean Kerja)**: Import Excel ODP diproses worker latar belakang: 202 + jobId → status/SSE → hasil. File dari folder postman/fixtures (working directory Postman).
 
@@ -261,7 +261,7 @@ Kolom **Jumlah uji** sudah termasuk uji global "Header `X-Request-Id` ada", yang
 | 10.6 | Akses setelah logout → 401 | `GET /api/auth/me` | 3 |
 | 10.7 | Token lama setelah logout → 401 (dicabut di server) | `GET /api/auth/me` | 3 |
 
-**11 [Opsional] Deteksi Pencurian Refresh Token**: Refresh token lama dipakai ulang > 30 detik setelah dirotasi → seluruh sesi dicabut. Request 11.3 menunggu 31 detik.
+**11 Deteksi Pencurian Refresh Token**: Refresh token lama dipakai ulang > 30 detik setelah dirotasi → seluruh sesi dicabut. Request 11.3 menunggu 31 detik.
 
 | No | Skenario | Method & Endpoint | Jumlah uji |
 |---|---|---|---|
@@ -270,13 +270,13 @@ Kolom **Jumlah uji** sudah termasuk uji global "Header `X-Request-Id` ada", yang
 | 11.3 | Token lama dipakai ulang setelah 31 detik → sesi dicabut | `POST /api/auth/refresh` | 3 |
 | 11.4 | Sesi admin ikut dicabut (token terbaru pun ditolak) | `GET /api/auth/me` | 3 |
 
-**12 [Opsional] Rate Limit Login (Anti Brute-Force)**: Login gagal berulang dari IP yang sama → 429 setelah 10 kali dalam 10 menit. Jalankan PALING AKHIR: login dari IP ini terblokir ±10 menit (restart server pengujian untuk membuka).
+**12 Rate Limit Login (Anti Brute-Force)**: Login gagal berulang dari IP yang sama → 429 setelah 10 kali dalam 10 menit. Jalankan PALING AKHIR: login dari IP ini terblokir ±10 menit (restart server pengujian untuk membuka).
 
 | No | Skenario | Method & Endpoint | Jumlah uji |
 |---|---|---|---|
 | 12.1 | Login gagal berulang sampai diblokir | `POST /api/auth/login` | 3 |
 
-**13 [Opsional] Captcha Turnstile (server dev port 3001)**: Server pengujian (3200) mematikan captcha. Request ini memakai server development (npm run dev) yang mewajibkan captcha: login lewat API tanpa token ditolak SEBELUM password diperiksa.
+**13 Captcha Turnstile (server dev port 3001)**: Server pengujian (3200) mematikan captcha. Request ini memakai server development (npm run dev) yang mewajibkan captcha: login lewat API tanpa token ditolak SEBELUM password diperiksa.
 
 | No | Skenario | Method & Endpoint | Jumlah uji |
 |---|---|---|---|
@@ -289,7 +289,7 @@ Kolom **Jumlah uji** sudah termasuk uji global "Header `X-Request-Id` ada", yang
 | Autentikasi | 01, 02, 03, 10 | Endpoint terlindungi menolak tanpa login (401); login memasang cookie **HttpOnly + SameSite=Strict**; token tidak ada di body; refresh token dirotasi; logout & pencabutan sesi berlaku seketika |
 | Otorisasi (RBAC & branch) | 06 | User WOK ditolak di endpoint admin (403) dan di proyek branch lain (403) |
 | Validasi input | 02, 05, 06, 08 | Skema Zod: field wajib, jenis & format tanggal kegiatan, koordinat, radius, UUID (400 `VALIDATION_ERROR` + nama field) |
-| Aturan bisnis | 06, 07 | Kewajiban data per jenis kegiatan; tidak bisa upload saat masih menunggu verifikasi; siklus status upload → verified → belum |
+| Aturan bisnis | 06, 07 | Kewajiban data per jenis kegiatan; tidak bisa upload saat masih menunggu verifikasi; siklus status upload → verified → belum; verifikasi hanya untuk bukti yang menunggu |
 | Data & metrik | 04 | `/api/data` lengkap; materialized view `/api/performance` = hitungan langsung dari data |
 | Geospasial (PostGIS) | 05 | Radius akurat & urut jarak; bounding box; batas jumlah hasil |
 | Antrean kerja & SSE | 08 | Import Excel → 202 + jobId → status → hasil; event stream SSE; file salah ditolak |
@@ -308,7 +308,7 @@ Kolom **Jumlah uji** sudah termasuk uji global "Header `X-Request-Id` ada", yang
 | 3 | **01.x** salah satu — status 401 `NO_SESSION` | Proteksi endpoint |
 | 4 | **06.9** — status 403 | Pembatasan per branch |
 | 5 | **02.1** atau **05.4** — status 400 dengan daftar `errors` | Validasi input terpusat |
-| 6 | **07.3** & **07.4** | Verifikasi kegiatan oleh admin |
+| 6 | **07.3**, **07.4** & **07.5** | Verifikasi kegiatan oleh admin (termasuk tolak verifikasi ulang) |
 | 7 | **08.3** (202 + jobId) dan **08.4** (hasil import) | Import lewat antrean kerja |
 | 8 | **08.5** | Progres real-time via SSE |
 | 9 | **05.1** | Query spasial PostGIS (`distanceM`) |

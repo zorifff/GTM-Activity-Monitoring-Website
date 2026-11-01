@@ -318,10 +318,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   // ─── 7. CONNECTION POOLING ───
   console.log('\n— Connection pooling —');
-  const pooled = buildDatasourceUrl('postgresql://u:p@ep-x-pooler.ap-southeast-1.aws.neon.tech/db?sslmode=require', { connectionLimit: 7, poolTimeoutSec: 15 });
+  const pooled = buildDatasourceUrl('postgresql://u:p@ep-x-pooler.ap-southeast-1.aws.neon.tech/db?sslmode=require', { connectionLimit: 7, poolTimeoutSec: 15, connectTimeoutSec: 30 });
   const pooledParams = Object.fromEntries(new URL(pooled.url).searchParams);
-  check('Host Neon "-pooler" → pgbouncer=true, connection_limit & pool_timeout ditambahkan',
-    pooled.pooled && pooledParams.pgbouncer === 'true' && pooledParams.connection_limit === '7' && pooledParams.pool_timeout === '15' && pooledParams.sslmode === 'require');
+  check('Host Neon "-pooler" → pgbouncer=true, connection_limit, pool_timeout & connect_timeout ditambahkan',
+    pooled.pooled && pooledParams.pgbouncer === 'true' && pooledParams.connection_limit === '7' && pooledParams.pool_timeout === '15' && pooledParams.connect_timeout === '30' && pooledParams.sslmode === 'require');
   const custom = buildDatasourceUrl('postgresql://u:p@ep-x-pooler.neon.tech/db?connection_limit=3');
   check('Parameter yang sudah ada di URL tidak ditimpa', new URL(custom.url).searchParams.get('connection_limit') === '3');
   check('Host langsung (tanpa pooler) terdeteksi → peringatan saat server menyala', buildDatasourceUrl('postgresql://u:p@ep-x.neon.tech/db').pooled === false);

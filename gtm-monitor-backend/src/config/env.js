@@ -62,6 +62,8 @@ if (!S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY) {
 // detail penerapannya di src/config/database.js
 const DB_CONNECTION_LIMIT = Number(process.env.DB_CONNECTION_LIMIT) || 10;
 const DB_POOL_TIMEOUT_SEC = Number(process.env.DB_POOL_TIMEOUT_SEC) || 20;
+// Neon scale-to-zero: compute yang tidur butuh beberapa detik untuk bangun, default Prisma (5 dtk) sering habis → P1001
+const DB_CONNECT_TIMEOUT_SEC = Number(process.env.DB_CONNECT_TIMEOUT_SEC) || 30;
 
 // Materialized view metrik performa di-refresh terjadwal oleh worker (selain di akhir setiap import ODP)
 const PERFORMANCE_REFRESH_MINUTES = Number(process.env.PERFORMANCE_REFRESH_MINUTES) || 60;
@@ -75,5 +77,5 @@ if (!TURNSTILE_SECRET_KEY) {
 module.exports = {
   PORT, JWT_SECRET, REFRESH_TOKEN_SECRET, CORS_ORIGINS, REDIS_URL, QUEUE_PREFIX,
   S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_FORCE_PATH_STYLE,
-  DB_CONNECTION_LIMIT, DB_POOL_TIMEOUT_SEC, PERFORMANCE_REFRESH_MINUTES, TURNSTILE_SECRET_KEY
+  DB_CONNECTION_LIMIT, DB_POOL_TIMEOUT_SEC, DB_CONNECT_TIMEOUT_SEC, PERFORMANCE_REFRESH_MINUTES, TURNSTILE_SECRET_KEY
 };
