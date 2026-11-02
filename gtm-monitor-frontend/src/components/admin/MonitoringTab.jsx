@@ -6,7 +6,7 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
   return (
     <div className="fade-in">
       {/* Filter Bar */}
-      <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '18px', padding: '14px 20px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', position: 'relative', zIndex: 80, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)' }}>
+      <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '18px', padding: '14px 20px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', position: 'relative', zIndex: 80, boxShadow: 'none' }}>
         {/* Branch Filter Capsule Dropdown */}
         <div style={{ position: 'relative' }}>
           <div 

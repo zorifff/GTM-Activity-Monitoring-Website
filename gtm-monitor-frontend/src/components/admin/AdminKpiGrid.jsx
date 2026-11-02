@@ -8,8 +8,8 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '16px',
-          border: '1px solid rgba(226, 232, 240, 0.9)',
-          boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+          border: '1px solid #E2E8F0',
+          boxShadow: 'none',
           padding: '24px 28px',
           display: 'flex',
           flexDirection: 'column',
@@ -90,8 +90,8 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '16px',
-          border: '1px solid rgba(226, 232, 240, 0.9)',
-          boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+          border: '1px solid #E2E8F0',
+          boxShadow: 'none',
           padding: '24px 28px',
           display: 'flex',
           flexDirection: 'column',
@@ -174,8 +174,8 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '16px',
-          border: '1px solid rgba(226, 232, 240, 0.9)',
-          boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+          border: '1px solid #E2E8F0',
+          boxShadow: 'none',
           padding: '24px 28px',
           display: 'flex',
           flexDirection: 'column',
@@ -246,8 +246,8 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '16px',
-          border: '1px solid rgba(226, 232, 240, 0.9)',
-          boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+          border: '1px solid #E2E8F0',
+          boxShadow: 'none',
           padding: '24px 28px',
           display: 'flex',
           flexDirection: 'column',

@@ -208,7 +208,7 @@ export default function AppLayout() {
             minHeight: '100dvh',
             maxHeight: '100dvh',
             width: '100%',
-            background: '#F8FAFC',
+            background: '#FFFFFF',
             overflow: 'hidden'
           }}
         >
@@ -237,7 +237,7 @@ export default function AppLayout() {
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
-              backgroundColor: '#F8FAFC',
+              backgroundColor: '#FFFFFF',
               overflowY: 'auto',
               scrollPaddingTop: '80px',
               scrollBehavior: 'smooth'

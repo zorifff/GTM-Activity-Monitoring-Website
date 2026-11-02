@@ -71,6 +71,7 @@ export function DashboardRoute() {
           ranking={ranking}
           typeDesignFilter={typeDesignFilter}
           setTypeDesignFilter={setTypeDesignFilter}
+          isAdmin={isAdmin}
         />
       </section>
 
@@ -82,6 +83,7 @@ export function DashboardRoute() {
           verifyActivity={isAdmin ? verifyActivity : null}
           rejectActivity={isAdmin ? rejectActivity : null}
           deletePhoto={deletePhoto}
+          isAdmin={isAdmin}
         />
       </section>
     </div>

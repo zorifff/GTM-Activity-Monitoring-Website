@@ -16,8 +16,8 @@ export default function SearchFilterToolbar({
       style={{
         backgroundColor: '#FFFFFF',
         borderRadius: '12px',
-        border: `1px solid ${isFocused ? '#94A3B8' : 'rgba(226, 232, 240, 0.9)'}`,
-        boxShadow: isFocused ? '0 2px 8px rgba(15, 23, 42, 0.05)' : '0 1px 2px rgba(15, 23, 42, 0.03)',
+        border: `1px solid ${isFocused ? '#94A3B8' : '#E2E8F0'}`,
+        boxShadow: 'none',
         padding: '5px 12px',
         display: 'flex',
         alignItems: 'center',

@@ -1,7 +1,7 @@
 import { useCountUp } from '../../hooks/useCountUp';
 
-// ─── HERO CARD (TELKOMSEL RED - ANTI-SLOP CLEAN ARCHITECTURE) ───
-export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isInView = true }) {
+// ─── HERO CARD (TELKOMSEL MAROON - CLEAN ARCHITECTURE) ───
+export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, isInView = true }) {
   const isOccDecimal = Number(safeKpi.occRate) % 1 !== 0;
   const countOccRate = useCountUp(safeKpi.occRate, { enabled: isInView, decimals: isOccDecimal ? 1 : 0, duration: 800 });
   const countTotalUsed = useCountUp(safeKpi.totalUsed, { enabled: isInView, duration: 750 });
@@ -9,7 +9,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isInView = 
 
   return (
     <div
-      className="hero-red-card"
+      className="hero-red-card saas-card"
       style={{
         width: '100%',
         maxWidth: '360px',
@@ -21,8 +21,8 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isInView = 
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        boxShadow: '0 8px 20px -4px rgba(128, 0, 0, 0.22), 0 2px 6px -1px rgba(128, 0, 0, 0.12)',
         border: '1px solid rgba(255, 255, 255, 0.12)',
+        boxShadow: 'none',
         boxSizing: 'border-box',
         minHeight: '190px'
       }}
@@ -95,41 +95,42 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isInView = 
           <span style={{ fontWeight: 600, color: '#FFFFFF' }}>{countTotalPort}</span> port
         </div>
 
-        <button
-          type="button"
-          onClick={onReviewBranch}
-          className="hero-review-btn"
-          title="Review Branch Prioritas (Purwokerto)"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '4px',
-            backgroundColor: '#FFFFFF',
-            color: '#800000',
-            fontWeight: 600,
-            fontSize: '11.5px',
-            padding: '3px 9px',
-            borderRadius: '6px',
-            border: 'none',
-            cursor: 'pointer',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.15)',
-            transition: 'all 0.15s ease',
-            whiteSpace: 'nowrap',
-            flexShrink: 0
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#FFF5F5';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#FFFFFF';
-          }}
-        >
-          <span>Review Prioritas</span>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="7" y1="17" x2="17" y2="7" />
-            <polyline points="7 7 17 7 17 17" />
-          </svg>
-        </button>
+        {isAdmin && onReviewBranch && (
+          <button
+            type="button"
+            onClick={onReviewBranch}
+            className="hero-review-btn"
+            title="Review Branch Prioritas (Purwokerto)"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              backgroundColor: '#FFFFFF',
+              color: '#800000',
+              fontWeight: 600,
+              fontSize: '11.5px',
+              padding: '3px 9px',
+              borderRadius: '6px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              whiteSpace: 'nowrap',
+              flexShrink: 0
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#FFF5F5';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#FFFFFF';
+            }}
+          >
+            <span>Review Prioritas</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7" />
+              <polyline points="7 7 17 7 17 17" />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );

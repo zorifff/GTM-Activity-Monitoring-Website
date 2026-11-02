@@ -15,7 +15,8 @@ const Dashboard = memo(function Dashboard({
   goBranch,
   kpi,
   statusChips,
-  ranking
+  ranking,
+  isAdmin
 }) {
   // In-view observer triggers for smooth entry animations
   const [refTopRow, inViewTopRow] = useInView({ threshold: 0.1, triggerOnce: true });
@@ -79,6 +80,7 @@ const Dashboard = memo(function Dashboard({
         <HeroOccupancyCard
           safeKpi={safeKpi}
           onReviewBranch={handleReviewPriority}
+          isAdmin={isAdmin}
           isInView={inViewTopRow}
         />
 

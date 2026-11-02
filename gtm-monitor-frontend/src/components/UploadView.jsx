@@ -3,8 +3,43 @@ import ProjectTable from './ProjectTable';
 import ReviewModal from './ReviewModal';
 import { formatBranch, computeStats, exportProjectsToExcel } from '../utils';
 
+const STATUS_OPTIONS = ['Belum Ada', 'Review', 'Selesai'];
+
+// Helper: Cek apakah sebuah proyek memenuhi kriteria status tertentu
+const projectMatchesStatus = (p, statusKey) => {
+  const acts = p.activities || [];
+  if (statusKey === 'Review') {
+    return acts.some(a => 
+      a.status === 'upload' || 
+      a.status === 'need_review' || 
+      a.status === 'pending' ||
+      (Array.isArray(a.photos) && a.photos.some(ph => ph.status === 'upload' || ph.status === 'need_review'))
+    );
+  }
+  if (statusKey === 'Selesai') {
+    return acts.some(a => 
+      a.status === 'verified' || 
+      (Array.isArray(a.photos) && a.photos.some(ph => ph.status === 'verified'))
+    );
+  }
+  if (statusKey === 'Belum Ada') {
+    const hasReview = acts.some(a => 
+      a.status === 'upload' || 
+      a.status === 'need_review' || 
+      a.status === 'pending' ||
+      (Array.isArray(a.photos) && a.photos.some(ph => ph.status === 'upload' || ph.status === 'need_review'))
+    );
+    const hasVerified = acts.some(a => 
+      a.status === 'verified' || 
+      (Array.isArray(a.photos) && a.photos.some(ph => ph.status === 'verified'))
+    );
+    return !hasReview && !hasVerified;
+  }
+  return false;
+};
+
 // UploadView dibungkus React.memo agar TIDAK re-render saat menu profile di header dibuka/ditutup.
-const UploadView = memo(function UploadView({ branches, initialBranch, verifyActivity, rejectActivity, uploadPhoto, deletePhoto }) {
+const UploadView = memo(function UploadView({ branches, initialBranch, verifyActivity, rejectActivity, uploadPhoto, deletePhoto, isAdmin = false }) {
   // Halaman Upload Activity Wajib difilter: OCC < 35%, ODP > 1, DAN Type Design === Greenfield
   const priorityBranches = useMemo(() => {
     return (Array.isArray(branches) ? branches : []).map(b => ({
@@ -23,6 +58,8 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [selectedStatuses, setSelectedStatuses] = useState(STATUS_OPTIONS);
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [modalKey, setModalKey] = useState(null); // format: branchName||projectName
 
   // Jika akun user biasa hanya memiliki akses 1 branch, kunci selectedBranch ke branch tersebut
@@ -46,19 +83,60 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
     return filteredBranches.reduce((s, b) => s + (b.projects?.length || 0), 0);
   }, [filteredBranches]);
 
-  // 3. Filter Projects within those branches based on search text (bisa cari nama proyek, WOK, atau nama ODP)
+  // Hitung jumlah proyek per status pada branch yang sedang terpilih
+  const statusCounts = useMemo(() => {
+    let belumAda = 0;
+    let review = 0;
+    let selesai = 0;
+
+    filteredBranches.forEach(b => {
+      (b.projects || []).forEach(p => {
+        if (projectMatchesStatus(p, 'Belum Ada')) belumAda++;
+        if (projectMatchesStatus(p, 'Review')) review++;
+        if (projectMatchesStatus(p, 'Selesai')) selesai++;
+      });
+    });
+
+    return {
+      'Belum Ada': belumAda,
+      'Review': review,
+      'Selesai': selesai
+    };
+  }, [filteredBranches]);
+
+  const isStatusFiltered = isAdmin && selectedStatuses.length < STATUS_OPTIONS.length;
+
+  // Hitung jumlah proyek yang memenuhi filter status pada branch yang sedang terpilih
+  const statusMatchingProjectsCount = useMemo(() => {
+    if (!isStatusFiltered) return totalProjectsInFilter;
+    if (selectedStatuses.length === 0) return 0;
+    return filteredBranches.reduce((count, b) => {
+      return count + (b.projects || []).filter(p => selectedStatuses.some(st => projectMatchesStatus(p, st))).length;
+    }, 0);
+  }, [filteredBranches, isStatusFiltered, selectedStatuses, totalProjectsInFilter]);
+
+  // 3. Filter Projects within those branches based on search text & status checkbox
   const branchesWithFilteredProjects = useMemo(() => {
     const s = search.toLowerCase();
     return filteredBranches.map(b => {
-      const projs = b.projects.filter(p => 
+      let projs = b.projects.filter(p => 
         !s || 
         p.name.toLowerCase().includes(s) || 
         (p.wok && p.wok.toLowerCase().includes(s)) ||
         (p.odps && p.odps.some(o => o.odp && o.odp.toLowerCase().includes(s)))
       );
+
+      // Filter khusus Admin berdasarkan checkbox status
+      if (isStatusFiltered) {
+        projs = projs.filter(p => {
+          if (selectedStatuses.length === 0) return false;
+          return selectedStatuses.some(st => projectMatchesStatus(p, st));
+        });
+      }
+
       return { ...b, projects: projs };
     }).filter(b => b.projects.length > 0);
-  }, [filteredBranches, search]);
+  }, [filteredBranches, search, isStatusFiltered, selectedStatuses]);
 
   // 4. Memoize multi-branch flatMap so a new array reference isn't created on every render
   const allProjectsMultiBranch = useMemo(() => {
@@ -90,6 +168,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
   }
 
   const branchDropdownRef = useRef(null);
+  const statusDropdownRef = useRef(null);
 
   // Keyboard Escape and click-outside listener for branch dropdown (R-32)
   useEffect(() => {
@@ -112,6 +191,27 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
     };
   }, [isDropdownOpen]);
 
+  // Keyboard Escape and click-outside listener for status filter dropdown
+  useEffect(() => {
+    if (!isStatusDropdownOpen) return;
+    const handleClickOutside = (e) => {
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(e.target)) {
+        setIsStatusDropdownOpen(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsStatusDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isStatusDropdownOpen]);
+
   const usedPct = useMemo(() => {
     return stats.totalPort > 0 ? (stats.totalUsed / stats.totalPort) * 100 : 0;
   }, [stats.totalUsed, stats.totalPort]);
@@ -128,8 +228,8 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '16px',
-            border: '1px solid rgba(226, 232, 240, 0.9)',
-            boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+            border: '1px solid #E2E8F0',
+            boxShadow: 'none',
             padding: '24px 28px',
             display: 'flex',
             flexDirection: 'column',
@@ -201,8 +301,8 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '16px',
-            border: '1px solid rgba(226, 232, 240, 0.9)',
-            boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+            border: '1px solid #E2E8F0',
+            boxShadow: 'none',
             padding: '24px 28px',
             display: 'flex',
             flexDirection: 'column',
@@ -283,8 +383,8 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '16px',
-            border: '1px solid rgba(226, 232, 240, 0.9)',
-            boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+            border: '1px solid #E2E8F0',
+            boxShadow: 'none',
             padding: '24px 28px',
             display: 'flex',
             flexDirection: 'column',
@@ -424,6 +524,220 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           </div>
         )}
 
+        {/* Filter Dropdown Status: Belum Ada, Review, Selesai (Khusus Admin) */}
+        {isAdmin && (
+          <div ref={statusDropdownRef} style={{ position: 'relative' }}>
+            <button
+              type="button"
+              className="control-btn-mobile"
+              aria-haspopup="true"
+              aria-expanded={isStatusDropdownOpen}
+              aria-label="Filter status proyek"
+              onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+              style={{
+                height: '42px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '0 16px',
+                borderRadius: '10px',
+                fontSize: '13px',
+                fontWeight: 600,
+                flexShrink: 0,
+                boxSizing: 'border-box',
+                transition: 'all 0.15s ease',
+                border: isStatusFiltered ? '1.5px solid #800000' : '1px solid #CBD5E1',
+                backgroundColor: isStatusFiltered ? '#FFF5F5' : '#FFFFFF',
+                color: isStatusFiltered ? '#800000' : '#0F172A',
+                boxShadow: 'none'
+              }}
+              onMouseEnter={(e) => {
+                if (!isStatusFiltered) {
+                  e.currentTarget.style.borderColor = '#94A3B8';
+                  e.currentTarget.style.backgroundColor = '#F8FAFC';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isStatusFiltered) {
+                  e.currentTarget.style.borderColor = '#CBD5E1';
+                  e.currentTarget.style.backgroundColor = '#FFFFFF';
+                }
+              }}
+            >
+              <span className="status-text-label" style={{ fontWeight: 600, fontSize: '13px' }}>
+                Status ({statusMatchingProjectsCount})
+              </span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={isStatusFiltered ? '#800000' : '#64748B'}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{
+                  transform: isStatusDropdownOpen ? 'rotate(180deg)' : 'none',
+                  transition: 'transform 0.2s',
+                  flexShrink: 0
+                }}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+
+            {isStatusDropdownOpen && (
+              <div
+                role="dialog"
+                aria-label="Pilihan filter status proyek"
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  marginTop: '6px',
+                  background: '#FFFFFF',
+                  border: '1px solid #E2E8F0',
+                  borderRadius: '14px',
+                  boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.18)',
+                  zIndex: 1000,
+                  width: '210px',
+                  padding: '12px',
+                  fontSize: '12px',
+                  color: '#334155',
+                  fontWeight: 500,
+                  textAlign: 'left'
+                }}
+              >
+                {/* Opsi Pilih Semua */}
+                <label
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '4px 2px',
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    borderBottom: '1px solid #F1F5F9',
+                    marginBottom: '6px',
+                    fontSize: '12px',
+                    color: '#0F172A'
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedStatuses.length === STATUS_OPTIONS.length}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedStatuses(STATUS_OPTIONS);
+                      } else {
+                        setSelectedStatuses([]);
+                      }
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <span>(Pilih Semua)</span>
+                  <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', fontWeight: 600 }}>
+                    ({totalProjectsInFilter})
+                  </span>
+                </label>
+
+                {/* List Status Checkbox */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  {STATUS_OPTIONS.map((st) => {
+                    const isChecked = selectedStatuses.includes(st);
+                    const count = statusCounts[st] || 0;
+                    return (
+                      <label
+                        key={st}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          padding: '5px 4px',
+                          cursor: 'pointer',
+                          borderRadius: '6px',
+                          transition: 'background-color 0.1s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#F8FAFC';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedStatuses(prev => [...prev, st]);
+                            } else {
+                              setSelectedStatuses(prev => prev.filter(x => x !== st));
+                            }
+                          }}
+                          style={{ cursor: 'pointer', flexShrink: 0 }}
+                        />
+                        <span style={{ fontSize: '12px', color: '#0F172A', fontWeight: isChecked ? 600 : 500 }}>
+                          {st}
+                        </span>
+                        <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', fontWeight: 600 }}>
+                          ({count})
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {/* Footer Actions (Reset & Terapkan) mirip ProjectTable */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '6px',
+                    marginTop: '10px',
+                    paddingTop: '8px',
+                    borderTop: '1px solid #F1F5F9'
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStatuses(STATUS_OPTIONS)}
+                    style={{
+                      padding: '4px 8px',
+                      border: 'none',
+                      background: 'transparent',
+                      color: '#64748B',
+                      cursor: 'pointer',
+                      fontSize: '11.5px',
+                      fontWeight: 600
+                    }}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsStatusDropdownOpen(false)}
+                    style={{
+                      padding: '5px 14px',
+                      border: 'none',
+                      borderRadius: '6px',
+                      background: '#0F172A',
+                      color: '#FFFFFF',
+                      cursor: 'pointer',
+                      fontSize: '11.5px',
+                      fontWeight: 600
+                    }}
+                  >
+                    Terapkan
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Search Input with Icon */}
         <div style={{ flex: 1, minWidth: '240px', position: 'relative', display: 'flex', alignItems: 'center' }}>
           <svg
@@ -484,7 +798,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             padding: '0 18px',
             height: '42px',
             borderRadius: '10px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)',
+            boxShadow: 'none',
             transition: 'all 0.15s ease',
             flexShrink: 0,
             boxSizing: 'border-box'
@@ -507,6 +821,64 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <span>Export Excel</span>
         </button>
       </div>
+
+      {/* ─── BANNER FEEDBACK FILTER KHUSUS ADMIN ─── */}
+      {isAdmin && isStatusFiltered && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            padding: '12px 18px',
+            marginBottom: '20px',
+            background: '#FFFBEB',
+            border: '1px solid #FDE68A',
+            borderRadius: '12px',
+            color: '#92400E',
+            fontSize: '13.5px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span>
+              Menampilkan <strong>{allProjectsMultiBranch.length} proyek</strong> dengan filter status:{' '}
+              <strong>{selectedStatuses.length === 0 ? 'Tidak ada status dipilih' : selectedStatuses.join(', ')}</strong>
+              {selectedBranch !== 'Semua Branch' ? ` pada Branch ${formatBranch(selectedBranch)}.` : ' di seluruh branch.'}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSelectedStatuses(STATUS_OPTIONS)}
+            style={{
+              background: '#FFFFFF',
+              border: '1px solid #FCD34D',
+              color: '#B45309',
+              padding: '6px 14px',
+              borderRadius: '8px',
+              fontSize: '12.5px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.15s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#FEF3C7';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#FFFFFF';
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            <span>Reset Filter</span>
+          </button>
+        </div>
+      )}
 
       {/* ─── 4. PROJECT TABLES & ACTIVITY CARDS ─── */}
       {selectedBranch === 'Semua Branch' ? (
@@ -564,17 +936,22 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             </svg>
           </div>
           <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A' }}>
-            Tidak ada proyek yang sesuai kriteria
+            {isAdmin && isStatusFiltered 
+              ? 'Tidak ada proyek dengan status terpilih' 
+              : 'Tidak ada proyek yang sesuai kriteria'}
           </div>
           <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '420px', lineHeight: 1.5 }}>
-            Tidak ditemukan proyek Greenfield dengan kata kunci pencarian atau filter branch yang dipilih.
+            {isAdmin && isStatusFiltered
+              ? `Tidak ditemukan proyek Greenfield dengan status ${selectedStatuses.join(', ')} pada branch ini.`
+              : 'Tidak ditemukan proyek Greenfield dengan kata kunci pencarian atau filter branch yang dipilih.'}
           </p>
-          {(search || selectedBranch !== 'Semua Branch') && (
+          {(search || selectedBranch !== 'Semua Branch' || (isAdmin && isStatusFiltered)) && (
             <button
               type="button"
               onClick={() => {
                 setSearch('');
                 setSelectedBranch('Semua Branch');
+                if (isAdmin) setSelectedStatuses(STATUS_OPTIONS);
               }}
               style={{
                 marginTop: '6px',

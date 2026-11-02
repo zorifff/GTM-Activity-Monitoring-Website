@@ -123,7 +123,7 @@ const BranchView = memo(function BranchView({
 
       {/* KPI Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.02)' }}>
+        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: 'none' }}>
           <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
             Total Proyek Greenfield
           </div>
@@ -133,7 +133,7 @@ const BranchView = memo(function BranchView({
           <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>OCC &lt; 35% &amp; ODP &gt; 1</div>
         </div>
 
-        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.02)' }}>
+        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: 'none' }}>
           <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
             Total ODP &amp; Kapasitas
           </div>
@@ -145,7 +145,7 @@ const BranchView = memo(function BranchView({
           </div>
         </div>
 
-        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.02)' }}>
+        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: 'none' }}>
           <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
             Status Verifikasi Aktivitas
           </div>
