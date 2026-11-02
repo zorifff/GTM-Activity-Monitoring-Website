@@ -84,136 +84,437 @@ const BranchView = memo(function BranchView({
 
   if (!branch) {
     return (
-      <div style={{ padding: '60px 20px', textAlign: 'center', background: '#FFFFFF', borderRadius: '18px', border: '1px solid #E2E8F0', margin: '24px 32px' }}>
-        <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginBottom: '8px' }}>
+      <div style={{ padding: '60px 20px', textAlign: 'center', background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', margin: '24px 0' }}>
+        <div style={{ fontSize: '16px', fontWeight: 600, color: '#0F172A', marginBottom: '8px' }}>
           Data Branch "{activeBranch}" Tidak Ditemukan
         </div>
         <button
+          type="button"
           onClick={goDashboard}
-          style={{ padding: '8px 20px', borderRadius: '50px', background: '#800000', color: '#FFF', border: 'none', fontWeight: 700, cursor: 'pointer', marginTop: '12px' }}
+          style={{ padding: '8px 20px', borderRadius: '8px', background: '#800000', color: '#FFF', border: 'none', fontWeight: 600, cursor: 'pointer', marginTop: '12px', fontSize: '13px' }}
         >
-          ← Kembali ke Dashboard
+          Kembali ke Monitoring
         </button>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '24px 32px', animation: 'fadeIn 0.3s ease-in-out' }}>
-      {/* Header Title with Back Button */}
-      <div className="page-title-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <div>
-          {goDashboard && (
-            <button
-              type="button"
-              onClick={goDashboard}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '10px', border: '1px solid #E2E8F0', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#64748B', cursor: 'pointer', marginBottom: '10px' }}
-            >
-              ← Kembali ke Monitoring
-            </button>
-          )}
-          <div style={{ textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2.5px', color: '#FF5E00', fontWeight: 800, marginBottom: '2px' }}>
-            DETAIL BRANCH GTM
-          </div>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.5px' }}>
-            Branch {formatBranch(branch.name)}
-          </h1>
-        </div>
+    <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
+      {/* Header Title */}
+      <div className="page-title-header" style={{ marginBottom: '24px' }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', fontWeight: 600, color: '#0F172A', margin: 0, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
+          Branch {formatBranch(branch.name)}
+        </h1>
       </div>
 
-      {/* KPI Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: 'none' }}>
-          <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
+      {/* ─── KPI SUMMARY GRID (3 CARDS MATCHING ACTIVITY VIEW STYLE) ─── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+        {/* Card 1: Total Proyek Greenfield */}
+        <div
+          className="saas-card"
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '16px',
+            border: '1px solid #E2E8F0',
+            boxShadow: 'none',
+            padding: '24px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            boxSizing: 'border-box'
+          }}
+        >
+          <div
+            style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#475569',
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.1px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
             Total Proyek Greenfield
           </div>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: '24px', fontWeight: 900, color: '#0F172A', marginTop: '4px' }}>
-            {priorityProjects.length} <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 600 }}>Proyek</span>
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: 600,
+              color: '#0F172A',
+              letterSpacing: '-1.5px',
+              margin: '18px 0 16px 0',
+              fontVariantNumeric: 'tabular-nums',
+              fontFeatureSettings: '"tnum"',
+              lineHeight: 1,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {priorityProjects.length.toLocaleString('id-ID')}
+            <span
+              style={{
+                fontSize: '20px',
+                fontWeight: 500,
+                color: '#64748B',
+                letterSpacing: '-0.2px',
+                marginLeft: '6px'
+              }}
+            >
+              Proyek
+            </span>
           </div>
-          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>OCC &lt; 35% &amp; ODP &gt; 1</div>
+          <div
+            style={{
+              fontSize: '13px',
+              color: '#64748B',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            OCC &lt; 35% &amp; ODP &gt; 1
+          </div>
         </div>
 
-        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: 'none' }}>
-          <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
+        {/* Card 2: Total ODP & Kapasitas */}
+        <div
+          className="saas-card"
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '16px',
+            border: '1px solid #E2E8F0',
+            boxShadow: 'none',
+            padding: '24px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            boxSizing: 'border-box'
+          }}
+        >
+          <div
+            style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#475569',
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.1px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
             Total ODP &amp; Kapasitas
           </div>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: '24px', fontWeight: 900, color: '#0F172A', marginTop: '4px' }}>
-            {stats.odpCount} <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 600 }}>ODP</span>
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: 600,
+              color: '#0F172A',
+              letterSpacing: '-1.5px',
+              margin: '18px 0 16px 0',
+              fontVariantNumeric: 'tabular-nums',
+              fontFeatureSettings: '"tnum"',
+              lineHeight: 1,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {stats.odpCount.toLocaleString('id-ID')}
+            <span
+              style={{
+                fontSize: '20px',
+                fontWeight: 500,
+                color: '#64748B',
+                letterSpacing: '-0.2px',
+                marginLeft: '6px'
+              }}
+            >
+              ODP
+            </span>
           </div>
-          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
-            {stats.totalUsed} / {stats.totalPort} port ({stats.occRate}%)
+          <div
+            style={{
+              fontSize: '13px',
+              color: '#64748B',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <span
+              style={{
+                fontWeight: 600,
+                color: '#1E293B',
+                fontVariantNumeric: 'tabular-nums',
+                fontFeatureSettings: '"tnum"',
+                marginRight: '4px'
+              }}
+            >
+              {stats.totalUsed.toLocaleString('id-ID')}
+            </span>
+            / {stats.totalPort.toLocaleString('id-ID')} port ({stats.occRate}%)
           </div>
         </div>
 
-        <div style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '18px 20px', boxShadow: 'none' }}>
-          <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
+        {/* Card 3: Status Verifikasi Aktivitas */}
+        <div
+          className="saas-card"
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '16px',
+            border: '1px solid #E2E8F0',
+            boxShadow: 'none',
+            padding: '24px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            boxSizing: 'border-box'
+          }}
+        >
+          <div
+            style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#475569',
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.1px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
             Status Verifikasi Aktivitas
           </div>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: '24px', fontWeight: 900, color: '#16A34A', marginTop: '4px' }}>
-            {stats.actVerified} <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 600 }}>Terverifikasi</span>
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: 600,
+              color: '#0F172A',
+              letterSpacing: '-1.5px',
+              margin: '18px 0 16px 0',
+              fontVariantNumeric: 'tabular-nums',
+              fontFeatureSettings: '"tnum"',
+              lineHeight: 1,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {stats.actVerified.toLocaleString('id-ID')}
+            <span
+              style={{
+                fontSize: '20px',
+                fontWeight: 500,
+                color: '#64748B',
+                letterSpacing: '-0.2px',
+                marginLeft: '6px'
+              }}
+            >
+              Terverifikasi
+            </span>
           </div>
-          <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
-            {stats.actUploaded} Menunggu Verifikasi
+          <div
+            style={{
+              fontSize: '13px',
+              color: '#64748B',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <span
+              style={{
+                fontWeight: 600,
+                color: stats.actUploaded > 0 ? '#B45309' : '#1E293B',
+                fontVariantNumeric: 'tabular-nums',
+                fontFeatureSettings: '"tnum"',
+                marginRight: '4px'
+              }}
+            >
+              {stats.actUploaded.toLocaleString('id-ID')}
+            </span>
+            Menunggu Verifikasi
           </div>
         </div>
       </div>
 
-      {/* Controls Bar */}
-      <div className="controls-bar-container" style={{ marginBottom: '20px' }}>
-        <div className="branch-filter-capsule" style={{ border: '1px solid rgba(128, 0, 0, 0.2)', color: '#800000' }}>
-          <span className="branch-text-label" style={{ fontWeight: 800 }}>Branch: {formatBranch(branch.name)}</span>
-        </div>
-
+      {/* ─── CONTROLS BAR (EXPORT EXCEL & SEARCH INPUT) ─── */}
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+        {/* Tombol Export Excel */}
         <button
           type="button"
-          className="branch-filter-capsule control-btn-mobile"
+          className="control-btn-mobile"
           onClick={() => exportProjectsToExcel([branch], branch.name)}
+          aria-label={`Ekspor data branch ${formatBranch(branch.name)} ke format file Excel (.xlsx)`}
           style={{
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
             background: '#FFFFFF',
-            border: '1px solid #10B981',
-            color: '#047857',
-            fontWeight: 800,
+            border: '1px solid #CBD5E1',
+            color: '#0F172A',
+            fontWeight: 600,
             fontSize: '13px',
-            padding: '8px 18px',
+            padding: '0 18px',
+            height: '42px',
             borderRadius: '10px',
-            boxShadow: '0 2px 8px rgba(16, 185, 129, 0.15)',
-            transition: 'all 0.2s ease',
-            flexShrink: 0
+            boxShadow: 'none',
+            transition: 'all 0.15s ease',
+            flexShrink: 0,
+            boxSizing: 'border-box'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#94A3B8';
+            e.currentTarget.style.backgroundColor = '#F8FAFC';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#CBD5E1';
+            e.currentTarget.style.backgroundColor = '#FFFFFF';
           }}
           title="Export Data Branch ke File Excel (.xlsx)"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="12" y1="18" x2="12" y2="12" />
-            <line x1="9" y1="15" x2="15" y2="15" />
+          <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
           <span>Export Excel</span>
         </button>
 
-        <div className="search-container-mobile" style={{ flex: 1, minWidth: 0 }}>
-          <input
-            type="text"
+        {/* Search Input with Icon */}
+        <div style={{ flex: 1, minWidth: '240px', position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <svg
+            aria-hidden="true"
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#94A3B8"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ position: 'absolute', left: '14px', pointerEvents: 'none' }}
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
             className="search-input-field"
-            aria-label={`Cari proyek di branch ${formatBranch(branch.name)}`}
             placeholder={`Cari proyek, WOK, atau ODP di branch ${formatBranch(branch.name)}...`}
             value={search}
             onChange={e => setSearch(e.target.value)}
+            style={{
+              height: '42px',
+              paddingLeft: '38px',
+              paddingRight: search ? '36px' : '16px',
+              border: '1px solid #CBD5E1',
+              borderRadius: '10px',
+              fontSize: '13px',
+              width: '100%',
+              boxSizing: 'border-box'
+            }}
+            aria-label={`Cari proyek di branch ${formatBranch(branch.name)}`}
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              aria-label="Hapus kata kunci pencarian"
+              style={{
+                position: 'absolute',
+                right: '10px',
+                border: 'none',
+                background: 'transparent',
+                color: '#94A3B8',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '4px'
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 
       {/* Project Table */}
-      <ProjectTable
-        projects={filteredProjects}
-        branchName={branch.name}
-        onReview={openModal}
-        uploadPhoto={uploadPhoto}
-      />
+      {filteredProjects.length > 0 ? (
+        <ProjectTable
+          projects={filteredProjects}
+          branchName={branch.name}
+          onReview={openModal}
+          uploadPhoto={uploadPhoto}
+          onResetSearch={() => setSearch('')}
+        />
+      ) : (
+        <div style={{
+          textAlign: 'center',
+          padding: '48px 24px',
+          background: '#FFFFFF',
+          borderRadius: '16px',
+          border: '1px solid #E2E8F0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            background: '#F8FAFC',
+            border: '1px solid #E2E8F0',
+            color: '#64748B',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A' }}>
+            Tidak ada proyek yang sesuai kriteria
+          </div>
+          <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '420px', lineHeight: 1.5 }}>
+            Tidak ditemukan proyek dengan kata kunci pencarian di branch {formatBranch(branch.name)}.
+          </p>
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              style={{
+                marginTop: '6px',
+                padding: '8px 18px',
+                background: '#0F172A',
+                color: '#FFFFFF',
+                borderRadius: '8px',
+                border: 'none',
+                fontSize: '12.5px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              Reset Pencarian
+            </button>
+          )}
+        </div>
+      )}
 
       <ReviewModal
         modalData={modalData}

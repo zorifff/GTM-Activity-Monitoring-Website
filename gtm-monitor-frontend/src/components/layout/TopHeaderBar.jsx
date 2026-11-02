@@ -13,7 +13,8 @@ export default function TopHeaderBar({
   setTypeDesignFilter
 }) {
   const location = useLocation();
-  const isDashboard = location.pathname === '/' || location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/branch');
+  const isBranchPage = location.pathname.startsWith('/branch');
+  const isDashboard = location.pathname === '/' || location.pathname.startsWith('/dashboard');
   const isAdminPage = location.pathname.startsWith('/admin');
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const notifRef = useRef(null);
@@ -116,7 +117,7 @@ export default function TopHeaderBar({
         )}
 
         {/* Judul Halaman Continuous (Dashboard / Activity) dengan Ikon Persis seperti Opsi Sidebar */}
-        {isDashboard && (
+        {(isDashboard || isBranchPage) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
             {activeSection === 'activity' ? (
               <svg

@@ -494,9 +494,10 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           alignItems: 'center',
           justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
           gap: '4px',
-          paddingRight: align === 'right' ? '8px' : '0',
+          paddingRight: align === 'right' ? '6px' : '0',
           paddingLeft: align === 'left' ? '2px' : '0',
-          width: '100%'
+          width: '100%',
+          boxSizing: 'border-box'
         }}
       >
         <button
@@ -516,7 +517,9 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             color: sort ? '#0F172A' : '#475569',
             fontWeight: 600,
             textTransform: 'inherit',
-            letterSpacing: 'inherit'
+            letterSpacing: 'inherit',
+            whiteSpace: 'nowrap',
+            flexShrink: 0
           }}
         >
           <span>{label}</span>
@@ -537,7 +540,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               color: isFiltered ? '#800000' : '#94A3B8',
               padding: '2px',
               borderRadius: '4px',
-              marginLeft: '2px'
+              marginLeft: '2px',
+              flexShrink: 0
             }}
             title={`Filter kolom ${label}`}
           >
@@ -679,8 +683,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
     );
   };
 
-  const tableGrid = '34px 210px 130px 80px 80px 80px 120px 120px 120px 120px 120px 115px 85px';
-  const odpGrid = '34px 210px 130px 80px 80px 80px';
+  const tableGrid = '34px 210px 130px 90px 120px 85px 120px 120px 120px 120px 120px 115px 85px';
+  const odpGrid = '34px 210px 130px 90px 120px 85px';
 
   return (
     <div className="card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
