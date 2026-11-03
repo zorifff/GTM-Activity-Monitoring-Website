@@ -30,12 +30,10 @@ if (process.env.DATABASE_URL) {
 }
 
 const PORT = process.env.PORT || 3001;
-const JWT_SECRET = process.env.JWT_SECRET || 'gtm-super-secret-key-2026';
-
-const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || JWT_SECRET;
-if (!process.env.REFRESH_TOKEN_SECRET) {
-  console.warn('⚠️ [Auth] REFRESH_TOKEN_SECRET belum diisi di .env, sementara memakai JWT_SECRET.');
-}
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error('JWT_SECRET wajib diisi di .env');
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+if (!REFRESH_TOKEN_SECRET) throw new Error('REFRESH_TOKEN_SECRET wajib diisi di .env');
 
 // CORS hanya untuk origin terdaftar (dev Vite); produksi & LAN berjalan same-origin
 const CORS_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')

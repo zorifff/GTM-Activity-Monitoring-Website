@@ -80,7 +80,7 @@ const rawGet = (urlPath, headers = {}) => new Promise((resolve, reject) => {
   check('Tanpa login → 401', res.status === 401);
   const payload = jwt.decode(accessToken);
   const now = Math.floor(Date.now() / 1000);
-  const expired = jwt.sign({ ...payload, iat: now - 3600, exp: now - 60 }, process.env.JWT_SECRET || 'gtm-super-secret-key-2026');
+  const expired = jwt.sign({ ...payload, iat: now - 3600, exp: now - 60 }, process.env.JWT_SECRET);
   res = await fetch(BASE + mediaUrl, { headers: { Cookie: `gtm_access_token=${expired}` } });
   check('Access token lewat 15 menit tetapi sesi aktif → foto tetap tampil (200)', res.status === 200);
   res = await fetch(`${BASE}/api/auth/me`, { headers: { Cookie: `gtm_access_token=${expired}` } });
