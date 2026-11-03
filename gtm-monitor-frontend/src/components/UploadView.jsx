@@ -812,63 +812,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         </button>
       </div>
 
-      {/* ─── BANNER FEEDBACK FILTER KHUSUS ADMIN ─── */}
-      {isAdmin && isStatusFiltered && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px',
-            padding: '12px 18px',
-            marginBottom: '20px',
-            background: '#FFFBEB',
-            border: '1px solid #FDE68A',
-            borderRadius: '12px',
-            color: '#92400E',
-            fontSize: '13.5px',
-            flexWrap: 'wrap'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span>
-              Menampilkan <strong>{allProjectsMultiBranch.length} proyek</strong> dengan filter status:{' '}
-              <strong>{selectedStatuses.length === 0 ? 'Tidak ada status dipilih' : selectedStatuses.join(', ')}</strong>
-              {selectedBranch !== 'Semua Branch' ? ` pada Branch ${formatBranch(selectedBranch)}.` : ' di seluruh branch.'}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setSelectedStatuses(STATUS_OPTIONS)}
-            style={{
-              background: '#FFFFFF',
-              border: '1px solid #FCD34D',
-              color: '#B45309',
-              padding: '6px 14px',
-              borderRadius: '8px',
-              fontSize: '12.5px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.15s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#FEF3C7';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#FFFFFF';
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-            <span>Reset Filter</span>
-          </button>
-        </div>
-      )}
 
       {/* ─── 4. PROJECT TABLES & ACTIVITY CARDS ─── */}
       {selectedBranch === 'Semua Branch' ? (

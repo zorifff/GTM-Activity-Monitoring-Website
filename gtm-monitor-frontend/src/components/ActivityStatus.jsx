@@ -54,56 +54,39 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 2. Menunggu Verifikasi — Badge amber + tombol "Cek Status"
+  // 2. Menunggu Verifikasi — Tombol "Cek Status"
   if (status === 'menunggu_verifikasi' || status === 'upload') {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-        <span
-          role="status"
-          style={{
-            fontSize: '10px',
-            fontWeight: 700,
-            padding: '2px 6px',
-            borderRadius: '4px',
-            backgroundColor: '#FEF3C7',
-            color: '#B45309',
-            border: '1px solid #FDE68A',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          {label || 'Menunggu Verif'}
-        </span>
-        <button
-          type="button"
-          onClick={handleAction}
-          aria-label={title ? `Cek status verifikasi ${title}` : 'Cek status verifikasi'}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3px',
-            padding: '4px 8px',
-            borderRadius: '6px',
-            backgroundColor: '#FFFBEB',
-            border: '1px solid #FCD34D',
-            color: '#B45309',
-            fontSize: '10.5px',
-            fontWeight: 700,
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-            minHeight: '26px',
-            transition: 'all 0.15s ease'
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FEF3C7'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FFFBEB'; }}
-          title={title ? `${title}: Menunggu verifikasi admin. Klik untuk cek status.` : 'Menunggu verifikasi admin. Klik untuk cek status.'}
-        >
-          <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <span>Cek Status</span>
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={handleAction}
+        aria-label={title ? `Cek status verifikasi ${title}` : 'Cek status verifikasi'}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '3px',
+          padding: '4px 8px',
+          borderRadius: '6px',
+          backgroundColor: '#FFFBEB',
+          border: '1px solid #FCD34D',
+          color: '#B45309',
+          fontSize: '10.5px',
+          fontWeight: 700,
+          cursor: 'pointer',
+          whiteSpace: 'nowrap',
+          minHeight: '26px',
+          transition: 'all 0.15s ease'
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FEF3C7'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FFFBEB'; }}
+        title={title ? `${title}: Menunggu verifikasi admin. Klik untuk cek status.` : 'Menunggu verifikasi admin. Klik untuk cek status.'}
+      >
+        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span>Cek Status</span>
+      </button>
     );
   }
 

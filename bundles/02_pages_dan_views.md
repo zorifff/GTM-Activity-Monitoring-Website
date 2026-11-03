@@ -342,7 +342,7 @@ export default Dashboard;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/UploadView.jsx` (1019 baris)
+## File: `gtm-monitor-frontend/src/components/UploadView.jsx` (917 baris)
 
 ```javascript
 import { useState, useEffect, useMemo, useRef, memo } from 'react';
@@ -1070,51 +1070,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                     );
                   })}
                 </div>
-
-                {/* Footer Actions (Reset & Terapkan) mirip ProjectTable */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '6px',
-                    marginTop: '10px',
-                    paddingTop: '8px',
-                    borderTop: '1px solid #F1F5F9'
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setSelectedStatuses(STATUS_OPTIONS)}
-                    style={{
-                      padding: '4px 8px',
-                      border: 'none',
-                      background: 'transparent',
-                      color: '#64748B',
-                      cursor: 'pointer',
-                      fontSize: '11.5px',
-                      fontWeight: 600
-                    }}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsStatusDropdownOpen(false)}
-                    style={{
-                      padding: '5px 14px',
-                      border: 'none',
-                      borderRadius: '6px',
-                      background: '#0F172A',
-                      color: '#FFFFFF',
-                      cursor: 'pointer',
-                      fontSize: '11.5px',
-                      fontWeight: 600
-                    }}
-                  >
-                    Terapkan
-                  </button>
-                </div>
               </div>
             )}
           </div>
@@ -1204,63 +1159,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         </button>
       </div>
 
-      {/* ─── BANNER FEEDBACK FILTER KHUSUS ADMIN ─── */}
-      {isAdmin && isStatusFiltered && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px',
-            padding: '12px 18px',
-            marginBottom: '20px',
-            background: '#FFFBEB',
-            border: '1px solid #FDE68A',
-            borderRadius: '12px',
-            color: '#92400E',
-            fontSize: '13.5px',
-            flexWrap: 'wrap'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span>
-              Menampilkan <strong>{allProjectsMultiBranch.length} proyek</strong> dengan filter status:{' '}
-              <strong>{selectedStatuses.length === 0 ? 'Tidak ada status dipilih' : selectedStatuses.join(', ')}</strong>
-              {selectedBranch !== 'Semua Branch' ? ` pada Branch ${formatBranch(selectedBranch)}.` : ' di seluruh branch.'}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setSelectedStatuses(STATUS_OPTIONS)}
-            style={{
-              background: '#FFFFFF',
-              border: '1px solid #FCD34D',
-              color: '#B45309',
-              padding: '6px 14px',
-              borderRadius: '8px',
-              fontSize: '12.5px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.15s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#FEF3C7';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#FFFFFF';
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-            <span>Reset Filter</span>
-          </button>
-        </div>
-      )}
 
       {/* ─── 4. PROJECT TABLES & ACTIVITY CARDS ─── */}
       {selectedBranch === 'Semua Branch' ? (
@@ -2153,7 +2051,7 @@ export default LandingPage;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/Auth/LoginPage.jsx` (429 baris)
+## File: `gtm-monitor-frontend/src/components/Auth/LoginPage.jsx` (425 baris)
 
 ```javascript
 import { useRef, useState } from 'react';
@@ -2197,7 +2095,10 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
       if (res.ok && data.success && data.user) {
         if (onLoginSuccess) onLoginSuccess(data.user, data.expiresAt);
       } else {
-        setError(data.message || 'Login gagal. Periksa kembali username dan password Anda.');
+        const fallbackMsg = res.status >= 500
+          ? 'Terjadi gangguan pada server backend. Silakan coba beberapa saat lagi.'
+          : 'Login gagal. Periksa kembali username dan password Anda.';
+        setError(data.message || data.error || fallbackMsg);
         turnstileRef.current?.reset(); // token captcha hanya berlaku sekali
       }
     } catch (err) {
@@ -2211,6 +2112,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
   return (
     <div
+      className="login-root-container"
       style={{
         display: 'flex',
         minHeight: '100dvh',
@@ -2223,9 +2125,8 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
     >
       {/* ─── LEFT PANE: 57.2% WIDTH (EXACT MOCKUP PROPORTION 781px / 1366px) ─── */}
       <div
+        className="login-form-pane"
         style={{
-          flex: '0 0 57.2%',
-          width: '57.2%',
           minHeight: '100dvh',
           backgroundColor: '#FFFFFF',
           position: 'relative',
@@ -2290,6 +2191,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
         {/* Top-Left: Proportional Telkomsel Wordmark Logo (x: 79px, y: 101px, w: 117px) */}
         <div
+          className="login-logo-container"
           style={{
             position: 'absolute',
             top: 'clamp(36px, 13.1vh, 101px)',
@@ -2312,6 +2214,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
         {onBackToLanding && (
           <button
             type="button"
+            className="login-back-btn"
             onClick={onBackToLanding}
             style={{
               position: 'absolute',
@@ -2349,9 +2252,8 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
         {/* Center: Welcome Heading & Proportional Form Container (Width: 542px) */}
         <div
+          className="login-card-inner"
           style={{
-            width: '100%',
-            maxWidth: '542px',
             zIndex: 10,
             boxSizing: 'border-box',
             marginTop: '10px'
@@ -2387,25 +2289,24 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               </label>
               <input
                 type="text"
+                id="login-username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Gatfanrajendra9@gmail.com"
+                placeholder="Masukkan username atau email"
                 style={{
                   width: '100%',
+                  height: '44px',
                   boxSizing: 'border-box',
-                  border: 'none',
-                  borderBottom: '1.5px solid #2B2B2B',
+                  border: '1px solid #0F172A',
                   borderRadius: 0,
-                  backgroundColor: 'transparent',
-                  padding: '6px 0',
+                  backgroundColor: '#FFFFFF',
+                  padding: '10px 14px',
                   fontSize: '14px',
-                  color: '#1F2937',
+                  color: '#0F172A',
                   outline: 'none',
                   fontFamily: 'var(--font-body)',
-                  transition: 'border-color 0.2s ease'
+                  transition: 'border-color 0.15s ease'
                 }}
-                onFocus={(e) => { e.target.style.borderBottomColor = '#800000'; }}
-                onBlur={(e) => { e.target.style.borderBottomColor = '#2B2B2B'; }}
               />
             </div>
 
@@ -2422,29 +2323,28 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               >
                 Password
               </label>
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  id="login-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   style={{
                     width: '100%',
+                    height: '44px',
                     boxSizing: 'border-box',
-                    border: 'none',
-                    borderBottom: '1.5px solid #2B2B2B',
+                    border: '1px solid #0F172A',
                     borderRadius: 0,
-                    backgroundColor: 'transparent',
-                    padding: '6px 36px 6px 0',
+                    backgroundColor: '#FFFFFF',
+                    padding: '10px 42px 10px 14px',
                     fontSize: '14px',
-                    color: '#1F2937',
+                    color: '#0F172A',
                     letterSpacing: showPassword ? 'normal' : '4px',
                     outline: 'none',
                     fontFamily: 'var(--font-body)',
-                    transition: 'border-color 0.2s ease'
+                    transition: 'border-color 0.15s ease'
                   }}
-                  onFocus={(e) => { e.target.style.borderBottomColor = '#800000'; }}
-                  onBlur={(e) => { e.target.style.borderBottomColor = '#2B2B2B'; }}
                 />
 
                 {/* Eye Icon Toggle */}
@@ -2454,13 +2354,14 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                   aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
                   style={{
                     position: 'absolute',
-                    right: 0,
-                    bottom: '6px',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
                     padding: '4px',
-                    color: '#4B5563',
+                    color: '#64748B',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -2505,12 +2406,6 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               </div>
             )}
 
-            {/* Interactive Login Button:
-                - Width: 100% of container (542px)
-                - Height: 54px
-                - Unhovered: Background Putih, Border Merah, Teks Hitam
-                - Hovered: Background Merah Solid (#800000), Border Merah, Teks Putih
-            */}
             {error && (
               <div
                 role="alert"
@@ -2533,15 +2428,16 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               disabled={loading}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
+              className="login-btn-interactive"
               style={{
                 width: '100%',
-                height: '54px',
-                borderRadius: '12px',
-                border: '1.5px solid #800000',
-                backgroundColor: isHovered ? '#800000' : '#FFFFFF',
-                color: isHovered ? '#FFFFFF' : '#111827',
+                height: '52px',
+                borderRadius: 0,
+                border: '1.5px solid #0F172A',
+                backgroundColor: isHovered ? '#0F172A' : '#FFFFFF',
+                color: isHovered ? '#FFFFFF' : '#0F172A',
                 fontSize: '15px',
-                fontWeight: isHovered ? 600 : 500,
+                fontWeight: 600,
                 cursor: loading ? 'wait' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -2549,7 +2445,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 outline: 'none',
                 fontFamily: 'var(--font-body)',
                 boxShadow: 'none',
-                transition: 'background-color 0.22s ease, color 0.22s ease'
+                transition: 'background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease'
               }}
             >
               {loading ? 'Memproses...' : 'Login'}
@@ -2560,10 +2456,8 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
       {/* ─── RIGHT PANE: 42.8% WIDTH (TELKOMSEL AGENT PHOTOGRAPHY 585px / 1366px) ─── */}
       <div
+        className="login-image-pane"
         style={{
-          flex: '0 0 42.8%',
-          width: '42.8%',
-          minHeight: '100dvh',
           position: 'relative',
           overflow: 'hidden',
           backgroundColor: '#0F172A'

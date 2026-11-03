@@ -39,7 +39,10 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
       if (res.ok && data.success && data.user) {
         if (onLoginSuccess) onLoginSuccess(data.user, data.expiresAt);
       } else {
-        setError(data.message || 'Login gagal. Periksa kembali username dan password Anda.');
+        const fallbackMsg = res.status >= 500
+          ? 'Terjadi gangguan pada server backend. Silakan coba beberapa saat lagi.'
+          : 'Login gagal. Periksa kembali username dan password Anda.';
+        setError(data.message || data.error || fallbackMsg);
         turnstileRef.current?.reset(); // token captcha hanya berlaku sekali
       }
     } catch (err) {
@@ -233,7 +236,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 id="login-username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Gatfanrajendra9@gmail.com"
+                placeholder="Masukkan username atau email"
                 style={{
                   width: '100%',
                   height: '44px',
