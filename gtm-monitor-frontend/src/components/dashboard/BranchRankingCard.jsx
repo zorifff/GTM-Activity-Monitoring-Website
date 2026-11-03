@@ -309,7 +309,7 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
       </div>
 
       <div className="table-responsive-wrapper custom-table-scrollbar" style={{ overflowX: 'auto' }}>
-        <div style={{ minWidth: '820px' }}>
+        <div style={{ minWidth: '920px' }}>
           {/* Table Column Headers: Dark Navy background (bg-slate-900) */}
           <div style={{
             display: 'grid',
@@ -322,7 +322,8 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
             fontSize: '11px',
             fontWeight: 500,
             letterSpacing: '0.05em',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap'
           }}>
             <div>Branch / WOK</div>
             <div>Occupancy</div>

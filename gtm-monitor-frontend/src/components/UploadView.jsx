@@ -69,6 +69,41 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
     }
   }, [priorityBranches, selectedBranch]);
 
+  // ─── FOCUS PROJECT DARI NOTIFIKASI TOP BAR ───
+  useEffect(() => {
+    const focusTargetProject = (targetProject, targetBranch) => {
+      if (!targetProject) return;
+      if (targetBranch && (!initialBranch || priorityBranches?.length > 1)) {
+        setSelectedBranch(targetBranch);
+      }
+      setSearch(targetProject);
+      setSelectedStatuses(STATUS_OPTIONS);
+      const el = document.getElementById('activity-section');
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+      }
+    };
+
+    const handleFocusEvent = (e) => {
+      const { projectName, branchName } = e.detail || {};
+      focusTargetProject(projectName, branchName);
+    };
+
+    window.addEventListener('gtm-focus-project', handleFocusEvent);
+
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const qProject = params.get('project');
+      if (qProject) {
+        focusTargetProject(qProject);
+      }
+    } catch {
+      // ignore
+    }
+
+    return () => window.removeEventListener('gtm-focus-project', handleFocusEvent);
+  }, [initialBranch, priorityBranches]);
+
   // 1. Filter Branches based on dropdown
   const totalProjects = useMemo(() => priorityBranches.reduce((s, b) => s + (b.projects?.length || 0), 0), [priorityBranches]);
 
@@ -687,51 +722,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                       </label>
                     );
                   })}
-                </div>
-
-                {/* Footer Actions (Reset & Terapkan) mirip ProjectTable */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '6px',
-                    marginTop: '10px',
-                    paddingTop: '8px',
-                    borderTop: '1px solid #F1F5F9'
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setSelectedStatuses(STATUS_OPTIONS)}
-                    style={{
-                      padding: '4px 8px',
-                      border: 'none',
-                      background: 'transparent',
-                      color: '#64748B',
-                      cursor: 'pointer',
-                      fontSize: '11.5px',
-                      fontWeight: 600
-                    }}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsStatusDropdownOpen(false)}
-                    style={{
-                      padding: '5px 14px',
-                      border: 'none',
-                      borderRadius: '6px',
-                      background: '#0F172A',
-                      color: '#FFFFFF',
-                      cursor: 'pointer',
-                      fontSize: '11.5px',
-                      fontWeight: 600
-                    }}
-                  >
-                    Terapkan
-                  </button>
                 </div>
               </div>
             )}

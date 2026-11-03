@@ -1,6 +1,6 @@
 import { useState, useMemo, memo, useEffect, useCallback, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { ACT_TYPES, actMeta, formatBranch } from '../utils';
+import { ACT_TYPES, formatBranch } from '../utils';
 import ActivityStatus from './ActivityStatus';
 import UploadModal from './UploadModal';
 import ConfirmSubmitModal from './ConfirmSubmitModal';
@@ -49,7 +49,7 @@ const OdpRow = memo(({ o, odpGrid }) => {
   return (
     <div
       className="table-row"
-      style={{ gridTemplateColumns: odpGrid, backgroundColor: '#fafbfc', borderTop: '1px solid #f8fafc', minHeight: '44px' }}
+      style={{ gridTemplateColumns: odpGrid, backgroundColor: '#fafbfc', borderTop: '1px solid #f8fafc', minHeight: '44px', minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
     >
       <div></div>
       <div style={{ fontSize: '13px', fontWeight: 600, paddingLeft: '14px', textAlign: 'left' }}>{o.odp}</div>
@@ -85,7 +85,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
       {/* Project row with activity status & action buttons */}
       <div
         className={`table-row ${isEven ? 'table-row-even' : ''}`}
-        style={{ gridTemplateColumns: tableGrid }}
+        style={{ gridTemplateColumns: tableGrid, minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
       >
         <button
           type="button"
@@ -497,7 +497,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           paddingRight: align === 'right' ? '6px' : '0',
           paddingLeft: align === 'left' ? '2px' : '0',
           width: '100%',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          whiteSpace: 'nowrap'
         }}
       >
         <button
@@ -683,8 +684,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
     );
   };
 
-  const tableGrid = '34px 210px 130px 90px 120px 85px 120px 120px 120px 120px 120px 115px 85px';
-  const odpGrid = '34px 210px 130px 90px 120px 85px';
+  const tableGrid = '34px 220px 165px 95px 125px 95px 135px 145px 135px 135px 135px 115px 85px';
+  const odpGrid = '34px 220px 165px 95px 125px 95px';
 
   return (
     <div className="card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
@@ -700,7 +701,10 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               zIndex: 20,
               backgroundColor: '#F8FAFC',
               borderBottom: '1px solid #E2E8F0',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)'
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)',
+              minWidth: 'max-content',
+              width: 'max-content',
+              boxSizing: 'border-box'
             }}
           >
             <div></div>
@@ -723,7 +727,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                 <div
                   key={idx}
                   className="table-row"
-                  style={{ gridTemplateColumns: tableGrid, minHeight: '52px' }}
+                  style={{ gridTemplateColumns: tableGrid, minHeight: '52px', minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
                 >
                   <div style={{ width: '16px', height: '16px', borderRadius: '4px', background: '#E2E8F0', animation: 'pulse 1.5s infinite' }} />
                   <div style={{ width: '150px', height: '14px', borderRadius: '4px', background: '#E2E8F0', animation: 'pulse 1.5s infinite' }} />

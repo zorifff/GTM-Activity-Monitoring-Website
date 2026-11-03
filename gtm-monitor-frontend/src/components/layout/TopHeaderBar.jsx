@@ -1,28 +1,38 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router';
+import { formatBranch } from '../../utils';
 
 export default function TopHeaderBar({
   user,
   isAdmin,
   activeSection = 'dashboard',
   onLoginClick,
-  goAdmin,
+  onLogoutClick,
   pendingCount = 0,
+  notifications = [],
+  notificationCount = 0,
+  onSelectNotification,
   onToggleMobileSidebar,
   typeDesignFilter = 'ALL',
   setTypeDesignFilter
 }) {
+  const displayCount = notificationCount || (notifications && notifications.length) || pendingCount || 0;
   const location = useLocation();
   const isBranchPage = location.pathname.startsWith('/branch');
   const isDashboard = location.pathname === '/' || location.pathname.startsWith('/dashboard');
   const isAdminPage = location.pathname.startsWith('/admin');
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const notifRef = useRef(null);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     const handleOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotificationDropdown(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfileDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleOutside);
@@ -241,8 +251,8 @@ export default function TopHeaderBar({
           <button
             type="button"
             onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
-            title={pendingCount > 0 ? `${pendingCount} aktivitas menunggu verifikasi` : 'Tidak ada aktivitas baru'}
-            aria-label={pendingCount > 0 ? `${pendingCount} aktivitas menunggu verifikasi` : 'Notifikasi aktivitas'}
+            title={displayCount > 0 ? `${displayCount} pemberitahuan baru` : 'Tidak ada pemberitahuan baru'}
+            aria-label={displayCount > 0 ? `${displayCount} pemberitahuan baru` : 'Notifikasi aktivitas'}
             aria-expanded={showNotificationDropdown}
             style={{
               width: '44px',
@@ -274,27 +284,21 @@ export default function TopHeaderBar({
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
 
-            {pendingCount > 0 && (
+            {displayCount > 0 && (
               <span
                 style={{
                   position: 'absolute',
-                  top: '2px',
-                  right: '2px',
-                  background: '#800000',
-                  color: '#FFFFFF',
-                  fontSize: '10px',
-                  fontWeight: 800,
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '2px solid #FFFFFF',
-                  boxShadow: '0 1px 3px rgba(128, 0, 0, 0.4)'
+                  top: '3px',
+                  right: '3px',
+                  color: '#0F172A',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  userSelect: 'none',
+                  pointerEvents: 'none'
                 }}
               >
-                {pendingCount}
+                {displayCount}
               </span>
             )}
           </button>
@@ -305,7 +309,7 @@ export default function TopHeaderBar({
                 position: 'absolute',
                 top: '48px',
                 right: 0,
-                width: '320px',
+                width: '340px',
                 background: '#FFFFFF',
                 borderRadius: '16px',
                 border: '1px solid #E2E8F0',
@@ -316,116 +320,217 @@ export default function TopHeaderBar({
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>Notifikasi Aktivitas</span>
-                {pendingCount > 0 && (
-                  <span style={{ fontSize: '10.5px', fontWeight: 600, padding: '2px 8px', borderRadius: '999px', background: '#FEF3C7', color: '#B45309' }}>
-                    {pendingCount} Menunggu
+                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
+                  {isAdmin ? 'Pemberitahuan Upload' : 'Pemberitahuan Disetujui'}
+                </span>
+                {displayCount > 0 && (
+                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748B' }}>
+                    ({displayCount})
                   </span>
                 )}
               </div>
 
-              {pendingCount > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div
-                    style={{
-                      padding: '10px 12px',
-                      background: '#FFFBEB',
-                      borderRadius: '10px',
-                      border: '1px solid #FDE68A'
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: '#92400E' }}>
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F59E0B' }} />
-                      1 Kegiatan Menunggu Verifikasi
-                    </div>
-                    <div style={{ fontSize: '11px', color: '#78350F', marginTop: '4px', lineHeight: 1.4 }}>
-                      Aktivitas pelaporan lapangan baru telah diunggah dan memerlukan tinjauan verifikasi admin.
-                    </div>
-                    {isAdmin && goAdmin && (
-                      <button
-                        type="button"
-                        onClick={() => {
+              {notifications && notifications.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '360px', overflowY: 'auto', paddingRight: '2px' }}>
+                  {notifications.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        setShowNotificationDropdown(false);
+                        if (onSelectNotification) onSelectNotification(item);
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
                           setShowNotificationDropdown(false);
-                          goAdmin();
-                        }}
-                        style={{
-                          marginTop: '8px',
-                          padding: '5px 12px',
-                          borderRadius: '6px',
-                          background: '#F59E0B',
-                          color: '#FFFFFF',
-                          fontSize: '11px',
-                          fontWeight: 700,
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Tinjau Sekarang →
-                      </button>
-                    )}
-                  </div>
+                          if (onSelectNotification) onSelectNotification(item);
+                        }
+                      }}
+                      style={{
+                        padding: '10px 12px',
+                        background: '#FFFFFF',
+                        borderRadius: '10px',
+                        border: '1px solid #E2E8F0',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.15s ease, border-color 0.15s ease',
+                        textAlign: 'left'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#F8FAFC';
+                        e.currentTarget.style.borderColor = '#CBD5E1';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#FFFFFF';
+                        e.currentTarget.style.borderColor = '#E2E8F0';
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                        <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A' }}>
+                          {item.actLabel}
+                        </span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 600, color: item.status === 'verified' ? '#15803D' : '#B45309' }}>
+                          {item.status === 'verified' ? 'Disetujui' : 'Upload'}
+                        </span>
+                      </div>
+
+                      <div style={{ fontSize: '12px', color: '#334155', lineHeight: 1.4, marginBottom: '5px' }}>
+                        {isAdmin ? (
+                          <>
+                            Aktivitas diunggah di proyek <strong style={{ color: '#0F172A' }}>{item.projectName}</strong>
+                          </>
+                        ) : (
+                          <>
+                            Kegiatan di proyek <strong style={{ color: '#0F172A' }}>{item.projectName}</strong> telah disetujui admin
+                          </>
+                        )}
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', color: '#64748B' }}>
+                        <span>
+                          Branch {formatBranch(item.branchName)}{item.wok ? ` · ${item.wok}` : ''}
+                        </span>
+                        <span style={{ color: '#0F172A', fontWeight: 600, fontSize: '11px' }}>
+                          Buka di Activity →
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : (
-                <div style={{ textAlign: 'center', padding: '16px 8px', color: '#64748B', fontSize: '12px' }}>
-                  Tidak ada aktivitas
+                <div style={{ textAlign: 'center', padding: '20px 8px', color: '#64748B', fontSize: '12px' }}>
+                  Tidak ada pemberitahuan baru
                 </div>
               )}
             </div>
           )}
         </div>
 
-        <div style={{ position: 'relative' }}>
+        <div ref={profileRef} style={{ position: 'relative' }}>
           {user ? (
-            <div
-              className="header-profile-badge"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                minHeight: '44px',
-                padding: '6px 10px 6px 6px',
-                borderRadius: '12px',
-                userSelect: 'none',
-                cursor: 'default'
-              }}
-            >
-              <div
+            <>
+              <button
+                type="button"
+                className="header-profile-badge"
+                onClick={() => setShowProfileDropdown(prev => !prev)}
+                aria-expanded={showProfileDropdown}
+                aria-haspopup="menu"
+                title="Klik untuk membuka menu akun / keluar"
                 style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
-                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
+                  gap: '10px',
+                  minHeight: '44px',
+                  padding: '6px 10px 6px 6px',
+                  borderRadius: '12px',
+                  userSelect: 'none',
+                  cursor: 'pointer',
+                  background: showProfileDropdown ? '#F1F5F9' : 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  transition: 'background-color 0.15s ease'
                 }}
               >
-                <svg
-                  width="19"
-                  height="19"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#0F172A"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
+                <div
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
+                    background: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
                 >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
+                  <svg
+                    width="19"
+                    height="19"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#0F172A"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
 
-              <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap' }}>
-                  {user.username || 'admin'}
+                <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap' }}>
+                    {user.username || 'admin'}
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: '#475569', fontWeight: 500 }}>
+                    {user.role === 'ADMIN' ? 'admin 1' : 'user'}
+                  </div>
                 </div>
-                <div style={{ fontSize: '10.5px', color: '#475569', fontWeight: 500 }}>
-                  {user.role === 'ADMIN' ? 'admin 1' : 'user'}
+              </button>
+
+              {showProfileDropdown && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '48px',
+                    right: 0,
+                    width: '240px',
+                    background: '#FFFFFF',
+                    borderRadius: '14px',
+                    border: '1px solid #E2E8F0',
+                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08)',
+                    zIndex: 99999,
+                    overflow: 'hidden',
+                    animation: 'fadeIn 0.15s ease-out'
+                  }}
+                >
+                  <div style={{ padding: '12px 14px', borderBottom: '1px solid #F1F5F9', backgroundColor: '#F8FAFC' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
+                      {user.username || 'Pengguna'}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
+                      {user.role === 'ADMIN' ? 'Administrator' : `User (${formatBranch(user.branch || '')})`}
+                    </div>
+                  </div>
+
+                  <div style={{ padding: '6px' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowProfileDropdown(false);
+                        if (onLogoutClick) onLogoutClick();
+                      }}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '9px 12px',
+                        border: 'none',
+                        borderRadius: '8px',
+                        backgroundColor: 'transparent',
+                        color: '#C8102E',
+                        fontSize: '12.5px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'background-color 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FEF2F2'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                      </svg>
+                      <span>Keluar (Logout)</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           ) : (
             <button
               type="button"

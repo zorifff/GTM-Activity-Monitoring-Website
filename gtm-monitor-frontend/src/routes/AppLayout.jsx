@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import LoginPage from '../components/Auth/LoginPage';
 import ProgramViewerModal from '../components/ProgramViewerModal';
@@ -11,6 +11,7 @@ import SessionExpiredModal from '../components/layout/SessionExpiredModal';
 import { useAuth } from '../auth/AuthContext';
 import { useMonitoringData } from '../hooks/useMonitoringData';
 import { useProgramMonths, useInvalidatePrograms } from '../hooks/usePrograms';
+import { useAppNotifications } from '../hooks/useAppNotifications';
 import { PATHS, viewFromPath, LEGACY_HASH_PATHS } from './paths';
 
 export default function AppLayout() {
@@ -148,14 +149,30 @@ export default function AppLayout() {
     navigate(PATHS.admin);
   }, [user, isAdmin, navigate]);
 
-  const pendingCount = useMemo(() => {
-    const count = (branches || []).reduce((acc, b) => {
-      return acc + (b.projects || []).reduce((pAcc, p) => {
-        return pAcc + (p.activities || []).filter(a => a.status === 'need_review' || a.status === 'pending').length;
-      }, 0);
-    }, 0);
-    return count;
-  }, [branches]);
+  const { notifications, count: notificationCount } = useAppNotifications(branches, user, isAdmin);
+
+  const handleSelectProjectNotification = useCallback((item) => {
+    if (!item?.projectName) return;
+
+    if (view === 'dashboard') {
+      const el = document.getElementById('activity-section');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.history.replaceState(null, '', `/dashboard?project=${encodeURIComponent(item.projectName)}#activity`);
+        setActiveSection('activity');
+      }
+    } else {
+      navigate(`/dashboard?project=${encodeURIComponent(item.projectName)}#activity`);
+    }
+
+    // Trigger custom event untuk UploadView
+    window.dispatchEvent(new CustomEvent('gtm-focus-project', {
+      detail: {
+        projectName: item.projectName,
+        branchName: item.branchName
+      }
+    }));
+  }, [view, navigate]);
 
   if (!authChecked || isInitialLoading) {
     return <LoadingScreen />;
@@ -248,10 +265,13 @@ export default function AppLayout() {
               isAdmin={isAdmin}
               activeSection={activeSection}
               onLoginClick={() => navigate(PATHS.login)}
+              onLogoutClick={() => handleLogout(true)}
               goDashboard={goDashboard}
               goUpload={goUpload}
-              goAdmin={goAdmin}
-              pendingCount={pendingCount}
+              pendingCount={notificationCount}
+              notifications={notifications}
+              notificationCount={notificationCount}
+              onSelectNotification={handleSelectProjectNotification}
               onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
               typeDesignFilter={typeDesignFilter}
               setTypeDesignFilter={setTypeDesignFilter}

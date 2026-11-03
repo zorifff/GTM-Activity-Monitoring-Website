@@ -359,6 +359,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
+                className="search-input-field"
                 aria-label="Kata kunci pencarian pairing"
                 placeholder="Cari bb_id, msisdn, atau order_id..."
                 value={query}
@@ -369,25 +370,26 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 autoFocus
                 style={{
                   width: '100%',
-                  padding: '10px 14px 10px 38px',
+                  height: '42px',
+                  paddingLeft: '38px',
+                  paddingRight: query ? '36px' : '14px',
                   borderRadius: '10px',
                   border: '1px solid #CBD5E1',
                   fontSize: '13px',
                   fontWeight: 500,
                   fontFamily: 'var(--font-body)',
-                  background: '#F8FAFC',
+                  background: '#FFFFFF',
                   color: '#0F172A',
                   boxSizing: 'border-box',
                   outline: 'none',
-                  transition: 'border-color 0.15s ease, background 0.15s ease'
+                  boxShadow: 'none',
+                  transition: 'border-color 0.15s ease'
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = '#800000';
-                  e.currentTarget.style.background = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#0F172A';
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = '#CBD5E1';
-                  e.currentTarget.style.background = '#F8FAFC';
                 }}
               />
               <svg

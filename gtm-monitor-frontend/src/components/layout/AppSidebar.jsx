@@ -438,9 +438,11 @@ export default function AppSidebar({
 
         {user ? (
           <div
+            className="sidebar-bottom-actions"
             style={{
               marginTop: 'auto',
-              padding: '24px 14px 0 14px'
+              padding: '16px 14px max(24px, env(safe-area-inset-bottom)) 14px',
+              borderTop: '1px solid rgba(255, 255, 255, 0.08)'
             }}
           >
             <button
@@ -457,7 +459,7 @@ export default function AppSidebar({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
-                padding: '10px 10px',
+                padding: '10px 14px',
                 borderRadius: '8px',
                 backgroundColor: '#FFFFFF',
                 color: '#C8102E',

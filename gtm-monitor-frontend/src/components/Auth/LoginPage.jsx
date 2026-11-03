@@ -53,6 +53,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
   return (
     <div
+      className="login-root-container"
       style={{
         display: 'flex',
         minHeight: '100dvh',
@@ -65,9 +66,8 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
     >
       {/* ─── LEFT PANE: 57.2% WIDTH (EXACT MOCKUP PROPORTION 781px / 1366px) ─── */}
       <div
+        className="login-form-pane"
         style={{
-          flex: '0 0 57.2%',
-          width: '57.2%',
           minHeight: '100dvh',
           backgroundColor: '#FFFFFF',
           position: 'relative',
@@ -132,6 +132,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
         {/* Top-Left: Proportional Telkomsel Wordmark Logo (x: 79px, y: 101px, w: 117px) */}
         <div
+          className="login-logo-container"
           style={{
             position: 'absolute',
             top: 'clamp(36px, 13.1vh, 101px)',
@@ -154,6 +155,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
         {onBackToLanding && (
           <button
             type="button"
+            className="login-back-btn"
             onClick={onBackToLanding}
             style={{
               position: 'absolute',
@@ -191,9 +193,8 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
         {/* Center: Welcome Heading & Proportional Form Container (Width: 542px) */}
         <div
+          className="login-card-inner"
           style={{
-            width: '100%',
-            maxWidth: '542px',
             zIndex: 10,
             boxSizing: 'border-box',
             marginTop: '10px'
@@ -229,25 +230,24 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               </label>
               <input
                 type="text"
+                id="login-username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Gatfanrajendra9@gmail.com"
                 style={{
                   width: '100%',
+                  height: '44px',
                   boxSizing: 'border-box',
-                  border: 'none',
-                  borderBottom: '1.5px solid #2B2B2B',
+                  border: '1px solid #0F172A',
                   borderRadius: 0,
-                  backgroundColor: 'transparent',
-                  padding: '6px 0',
+                  backgroundColor: '#FFFFFF',
+                  padding: '10px 14px',
                   fontSize: '14px',
-                  color: '#1F2937',
+                  color: '#0F172A',
                   outline: 'none',
                   fontFamily: 'var(--font-body)',
-                  transition: 'border-color 0.2s ease'
+                  transition: 'border-color 0.15s ease'
                 }}
-                onFocus={(e) => { e.target.style.borderBottomColor = '#800000'; }}
-                onBlur={(e) => { e.target.style.borderBottomColor = '#2B2B2B'; }}
               />
             </div>
 
@@ -264,29 +264,28 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               >
                 Password
               </label>
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  id="login-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   style={{
                     width: '100%',
+                    height: '44px',
                     boxSizing: 'border-box',
-                    border: 'none',
-                    borderBottom: '1.5px solid #2B2B2B',
+                    border: '1px solid #0F172A',
                     borderRadius: 0,
-                    backgroundColor: 'transparent',
-                    padding: '6px 36px 6px 0',
+                    backgroundColor: '#FFFFFF',
+                    padding: '10px 42px 10px 14px',
                     fontSize: '14px',
-                    color: '#1F2937',
+                    color: '#0F172A',
                     letterSpacing: showPassword ? 'normal' : '4px',
                     outline: 'none',
                     fontFamily: 'var(--font-body)',
-                    transition: 'border-color 0.2s ease'
+                    transition: 'border-color 0.15s ease'
                   }}
-                  onFocus={(e) => { e.target.style.borderBottomColor = '#800000'; }}
-                  onBlur={(e) => { e.target.style.borderBottomColor = '#2B2B2B'; }}
                 />
 
                 {/* Eye Icon Toggle */}
@@ -296,13 +295,14 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                   aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
                   style={{
                     position: 'absolute',
-                    right: 0,
-                    bottom: '6px',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
                     padding: '4px',
-                    color: '#4B5563',
+                    color: '#64748B',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -347,12 +347,6 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               </div>
             )}
 
-            {/* Interactive Login Button:
-                - Width: 100% of container (542px)
-                - Height: 54px
-                - Unhovered: Background Putih, Border Merah, Teks Hitam
-                - Hovered: Background Merah Solid (#800000), Border Merah, Teks Putih
-            */}
             {error && (
               <div
                 role="alert"
@@ -375,15 +369,16 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               disabled={loading}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
+              className="login-btn-interactive"
               style={{
                 width: '100%',
-                height: '54px',
-                borderRadius: '12px',
-                border: '1.5px solid #800000',
-                backgroundColor: isHovered ? '#800000' : '#FFFFFF',
-                color: isHovered ? '#FFFFFF' : '#111827',
+                height: '52px',
+                borderRadius: 0,
+                border: '1.5px solid #0F172A',
+                backgroundColor: isHovered ? '#0F172A' : '#FFFFFF',
+                color: isHovered ? '#FFFFFF' : '#0F172A',
                 fontSize: '15px',
-                fontWeight: isHovered ? 600 : 500,
+                fontWeight: 600,
                 cursor: loading ? 'wait' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -391,7 +386,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                 outline: 'none',
                 fontFamily: 'var(--font-body)',
                 boxShadow: 'none',
-                transition: 'background-color 0.22s ease, color 0.22s ease'
+                transition: 'background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease'
               }}
             >
               {loading ? 'Memproses...' : 'Login'}
@@ -402,10 +397,8 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
       {/* ─── RIGHT PANE: 42.8% WIDTH (TELKOMSEL AGENT PHOTOGRAPHY 585px / 1366px) ─── */}
       <div
+        className="login-image-pane"
         style={{
-          flex: '0 0 42.8%',
-          width: '42.8%',
-          minHeight: '100dvh',
           position: 'relative',
           overflow: 'hidden',
           backgroundColor: '#0F172A'
