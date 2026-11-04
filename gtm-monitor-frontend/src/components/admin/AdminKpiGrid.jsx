@@ -192,12 +192,10 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
             letterSpacing: '-0.1px',
             height: '24px',
             display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
+            alignItems: 'center'
           }}
         >
-          <span>Menunggu Verifikasi</span>
-          {stats.actUploaded > 0 && <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#FF5E00' }} />}
+          Menunggu Verifikasi
         </div>
         <div
           style={{

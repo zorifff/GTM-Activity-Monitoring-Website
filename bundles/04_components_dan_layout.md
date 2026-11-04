@@ -28,7 +28,7 @@
 - `gtm-monitor-frontend/src/components/dashboard/DashboardHeader.jsx` (129 baris)
 - `gtm-monitor-frontend/src/components/admin/AdminHeader.jsx` (13 baris)
 - `gtm-monitor-frontend/src/components/admin/AdminTabs.jsx` (35 baris)
-- `gtm-monitor-frontend/src/components/admin/AdminKpiGrid.jsx` (316 baris)
+- `gtm-monitor-frontend/src/components/admin/AdminKpiGrid.jsx` (314 baris)
 - `gtm-monitor-frontend/src/components/admin/AdminActionHubCard.jsx` (352 baris)
 - `gtm-monitor-frontend/src/components/admin/MonitoringTab.jsx` (179 baris)
 - `gtm-monitor-frontend/src/components/admin/OdpImportCard.jsx` (230 baris)
@@ -6858,7 +6858,7 @@ export default memo(function RightWidgetPanel({
         <span style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
           Ranking Branch
         </span>
-        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600, background: '#F1F5F9', padding: '2px 8px', borderRadius: '6px' }}>
+        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>
           OCC Terendah
         </span>
       </div>
@@ -7088,7 +7088,7 @@ export default function AdminTabs() {
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/AdminKpiGrid.jsx` (316 baris)
+## File: `gtm-monitor-frontend/src/components/admin/AdminKpiGrid.jsx` (314 baris)
 
 ```javascript
 // ─── KPI SUMMARY GRID (4 CARDS MATCHING DASHBOARD & ACTIVITY STYLE) ───
@@ -7285,12 +7285,10 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
             letterSpacing: '-0.1px',
             height: '24px',
             display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
+            alignItems: 'center'
           }}
         >
-          <span>Menunggu Verifikasi</span>
-          {stats.actUploaded > 0 && <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#FF5E00' }} />}
+          Menunggu Verifikasi
         </div>
         <div
           style={{

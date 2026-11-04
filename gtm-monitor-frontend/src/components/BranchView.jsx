@@ -467,52 +467,15 @@ const BranchView = memo(function BranchView({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '12px'
+          justifyContent: 'center',
+          gap: '6px'
         }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '12px',
-            background: '#F8FAFC',
-            border: '1px solid #E2E8F0',
-            color: '#64748B',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A' }}>
+          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.1px' }}>
             Tidak ada proyek yang sesuai kriteria
           </div>
-          <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '420px', lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '440px', lineHeight: 1.5 }}>
             Tidak ditemukan proyek dengan kata kunci pencarian di branch {formatBranch(branch.name)}.
           </p>
-          {search && (
-            <button
-              type="button"
-              onClick={() => setSearch('')}
-              style={{
-                marginTop: '6px',
-                padding: '8px 18px',
-                background: '#0F172A',
-                color: '#FFFFFF',
-                borderRadius: '8px',
-                border: 'none',
-                fontSize: '12.5px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              Reset Pencarian
-            </button>
-          )}
         </div>
       )}
 
