@@ -356,18 +356,33 @@ export default function AppLayout() {
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/layout/TopHeaderBar.jsx` (486 baris)
+## File: `gtm-monitor-frontend/src/components/layout/TopHeaderBar.jsx` (621 baris)
 
 ```javascript
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { formatBranch } from '../../utils';
 
+const formatNotificationDate = (timestamp) => {
+  if (!timestamp) return '';
+  const d = new Date(timestamp);
+  if (isNaN(d.getTime())) return '';
+  const dateStr = d.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${dateStr}, ${hours}:${minutes}`;
+};
+
 export default function TopHeaderBar({
   user,
   isAdmin,
   activeSection = 'dashboard',
   onLoginClick,
+  onLogoutClick,
   pendingCount = 0,
   notifications = [],
   notificationCount = 0,
@@ -382,12 +397,17 @@ export default function TopHeaderBar({
   const isDashboard = location.pathname === '/' || location.pathname.startsWith('/dashboard');
   const isAdminPage = location.pathname.startsWith('/admin');
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const notifRef = useRef(null);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     const handleOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotificationDropdown(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfileDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleOutside);
@@ -408,7 +428,8 @@ export default function TopHeaderBar({
         justifyContent: 'space-between',
         position: 'sticky',
         top: 0,
-        zIndex: 40,
+        zIndex: 100,
+        flexShrink: 0,
         boxShadow: '0 1px 2px rgba(15, 23, 42, 0.03)'
       }}
     >
@@ -664,29 +685,51 @@ export default function TopHeaderBar({
                 position: 'absolute',
                 top: '48px',
                 right: 0,
-                width: '340px',
+                width: '390px',
+                maxWidth: 'calc(100vw - 24px)',
                 background: '#FFFFFF',
-                borderRadius: '16px',
-                border: '1px solid #E2E8F0',
-                boxShadow: '0 12px 28px -4px rgba(15, 23, 42, 0.12)',
+                borderRadius: '12px',
+                border: '1px solid #CBD5E1',
+                boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05)',
                 padding: '16px',
                 zIndex: 100,
-                animation: 'fadeIn 0.15s ease-out'
+                animation: 'fadeIn 0.15s ease-out',
+                boxSizing: 'border-box'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
-                  {isAdmin ? 'Pemberitahuan Upload' : 'Pemberitahuan Disetujui'}
-                </span>
-                {displayCount > 0 && (
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748B' }}>
-                    ({displayCount})
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingBottom: '10px',
+                  marginBottom: '12px',
+                  borderBottom: '1px solid #F1F5F9'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                    {isAdmin ? 'Pemberitahuan Upload' : 'Pemberitahuan Disetujui'}
                   </span>
-                )}
+                  {displayCount > 0 && (
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        color: '#475569',
+                        backgroundColor: '#F1F5F9',
+                        padding: '1px 7px',
+                        borderRadius: '6px'
+                      }}
+                    >
+                      {displayCount}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {notifications && notifications.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '360px', overflowY: 'auto', paddingRight: '2px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '380px', overflowY: 'auto', paddingRight: '2px' }}>
                   {notifications.map((item) => (
                     <div
                       key={item.id}
@@ -703,49 +746,68 @@ export default function TopHeaderBar({
                         }
                       }}
                       style={{
-                        padding: '10px 12px',
+                        padding: '12px 14px',
                         background: '#FFFFFF',
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         border: '1px solid #E2E8F0',
                         cursor: 'pointer',
-                        transition: 'background-color 0.15s ease, border-color 0.15s ease',
+                        transition: 'all 0.15s ease',
                         textAlign: 'left'
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = '#F8FAFC';
-                        e.currentTarget.style.borderColor = '#CBD5E1';
+                        e.currentTarget.style.borderColor = '#94A3B8';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = '#FFFFFF';
                         e.currentTarget.style.borderColor = '#E2E8F0';
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
-                        <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A' }}>
+                      {/* Baris 1: Nama Kegiatan & Waktu Unggah */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '6px' }}>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A' }}>
                           {item.actLabel}
                         </span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 600, color: item.status === 'verified' ? '#15803D' : '#B45309' }}>
-                          {item.status === 'verified' ? 'Disetujui' : 'Upload'}
-                        </span>
-                      </div>
-
-                      <div style={{ fontSize: '12px', color: '#334155', lineHeight: 1.4, marginBottom: '5px' }}>
-                        {isAdmin ? (
-                          <>
-                            Aktivitas diunggah di proyek <strong style={{ color: '#0F172A' }}>{item.projectName}</strong>
-                          </>
-                        ) : (
-                          <>
-                            Kegiatan di proyek <strong style={{ color: '#0F172A' }}>{item.projectName}</strong> telah disetujui admin
-                          </>
+                        {item.timestamp && (
+                          <span
+                            style={{
+                              fontSize: '11px',
+                              color: '#64748B',
+                              fontWeight: 500,
+                              fontVariantNumeric: 'tabular-nums',
+                              flexShrink: 0
+                            }}
+                          >
+                            {formatNotificationDate(item.timestamp)}
+                          </span>
                         )}
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', color: '#64748B' }}>
-                        <span>
+                      {/* Baris 2: Informasi Proyek */}
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontSize: '11px', color: '#64748B', marginBottom: '2px' }}>
+                          {isAdmin ? 'Aktivitas diunggah di proyek:' : 'Kegiatan disetujui di proyek:'}
+                        </div>
+                        <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', wordBreak: 'break-word', lineHeight: 1.35 }}>
+                          {item.projectName}
+                        </div>
+                      </div>
+
+                      {/* Baris 3: Lokasi Branch & Navigasi */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          paddingTop: '8px',
+                          borderTop: '1px solid #F1F5F9',
+                          fontSize: '11.5px'
+                        }}
+                      >
+                        <span style={{ color: '#64748B' }}>
                           Branch {formatBranch(item.branchName)}{item.wok ? ` · ${item.wok}` : ''}
                         </span>
-                        <span style={{ color: '#0F172A', fontWeight: 600, fontSize: '11px' }}>
+                        <span style={{ color: '#0F172A', fontWeight: 600 }}>
                           Buka di Activity →
                         </span>
                       </div>
@@ -753,7 +815,7 @@ export default function TopHeaderBar({
                   ))}
                 </div>
               ) : (
-                <div style={{ textAlign: 'center', padding: '20px 8px', color: '#64748B', fontSize: '12px' }}>
+                <div style={{ textAlign: 'center', padding: '24px 8px', color: '#64748B', fontSize: '12.5px' }}>
                   Tidak ada pemberitahuan baru
                 </div>
               )}
@@ -761,58 +823,131 @@ export default function TopHeaderBar({
           )}
         </div>
 
-        <div style={{ position: 'relative' }}>
+        <div ref={profileRef} style={{ position: 'relative' }}>
           {user ? (
-            <div
-              className="header-profile-badge"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                minHeight: '44px',
-                padding: '6px 10px 6px 6px',
-                borderRadius: '12px',
-                userSelect: 'none',
-                cursor: 'default'
-              }}
-            >
-              <div
+            <>
+              <button
+                type="button"
+                className="header-profile-badge"
+                onClick={() => setShowProfileDropdown(prev => !prev)}
+                aria-expanded={showProfileDropdown}
+                aria-haspopup="menu"
+                title="Klik untuk membuka menu akun / keluar"
                 style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
-                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
+                  gap: '10px',
+                  minHeight: '44px',
+                  padding: '6px 10px 6px 6px',
+                  borderRadius: '12px',
+                  userSelect: 'none',
+                  cursor: 'pointer',
+                  background: showProfileDropdown ? '#F1F5F9' : 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  transition: 'background-color 0.15s ease'
                 }}
               >
-                <svg
-                  width="19"
-                  height="19"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#0F172A"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
+                <div
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
+                    background: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
                 >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
+                  <svg
+                    width="19"
+                    height="19"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#0F172A"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
 
-              <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap' }}>
-                  {user.username || 'admin'}
+                <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap' }}>
+                    {user.username || 'admin'}
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: '#475569', fontWeight: 500 }}>
+                    {user.role === 'ADMIN' ? 'admin 1' : 'user'}
+                  </div>
                 </div>
-                <div style={{ fontSize: '10.5px', color: '#475569', fontWeight: 500 }}>
-                  {user.role === 'ADMIN' ? 'admin 1' : 'user'}
+              </button>
+
+              {showProfileDropdown && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '48px',
+                    right: 0,
+                    width: '240px',
+                    background: '#FFFFFF',
+                    borderRadius: '14px',
+                    border: '1px solid #E2E8F0',
+                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08)',
+                    zIndex: 99999,
+                    overflow: 'hidden',
+                    animation: 'fadeIn 0.15s ease-out'
+                  }}
+                >
+                  <div style={{ padding: '12px 14px', borderBottom: '1px solid #F1F5F9', backgroundColor: '#F8FAFC' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
+                      {user.username || 'Pengguna'}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
+                      {user.role === 'ADMIN' ? 'Administrator' : `User (${formatBranch(user.branch || '')})`}
+                    </div>
+                  </div>
+
+                  <div style={{ padding: '6px' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowProfileDropdown(false);
+                        if (onLogoutClick) onLogoutClick();
+                      }}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '9px 12px',
+                        border: 'none',
+                        borderRadius: '8px',
+                        backgroundColor: 'transparent',
+                        color: '#C8102E',
+                        fontSize: '12.5px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'background-color 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FEF2F2'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                      </svg>
+                      <span>Keluar (Logout)</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           ) : (
             <button
               type="button"

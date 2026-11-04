@@ -98,7 +98,9 @@ async function getDashboardData() {
           namaOutlet: latestPhoto?.namaOutlet || null,
           namaBumdes: latestPhoto?.namaBumdes || (latestPhoto?.type === 'bumdes' ? latestPhoto?.keterangan : null),
           kodeSf: latestPhoto?.kodeSf || latestPhoto?.keterangan || null,
-          keterangan: latestPhoto?.keterangan || null
+          keterangan: latestPhoto?.keterangan || null,
+          createdAt: latestPhoto?.createdAt || legacyAct?.createdAt || null,
+          updatedAt: latestPhoto?.updatedAt || legacyAct?.updatedAt || null
         };
       });
 

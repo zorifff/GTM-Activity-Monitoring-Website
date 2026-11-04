@@ -26,7 +26,7 @@ export function useAppNotifications(branches, user, isAdmin) {
               const actMeta = ACT_TYPES.find((t) => t.key === a.type);
               const actLabel = actMeta?.label || a.type;
               const latestPhoto = uploadPhotos[uploadPhotos.length - 1];
-              const timestamp = latestPhoto?.createdAt || latestPhoto?.updatedAt || a.updatedAt || a.createdAt;
+              const timestamp = latestPhoto?.createdAt || latestPhoto?.updatedAt || a.updatedAt || a.createdAt || latestPhoto?.planDate;
 
               items.push({
                 id: `admin-${b.name}-${p.name}-${a.type}`,
@@ -58,7 +58,7 @@ export function useAppNotifications(branches, user, isAdmin) {
               const actMeta = ACT_TYPES.find((t) => t.key === a.type);
               const actLabel = actMeta?.label || a.type;
               const latestPhoto = verifiedPhotos[verifiedPhotos.length - 1];
-              const timestamp = latestPhoto?.updatedAt || latestPhoto?.createdAt || a.updatedAt;
+              const timestamp = latestPhoto?.updatedAt || latestPhoto?.createdAt || a.updatedAt || a.createdAt || latestPhoto?.planDate;
 
               items.push({
                 id: `user-${targetBranch.name}-${p.name}-${a.type}`,

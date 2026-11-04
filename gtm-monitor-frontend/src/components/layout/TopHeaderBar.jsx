@@ -2,6 +2,20 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { formatBranch } from '../../utils';
 
+const formatNotificationDate = (timestamp) => {
+  if (!timestamp) return '';
+  const d = new Date(timestamp);
+  if (isNaN(d.getTime())) return '';
+  const dateStr = d.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${dateStr}, ${hours}:${minutes}`;
+};
+
 export default function TopHeaderBar({
   user,
   isAdmin,
@@ -53,7 +67,8 @@ export default function TopHeaderBar({
         justifyContent: 'space-between',
         position: 'sticky',
         top: 0,
-        zIndex: 40,
+        zIndex: 100,
+        flexShrink: 0,
         boxShadow: '0 1px 2px rgba(15, 23, 42, 0.03)'
       }}
     >
@@ -309,29 +324,51 @@ export default function TopHeaderBar({
                 position: 'absolute',
                 top: '48px',
                 right: 0,
-                width: '340px',
+                width: '390px',
+                maxWidth: 'calc(100vw - 24px)',
                 background: '#FFFFFF',
-                borderRadius: '16px',
-                border: '1px solid #E2E8F0',
-                boxShadow: '0 12px 28px -4px rgba(15, 23, 42, 0.12)',
+                borderRadius: '12px',
+                border: '1px solid #CBD5E1',
+                boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05)',
                 padding: '16px',
                 zIndex: 100,
-                animation: 'fadeIn 0.15s ease-out'
+                animation: 'fadeIn 0.15s ease-out',
+                boxSizing: 'border-box'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
-                  {isAdmin ? 'Pemberitahuan Upload' : 'Pemberitahuan Disetujui'}
-                </span>
-                {displayCount > 0 && (
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748B' }}>
-                    ({displayCount})
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingBottom: '10px',
+                  marginBottom: '12px',
+                  borderBottom: '1px solid #F1F5F9'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                    {isAdmin ? 'Pemberitahuan Upload' : 'Pemberitahuan Disetujui'}
                   </span>
-                )}
+                  {displayCount > 0 && (
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        color: '#475569',
+                        backgroundColor: '#F1F5F9',
+                        padding: '1px 7px',
+                        borderRadius: '6px'
+                      }}
+                    >
+                      {displayCount}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {notifications && notifications.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '360px', overflowY: 'auto', paddingRight: '2px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '380px', overflowY: 'auto', paddingRight: '2px' }}>
                   {notifications.map((item) => (
                     <div
                       key={item.id}
@@ -348,49 +385,68 @@ export default function TopHeaderBar({
                         }
                       }}
                       style={{
-                        padding: '10px 12px',
+                        padding: '12px 14px',
                         background: '#FFFFFF',
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         border: '1px solid #E2E8F0',
                         cursor: 'pointer',
-                        transition: 'background-color 0.15s ease, border-color 0.15s ease',
+                        transition: 'all 0.15s ease',
                         textAlign: 'left'
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = '#F8FAFC';
-                        e.currentTarget.style.borderColor = '#CBD5E1';
+                        e.currentTarget.style.borderColor = '#94A3B8';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = '#FFFFFF';
                         e.currentTarget.style.borderColor = '#E2E8F0';
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
-                        <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A' }}>
+                      {/* Baris 1: Nama Kegiatan & Waktu Unggah */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '6px' }}>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A' }}>
                           {item.actLabel}
                         </span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 600, color: item.status === 'verified' ? '#15803D' : '#B45309' }}>
-                          {item.status === 'verified' ? 'Disetujui' : 'Upload'}
-                        </span>
-                      </div>
-
-                      <div style={{ fontSize: '12px', color: '#334155', lineHeight: 1.4, marginBottom: '5px' }}>
-                        {isAdmin ? (
-                          <>
-                            Aktivitas diunggah di proyek <strong style={{ color: '#0F172A' }}>{item.projectName}</strong>
-                          </>
-                        ) : (
-                          <>
-                            Kegiatan di proyek <strong style={{ color: '#0F172A' }}>{item.projectName}</strong> telah disetujui admin
-                          </>
+                        {item.timestamp && (
+                          <span
+                            style={{
+                              fontSize: '11px',
+                              color: '#64748B',
+                              fontWeight: 500,
+                              fontVariantNumeric: 'tabular-nums',
+                              flexShrink: 0
+                            }}
+                          >
+                            {formatNotificationDate(item.timestamp)}
+                          </span>
                         )}
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', color: '#64748B' }}>
-                        <span>
+                      {/* Baris 2: Informasi Proyek */}
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontSize: '11px', color: '#64748B', marginBottom: '2px' }}>
+                          {isAdmin ? 'Aktivitas diunggah di proyek:' : 'Kegiatan disetujui di proyek:'}
+                        </div>
+                        <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', wordBreak: 'break-word', lineHeight: 1.35 }}>
+                          {item.projectName}
+                        </div>
+                      </div>
+
+                      {/* Baris 3: Lokasi Branch & Navigasi */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          paddingTop: '8px',
+                          borderTop: '1px solid #F1F5F9',
+                          fontSize: '11.5px'
+                        }}
+                      >
+                        <span style={{ color: '#64748B' }}>
                           Branch {formatBranch(item.branchName)}{item.wok ? ` · ${item.wok}` : ''}
                         </span>
-                        <span style={{ color: '#0F172A', fontWeight: 600, fontSize: '11px' }}>
+                        <span style={{ color: '#0F172A', fontWeight: 600 }}>
                           Buka di Activity →
                         </span>
                       </div>
@@ -398,7 +454,7 @@ export default function TopHeaderBar({
                   ))}
                 </div>
               ) : (
-                <div style={{ textAlign: 'center', padding: '20px 8px', color: '#64748B', fontSize: '12px' }}>
+                <div style={{ textAlign: 'center', padding: '24px 8px', color: '#64748B', fontSize: '12.5px' }}>
                   Tidak ada pemberitahuan baru
                 </div>
               )}
