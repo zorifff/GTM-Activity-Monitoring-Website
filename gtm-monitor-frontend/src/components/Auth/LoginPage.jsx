@@ -101,13 +101,13 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
           {/* Top-Right Waves: Flowing smoothly from x=435 down to right border */}
           <path
             d="M 435,0 C 445,55 480,95 540,115 C 620,140 700,125 781,148"
-            stroke="#FFB8BC"
+            stroke="#FCA5A5"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
           <path
             d="M 475,0 C 485,65 520,110 580,130 C 655,155 715,145 781,168"
-            stroke="#FFB8BC"
+            stroke="#FCA5A5"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -115,19 +115,19 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
           {/* Bottom-Left Waves: Concentric curves in bottom-left corner */}
           <path
             d="M 0,620 C 70,620 130,645 125,710 C 120,745 60,768 0,768"
-            stroke="#FFB8BC"
+            stroke="#FCA5A5"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
           <path
             d="M 0,660 C 50,660 95,680 90,735 C 85,758 45,768 0,768"
-            stroke="#FFB8BC"
+            stroke="#FCA5A5"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
           <path
             d="M 0,700 C 35,700 65,715 60,755 C 55,765 25,768 0,768"
-            stroke="#FFB8BC"
+            stroke="#FCA5A5"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -182,7 +182,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
             onMouseEnter={(e) => {
               e.currentTarget.style.color = '#800000';
               e.currentTarget.style.borderColor = '#800000';
-              e.currentTarget.style.backgroundColor = '#FFF5F5';
+              e.currentTarget.style.backgroundColor = '#FEF2F2';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color = '#64748B';
@@ -357,7 +357,7 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
                   margin: '-20px 0 20px 0',
                   fontSize: '13px',
                   fontWeight: 500,
-                  color: '#DC2626',
+                  color: '#800000',
                   textAlign: 'center',
                   fontFamily: 'var(--font-body)'
                 }}

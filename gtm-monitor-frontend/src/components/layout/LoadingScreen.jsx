@@ -19,7 +19,7 @@ export default function LoadingScreen() {
         width: '56px',
         height: '56px',
         borderRadius: '50%',
-        background: 'linear-gradient(135deg, #800000 0%, #FF5E00 100%)',
+        background: '#800000',
         color: '#ffffff',
         display: 'flex',
         alignItems: 'center',

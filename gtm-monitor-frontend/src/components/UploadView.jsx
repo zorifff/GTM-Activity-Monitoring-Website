@@ -487,7 +487,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       </div>
 
       {/* ─── 3. CONTROLS BAR (FILTER BRANCH, SEARCH, & EXPORT EXCEL) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
         {/* Branch Dropdown */}
         {branches.length === 1 ? (
           <div className="branch-filter-capsule" style={{ height: '42px', minWidth: 'auto', border: '1px solid #CBD5E1', color: '#0F172A', display: 'flex', alignItems: 'center', padding: '0 16px', borderRadius: '10px', background: '#FFFFFF', boxSizing: 'border-box' }}>
@@ -583,7 +583,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 boxSizing: 'border-box',
                 transition: 'all 0.15s ease',
                 border: isStatusFiltered ? '1.5px solid #800000' : '1px solid #CBD5E1',
-                backgroundColor: isStatusFiltered ? '#FFF5F5' : '#FFFFFF',
+                backgroundColor: isStatusFiltered ? '#FEF2F2' : '#FFFFFF',
                 color: isStatusFiltered ? '#800000' : '#0F172A',
                 boxShadow: 'none'
               }}
@@ -816,9 +816,9 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       {/* ─── 4. PROJECT TABLES & ACTIVITY CARDS ─── */}
       {selectedBranch === 'Semua Branch' ? (
         branchesWithFilteredProjects.length > 0 && (
-          <div style={{ marginBottom: '32px' }}>
-            <ProjectTable 
-              projects={allProjectsMultiBranch} 
+          <div>
+            <ProjectTable
+              projects={allProjectsMultiBranch}
               branchName="Multi Branch" 
               uploadPhoto={uploadPhoto}
               onReview={openModal}
@@ -828,7 +828,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         )
       ) : (
         branchesWithFilteredProjects.map(b => (
-          <div key={b.name} style={{ marginBottom: '32px' }}>
+          <div key={b.name}>
             <ProjectTable 
               projects={b.projects} 
               branchName={b.name} 
@@ -842,6 +842,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       
       {branchesWithFilteredProjects.length === 0 && (
         <div style={{
+          marginTop: '14px',
           textAlign: 'center',
           padding: '48px 24px',
           background: '#FFFFFF',

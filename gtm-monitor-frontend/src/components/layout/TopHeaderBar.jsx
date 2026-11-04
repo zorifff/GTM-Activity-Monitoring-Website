@@ -35,6 +35,7 @@ export default function TopHeaderBar({
   const isBranchPage = location.pathname.startsWith('/branch');
   const isDashboard = location.pathname === '/' || location.pathname.startsWith('/dashboard');
   const isAdminPage = location.pathname.startsWith('/admin');
+  const isActivityPage = location.pathname.startsWith('/upload');
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const notifRef = useRef(null);
@@ -142,7 +143,7 @@ export default function TopHeaderBar({
         )}
 
         {/* Judul Halaman Continuous (Dashboard / Activity) dengan Ikon Persis seperti Opsi Sidebar */}
-        {(isDashboard || isBranchPage) && (
+        {(isDashboard || isBranchPage || isActivityPage) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
             {activeSection === 'activity' ? (
               <svg
@@ -566,7 +567,7 @@ export default function TopHeaderBar({
                         border: 'none',
                         borderRadius: '8px',
                         backgroundColor: 'transparent',
-                        color: '#C8102E',
+                        color: '#800000',
                         fontSize: '12.5px',
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -604,7 +605,7 @@ export default function TopHeaderBar({
                 transition: 'background-color 0.15s ease'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#990000';
+                e.currentTarget.style.backgroundColor = '#660000';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = '#800000';

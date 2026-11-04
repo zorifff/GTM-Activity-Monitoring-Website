@@ -323,7 +323,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                   <button
                                     type="button"
                                     onClick={() => triggerRejectConfirm(actType.key, ph.id, actType.label, idx)}
-                                    style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: '#dc2626', color: '#fff', fontSize: '11.5px', fontWeight: 700, cursor: 'pointer' }}
+                                    style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: '#800000', color: '#fff', fontSize: '11.5px', fontWeight: 700, cursor: 'pointer' }}
                                   >
                                     Tolak
                                   </button>
@@ -383,8 +383,8 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                   padding: '6px 12px',
                                   borderRadius: '6px',
                                   border: '1px solid #fca5a5',
-                                  background: '#fff1f2',
-                                  color: '#e11d48',
+                                  background: '#FEF2F2',
+                                  color: '#800000',
                                   fontSize: '11.5px',
                                   fontWeight: 700,
                                   cursor: 'pointer',

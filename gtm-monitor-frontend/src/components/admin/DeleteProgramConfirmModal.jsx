@@ -50,14 +50,14 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
-            border: '1px solid #FDA4AF',
-            color: '#E11D48',
+            background: '#FEE2E2',
+            border: '1px solid #FCA5A5',
+            color: '#800000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 18px auto',
-            boxShadow: '0 6px 16px rgba(225, 29, 72, 0.15)'
+            boxShadow: '0 6px 16px rgba(128, 0, 0, 0.15)'
           }}
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -83,7 +83,7 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
           </div>
           <div>
             <span style={{ color: '#64748B', fontWeight: 600 }}>Target Hapus:</span>{' '}
-            <strong style={{ color: '#DC2626', fontWeight: 700 }}>
+            <strong style={{ color: '#800000', fontWeight: 700 }}>
               {deleteProgramTarget === 'ALL' ? `Semua Program di ${deleteProgramMonth}` : deleteProgramTarget}
             </strong>
           </div>
@@ -117,12 +117,12 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
               padding: '12px 16px',
               borderRadius: '12px',
               border: 'none',
-              background: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+              background: '#800000',
               color: '#FFFFFF',
               fontSize: '13.5px',
               fontWeight: 800,
               cursor: deleteLoading ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 14px rgba(225, 29, 72, 0.35)'
+              boxShadow: '0 4px 14px rgba(128, 0, 0, 0.35)'
             }}
           >
             {deleteLoading ? 'Menghapus...' : 'Ya, Hapus'}

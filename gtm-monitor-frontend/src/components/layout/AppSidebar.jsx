@@ -6,7 +6,6 @@ import { SHOW_PROGRAM_MENU } from '../../constants/programs';
 export default function AppSidebar({
   user,
   isAdmin,
-  activeSection = 'dashboard',
   goDashboard,
   goUpload,
   goAdmin,
@@ -16,19 +15,27 @@ export default function AppSidebar({
   setActiveProgramModal,
   isMobileOpen,
   setIsMobileOpen,
+  isCollapsed = false,
+  setIsCollapsed,
   handleLogout
 }) {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const isContinuous = currentPath === '/' || currentPath === '/dashboard';
-  const isDashboardActive = isContinuous
-    ? activeSection === 'dashboard'
-    : currentPath === '/' || currentPath === '/dashboard' || currentPath.startsWith('/branch');
-  const isActivityActive = isContinuous
-    ? activeSection === 'activity'
-    : currentPath === '/upload';
+  const isDashboardActive = currentPath === '/' || currentPath === '/dashboard' || currentPath.startsWith('/branch');
+  const isActivityActive = currentPath === '/upload';
   const isControlActive = currentPath === '/admin';
+
+  // Lebar 1024px ke bawah: sidebar berupa panel melayang, jadi tombol ini menutup panelnya
+  const handleToggleSidebar = () => {
+    if (window.matchMedia('(max-width: 1024px)').matches) {
+      if (setIsMobileOpen) setIsMobileOpen(false);
+      return;
+    }
+    if (setIsCollapsed) setIsCollapsed(!isCollapsed);
+  };
+  const toggleLabel = isMobileOpen || !isCollapsed ? 'Tutup sidebar' : 'Buka sidebar';
+  const collapsedTitle = (label) => (isCollapsed ? label : undefined);
 
   return (
     <>
@@ -47,9 +54,8 @@ export default function AppSidebar({
       )}
 
       <aside
-        className={`app-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}
+        className={`app-sidebar ${isMobileOpen ? 'mobile-open' : ''} ${isCollapsed ? 'collapsed' : ''}`}
         style={{
-          width: '256px',
           background: '#021329',
           borderRight: '1px solid rgba(255, 255, 255, 0.06)',
           display: 'flex',
@@ -63,18 +69,27 @@ export default function AppSidebar({
           minHeight: '100dvh',
           maxHeight: '100dvh',
           zIndex: 999,
-          padding: '24px 0 20px',
+          padding: '0 0 20px',
           boxSizing: 'border-box',
+          overflowX: 'hidden',
           overflowY: 'auto'
         }}
       >
-        <div
-          style={{
-            padding: '0 24px 28px',
-            display: 'flex',
-            alignItems: 'center'
-          }}
-        >
+        <div className="sidebar-brand-row">
+          <button
+            type="button"
+            className="sidebar-toggle-btn"
+            onClick={handleToggleSidebar}
+            aria-label={toggleLabel}
+            aria-expanded={isMobileOpen || !isCollapsed}
+            title={toggleLabel}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
           <button
             type="button"
             onClick={() => {
@@ -83,7 +98,6 @@ export default function AppSidebar({
             }}
             className="sidebar-brand-btn"
             style={{
-              display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
               minHeight: '44px',
@@ -100,38 +114,23 @@ export default function AppSidebar({
               alt=""
               aria-hidden="true"
               style={{
-                height: '28px',
+                height: '32px',
                 width: 'auto',
                 display: 'block',
                 filter: 'drop-shadow(0 0 1px rgba(255, 255, 255, 0.9)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25))'
               }}
             />
             <img
+              className="sidebar-brand-word"
               src="/telkomsel-logo.png"
               alt="Telkomsel"
               style={{
-                height: '22px',
+                height: '24px',
                 width: 'auto',
-                display: 'block',
                 filter: 'brightness(0) invert(1)'
               }}
             />
           </button>
-        </div>
-
-        <div
-          style={{
-            padding: '0 24px',
-            marginBottom: '10px',
-            fontSize: '11px',
-            fontWeight: 600,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'rgba(255, 255, 255, 0.55)',
-            userSelect: 'none'
-          }}
-        >
-          MENU
         </div>
 
         <nav
@@ -139,7 +138,7 @@ export default function AppSidebar({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '6px',
+            gap: '4px',
             width: '100%'
           }}
         >
@@ -151,13 +150,14 @@ export default function AppSidebar({
               if (setIsMobileOpen) setIsMobileOpen(false);
             }}
             className={`sidebar-nav-item ${isDashboardActive ? 'active' : ''}`}
+            aria-label="Dashboard"
+            title={collapsedTitle('Dashboard')}
           >
-            <span className="sidebar-left-indicator" aria-hidden="true" />
             <span className="sidebar-nav-box">
               <svg
                 className="nav-icon-outline"
-                width="19"
-                height="19"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -173,8 +173,8 @@ export default function AppSidebar({
               </svg>
               <svg
                 className="nav-icon-filled"
-                width="19"
-                height="19"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
@@ -196,13 +196,14 @@ export default function AppSidebar({
               if (setIsMobileOpen) setIsMobileOpen(false);
             }}
             className={`sidebar-nav-item ${isActivityActive ? 'active' : ''}`}
+            aria-label="Activity"
+            title={collapsedTitle('Activity')}
           >
-            <span className="sidebar-left-indicator" aria-hidden="true" />
             <span className="sidebar-nav-box">
               <svg
                 className="nav-icon-outline"
-                width="19"
-                height="19"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -218,8 +219,8 @@ export default function AppSidebar({
               </svg>
               <svg
                 className="nav-icon-filled"
-                width="19"
-                height="19"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
@@ -229,6 +230,8 @@ export default function AppSidebar({
               <span className="sidebar-nav-label">Activity</span>
             </span>
           </button>
+
+          <hr className="sidebar-divider" />
 
           {/* 3. Cek Pairing */}
           <CekPairingNavItem
@@ -243,22 +246,15 @@ export default function AppSidebar({
                   if (setIsMobileOpen) setIsMobileOpen(false);
                 }}
                 className={`sidebar-nav-item ${isOpen ? 'active' : ''}`}
-                title="Pencarian Data Telkomsel One Pairing"
+                aria-label="Cek Pairing"
+                title={isCollapsed ? 'Cek Pairing' : 'Pencarian Data Telkomsel One Pairing'}
               >
-                <span className="sidebar-left-indicator" aria-hidden="true" />
-                <span
-                  className="sidebar-nav-box"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span className="sidebar-nav-box">
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                     <svg
                       className="nav-icon-outline"
-                      width="19"
-                      height="19"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -272,8 +268,8 @@ export default function AppSidebar({
                     </svg>
                     <svg
                       className="nav-icon-filled"
-                      width="19"
-                      height="19"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -288,8 +284,9 @@ export default function AppSidebar({
                     <span className="sidebar-nav-label">Cek Pairing</span>
                   </span>
                   <svg
-                    width="13"
-                    height="13"
+                    className="sidebar-nav-chevron"
+                    width="16"
+                    height="16"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -327,22 +324,15 @@ export default function AppSidebar({
                     if (setIsMobileOpen) setIsMobileOpen(false);
                   }}
                   className={`sidebar-nav-item ${isOpen ? 'active' : ''}`}
-                  title="Daftar Program Marketing & Penjualan"
+                  aria-label="Program"
+                  title={isCollapsed ? 'Program' : 'Daftar Program Marketing & Penjualan'}
                 >
-                  <span className="sidebar-left-indicator" aria-hidden="true" />
-                  <span
-                    className="sidebar-nav-box"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}
-                  >
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span className="sidebar-nav-box">
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                       <svg
                         className="nav-icon-outline"
-                        width="19"
-                        height="19"
+                        width="24"
+                        height="24"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -358,8 +348,8 @@ export default function AppSidebar({
                       </svg>
                       <svg
                         className="nav-icon-filled"
-                        width="19"
-                        height="19"
+                        width="24"
+                        height="24"
                         viewBox="0 0 24 24"
                         fill="currentColor"
                         aria-hidden="true"
@@ -369,8 +359,9 @@ export default function AppSidebar({
                       <span className="sidebar-nav-label">Program</span>
                     </span>
                     <svg
-                      width="13"
-                      height="13"
+                      className="sidebar-nav-chevron"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -394,6 +385,7 @@ export default function AppSidebar({
           )}
 
           {/* 5. Admin Panel */}
+          {isAdmin && <hr className="sidebar-divider" />}
           {isAdmin && (
             <button
               type="button"
@@ -402,13 +394,14 @@ export default function AppSidebar({
                 if (setIsMobileOpen) setIsMobileOpen(false);
               }}
               className={`sidebar-nav-item ${isControlActive ? 'active' : ''}`}
+              aria-label="Admin"
+              title={collapsedTitle('Admin')}
             >
-              <span className="sidebar-left-indicator" aria-hidden="true" />
               <span className="sidebar-nav-box">
                 <svg
                   className="nav-icon-outline"
-                  width="19"
-                  height="19"
+                  width="24"
+                  height="24"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -422,8 +415,8 @@ export default function AppSidebar({
                 </svg>
                 <svg
                   className="nav-icon-filled"
-                  width="19"
-                  height="19"
+                  width="24"
+                  height="24"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   aria-hidden="true"
@@ -452,17 +445,17 @@ export default function AppSidebar({
                 if (setIsMobileOpen) setIsMobileOpen(false);
               }}
               className="sidebar-logout-btn"
+              aria-label="Logout"
               title="Keluar dari akun (Logout)"
               style={{
                 width: '100%',
                 minHeight: '44px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '12px',
-                padding: '10px 14px',
+                gap: '24px',
                 borderRadius: '8px',
                 backgroundColor: '#FFFFFF',
-                color: '#C8102E',
+                color: '#800000',
                 border: 'none',
                 cursor: 'pointer',
                 textAlign: 'left',
@@ -480,11 +473,11 @@ export default function AppSidebar({
               }}
             >
               <svg
-                width="19"
-                height="19"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#C8102E"
+                stroke="#800000"
                 strokeWidth="2.2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -496,11 +489,12 @@ export default function AppSidebar({
                 <line x1="4" y1="12" x2="14" y2="12" />
               </svg>
               <span
+                className="sidebar-logout-label"
                 style={{
                   fontFamily: 'var(--font-heading)',
-                  fontSize: '13.5px',
+                  fontSize: '15px',
                   fontWeight: 600,
-                  color: '#C8102E',
+                  color: '#800000',
                   letterSpacing: '-0.1px',
                   whiteSpace: 'nowrap'
                 }}

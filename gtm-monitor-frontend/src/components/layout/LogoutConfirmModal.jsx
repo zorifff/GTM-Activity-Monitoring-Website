@@ -88,18 +88,18 @@ export default function LogoutConfirmModal({ setShowLogoutConfirmModal, executeL
               flex: 1,
               padding: '10px 16px',
               borderRadius: '10px',
-              border: '1px solid #DC2626',
-              background: '#DC2626',
+              border: '1px solid #800000',
+              background: '#800000',
               color: '#FFFFFF',
               fontFamily: 'var(--font-body)',
               fontSize: '13.5px',
               fontWeight: 600,
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)',
+              boxShadow: '0 4px 12px rgba(128, 0, 0,0.25)',
               transition: 'all 0.15s ease'
             }}
-            onMouseOver={e => { e.currentTarget.style.background = '#B91C1C'; e.currentTarget.style.borderColor = '#B91C1C'; }}
-            onMouseOut={e => { e.currentTarget.style.background = '#DC2626'; e.currentTarget.style.borderColor = '#DC2626'; }}
+            onMouseOver={e => { e.currentTarget.style.background = '#660000'; e.currentTarget.style.borderColor = '#660000'; }}
+            onMouseOut={e => { e.currentTarget.style.background = '#800000'; e.currentTarget.style.borderColor = '#800000'; }}
           >
             Ya, Log Out
           </button>

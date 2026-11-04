@@ -14,7 +14,6 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
         width: '100%',
         maxWidth: '360px',
         backgroundColor: '#800000',
-        backgroundImage: 'linear-gradient(160deg, #990000 0%, #660000 100%)',
         color: '#FFFFFF',
         borderRadius: '16px',
         padding: '24px 28px',
@@ -118,7 +117,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
               flexShrink: 0
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#FFF5F5';
+              e.currentTarget.style.backgroundColor = '#FEF2F2';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = '#FFFFFF';

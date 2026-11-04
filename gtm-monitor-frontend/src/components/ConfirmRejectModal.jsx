@@ -89,12 +89,12 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
             borderRadius: '50%',
             background: '#FEF2F2',
             border: '1px solid #FCA5A5',
-            color: '#DC2626',
+            color: '#800000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 18px auto',
-            boxShadow: '0 4px 12px rgba(220, 38, 38, 0.12)'
+            boxShadow: '0 4px 12px rgba(128, 0, 0,0.12)'
           }}
         >
           <svg
@@ -205,13 +205,13 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
               flex: 1,
               padding: '12px 16px',
               borderRadius: '10px',
-              border: '1px solid #B91C1C',
-              background: '#DC2626',
+              border: '1px solid #660000',
+              background: '#800000',
               color: '#FFFFFF',
               fontSize: '13.5px',
               fontWeight: 600,
               cursor: isRejecting ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)',
+              boxShadow: '0 2px 8px rgba(128, 0, 0,0.25)',
               opacity: isRejecting ? 0.7 : 1,
               transition: 'all 0.15s ease'
             }}

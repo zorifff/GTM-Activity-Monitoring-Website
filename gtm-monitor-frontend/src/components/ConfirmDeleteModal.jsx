@@ -87,14 +87,14 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            background: '#FFE4E6',
-            border: '1px solid #FDA4AF',
-            color: '#E11D48',
+            background: '#FEE2E2',
+            border: '1px solid #FCA5A5',
+            color: '#800000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 18px auto',
-            boxShadow: '0 4px 12px rgba(225, 29, 72, 0.12)'
+            boxShadow: '0 4px 12px rgba(128, 0, 0,0.12)'
           }}
         >
           <svg
@@ -206,13 +206,13 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
               flex: 1,
               padding: '12px 16px',
               borderRadius: '10px',
-              border: '1px solid #BE123C',
-              background: '#E11D48',
+              border: '1px solid #660000',
+              background: '#800000',
               color: '#FFFFFF',
               fontSize: '13.5px',
               fontWeight: 600,
               cursor: isDeleting ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 8px rgba(225, 29, 72, 0.25)',
+              boxShadow: '0 2px 8px rgba(128, 0, 0,0.25)',
               opacity: isDeleting ? 0.7 : 1,
               transition: 'all 0.15s ease'
             }}

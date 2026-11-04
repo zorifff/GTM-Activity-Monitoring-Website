@@ -69,7 +69,7 @@ export default function ProgramDeleteModal({
                 height: '38px',
                 borderRadius: '10px',
                 background: '#FEF2F2',
-                color: '#DC2626',
+                color: '#800000',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -213,7 +213,7 @@ export default function ProgramDeleteModal({
           )}
 
           {deleteError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#800000', fontSize: '13px', fontWeight: 600 }}>
               {deleteError}
             </div>
           )}
@@ -247,7 +247,7 @@ export default function ProgramDeleteModal({
                 padding: '10px 22px',
                 borderRadius: '10px',
                 border: 'none',
-                background: deleteLoading || deleteAvailablePrograms.length === 0 ? '#E2E8F0' : '#DC2626',
+                background: deleteLoading || deleteAvailablePrograms.length === 0 ? '#E2E8F0' : '#800000',
                 color: deleteLoading || deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#FFFFFF',
                 fontSize: '13px',
                 fontWeight: 600,

@@ -120,7 +120,7 @@ export function useRekapExcelExport(branches) {
         worksheet[cellRef].s = {
           fill: {
             patternType: "solid",
-            fgColor: { rgb: "C8102E" } // Telkomsel Red (#800000)
+            fgColor: { rgb: "800000" } // Maroon
           },
           font: {
             name: "Calibri",

@@ -141,7 +141,7 @@ const ActivityStatus = memo(function ActivityStatus({
             padding: '2px 6px',
             borderRadius: '4px',
             backgroundColor: '#FEE2E2',
-            color: '#DC2626',
+            color: '#800000',
             border: '1px solid #FECACA',
             whiteSpace: 'nowrap'
           }}
@@ -158,8 +158,8 @@ const ActivityStatus = memo(function ActivityStatus({
             gap: '3px',
             padding: '4px 8px',
             borderRadius: '6px',
-            backgroundColor: '#DC2626',
-            border: '1px solid #B91C1C',
+            backgroundColor: '#800000',
+            border: '1px solid #660000',
             color: '#FFFFFF',
             fontSize: '10.5px',
             fontWeight: 700,
@@ -168,8 +168,8 @@ const ActivityStatus = memo(function ActivityStatus({
             minHeight: '26px',
             transition: 'all 0.15s ease'
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#B91C1C'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#DC2626'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#660000'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#800000'; }}
           title={title ? `${title}: Kegiatan ditolak. Klik untuk perbaiki.` : 'Kegiatan ditolak. Klik untuk perbaiki.'}
         >
           <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

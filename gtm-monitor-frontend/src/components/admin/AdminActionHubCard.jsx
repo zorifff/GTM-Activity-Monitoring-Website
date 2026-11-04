@@ -311,7 +311,7 @@ export default function AdminActionHubCard({
                   borderRadius: '8px',
                   border: act.isDanger ? '1px solid #FCA5A5' : 'none',
                   background: act.isDanger ? '#FFFFFF' : '#800000',
-                  color: act.isDanger ? '#DC2626' : '#FFFFFF',
+                  color: act.isDanger ? '#800000' : '#FFFFFF',
                   fontFamily: 'var(--font-body)',
                   fontSize: '12.5px',
                   fontWeight: 600,
@@ -326,9 +326,9 @@ export default function AdminActionHubCard({
                 onMouseEnter={(e) => {
                   if (act.isDanger) {
                     e.currentTarget.style.background = '#FEF2F2';
-                    e.currentTarget.style.borderColor = '#EF4444';
+                    e.currentTarget.style.borderColor = '#800000';
                   } else {
-                    e.currentTarget.style.background = '#990000';
+                    e.currentTarget.style.background = '#660000';
                   }
                 }}
                 onMouseLeave={(e) => {

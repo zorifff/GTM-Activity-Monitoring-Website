@@ -260,7 +260,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
     }
     if (strVal === 'NOT PASS') {
       return (
-        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#FEE2E2', color: '#991B1B', fontWeight: 800, fontSize: '11px' }}>
+        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#FEE2E2', color: '#800000', fontWeight: 800, fontSize: '11px' }}>
           NOT PASS
         </span>
       );
@@ -275,7 +275,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
       const num = parseFloat(val);
       if (!isNaN(num)) {
         const pct = num <= 1 && num >= -1 ? Math.round(num * 1000) / 10 : Math.round(num * 10) / 10;
-        const color = pct > 0 && (header.includes('MOM') || header.includes('ACH')) ? '#16A34A' : pct < 0 && header.includes('MOM') ? '#DC2626' : 'inherit';
+        const color = pct > 0 && (header.includes('MOM') || header.includes('ACH')) ? '#16A34A' : pct < 0 && header.includes('MOM') ? '#800000' : 'inherit';
         return <span style={{ color, fontWeight: 700 }}>{pct > 0 && header.includes('MOM') ? `+${pct}%` : `${pct}%`}</span>;
       }
     }
@@ -346,8 +346,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: '#FF5E00',
-              boxShadow: '0 0 10px #FF5E00'
+              background: '#FFFFFF'
             }}
           />
           <span style={{ fontFamily: 'var(--font-heading)', fontSize: '13.5px', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.1px' }}>
@@ -565,7 +564,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     style={{
                       padding: '10px 14px',
                       borderRadius: '10px',
-                      color: '#FB7185',
+                      color: '#FCA5A5',
                       background: 'transparent',
                       border: 'none',
                       fontFamily: 'var(--font-body)',
@@ -580,7 +579,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                       borderTop: '1px solid rgba(255, 255, 255, 0.08)',
                       transition: 'all 0.15s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(244, 63, 94, 0.12)'}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(128, 0, 0, 0.35)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -603,7 +602,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     style={{
                       padding: '10px 14px',
                       borderRadius: '10px',
-                      color: '#EF4444',
+                      color: '#FCA5A5',
                       background: 'transparent',
                       border: 'none',
                       fontFamily: 'var(--font-body)',
@@ -618,7 +617,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                       borderTop: slides.length <= 1 ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
                       transition: 'all 0.15s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(128, 0, 0, 0.35)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -792,7 +791,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     width: idx === currentSlideIndex ? '22px' : '8px',
                     height: '8px',
                     borderRadius: '50px',
-                    background: idx === currentSlideIndex ? 'linear-gradient(135deg, #FF5E00, #800000)' : 'rgba(255, 255, 255, 0.35)',
+                    background: idx === currentSlideIndex ? '#FFFFFF' : 'rgba(255, 255, 255, 0.35)',
                     border: 'none',
                     padding: 0,
                     cursor: 'pointer',
@@ -910,7 +909,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                         fontSize: '11.5px',
                         letterSpacing: '0.5px',
                         textTransform: 'uppercase',
-                        border: '1px solid #A80C25',
+                        border: '1px solid #660000',
                         whiteSpace: 'nowrap'
                       }}
                     >
@@ -1001,14 +1000,14 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                 width: '56px',
                 height: '56px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
-                border: '1px solid #FDA4AF',
-                color: '#E11D48',
+                background: '#FEE2E2',
+                border: '1px solid #FCA5A5',
+                color: '#800000',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 16px auto',
-                boxShadow: '0 6px 16px rgba(225, 29, 72, 0.15)'
+                boxShadow: '0 6px 16px rgba(128, 0, 0,0.15)'
               }}
             >
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -1036,7 +1035,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
             </p>
 
             {deleteError && (
-              <div style={{ fontFamily: 'var(--font-body)', padding: '10px 14px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '12px', fontWeight: 600, marginBottom: '16px' }}>
+              <div style={{ fontFamily: 'var(--font-body)', padding: '10px 14px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#800000', fontSize: '12px', fontWeight: 600, marginBottom: '16px' }}>
                 {deleteError}
               </div>
             )}
@@ -1070,13 +1069,13 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                   padding: '11px 16px',
                   borderRadius: '12px',
                   border: 'none',
-                  background: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+                  background: '#800000',
                   color: '#FFFFFF',
                   fontFamily: 'var(--font-body)',
                   fontSize: '13px',
                   fontWeight: 600,
                   cursor: isDeleting ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 4px 14px rgba(225, 29, 72, 0.35)'
+                  boxShadow: '0 4px 14px rgba(128, 0, 0,0.35)'
                 }}
               >
                 {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}

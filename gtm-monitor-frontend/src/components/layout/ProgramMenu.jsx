@@ -277,11 +277,11 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                         fontFamily: 'var(--font-body)',
                                         fontSize: '10px',
                                         fontWeight: 600,
-                                        color: '#FF5E00',
-                                        background: 'rgba(255, 94, 0, 0.08)',
+                                        color: '#800000',
+                                        background: 'rgba(128, 0, 0,0.08)',
                                         padding: '2px 6px',
                                         borderRadius: '6px',
-                                        border: '1px solid rgba(255, 94, 0, 0.2)'
+                                        border: '1px solid rgba(128, 0, 0,0.2)'
                                       }}
                                     >
                                       {progItem.data.images.length} Slide
@@ -334,7 +334,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                   }}
                                 >
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
-                                    <span style={{ color: '#FF5E00', fontWeight: '900', flexShrink: 0 }}>•</span>
+                                    <span style={{ color: '#800000', fontWeight: '900', flexShrink: 0 }}>•</span>
                                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{progItem.name}</span>
                                   </div>
                                   {progItem.data?.images?.length > 1 && (
@@ -344,8 +344,8 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                         fontFamily: 'var(--font-body)',
                                         fontSize: '9.5px',
                                         fontWeight: 600,
-                                        color: '#FF5E00',
-                                        background: 'rgba(255, 94, 0, 0.08)',
+                                        color: '#800000',
+                                        background: 'rgba(128, 0, 0,0.08)',
                                         padding: '1px 5px',
                                         borderRadius: '4px'
                                       }}

@@ -142,7 +142,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: 600, color: '#FF5E00', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 600, color: '#800000', textTransform: 'uppercase', letterSpacing: '1px' }}>
               Upload Kegiatan GTM
             </div>
             <h3 id="upload-modal-title" style={{ fontSize: '18px', fontWeight: 600, color: '#0F172A', margin: '4px 0 2px 0', fontFamily: "var(--font-heading)" }}>
@@ -169,7 +169,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
         {/* Error Notification */}
         {errorMsg && (
           <div style={{
-            background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626',
+            background: '#FEF2F2', border: '1px solid #FECACA', color: '#800000',
             padding: '10px 14px', borderRadius: '12px', fontSize: '12.5px', fontWeight: 600,
             marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'
           }}>
@@ -184,7 +184,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {actKey === 'branding_outlet' && (
             <div>
               <label htmlFor="upload-nama-outlet" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Nama Outlet <span style={{ color: '#DC2626' }}>*</span>
+                Nama Outlet <span style={{ color: '#800000' }}>*</span>
               </label>
               <input
                 id="upload-nama-outlet"
@@ -206,7 +206,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {actKey === 'bumdes' && (
             <div>
               <label htmlFor="upload-nama-bumdes" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Nama BUMDES <span style={{ color: '#DC2626' }}>*</span>
+                Nama BUMDES <span style={{ color: '#800000' }}>*</span>
               </label>
               <input
                 id="upload-nama-bumdes"
@@ -228,7 +228,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {(actKey === 'open_table' || actKey === 'tsel_menyapa') && (
             <div>
               <label htmlFor="upload-plan-date" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Tanggal Kegiatan <span style={{ color: '#DC2626' }}>*</span>
+                Tanggal Kegiatan <span style={{ color: '#800000' }}>*</span>
               </label>
               <input
                 id="upload-plan-date"
@@ -249,7 +249,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {actKey === 'rekrutmen_sf' && (
             <div>
               <label htmlFor="upload-kode-sf" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Kode SF <span style={{ color: '#DC2626' }}>*</span>
+                Kode SF <span style={{ color: '#800000' }}>*</span>
               </label>
               <input
                 id="upload-kode-sf"
@@ -271,7 +271,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {actKey !== 'rekrutmen_sf' && (
             <div>
               <label htmlFor="upload-modal-file-input" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Foto Bukti Kegiatan {['branding_outlet', 'open_table', 'tsel_menyapa', 'bumdes'].includes(actKey) && <span style={{ color: '#DC2626' }}>*</span>}
+                Foto Bukti Kegiatan {['branding_outlet', 'open_table', 'tsel_menyapa', 'bumdes'].includes(actKey) && <span style={{ color: '#800000' }}>*</span>}
               </label>
 
               {previewUrl ? (
@@ -286,7 +286,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
                     style={{
                       position: 'absolute', top: '8px', right: '8px',
                       padding: '4px 10px', borderRadius: '8px', border: 'none',
-                      background: 'rgba(220, 38, 38, 0.9)', color: '#FFF', fontSize: '11px',
+                      background: 'rgba(128, 0, 0,0.9)', color: '#FFF', fontSize: '11px',
                       fontWeight: 700, cursor: 'pointer'
                     }}
                   >
@@ -338,7 +338,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
             <button
               type="submit"
               style={{
-                padding: '11px 22px', borderRadius: '10px', border: '1px solid #991B1B',
+                padding: '11px 22px', borderRadius: '10px', border: '1px solid #660000',
                 background: '#800000',
                 color: '#FFFFFF', fontSize: '13.5px', fontWeight: 600,
                 cursor: 'pointer', boxShadow: '0 2px 8px rgba(128, 0, 0, 0.25)'

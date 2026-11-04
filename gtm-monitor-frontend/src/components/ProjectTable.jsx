@@ -4,6 +4,7 @@ import { ACT_TYPES, formatBranch } from '../utils';
 import ActivityStatus from './ActivityStatus';
 import UploadModal from './UploadModal';
 import ConfirmSubmitModal from './ConfirmSubmitModal';
+import TableScrollSlider from './TableScrollSlider';
 
 // Pilihan "Semua proyek" pada jumlah per halaman: seluruh baris ditampilkan dengan virtual scroll
 // (hanya baris yang terlihat di layar yang dirender) agar ribuan proyek tetap ringan.
@@ -20,20 +21,20 @@ const FilterIcon = () => (
 const SortIcon = ({ sort }) => {
   if (sort === 'asc') {
     return (
-      <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
         <polyline points="18 15 12 9 6 15" />
       </svg>
     );
   }
   if (sort === 'desc') {
     return (
-      <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
         <polyline points="6 9 12 15 18 9" />
       </svg>
     );
   }
   return (
-    <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6, flexShrink: 0 }}>
+    <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255, 255, 255, 0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6, flexShrink: 0 }}>
       <polyline points="8 9 12 5 16 9" />
       <polyline points="16 15 12 19 8 15" />
     </svg>
@@ -515,8 +516,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             alignItems: 'center',
             gap: '4px',
             font: 'inherit',
-            color: sort ? '#0F172A' : '#475569',
-            fontWeight: 600,
+            color: '#FFFFFF',
+            fontWeight: sort ? 700 : 600,
             textTransform: 'inherit',
             letterSpacing: 'inherit',
             whiteSpace: 'nowrap',
@@ -533,12 +534,12 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             aria-label={`Filter kolom ${label}`}
             onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === col ? null : col); }}
             style={{
-              background: 'none',
+              background: isFiltered ? '#FFFFFF' : 'none',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              color: isFiltered ? '#800000' : '#94A3B8',
+              color: isFiltered ? '#800000' : 'rgba(255, 255, 255, 0.8)',
               padding: '2px',
               borderRadius: '4px',
               marginLeft: '2px',
@@ -688,8 +689,10 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
   const odpGrid = '34px 220px 165px 95px 125px 95px';
 
   return (
-    <div className="card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
-      <div ref={scrollRef} style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', maxHeight: '75vh' }}>
+    <>
+    <TableScrollSlider scrollRef={scrollRef} />
+    <div className="card project-table-card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
+      <div ref={scrollRef} className="project-table-scroll" style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', borderRadius: 'inherit' }}>
         <div style={{ minWidth: 'max-content', paddingBottom: filterPopup ? '400px' : '0' }}>
           {/* Header */}
           <div
@@ -699,8 +702,9 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               position: 'sticky',
               top: 0,
               zIndex: 20,
-              backgroundColor: '#F8FAFC',
-              borderBottom: '1px solid #E2E8F0',
+              backgroundColor: '#800000',
+              color: '#FFFFFF',
+              borderBottom: '1px solid #660000',
               boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)',
               minWidth: 'max-content',
               width: 'max-content',
@@ -1005,5 +1009,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         </div>
       </div>
     </div>
+    </>
   );
 }

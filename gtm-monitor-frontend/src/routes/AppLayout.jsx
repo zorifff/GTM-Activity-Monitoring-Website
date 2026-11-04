@@ -5,6 +5,8 @@ import ProgramViewerModal from '../components/ProgramViewerModal';
 import LoadingScreen from '../components/layout/LoadingScreen';
 import AppSidebar from '../components/layout/AppSidebar';
 import TopHeaderBar from '../components/layout/TopHeaderBar';
+
+const SIDEBAR_COLLAPSED_KEY = 'gtm:sidebar-collapsed';
 import ProfileMenu from '../components/layout/ProfileMenu';
 import LogoutConfirmModal from '../components/layout/LogoutConfirmModal';
 import SessionExpiredModal from '../components/layout/SessionExpiredModal';
@@ -30,9 +32,24 @@ export default function AppLayout() {
   const [activeProgramModal, setActiveProgramModal] = useState(null);
   const [typeDesignFilter, setTypeDesignFilter] = useState('ALL');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, isSidebarCollapsed ? '1' : '0');
+    } catch {
+      // Penyimpanan browser diblokir: pilihan hanya berlaku sampai halaman dimuat ulang
+    }
+  }, [isSidebarCollapsed]);
 
   const contentAreaRef = useRef(null);
-  const [activeSection, setActiveSection] = useState('dashboard');
+  const activeSection = view === 'upload' ? 'activity' : 'dashboard';
 
   useEffect(() => {
     setShowProfileModal(false);
@@ -41,50 +58,13 @@ export default function AppLayout() {
 
   useEffect(() => {
     const target = LEGACY_HASH_PATHS[location.hash.toLowerCase()];
-    if (target) navigate(target, { replace: true });
-  }, [location.hash, navigate]);
+    if (target) navigate(`${target}${location.search}`, { replace: true });
+  }, [location.hash, location.search, navigate]);
 
-  // Scroll spy untuk menentukan section mana yang sedang aktif saat halaman continuous di-scroll
+  // Wadah gulir dipakai bersama semua halaman: halaman baru selalu dibuka dari paling atas
   useEffect(() => {
-    if (view !== 'dashboard') return;
-
-    const container = contentAreaRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      const activityEl = document.getElementById('activity-section');
-      if (!activityEl) return;
-
-      const rect = activityEl.getBoundingClientRect();
-      // Bila batas atas section Activity berada di posisi 200px dari atas viewport (di bawah header 64px)
-      if (rect.top <= 200) {
-        setActiveSection('activity');
-      } else {
-        setActiveSection('dashboard');
-      }
-    };
-
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-    };
+    if (contentAreaRef.current) contentAreaRef.current.scrollTo({ top: 0, behavior: 'instant' });
   }, [view]);
-
-  // Auto-scroll saat pertama kali membuka tautan ber-hash #activity
-  useEffect(() => {
-    if (view === 'dashboard' && location.hash === '#activity') {
-      const timer = setTimeout(() => {
-        const el = document.getElementById('activity-section');
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setActiveSection('activity');
-        }
-      }, 150);
-      return () => clearTimeout(timer);
-    }
-  }, [view, location.hash]);
 
   const handleLogout = (showAlert = true) => {
     if (typeof showAlert !== 'boolean') showAlert = true;
@@ -105,16 +85,7 @@ export default function AppLayout() {
       return;
     }
     if (view === 'dashboard') {
-      if (contentAreaRef.current) {
-        contentAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const el = document.getElementById('dashboard-section');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-      if (window.location.hash) {
-        window.history.replaceState(null, '', '/dashboard');
-      }
-      setActiveSection('dashboard');
+      if (contentAreaRef.current) contentAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       navigate(PATHS.dashboard);
     }
@@ -125,15 +96,10 @@ export default function AppLayout() {
       setShowLoginModal(true);
       return;
     }
-    if (view === 'dashboard') {
-      const el = document.getElementById('activity-section');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.replaceState(null, '', '/dashboard#activity');
-        setActiveSection('activity');
-      }
+    if (view === 'upload') {
+      if (contentAreaRef.current) contentAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      navigate('/dashboard#activity');
+      navigate(PATHS.upload);
     }
   }, [user, view, navigate]);
 
@@ -154,18 +120,9 @@ export default function AppLayout() {
   const handleSelectProjectNotification = useCallback((item) => {
     if (!item?.projectName) return;
 
-    if (view === 'dashboard') {
-      const el = document.getElementById('activity-section');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.replaceState(null, '', `/dashboard?project=${encodeURIComponent(item.projectName)}#activity`);
-        setActiveSection('activity');
-      }
-    } else {
-      navigate(`/dashboard?project=${encodeURIComponent(item.projectName)}#activity`);
-    }
+    navigate(`${PATHS.upload}?project=${encodeURIComponent(item.projectName)}`);
 
-    // Trigger custom event untuk UploadView
+    // Saat Activity sudah terbuka, UploadView menerima event ini. Saat baru dibuka, ia membaca ?project= dari URL
     window.dispatchEvent(new CustomEvent('gtm-focus-project', {
       detail: {
         projectName: item.projectName,
@@ -232,7 +189,6 @@ export default function AppLayout() {
           <AppSidebar
             user={user}
             isAdmin={isAdmin}
-            activeSection={activeSection}
             goDashboard={goDashboard}
             goUpload={goUpload}
             goAdmin={goAdmin}
@@ -242,6 +198,8 @@ export default function AppLayout() {
             setActiveProgramModal={setActiveProgramModal}
             isMobileOpen={isMobileSidebarOpen}
             setIsMobileOpen={setIsMobileSidebarOpen}
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
             handleLogout={handleLogout}
           />
 
@@ -278,10 +236,10 @@ export default function AppLayout() {
             />
 
             <main
-              className="saas-main-viewport"
+              className={`saas-main-viewport ${view === 'upload' || view === 'branch' ? 'saas-main-viewport-table' : ''}`}
               style={{
                 flex: 1,
-                padding: '24px 32px 48px',
+                padding: view === 'upload' || view === 'branch' ? '24px 32px 12px' : '24px 32px 48px',
                 boxSizing: 'border-box'
               }}
             >

@@ -344,7 +344,7 @@ const BranchView = memo(function BranchView({
       </div>
 
       {/* ─── CONTROLS BAR (EXPORT EXCEL & SEARCH INPUT) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
         {/* Tombol Export Excel */}
         <button
           type="button"
@@ -459,6 +459,7 @@ const BranchView = memo(function BranchView({
         />
       ) : (
         <div style={{
+          marginTop: '14px',
           textAlign: 'center',
           padding: '48px 24px',
           background: '#FFFFFF',

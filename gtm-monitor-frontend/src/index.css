@@ -5,11 +5,8 @@
   --font-heading: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  /* Spektrum Merah - Jingga - Hitam - Putih */
+  /* Warna utama: maroon. Hover/border: #660000. Latar lembut: #FEF2F2 / #FEE2E2. Di atas latar gelap: putih atau #FCA5A5 */
   --primary-red: #800000;
-  --primary-orange: #FF5E00;
-  --grad-red-orange: linear-gradient(135deg, #800000 0%, #FF5E00 100%);
-  --grad-orange-red: linear-gradient(135deg, #FF5E00 0%, #800000 100%);
   --bg-dark: #090A0F;
   --bg-dark-card: rgba(255, 255, 255, 0.04);
 }
@@ -109,7 +106,7 @@ button {
 }
 
 /* Accessible focus ring replacement for keyboard navigation (R-32) */
-:focus-visible:not(input):not(textarea):not(select):not(.login-btn-interactive):not(#login-submit-btn) {
+:focus-visible:not(input):not(textarea):not(select):not(.login-btn-interactive):not(#login-submit-btn):not(.sidebar-nav-item):not(.sidebar-toggle-btn):not(.sidebar-brand-btn) {
   outline: 2px solid #0F172A !important;
   outline-offset: 2px !important;
 }
@@ -198,6 +195,104 @@ button {
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
+}
+
+/* Slider geser tabel: selalu terjangkau di bawah top bar (65px), tanpa perlu turun ke dasar tabel */
+.table-scroll-slider {
+  position: sticky;
+  top: 65px;
+  z-index: 22; /* di atas header tabel (20), di bawah dropdown filter (25) */
+  background: #FFFFFF;
+}
+
+.table-scroll-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 16px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.table-scroll-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: #E2E8F0;
+}
+
+.table-scroll-thumb {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: #800000;
+  cursor: grab;
+  transition: background-color 0.15s ease;
+}
+
+.table-scroll-track:hover .table-scroll-thumb,
+.table-scroll-track.dragging .table-scroll-thumb {
+  background: #660000;
+}
+
+.table-scroll-track.dragging .table-scroll-thumb {
+  cursor: grabbing;
+}
+
+/* Scrollbar bawaan disembunyikan: geser samping lewat slider, geser baris lewat roda mouse atau sentuhan */
+.project-table-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  scrollbar-width: none;
+}
+
+.project-table-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Tinggi maksimal = layar - top bar 65 - slider 16 - gap 6 - sisa bawah 12, supaya tabel penuh sampai bawah */
+.project-table-card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin-top: 6px;
+  min-height: 320px;
+  max-height: calc(100dvh - 99px);
+}
+
+.saas-main-viewport.saas-main-viewport-table {
+  padding-bottom: 12px !important;
+}
+
+/* Perangkat sentuh: tombol sedikit lebih besar, area sentuh tetap 44px tanpa memperlebar jarak */
+@media (pointer: coarse) {
+  .table-scroll-track {
+    height: 28px;
+  }
+
+  .table-scroll-track::before {
+    content: '';
+    position: absolute;
+    inset: -8px 0;
+  }
+
+  .table-scroll-rail {
+    height: 6px;
+  }
+
+  .table-scroll-thumb {
+    height: 12px;
+  }
+
+  .project-table-card {
+    max-height: calc(100dvh - 111px);
+  }
 }
 
 .activity-col-header {
@@ -293,12 +388,12 @@ button {
 }
 
 .profile-menu-item.logout {
-  color: #dc2626;
+  color: #800000;
 }
 
 .profile-menu-item.logout:hover {
   background: #fef2f2;
-  color: #b91c1c;
+  color: #660000;
 }
 
 /* ─── COMPREHENSIVE RESPONSIVE MOBILE STYLES (VERSATILE ACROSS ALL RESOLUTIONS) ─── */
@@ -354,7 +449,7 @@ button {
     padding-top: 56px !important;
   }
 
-  nav, .main-top-nav {
+  .main-top-nav {
     padding: 8px 12px !important;
     display: flex !important;
     justify-content: space-between !important;
@@ -911,7 +1006,7 @@ button {
   font-size: 10px;
   font-weight: 700;
   color: #FFFFFF;
-  background-color: #DC2626;
+  background-color: #800000;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.2px;
   line-height: 1.2;
@@ -940,7 +1035,7 @@ button {
   border: none !important;
   background-color: transparent !important;
   color: rgba(255, 255, 255, 0.78);
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
@@ -951,31 +1046,15 @@ button {
   transition: color 0.16s ease;
 }
 
-.sidebar-nav-item .sidebar-left-indicator {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%) scaleY(0.35);
-  width: 5px;
-  height: 25px;
-  border-radius: 0 6px 6px 0;
-  background-color: #FF1E27;
-  box-shadow: 0 0 12px rgba(255, 30, 39, 0.75);
-  opacity: 0;
-  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .sidebar-nav-item .sidebar-nav-box {
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 100%;
-  margin: 0;
-  padding: 11px 24px;
+  gap: 24px;
+  width: calc(100% - 24px);
+  margin: 0 12px;
+  padding: 10px 12px;
   min-height: 44px;
-  border-radius: 0;
+  border-radius: 10px;
   background-color: transparent;
   border: none !important;
   box-sizing: border-box;
@@ -991,14 +1070,14 @@ button {
 
 .sidebar-nav-item .nav-icon-filled {
   display: none;
-  color: #FF1E27;
+  color: #FFFFFF;
   flex-shrink: 0;
   transition: color 0.16s ease;
 }
 
 .sidebar-nav-item .sidebar-nav-label {
   display: inline-block;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.72);
   transition: color 0.16s ease, font-weight 0.16s ease;
@@ -1013,25 +1092,17 @@ button {
   outline: none;
 }
 
-.sidebar-nav-item.active .sidebar-left-indicator,
-.sidebar-nav-item:hover .sidebar-left-indicator,
-.sidebar-nav-item:focus-visible .sidebar-left-indicator {
-  opacity: 1;
-  transform: translateY(-50%) scaleY(1);
-  background-color: #FF1E27 !important;
-}
-
 .sidebar-nav-item.active .sidebar-nav-box {
-  background: linear-gradient(90deg, rgba(255, 30, 39, 0.24) 0%, rgba(255, 30, 39, 0.06) 100%) !important;
+  background: #800000 !important;
 }
 
-.sidebar-nav-item:hover .sidebar-nav-box,
-.sidebar-nav-item:focus-visible .sidebar-nav-box {
-  background: rgba(255, 30, 39, 0.14) !important;
+.sidebar-nav-item:not(.active):hover .sidebar-nav-box,
+.sidebar-nav-item:not(.active):focus-visible .sidebar-nav-box {
+  background: rgba(128, 0, 0, 0.45) !important;
 }
 
 .sidebar-nav-item:focus-visible .sidebar-nav-box {
-  outline: 2px solid #FF1E27;
+  outline: 2px solid #FFFFFF;
   outline-offset: -2px;
 }
 
@@ -1045,7 +1116,7 @@ button {
 .sidebar-nav-item:hover .nav-icon-filled,
 .sidebar-nav-item:focus-visible .nav-icon-filled {
   display: block;
-  color: #FF1E27 !important;
+  color: #FFFFFF !important;
 }
 
 .sidebar-nav-item.active .sidebar-nav-label {
@@ -1060,9 +1131,104 @@ button {
 }
 
 .sidebar-brand-btn:focus-visible {
-  outline: 2px solid #FF1E27;
+  outline: 2px solid #FFFFFF;
   outline-offset: 4px;
   border-radius: 8px;
+}
+
+/* Baris logo setinggi top bar (64px). Garis tiga segaris dengan ikon menu di bawahnya.
+   margin-bottom 25px = border top bar 1px + padding atas konten 24px, supaya menu pertama sejajar dengan kartu pertama */
+.sidebar-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 64px;
+  padding: 0 12px 0 14px;
+  margin-bottom: 25px;
+  box-sizing: border-box;
+}
+
+.sidebar-brand-btn {
+  display: inline-flex;
+}
+
+.sidebar-brand-word {
+  display: block;
+}
+
+.sidebar-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.sidebar-toggle-btn:active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.sidebar-toggle-btn:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: -2px;
+}
+
+.sidebar-nav-chevron {
+  margin-left: auto;
+}
+
+/* Ruang kosong setinggi satu menu (44px, termasuk gap 4px milik nav) sebelum garis */
+.sidebar-divider {
+  width: 100%;
+  margin: 40px 0 8px;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.sidebar-logout-btn {
+  padding: 10px;
+}
+
+@media (min-width: 1025px) {
+  .app-sidebar.collapsed {
+    width: 72px;
+  }
+
+  .app-sidebar.collapsed .sidebar-brand-row {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .app-sidebar.collapsed .sidebar-brand-btn,
+  .app-sidebar.collapsed .sidebar-nav-label,
+  .app-sidebar.collapsed .sidebar-nav-chevron,
+  .app-sidebar.collapsed .sidebar-divider,
+  .app-sidebar.collapsed .sidebar-logout-label {
+    display: none;
+  }
+
+  .app-sidebar.collapsed .sidebar-nav-box {
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .app-sidebar.collapsed .sidebar-logout-btn {
+    justify-content: center;
+    padding: 10px 0;
+  }
 }
 
 .sidebar-login-btn {
@@ -1111,8 +1277,10 @@ button {
 }
 
 .app-sidebar {
+  width: 256px;
   height: 100vh;
   min-height: 100dvh;
+  transition: width 0.2s ease;
 }
 
 @media (max-width: 1024px) {

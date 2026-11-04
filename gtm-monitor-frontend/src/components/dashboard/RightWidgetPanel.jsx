@@ -9,7 +9,7 @@ function MiniProgressItem({ b, index, isLast, goBranch, isInView }) {
 
   const isPositive = b.delta > 0;
   const isNegative = b.delta < 0;
-  const deltaColor = isPositive ? '#16A34A' : isNegative ? '#DC2626' : '#64748B';
+  const deltaColor = isPositive ? '#16A34A' : isNegative ? '#800000' : '#64748B';
   const deltaFormatted = isPositive ? `+${b.delta}%` : `${b.delta}%`;
 
   return (
@@ -96,7 +96,7 @@ function MiniProgressItem({ b, index, isLast, goBranch, isInView }) {
                 height="13"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#DC2626"
+                stroke="#800000"
                 strokeWidth="2.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"

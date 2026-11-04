@@ -23,6 +23,7 @@ export const LEGACY_HASH_PATHS = {
   '#dashboard': PATHS.dashboard,
   '#monitoring': PATHS.dashboard,
   '#upload': PATHS.upload,
+  '#activity': PATHS.upload,
   '#admin': PATHS.admin,
   '#login': PATHS.login,
   '#landing': PATHS.landing,

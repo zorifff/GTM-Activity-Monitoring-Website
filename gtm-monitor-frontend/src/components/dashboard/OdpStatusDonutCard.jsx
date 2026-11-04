@@ -45,8 +45,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
       const offset = accumulatedOffset;
       accumulatedOffset += strokeLength;
 
-      // Ensure Yellow strictly uses #FFFF00
-      const color = chip.label?.toLowerCase() === 'yellow' ? '#FFFF00' : (chip.color || '#334155');
+      const color = chip.color || '#334155';
 
       return {
         ...chip,
@@ -169,7 +168,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   style={{
                     fontSize: '26px',
                     fontWeight: 600,
-                    color: activeChip.label?.toLowerCase() === 'yellow' ? '#CA8A04' : activeChip.color,
+                    color: activeChip.label?.toLowerCase() === 'yellow' ? '#A16207' : activeChip.color,
                     fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1.1
                   }}
@@ -247,7 +246,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                       height: '8px',
                       borderRadius: '50%',
                       backgroundColor: slice.color,
-                      border: slice.color?.toUpperCase() === '#FFFF00' ? '1px solid #CBD5E1' : 'none',
                       boxSizing: 'border-box',
                       flexShrink: 0
                     }}

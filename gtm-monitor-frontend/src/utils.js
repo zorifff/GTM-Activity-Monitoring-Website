@@ -8,9 +8,9 @@ export const ACT_TYPES = [
 
 export const BRANCH_COLORS = {
   MAGELANG: '#10b981',   // Emerald Green
-  PEKALONGAN: '#f97316', // Sunset Orange
+  PEKALONGAN: '#64748b', // Slate
   PURWOKERTO: '#3b82f6', // Royal Blue
-  SEMARANG: '#ef4444',   // Telkomsel Red / Crimson
+  SEMARANG: '#800000',   // Maroon
   SURAKARTA: '#8b5cf6',  // Royal Purple / Violet
   YOGYAKARTA: '#06b6d4'  // Cyan / Turquoise
 };
@@ -43,7 +43,7 @@ export function getOdpCoords(odpName, branchName, existingLat, existingLon) {
 export function actMeta(status) {
   if (status === 'verified') return { label: 'Terverifikasi', bg: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0' };
   if (status === 'upload') return { label: 'Menunggu Verifikasi', bg: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' };
-  if (status === 'gagal' || status === 'rejected') return { label: 'Ditolak', bg: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca' };
+  if (status === 'gagal' || status === 'rejected') return { label: 'Ditolak', bg: '#fee2e2', color: '#800000', border: '1px solid #fecaca' };
   if (status === 'proses' || status === 'processing') return { label: 'Diproses', bg: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe' };
   return { label: 'Belum Dikerjakan', bg: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0' };
 }
@@ -237,7 +237,7 @@ export function exportProjectsToExcel(branches, selectedBranchName = null) {
         ws[cellRef].s = {
           fill: {
             patternType: "solid",
-            fgColor: { rgb: "C8102E" } // Telkomsel Red (#800000)
+            fgColor: { rgb: "800000" } // Maroon
           },
           font: {
             name: "Calibri",

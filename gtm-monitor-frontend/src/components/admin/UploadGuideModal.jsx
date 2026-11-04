@@ -53,7 +53,7 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
                 height: '38px',
                 borderRadius: '10px',
                 background: activeInfoModal === 'delete' ? '#FEF2F2' : '#EFF6FF',
-                color: activeInfoModal === 'delete' ? '#DC2626' : '#2563EB',
+                color: activeInfoModal === 'delete' ? '#800000' : '#2563EB',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -122,10 +122,10 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
 
               {/* Section 2: Restrictions / Don'ts */}
               <div style={{ background: '#FEF2F2', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#991B1B', fontSize: '13px', marginBottom: '8px' }}>
+                <div style={{ fontWeight: 700, color: '#800000', fontSize: '13px', marginBottom: '8px' }}>
                   Hal yang Dilarang / Pantangan:
                 </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', color: '#7F1D1D', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', color: '#800000', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <li><b>Dilarang</b> mengunggah berkas non-gambar (seperti berkas <code>.pdf</code>, <code>.docx</code>, atau <code>.xlsx</code>).</li>
                   <li><b>Dilarang</b> mengunggah gambar yang terlalu buram atau beresolusi sangat rendah sehingga teks tidak dapat dibaca OCR.</li>
                   <li><b>Dilarang</b> mengosongkan nama program saat mengunggah flyer materi.</li>
@@ -148,10 +148,10 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
 
               {/* Section 2: Restrictions / Don'ts */}
               <div style={{ background: '#FEF2F2', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#991B1B', fontSize: '13px', marginBottom: '8px' }}>
+                <div style={{ fontWeight: 700, color: '#800000', fontSize: '13px', marginBottom: '8px' }}>
                   Hal yang Dilarang / Pantangan:
                 </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', color: '#7F1D1D', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', color: '#800000', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <li><b>Dilarang</b> menghapus atau merusak struktur nama kolom baku (<code>bb_id</code>, <code>msisdn_parent</code>, <code>order_id</code>).</li>
                   <li><b>Dilarang</b> menggabungkan sel (*merged cells*) pada area baris data pairing.</li>
                   <li><b>Dilarang</b> mengunci file Excel dengan *password protection*.</li>
@@ -174,10 +174,10 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
 
               {/* Section 2: Warning */}
               <div style={{ background: '#FEF2F2', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#991B1B', fontSize: '13px', marginBottom: '8px' }}>
+                <div style={{ fontWeight: 700, color: '#800000', fontSize: '13px', marginBottom: '8px' }}>
                   Peringatan Penting:
                 </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', color: '#7F1D1D', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', color: '#800000', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <li>Tindakan penghapusan bersifat <b>permanen</b> dan tidak dapat diurungkan (*irreversible*).</li>
                   <li>File gambar pada CDN Cloudinary dan data program pada database akan dihapus dari server.</li>
                 </ul>
@@ -199,10 +199,10 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
 
               {/* Section 2: Restrictions / Don'ts */}
               <div style={{ background: '#FEF2F2', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#991B1B', fontSize: '13px', marginBottom: '8px' }}>
+                <div style={{ fontWeight: 700, color: '#800000', fontSize: '13px', marginBottom: '8px' }}>
                   Hal yang Dilarang / Pantangan:
                 </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', color: '#7F1D1D', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', color: '#800000', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <li><b>Dilarang</b> mengosongkan atau mengganti nama kolom <code>Branch</code>, <code>Project</code>, <code>WOK</code>, atau <code>ODP</code>.</li>
                   <li><b>Dilarang</b> mengisi nilai negatif atau karakter huruf pada kolom kapasitas port.</li>
                   <li><b>Dilarang</b> menggunakan *merged cells* (sel gabungan) pada area tabel data ODP.</li>

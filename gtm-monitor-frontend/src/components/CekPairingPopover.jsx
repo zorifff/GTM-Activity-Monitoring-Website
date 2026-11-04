@@ -409,7 +409,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             </div>
 
             {error && (
-              <div style={{ padding: '10px 12px', borderRadius: '8px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '12px', fontWeight: 500, lineHeight: 1.45 }}>
+              <div style={{ padding: '10px 12px', borderRadius: '8px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#800000', fontSize: '12px', fontWeight: 500, lineHeight: 1.45 }}>
                 {error}
               </div>
             )}
@@ -436,7 +436,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
               }}
               onMouseEnter={(e) => {
                 if (!loading && query.trim()) {
-                  e.currentTarget.style.background = '#990000';
+                  e.currentTarget.style.background = '#660000';
                 }
               }}
               onMouseLeave={(e) => {
@@ -646,7 +646,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                   transition: 'all 0.15s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#990000';
+                  e.currentTarget.style.background = '#660000';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = '#800000';

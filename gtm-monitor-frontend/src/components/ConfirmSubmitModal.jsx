@@ -69,8 +69,8 @@ export default function ConfirmSubmitModal({ data, onConfirm, onCancel, isSubmit
         {/* Badge Icon */}
         <div style={{
           width: '54px', height: '54px', borderRadius: '50%',
-          background: '#FFF7ED',
-          border: '1px solid #FED7AA', color: '#FF5E00',
+          background: '#FEF2F2',
+          border: '1px solid #FECACA', color: '#800000',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 16px auto'
         }}>
@@ -110,7 +110,7 @@ export default function ConfirmSubmitModal({ data, onConfirm, onCancel, isSubmit
             disabled={isSubmitting}
             style={{
               flex: 1, padding: '12px', borderRadius: '10px',
-              border: '1px solid #991B1B', background: '#800000',
+              border: '1px solid #660000', background: '#800000',
               color: '#FFFFFF', fontSize: '13.5px', fontWeight: 600,
               cursor: isSubmitting ? 'not-allowed' : 'pointer',
               boxShadow: '0 2px 8px rgba(128, 0, 0, 0.25)',

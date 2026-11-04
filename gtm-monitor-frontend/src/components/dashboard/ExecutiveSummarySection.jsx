@@ -484,7 +484,7 @@ export default function ExecutiveSummarySection({
           {/* Table Footer: Grand Totals Regional Jateng DIY */}
           {((executiveSummary?.grandTotals) || (executiveSummary?.grandTotalLop !== undefined)) && (
             <tfoot>
-              <tr style={{ background: '#800000', color: '#FFFFFF', fontWeight: 600, borderTop: '2px solid #550000' }}>
+              <tr style={{ background: '#800000', color: '#FFFFFF', fontWeight: 600, borderTop: '2px solid #660000' }}>
                 <td colSpan={2} style={{ padding: '11px 12px', textAlign: 'left', borderRight: '1px solid rgba(255, 255, 255, 0.2)', fontSize: '11.5px', letterSpacing: '0.03em' }}>
                   GRAND TOTAL
                 </td>

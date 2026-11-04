@@ -163,7 +163,6 @@ export default function RegionalMetricsSummaryCard({
                     height: '7px',
                     borderRadius: '50%',
                     background: s.color,
-                    border: s.color?.toUpperCase() === '#FFFF00' ? '1px solid #CBD5E1' : 'none',
                     boxSizing: 'border-box',
                     display: 'inline-block',
                     flexShrink: 0
