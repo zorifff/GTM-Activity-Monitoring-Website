@@ -160,7 +160,7 @@ export default memo(function RightWidgetPanel({
         <span style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
           Ranking Branch
         </span>
-        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600, background: '#F1F5F9', padding: '2px 8px', borderRadius: '6px' }}>
+        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>
           OCC Terendah
         </span>
       </div>
