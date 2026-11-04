@@ -375,7 +375,8 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                               </>
                             )}
 
-                            {(deletePhoto || rejectActivity) && (
+                            {/* Foto menunggu verifikasi: Tolak sudah menghapus foto, jadi Hapus hanya untuk yang tidak punya Tolak */}
+                            {(deletePhoto || rejectActivity) && !(ph.status === 'upload' && rejectActivity) && (
                               <button
                                 type="button"
                                 onClick={() => triggerDeleteConfirm(actType.key, ph.id, actType.label, idx)}
