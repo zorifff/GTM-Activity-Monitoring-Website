@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { BRANCH_COLORS } from '../../utils';
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -10,8 +10,10 @@ function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
 }
 
 function describeArc(x, y, radius, startAngle, endAngle) {
+  const sweep = endAngle - startAngle;
+  if (sweep <= 0.08) return '';
   // Clamp angle so it doesn't wrap around 360 awkwardly
-  const safeEndAngle = endAngle - startAngle >= 359.99 ? startAngle + 359.99 : endAngle;
+  const safeEndAngle = sweep >= 359.99 ? startAngle + 359.99 : endAngle;
   const start = polarToCartesian(x, y, radius, safeEndAngle);
   const end = polarToCartesian(x, y, radius, startAngle);
   const largeArcFlag = safeEndAngle - startAngle <= 180 ? '0' : '1';
@@ -26,45 +28,106 @@ function describeArc(x, y, radius, startAngle, endAngle) {
 
 export default function BranchProjectsPieCard({ ranking = [], branches = [], goBranch, isInView = true }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [isAnimated, setIsAnimated] = useState(false);
 
-  useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => setIsAnimated(true), 60);
-      return () => clearTimeout(timer);
-    } else {
-      setIsAnimated(false);
-    }
-  }, [isInView]);
-
-  // Aggregate project count per branch & sort descending
+  // Urutan branch stabil dari master branches (urut volume terbesar keseluruhan)
+  // lalu pasangkan dengan projCount dari filter aktif (ranking) agar transisi sudut pie berputar mulus
   const branchData = useMemo(() => {
-    const list = Array.isArray(ranking) && ranking.length > 0 ? ranking : branches;
-    const mapped = list.map(b => {
-      const count = b.projCount ?? (b.projects?.length || 0);
-      const bUpper = b.name?.toString().trim().toUpperCase();
-      const color = b.color || BRANCH_COLORS[bUpper] || '#64748B';
+    const masterList = Array.isArray(branches) && branches.length > 0 ? branches : ranking;
+
+    const baseList = [...masterList].sort((a, b) => {
+      const countA = a.projects?.length ?? a.projCount ?? 0;
+      const countB = b.projects?.length ?? b.projCount ?? 0;
+      return countB - countA;
+    });
+
+    return baseList.map((b) => {
+      const bUpper = (b.name || '').toString().trim().toUpperCase();
+      const rankedMatch = (ranking || []).find(
+        (r) => (r.name || '').toString().trim().toUpperCase() === bUpper
+      );
+      const count = rankedMatch
+        ? (rankedMatch.projCount ?? 0)
+        : (b.projCount ?? (b.projects?.length || 0));
+      const color = rankedMatch?.color || b.color || BRANCH_COLORS[bUpper] || '#64748B';
 
       return {
         name: b.name,
         count,
         color
       };
-    }).sort((a, b) => b.count - a.count); // Largest share first
-
-    return mapped;
+    });
   }, [ranking, branches]);
 
-  const totalProjects = useMemo(() => {
-    return branchData.reduce((acc, b) => acc + (b.count || 0), 0) || 1;
+  const rawTotalProjects = useMemo(() => {
+    return branchData.reduce((acc, b) => acc + (b.count || 0), 0);
   }, [branchData]);
 
+  const safeDivisor = rawTotalProjects > 0 ? rawTotalProjects : 1;
 
-  // Compute angles for each pie slice
+  // Target nilai per branch untuk diinterpolasi
+  const targetBranches = useMemo(() => {
+    return branchData.map((b) => ({
+      ...b,
+      targetCount: b.count || 0,
+      targetShare: rawTotalProjects > 0 ? (b.count || 0) / safeDivisor : 0
+    }));
+  }, [branchData, rawTotalProjects, safeDivisor]);
+
+  // Interpolasi sudut circular (requestAnimationFrame) saat mount maupun saat ganti filter
+  const currentAnimRef = useRef({});
+  const [animMap, setAnimMap] = useState({});
+
+  useEffect(() => {
+    if (!isInView || targetBranches.length === 0) return;
+
+    const startValues = {};
+    targetBranches.forEach((b) => {
+      const prev = currentAnimRef.current[b.name];
+      startValues[b.name] = {
+        count: prev ? prev.count : 0,
+        share: prev ? prev.share : 0
+      };
+    });
+
+    const duration = 700;
+    const startTime = performance.now();
+    let frameId = null;
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const rawProgress = Math.min(Math.max(elapsed / duration, 0), 1);
+      // Cubic ease-out untuk rotasi juring lingkaran yang halus
+      const ease = 1 - Math.pow(1 - rawProgress, 3);
+
+      const nextMap = {};
+      targetBranches.forEach((b) => {
+        const s = startValues[b.name] || { count: 0, share: 0 };
+        nextMap[b.name] = {
+          count: s.count + (b.targetCount - s.count) * ease,
+          share: s.share + (b.targetShare - s.share) * ease
+        };
+      });
+
+      currentAnimRef.current = nextMap;
+      setAnimMap(nextMap);
+
+      if (rawProgress < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, [targetBranches, isInView]);
+
+  // Hitung sudut startAngle, endAngle, dan path SVG pada setiap frame animasi
   const slices = useMemo(() => {
     let currentAngle = 0;
-    return branchData.map((b) => {
-      const share = b.count / totalProjects;
+    return targetBranches.map((b) => {
+      const anim = animMap[b.name] || { count: 0, share: 0 };
+      const share = Math.max(anim.share, 0);
       const angle = share * 360;
       const startAngle = currentAngle;
       const endAngle = currentAngle + angle;
@@ -77,6 +140,8 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
 
       return {
         ...b,
+        count: Math.round(anim.count),
+        angle,
         startAngle,
         endAngle,
         midAngle,
@@ -86,7 +151,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
         path: describeArc(100, 100, 80, startAngle, endAngle)
       };
     });
-  }, [branchData, totalProjects]);
+  }, [targetBranches, animMap]);
 
   return (
     <div
@@ -130,14 +195,16 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
             height="255"
             viewBox="0 0 200 200"
             style={{
-              overflow: 'visible',
-              transform: isAnimated ? 'scale(1) rotate(0deg)' : 'scale(0.85) rotate(-15deg)',
-              opacity: isAnimated ? 1 : 0,
-              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease'
+              overflow: 'visible'
             }}
           >
+            {/* Lingkaran dasar abu-abu lembut saat transisi awal atau jika total 0 */}
+            <circle cx="100" cy="100" r="80" fill="#F1F5F9" />
+
             {slices.map((slice, idx) => {
+              if (!slice.path) return null;
               const isHovered = hoveredIndex === idx;
+              const isFullCircle = slice.angle >= 359.5;
 
               return (
                 <path
@@ -145,7 +212,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                   d={slice.path}
                   fill={slice.color}
                   stroke="#FFFFFF"
-                  strokeWidth="2"
+                  strokeWidth={isFullCircle ? '0' : '2'}
                   strokeLinejoin="round"
                   style={{
                     cursor: 'pointer',
@@ -219,7 +286,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                       fontVariantNumeric: 'tabular-nums'
                     }}
                   >
-                    {slice.count} <span style={{ fontSize: '10.5px', color: '#64748B', }}>proj</span>
+                    {slice.count} <span style={{ fontSize: '10.5px', color: '#64748B' }}>proj</span>
                   </span>
                   <span
                     style={{

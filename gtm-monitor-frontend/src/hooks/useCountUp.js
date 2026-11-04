@@ -2,11 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 
 /**
  * useCountUp hook
- * Animates a numeric value from startVal (or previous value) to targetVal
+ * Animates a numeric value from current displayed value to targetValue
  * Uses cubic ease-out: 1 - Math.pow(1 - progress, 3)
- * Respects prefers-reduced-motion and in-view enabled trigger
  *
- * @param {number} targetValue - Target number to count up to
+ * @param {number} targetValue - Target number to count up/down to
  * @param {object} options
  * @param {boolean} [options.enabled=true] - Only start animation when enabled is true
  * @param {number} [options.duration=800] - Duration in ms
@@ -22,31 +21,20 @@ export function useCountUp(targetValue = 0, {
   delay = 0,
   formatThousands = true
 } = {}) {
-  const isReducedMotion = typeof window !== 'undefined' 
-    && window.matchMedia 
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const [displayValue, setDisplayValue] = useState(() => (isReducedMotion ? (Number(targetValue) || 0) : 0));
-  
-  const prevTargetRef = useRef(0);
+  const [displayValue, setDisplayValue] = useState(0);
+  const currentValRef = useRef(0);
   const animFrameRef = useRef(null);
 
   useEffect(() => {
-    // If not enabled yet, keep at 0
     if (!enabled) {
       return;
     }
 
     const endVal = Number(targetValue) || 0;
+    const startVal = currentValRef.current;
 
-    if (isReducedMotion) {
+    if (startVal === endVal) {
       setDisplayValue(endVal);
-      prevTargetRef.current = endVal;
-      return;
-    }
-
-    const startVal = prevTargetRef.current;
-    if (startVal === endVal && displayValue === endVal) {
       return;
     }
 
@@ -64,13 +52,14 @@ export function useCountUp(targetValue = 0, {
       const easeProgress = 1 - Math.pow(1 - rawProgress, 3);
       const currentVal = startVal + (endVal - startVal) * easeProgress;
 
+      currentValRef.current = currentVal;
       setDisplayValue(currentVal);
 
       if (rawProgress < 1) {
         animFrameRef.current = requestAnimationFrame(animate);
       } else {
+        currentValRef.current = endVal;
         setDisplayValue(endVal);
-        prevTargetRef.current = endVal;
       }
     };
 
@@ -81,7 +70,7 @@ export function useCountUp(targetValue = 0, {
         cancelAnimationFrame(animFrameRef.current);
       }
     };
-  }, [targetValue, duration, delay, isReducedMotion, enabled]);
+  }, [targetValue, duration, delay, enabled]);
 
   const numVal = Number(displayValue) || 0;
 
@@ -97,5 +86,3 @@ export function useCountUp(targetValue = 0, {
   }
   return String(roundedInt);
 }
-
-export default useCountUp;

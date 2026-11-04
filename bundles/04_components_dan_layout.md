@@ -4,52 +4,54 @@
 
 **Daftar Berkas Terlampir (31 berkas):**
 
-- `gtm-monitor-frontend/src/routes/AppLayout.jsx` (309 baris)
-- `gtm-monitor-frontend/src/components/layout/TopHeaderBar.jsx` (486 baris)
-- `gtm-monitor-frontend/src/components/layout/AppSidebar.jsx` (539 baris)
+- `gtm-monitor-frontend/src/routes/AppLayout.jsx` (271 baris)
+- `gtm-monitor-frontend/src/components/layout/TopHeaderBar.jsx` (542 baris)
+- `gtm-monitor-frontend/src/components/layout/AppSidebar.jsx` (495 baris)
 - `gtm-monitor-frontend/src/components/layout/ProfileMenu.jsx` (68 baris)
-- `gtm-monitor-frontend/src/components/layout/ProgramMenu.jsx` (373 baris)
-- `gtm-monitor-frontend/src/components/layout/CekPairingNavItem.jsx` (133 baris)
-- `gtm-monitor-frontend/src/components/layout/LoadingScreen.jsx` (40 baris)
-- `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1006 baris)
-- `gtm-monitor-frontend/src/components/ActivityStatus.jsx` (248 baris)
-- `gtm-monitor-frontend/src/components/dashboard/HeroOccupancyCard.jsx` (138 baris)
-- `gtm-monitor-frontend/src/components/dashboard/RegionalMetricsSummaryCard.jsx` (264 baris)
-- `gtm-monitor-frontend/src/components/dashboard/KpiCards.jsx` (253 baris)
-- `gtm-monitor-frontend/src/components/dashboard/PortDistributionChartCard.jsx` (449 baris)
-- `gtm-monitor-frontend/src/components/dashboard/OdpStatusDonutCard.jsx` (299 baris)
-- `gtm-monitor-frontend/src/components/dashboard/BranchRankingCard.jsx` (370 baris)
-- `gtm-monitor-frontend/src/components/dashboard/ExecutiveSummarySection.jsx` (525 baris)
-- `gtm-monitor-frontend/src/components/dashboard/ExecutiveSummaryCard.jsx` (371 baris)
-- `gtm-monitor-frontend/src/components/dashboard/GtmExecutionInsightCard.jsx` (132 baris)
-- `gtm-monitor-frontend/src/components/dashboard/BranchProjectsPieCard.jsx` (248 baris)
-- `gtm-monitor-frontend/src/components/dashboard/SearchFilterToolbar.jsx` (144 baris)
-- `gtm-monitor-frontend/src/components/dashboard/RightWidgetPanel.jsx` (190 baris)
-- `gtm-monitor-frontend/src/components/dashboard/DashboardHeader.jsx` (129 baris)
+- `gtm-monitor-frontend/src/components/layout/ProgramMenu.jsx` (367 baris)
+- `gtm-monitor-frontend/src/components/layout/CekPairingNavItem.jsx` (132 baris)
+- `gtm-monitor-frontend/src/components/layout/LoadingScreen.jsx` (202 baris)
+- `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1010 baris)
+- `gtm-monitor-frontend/src/components/ActivityStatus.jsx` (220 baris)
+- `gtm-monitor-frontend/src/components/dashboard/HeroOccupancyCard.jsx` (132 baris)
+- `gtm-monitor-frontend/src/components/dashboard/RegionalMetricsSummaryCard.jsx` (251 baris)
+- `gtm-monitor-frontend/src/components/dashboard/KpiCards.jsx` (245 baris)
+- `gtm-monitor-frontend/src/components/dashboard/PortDistributionChartCard.jsx` (502 baris)
+- `gtm-monitor-frontend/src/components/dashboard/OdpStatusDonutCard.jsx` (344 baris)
+- `gtm-monitor-frontend/src/components/dashboard/BranchRankingCard.jsx` (360 baris)
+- `gtm-monitor-frontend/src/components/dashboard/ExecutiveSummarySection.jsx` (514 baris)
+- `gtm-monitor-frontend/src/components/dashboard/ExecutiveSummaryCard.jsx` (360 baris)
+- `gtm-monitor-frontend/src/components/dashboard/GtmExecutionInsightCard.jsx` (131 baris)
+- `gtm-monitor-frontend/src/components/dashboard/BranchProjectsPieCard.jsx` (311 baris)
+- `gtm-monitor-frontend/src/components/dashboard/SearchFilterToolbar.jsx` (142 baris)
+- `gtm-monitor-frontend/src/components/dashboard/RightWidgetPanel.jsx` (189 baris)
+- `gtm-monitor-frontend/src/components/dashboard/DashboardHeader.jsx` (126 baris)
 - `gtm-monitor-frontend/src/components/admin/AdminHeader.jsx` (13 baris)
-- `gtm-monitor-frontend/src/components/admin/AdminTabs.jsx` (35 baris)
-- `gtm-monitor-frontend/src/components/admin/AdminKpiGrid.jsx` (314 baris)
-- `gtm-monitor-frontend/src/components/admin/AdminActionHubCard.jsx` (352 baris)
+- `gtm-monitor-frontend/src/components/admin/AdminTabs.jsx` (34 baris)
+- `gtm-monitor-frontend/src/components/admin/AdminKpiGrid.jsx` (296 baris)
+- `gtm-monitor-frontend/src/components/admin/AdminActionHubCard.jsx` (351 baris)
 - `gtm-monitor-frontend/src/components/admin/MonitoringTab.jsx` (179 baris)
-- `gtm-monitor-frontend/src/components/admin/OdpImportCard.jsx` (230 baris)
-- `gtm-monitor-frontend/src/components/admin/PairingImportCard.jsx` (235 baris)
-- `gtm-monitor-frontend/src/components/admin/ProgramUploadCard.jsx` (369 baris)
-- `gtm-monitor-frontend/src/components/admin/ProgramDeleteCard.jsx` (177 baris)
+- `gtm-monitor-frontend/src/components/admin/OdpImportCard.jsx` (224 baris)
+- `gtm-monitor-frontend/src/components/admin/PairingImportCard.jsx` (229 baris)
+- `gtm-monitor-frontend/src/components/admin/ProgramUploadCard.jsx` (360 baris)
+- `gtm-monitor-frontend/src/components/admin/ProgramDeleteCard.jsx` (173 baris)
 
-**Total Baris Kode**: 8.620 baris
+**Total Baris Kode**: 8.641 baris
 
 ---
 
-## File: `gtm-monitor-frontend/src/routes/AppLayout.jsx` (309 baris)
+## File: `gtm-monitor-frontend/src/routes/AppLayout.jsx` (271 baris)
 
 ```javascript
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import LoginPage from '../components/Auth/LoginPage';
+import LoginModal from '../components/Auth/LoginModal';
 import ProgramViewerModal from '../components/ProgramViewerModal';
 import LoadingScreen from '../components/layout/LoadingScreen';
 import AppSidebar from '../components/layout/AppSidebar';
 import TopHeaderBar from '../components/layout/TopHeaderBar';
+
+const SIDEBAR_COLLAPSED_KEY = 'gtm:sidebar-collapsed';
 import ProfileMenu from '../components/layout/ProfileMenu';
 import LogoutConfirmModal from '../components/layout/LogoutConfirmModal';
 import SessionExpiredModal from '../components/layout/SessionExpiredModal';
@@ -75,9 +77,24 @@ export default function AppLayout() {
   const [activeProgramModal, setActiveProgramModal] = useState(null);
   const [typeDesignFilter, setTypeDesignFilter] = useState('ALL');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, isSidebarCollapsed ? '1' : '0');
+    } catch {
+      // Penyimpanan browser diblokir: pilihan hanya berlaku sampai halaman dimuat ulang
+    }
+  }, [isSidebarCollapsed]);
 
   const contentAreaRef = useRef(null);
-  const [activeSection, setActiveSection] = useState('dashboard');
+  const activeSection = view === 'upload' ? 'activity' : 'dashboard';
 
   useEffect(() => {
     setShowProfileModal(false);
@@ -86,50 +103,13 @@ export default function AppLayout() {
 
   useEffect(() => {
     const target = LEGACY_HASH_PATHS[location.hash.toLowerCase()];
-    if (target) navigate(target, { replace: true });
-  }, [location.hash, navigate]);
+    if (target) navigate(`${target}${location.search}`, { replace: true });
+  }, [location.hash, location.search, navigate]);
 
-  // Scroll spy untuk menentukan section mana yang sedang aktif saat halaman continuous di-scroll
+  // Wadah gulir dipakai bersama semua halaman: halaman baru selalu dibuka dari paling atas
   useEffect(() => {
-    if (view !== 'dashboard') return;
-
-    const container = contentAreaRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      const activityEl = document.getElementById('activity-section');
-      if (!activityEl) return;
-
-      const rect = activityEl.getBoundingClientRect();
-      // Bila batas atas section Activity berada di posisi 200px dari atas viewport (di bawah header 64px)
-      if (rect.top <= 200) {
-        setActiveSection('activity');
-      } else {
-        setActiveSection('dashboard');
-      }
-    };
-
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-    };
+    if (contentAreaRef.current) contentAreaRef.current.scrollTo({ top: 0, behavior: 'instant' });
   }, [view]);
-
-  // Auto-scroll saat pertama kali membuka tautan ber-hash #activity
-  useEffect(() => {
-    if (view === 'dashboard' && location.hash === '#activity') {
-      const timer = setTimeout(() => {
-        const el = document.getElementById('activity-section');
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setActiveSection('activity');
-        }
-      }, 150);
-      return () => clearTimeout(timer);
-    }
-  }, [view, location.hash]);
 
   const handleLogout = (showAlert = true) => {
     if (typeof showAlert !== 'boolean') showAlert = true;
@@ -150,16 +130,7 @@ export default function AppLayout() {
       return;
     }
     if (view === 'dashboard') {
-      if (contentAreaRef.current) {
-        contentAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const el = document.getElementById('dashboard-section');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-      if (window.location.hash) {
-        window.history.replaceState(null, '', '/dashboard');
-      }
-      setActiveSection('dashboard');
+      if (contentAreaRef.current) contentAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       navigate(PATHS.dashboard);
     }
@@ -170,15 +141,10 @@ export default function AppLayout() {
       setShowLoginModal(true);
       return;
     }
-    if (view === 'dashboard') {
-      const el = document.getElementById('activity-section');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.replaceState(null, '', '/dashboard#activity');
-        setActiveSection('activity');
-      }
+    if (view === 'upload') {
+      if (contentAreaRef.current) contentAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      navigate('/dashboard#activity');
+      navigate(PATHS.upload);
     }
   }, [user, view, navigate]);
 
@@ -199,18 +165,9 @@ export default function AppLayout() {
   const handleSelectProjectNotification = useCallback((item) => {
     if (!item?.projectName) return;
 
-    if (view === 'dashboard') {
-      const el = document.getElementById('activity-section');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.replaceState(null, '', `/dashboard?project=${encodeURIComponent(item.projectName)}#activity`);
-        setActiveSection('activity');
-      }
-    } else {
-      navigate(`/dashboard?project=${encodeURIComponent(item.projectName)}#activity`);
-    }
+    navigate(`${PATHS.upload}?project=${encodeURIComponent(item.projectName)}`);
 
-    // Trigger custom event untuk UploadView
+    // Saat Activity sudah terbuka, UploadView menerima event ini. Saat baru dibuka, ia membaca ?project= dari URL
     window.dispatchEvent(new CustomEvent('gtm-focus-project', {
       detail: {
         projectName: item.projectName,
@@ -219,22 +176,19 @@ export default function AppLayout() {
     }));
   }, [view, navigate]);
 
-  if (!authChecked || isInitialLoading) {
-    return <LoadingScreen />;
-  }
+  const isGlobalLoading = !authChecked || isInitialLoading;
 
   const renderLoginModal = () => {
     if (!showLoginModal) return null;
     return (
-      <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#ffffff', overflowY: 'auto' }}>
-        <LoginPage
-          onLoginSuccess={(loggedInUser, expiresAt) => {
-            login(loggedInUser, expiresAt);
-            setShowLoginModal(false);
-          }}
-          onBackToLanding={() => setShowLoginModal(false)}
-        />
-      </div>
+      <LoginModal
+        isOpen={showLoginModal}
+        onLoginSuccess={(loggedInUser, expiresAt) => {
+          login(loggedInUser, expiresAt);
+          setShowLoginModal(false);
+        }}
+        onClose={() => setShowLoginModal(false)}
+      />
     );
   };
 
@@ -242,121 +196,128 @@ export default function AppLayout() {
 
   return (
     <div className={`saas-app-root ${isFullPage ? 'app-root-fullpage' : 'app-root-saas'}`}>
-      {renderLoginModal()}
-      {activeProgramModal && (
-        <ProgramViewerModal
-          program={activeProgramModal.program}
-          monthLabel={activeProgramModal.monthLabel}
-          onClose={() => setActiveProgramModal(null)}
-          isAdmin={!!(user && (user.role === 'ADMIN' || user.username === 'admin'))}
-          onDeleteSuccess={() => {
-            invalidatePrograms();
-            setActiveProgramModal(null);
-          }}
-        />
-      )}
-
-      {isFullPage ? (
-        <div className="main-content-full">
-          <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
-        </div>
-      ) : (
-        <div
-          className="saas-shell"
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            height: '100vh',
-            minHeight: '100dvh',
-            maxHeight: '100dvh',
-            width: '100%',
-            background: '#FFFFFF',
-            overflow: 'hidden'
-          }}
-        >
-          <AppSidebar
-            user={user}
-            isAdmin={isAdmin}
-            activeSection={activeSection}
-            goDashboard={goDashboard}
-            goUpload={goUpload}
-            goAdmin={goAdmin}
-            onLoginClick={() => navigate(PATHS.login)}
-            setShowLoginModal={setShowLoginModal}
-            dynamicMonthsData={dynamicMonthsData}
-            setActiveProgramModal={setActiveProgramModal}
-            isMobileOpen={isMobileSidebarOpen}
-            setIsMobileOpen={setIsMobileSidebarOpen}
-            handleLogout={handleLogout}
-          />
-
-          <div
-            ref={contentAreaRef}
-            className="saas-content-area"
-            style={{
-              flex: 1,
-              minWidth: 0,
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: '#FFFFFF',
-              overflowY: 'auto',
-              scrollPaddingTop: '80px',
-              scrollBehavior: 'smooth'
-            }}
-          >
-            <TopHeaderBar
-              user={user}
-              isAdmin={isAdmin}
-              activeSection={activeSection}
-              onLoginClick={() => navigate(PATHS.login)}
-              goDashboard={goDashboard}
-              goUpload={goUpload}
-              pendingCount={notificationCount}
-              notifications={notifications}
-              notificationCount={notificationCount}
-              onSelectNotification={handleSelectProjectNotification}
-              onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-              typeDesignFilter={typeDesignFilter}
-              setTypeDesignFilter={setTypeDesignFilter}
+      <LoadingScreen isVisible={isGlobalLoading} />
+      {authChecked && (
+        <>
+          {renderLoginModal()}
+          {activeProgramModal && (
+            <ProgramViewerModal
+              program={activeProgramModal.program}
+              monthLabel={activeProgramModal.monthLabel}
+              onClose={() => setActiveProgramModal(null)}
+              isAdmin={!!(user && (user.role === 'ADMIN' || user.username === 'admin'))}
+              onDeleteSuccess={() => {
+                invalidatePrograms();
+                setActiveProgramModal(null);
+              }}
             />
+          )}
 
-            <main
-              className="saas-main-viewport"
+          {isFullPage ? (
+            <div className="main-content-full">
+              <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
+            </div>
+          ) : (
+            <div
+              className="saas-shell"
               style={{
-                flex: 1,
-                padding: '24px 32px 48px',
-                boxSizing: 'border-box'
+                display: 'flex',
+                flexDirection: 'row',
+                height: '100vh',
+                minHeight: '100dvh',
+                maxHeight: '100dvh',
+                width: '100%',
+                background: '#FFFFFF',
+                overflow: 'hidden'
               }}
             >
-              <div className="fade-in" key={view}>
-                <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
+              <AppSidebar
+                user={user}
+                isAdmin={isAdmin}
+                activeSection={activeSection}
+                goDashboard={goDashboard}
+                goUpload={goUpload}
+                goAdmin={goAdmin}
+                onLoginClick={() => navigate(PATHS.login)}
+                setShowLoginModal={setShowLoginModal}
+                dynamicMonthsData={dynamicMonthsData}
+                setActiveProgramModal={setActiveProgramModal}
+                isMobileOpen={isMobileSidebarOpen}
+                setIsMobileOpen={setIsMobileSidebarOpen}
+                isCollapsed={isSidebarCollapsed}
+                setIsCollapsed={setIsSidebarCollapsed}
+                handleLogout={handleLogout}
+              />
+
+              <div
+                ref={contentAreaRef}
+                className="saas-content-area"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  backgroundColor: '#FFFFFF',
+                  overflowY: 'auto',
+                  scrollPaddingTop: '80px',
+                  scrollBehavior: 'smooth'
+                }}
+              >
+                <TopHeaderBar
+                  user={user}
+                  isAdmin={isAdmin}
+                  activeSection={activeSection}
+                  onLoginClick={() => navigate(PATHS.login)}
+                  onLogoutClick={() => handleLogout(true)}
+                  goDashboard={goDashboard}
+                  goUpload={goUpload}
+                  pendingCount={notificationCount}
+                  notifications={notifications}
+                  notificationCount={notificationCount}
+                  onSelectNotification={handleSelectProjectNotification}
+                  onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+                  typeDesignFilter={typeDesignFilter}
+                  setTypeDesignFilter={setTypeDesignFilter}
+                />
+
+                <main
+                  className="saas-main-viewport"
+                  style={{
+                    flex: 1,
+                    padding: '24px 32px 48px',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <div className="fade-in" key={view}>
+                    <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
+                  </div>
+                </main>
               </div>
-            </main>
-          </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {showProfileModal && (
-        <ProfileMenu user={user} isAdmin={isAdmin} setShowProfileModal={setShowProfileModal} handleLogout={handleLogout} />
-      )}
+          {showProfileModal && (
+            <ProfileMenu user={user} isAdmin={isAdmin} setShowProfileModal={setShowProfileModal} handleLogout={handleLogout} />
+          )}
 
-      {showLogoutConfirmModal && (
-        <LogoutConfirmModal setShowLogoutConfirmModal={setShowLogoutConfirmModal} executeLogout={logout} />
-      )}
+          {showLogoutConfirmModal && (
+            <LogoutConfirmModal setShowLogoutConfirmModal={setShowLogoutConfirmModal} executeLogout={logout} />
+          )}
 
-      {sessionExpiredNotice && (
-        <SessionExpiredModal sessionExpiredNotice={sessionExpiredNotice} setSessionExpiredNotice={setSessionExpiredNotice} />
+          {sessionExpiredNotice && (
+            <SessionExpiredModal sessionExpiredNotice={sessionExpiredNotice} setSessionExpiredNotice={setSessionExpiredNotice} />
+          )}
+        </>
       )}
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/layout/TopHeaderBar.jsx` (621 baris)
+## File: `gtm-monitor-frontend/src/components/layout/TopHeaderBar.jsx` (542 baris)
 
 ```javascript
 import { useState, useRef, useEffect } from 'react';
@@ -382,7 +343,7 @@ export default function TopHeaderBar({
   isAdmin,
   activeSection = 'dashboard',
   onLoginClick,
-  onLogoutClick,
+  _onLogoutClick,
   pendingCount = 0,
   notifications = [],
   notificationCount = 0,
@@ -396,19 +357,16 @@ export default function TopHeaderBar({
   const isBranchPage = location.pathname.startsWith('/branch');
   const isDashboard = location.pathname === '/' || location.pathname.startsWith('/dashboard');
   const isAdminPage = location.pathname.startsWith('/admin');
+  const isActivityPage = location.pathname.startsWith('/upload');
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const notifRef = useRef(null);
-  const profileRef = useRef(null);
 
   useEffect(() => {
     const handleOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotificationDropdown(false);
       }
-      if (profileRef.current && !profileRef.current.contains(e.target)) {
-        setShowProfileDropdown(false);
-      }
+
     };
     document.addEventListener('mousedown', handleOutside);
     return () => document.removeEventListener('mousedown', handleOutside);
@@ -490,7 +448,6 @@ export default function TopHeaderBar({
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '18px',
-                fontWeight: 600,
                 color: '#0F172A',
                 margin: 0,
                 letterSpacing: '-0.3px',
@@ -503,7 +460,7 @@ export default function TopHeaderBar({
         )}
 
         {/* Judul Halaman Continuous (Dashboard / Activity) dengan Ikon Persis seperti Opsi Sidebar */}
-        {(isDashboard || isBranchPage) && (
+        {(isDashboard || isBranchPage || isActivityPage) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
             {activeSection === 'activity' ? (
               <svg
@@ -547,7 +504,6 @@ export default function TopHeaderBar({
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '18px',
-                fontWeight: 600,
                 color: '#0F172A',
                 margin: 0,
                 letterSpacing: '-0.3px',
@@ -596,7 +552,6 @@ export default function TopHeaderBar({
                     borderRadius: '6px',
                     border: 'none',
                     fontSize: '12px',
-                    fontWeight: isActive ? 600 : 500,
                     cursor: 'pointer',
                     background: isActive ? '#FFFFFF' : 'transparent',
                     color: isActive ? '#0F172A' : '#64748B',
@@ -668,7 +623,6 @@ export default function TopHeaderBar({
                   right: '3px',
                   color: '#0F172A',
                   fontSize: '11px',
-                  fontWeight: 700,
                   lineHeight: 1,
                   userSelect: 'none',
                   pointerEvents: 'none'
@@ -709,14 +663,13 @@ export default function TopHeaderBar({
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                  <span style={{ fontSize: '13.5px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                     {isAdmin ? 'Pemberitahuan Upload' : 'Pemberitahuan Disetujui'}
                   </span>
                   {displayCount > 0 && (
                     <span
                       style={{
                         fontSize: '11px',
-                        fontWeight: 600,
                         color: '#475569',
                         backgroundColor: '#F1F5F9',
                         padding: '1px 7px',
@@ -766,7 +719,7 @@ export default function TopHeaderBar({
                     >
                       {/* Baris 1: Nama Kegiatan & Waktu Unggah */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '6px' }}>
-                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A' }}>
+                        <span style={{ fontSize: '13px', color: '#0F172A' }}>
                           {item.actLabel}
                         </span>
                         {item.timestamp && (
@@ -774,7 +727,6 @@ export default function TopHeaderBar({
                             style={{
                               fontSize: '11px',
                               color: '#64748B',
-                              fontWeight: 500,
                               fontVariantNumeric: 'tabular-nums',
                               flexShrink: 0
                             }}
@@ -789,7 +741,7 @@ export default function TopHeaderBar({
                         <div style={{ fontSize: '11px', color: '#64748B', marginBottom: '2px' }}>
                           {isAdmin ? 'Aktivitas diunggah di proyek:' : 'Kegiatan disetujui di proyek:'}
                         </div>
-                        <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', wordBreak: 'break-word', lineHeight: 1.35 }}>
+                        <div style={{ fontSize: '12.5px', color: '#0F172A', wordBreak: 'break-word', lineHeight: 1.35 }}>
                           {item.projectName}
                         </div>
                       </div>
@@ -808,7 +760,7 @@ export default function TopHeaderBar({
                         <span style={{ color: '#64748B' }}>
                           Branch {formatBranch(item.branchName)}{item.wok ? ` · ${item.wok}` : ''}
                         </span>
-                        <span style={{ color: '#0F172A', fontWeight: 600 }}>
+                        <span style={{ color: '#0F172A', }}>
                           Buka di Activity →
                         </span>
                       </div>
@@ -824,131 +776,61 @@ export default function TopHeaderBar({
           )}
         </div>
 
-        <div ref={profileRef} style={{ position: 'relative' }}>
+        <div>
           {user ? (
-            <>
-              <button
-                type="button"
-                className="header-profile-badge"
-                onClick={() => setShowProfileDropdown(prev => !prev)}
-                aria-expanded={showProfileDropdown}
-                aria-haspopup="menu"
-                title="Klik untuk membuka menu akun / keluar"
+            <div
+              className="header-profile-badge"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                minHeight: '44px',
+                padding: '6px 10px 6px 6px',
+                borderRadius: '12px',
+                userSelect: 'none',
+                cursor: 'default',
+                background: 'transparent',
+                border: 'none',
+                outline: 'none'
+              }}
+            >
+              <div
                 style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  minHeight: '44px',
-                  padding: '6px 10px 6px 6px',
-                  borderRadius: '12px',
-                  userSelect: 'none',
-                  cursor: 'pointer',
-                  background: showProfileDropdown ? '#F1F5F9' : 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  transition: 'background-color 0.15s ease'
+                  justifyContent: 'center',
+                  flexShrink: 0
                 }}
               >
-                <div
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
-                    background: 'transparent',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}
+                <svg
+                  width="19"
+                  height="19"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#0F172A"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
                 >
-                  <svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#0F172A"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                </div>
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
 
-                <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                  <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap' }}>
-                    {user.username || 'admin'}
-                  </div>
-                  <div style={{ fontSize: '10.5px', color: '#475569', fontWeight: 500 }}>
-                    {user.role === 'ADMIN' ? 'admin 1' : 'user'}
-                  </div>
+              <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
+                <div style={{ fontSize: '12.5px', color: '#0F172A', whiteSpace: 'nowrap' }}>
+                  {user.username || 'admin'}
                 </div>
-              </button>
-
-              {showProfileDropdown && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '48px',
-                    right: 0,
-                    width: '240px',
-                    background: '#FFFFFF',
-                    borderRadius: '14px',
-                    border: '1px solid #E2E8F0',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08)',
-                    zIndex: 99999,
-                    overflow: 'hidden',
-                    animation: 'fadeIn 0.15s ease-out'
-                  }}
-                >
-                  <div style={{ padding: '12px 14px', borderBottom: '1px solid #F1F5F9', backgroundColor: '#F8FAFC' }}>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
-                      {user.username || 'Pengguna'}
-                    </div>
-                    <div style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
-                      {user.role === 'ADMIN' ? 'Administrator' : `User (${formatBranch(user.branch || '')})`}
-                    </div>
-                  </div>
-
-                  <div style={{ padding: '6px' }}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowProfileDropdown(false);
-                        if (onLogoutClick) onLogoutClick();
-                      }}
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '9px 12px',
-                        border: 'none',
-                        borderRadius: '8px',
-                        backgroundColor: 'transparent',
-                        color: '#C8102E',
-                        fontSize: '12.5px',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        transition: 'background-color 0.15s ease'
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FEF2F2'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline>
-                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                      </svg>
-                      <span>Keluar (Logout)</span>
-                    </button>
-                  </div>
+                <div style={{ fontSize: '10.5px', color: '#475569' }}>
+                  {user.role === 'ADMIN' ? 'admin 1' : 'user'}
                 </div>
-              )}
-            </>
+              </div>
+            </div>
           ) : (
             <button
               type="button"
@@ -960,13 +842,12 @@ export default function TopHeaderBar({
                 background: '#800000',
                 color: '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'background-color 0.15s ease'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#990000';
+                e.currentTarget.style.backgroundColor = '#660000';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = '#800000';
@@ -980,12 +861,11 @@ export default function TopHeaderBar({
     </header>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/layout/AppSidebar.jsx` (539 baris)
+## File: `gtm-monitor-frontend/src/components/layout/AppSidebar.jsx` (495 baris)
 
 ```javascript
 import { useLocation } from 'react-router';
@@ -996,7 +876,6 @@ import { SHOW_PROGRAM_MENU } from '../../constants/programs';
 export default function AppSidebar({
   user,
   isAdmin,
-  activeSection = 'dashboard',
   goDashboard,
   goUpload,
   goAdmin,
@@ -1006,19 +885,27 @@ export default function AppSidebar({
   setActiveProgramModal,
   isMobileOpen,
   setIsMobileOpen,
+  isCollapsed = false,
+  setIsCollapsed,
   handleLogout
 }) {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const isContinuous = currentPath === '/' || currentPath === '/dashboard';
-  const isDashboardActive = isContinuous
-    ? activeSection === 'dashboard'
-    : currentPath === '/' || currentPath === '/dashboard' || currentPath.startsWith('/branch');
-  const isActivityActive = isContinuous
-    ? activeSection === 'activity'
-    : currentPath === '/upload';
+  const isDashboardActive = currentPath === '/' || currentPath === '/dashboard' || currentPath.startsWith('/branch');
+  const isActivityActive = currentPath === '/upload';
   const isControlActive = currentPath === '/admin';
+
+  // Lebar 1024px ke bawah: sidebar berupa panel melayang, jadi tombol ini menutup panelnya
+  const handleToggleSidebar = () => {
+    if (window.matchMedia('(max-width: 1024px)').matches) {
+      if (setIsMobileOpen) setIsMobileOpen(false);
+      return;
+    }
+    if (setIsCollapsed) setIsCollapsed(!isCollapsed);
+  };
+  const toggleLabel = isCollapsed ? 'Buka sidebar' : 'Tutup sidebar';
+  const collapsedTitle = (label) => (isCollapsed ? label : undefined);
 
   return (
     <>
@@ -1037,9 +924,8 @@ export default function AppSidebar({
       )}
 
       <aside
-        className={`app-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}
+        className={`app-sidebar ${isMobileOpen ? 'mobile-open' : ''} ${isCollapsed ? 'collapsed' : ''}`}
         style={{
-          width: '256px',
           background: '#021329',
           borderRight: '1px solid rgba(255, 255, 255, 0.06)',
           display: 'flex',
@@ -1053,74 +939,58 @@ export default function AppSidebar({
           minHeight: '100dvh',
           maxHeight: '100dvh',
           zIndex: 999,
-          padding: '24px 0 20px',
+          padding: '0 0 20px',
           boxSizing: 'border-box',
+          overflowX: 'hidden',
           overflowY: 'auto'
         }}
       >
-        <div
-          style={{
-            padding: '0 24px 28px',
-            display: 'flex',
-            alignItems: 'center'
-          }}
-        >
+        <div className="sidebar-brand-row">
           <button
             type="button"
-            onClick={() => {
-              if (goDashboard) goDashboard();
-              if (setIsMobileOpen) setIsMobileOpen(false);
-            }}
+            className="sidebar-toggle-btn"
+            onClick={handleToggleSidebar}
+            aria-label={toggleLabel}
+            aria-expanded={isMobileOpen || !isCollapsed}
+            title={toggleLabel}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <div
             className="sidebar-brand-btn"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              minHeight: '44px',
-              background: 'transparent',
-              border: 'none',
-              padding: '4px 0',
-              cursor: 'pointer',
-              textAlign: 'left'
-            }}
-            title="Beranda GTM Activity Monitoring"
+            aria-hidden="true"
           >
             <img
               src="/telkomsel-symbol.png"
               alt=""
               aria-hidden="true"
               style={{
-                height: '28px',
+                height: '32px',
                 width: 'auto',
                 display: 'block',
+                flexShrink: 0,
                 filter: 'drop-shadow(0 0 1px rgba(255, 255, 255, 0.9)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25))'
               }}
             />
             <img
+              className="sidebar-brand-word"
               src="/telkomsel-logo.png"
               alt="Telkomsel"
               style={{
-                height: '22px',
+                height: '24px',
                 width: 'auto',
-                display: 'block',
+                flexShrink: 0,
                 filter: 'brightness(0) invert(1)'
               }}
             />
-          </button>
+          </div>
         </div>
 
-        <div
-          style={{
-            padding: '0 24px',
-            marginBottom: '10px',
-            fontSize: '11px',
-            fontWeight: 600,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'rgba(255, 255, 255, 0.55)',
-            userSelect: 'none'
-          }}
-        >
+        <div className="sidebar-menu-header">
           MENU
         </div>
 
@@ -1143,39 +1013,42 @@ export default function AppSidebar({
               if (setIsMobileOpen) setIsMobileOpen(false);
             }}
             className={`sidebar-nav-item ${isDashboardActive ? 'active' : ''}`}
+            aria-label="Dashboard"
+            title={collapsedTitle('Dashboard')}
           >
-            <span className="sidebar-left-indicator" aria-hidden="true" />
             <span className="sidebar-nav-box">
-              <svg
-                className="nav-icon-outline"
-                width="19"
-                height="19"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
-                <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
-                <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
-                <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
-              </svg>
-              <svg
-                className="nav-icon-filled"
-                width="19"
-                height="19"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
-                <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
-                <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
-                <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
-              </svg>
+              <span className="sidebar-nav-icon-wrap">
+                <svg
+                  className="nav-icon-outline"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
+                  <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
+                  <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
+                  <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
+                </svg>
+                <svg
+                  className="nav-icon-filled"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
+                  <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
+                  <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
+                  <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
+                </svg>
+              </span>
               <span className="sidebar-nav-label">Dashboard</span>
             </span>
           </button>
@@ -1188,39 +1061,44 @@ export default function AppSidebar({
               if (setIsMobileOpen) setIsMobileOpen(false);
             }}
             className={`sidebar-nav-item ${isActivityActive ? 'active' : ''}`}
+            aria-label="Activity"
+            title={collapsedTitle('Activity')}
           >
-            <span className="sidebar-left-indicator" aria-hidden="true" />
             <span className="sidebar-nav-box">
-              <svg
-                className="nav-icon-outline"
-                width="19"
-                height="19"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="4" y="3" width="16" height="18" rx="2.5" />
-                <line x1="8" y1="8" x2="16" y2="8" />
-                <line x1="8" y1="12" x2="16" y2="12" />
-                <line x1="8" y1="16" x2="13" y2="16" />
-              </svg>
-              <svg
-                className="nav-icon-filled"
-                width="19"
-                height="19"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M6.5 2h11A3.5 3.5 0 0 1 21 5.5v13a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 18.5v-13A3.5 3.5 0 0 1 6.5 2zm1.5 5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8zm0 4a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8zm0 4a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H8z" />
-              </svg>
+              <span className="sidebar-nav-icon-wrap">
+                <svg
+                  className="nav-icon-outline"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="4" y="3" width="16" height="18" rx="2.5" />
+                  <line x1="8" y1="8" x2="16" y2="8" />
+                  <line x1="8" y1="12" x2="16" y2="12" />
+                  <line x1="8" y1="16" x2="13" y2="16" />
+                </svg>
+                <svg
+                  className="nav-icon-filled"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M6.5 2h11A3.5 3.5 0 0 1 21 5.5v13a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 18.5v-13A3.5 3.5 0 0 1 6.5 2zm1.5 5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8zm0 4a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8zm0 4a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H8z" />
+                </svg>
+              </span>
               <span className="sidebar-nav-label">Activity</span>
             </span>
           </button>
+
+          <hr className="sidebar-divider" />
 
           {/* 3. Cek Pairing */}
           <CekPairingNavItem
@@ -1235,22 +1113,15 @@ export default function AppSidebar({
                   if (setIsMobileOpen) setIsMobileOpen(false);
                 }}
                 className={`sidebar-nav-item ${isOpen ? 'active' : ''}`}
-                title="Pencarian Data Telkomsel One Pairing"
+                aria-label="Cek Pairing"
+                title={isCollapsed ? 'Cek Pairing' : 'Pencarian Data Telkomsel One Pairing'}
               >
-                <span className="sidebar-left-indicator" aria-hidden="true" />
-                <span
-                  className="sidebar-nav-box"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span className="sidebar-nav-box">
+                  <span className="sidebar-nav-icon-wrap">
                     <svg
                       className="nav-icon-outline"
-                      width="19"
-                      height="19"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -1264,8 +1135,8 @@ export default function AppSidebar({
                     </svg>
                     <svg
                       className="nav-icon-filled"
-                      width="19"
-                      height="19"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -1277,11 +1148,12 @@ export default function AppSidebar({
                       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                     </svg>
-                    <span className="sidebar-nav-label">Cek Pairing</span>
                   </span>
+                  <span className="sidebar-nav-label">Cek Pairing</span>
                   <svg
-                    width="13"
-                    height="13"
+                    className="sidebar-nav-chevron"
+                    width="16"
+                    height="16"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -1289,10 +1161,8 @@ export default function AppSidebar({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     style={{
-                      opacity: 0.5,
                       transform: isOpen ? 'rotate(90deg)' : 'none',
-                      transition: 'transform 0.2s ease',
-                      flexShrink: 0
+                      transition: 'transform 0.2s ease'
                     }}
                     aria-hidden="true"
                   >
@@ -1319,22 +1189,15 @@ export default function AppSidebar({
                     if (setIsMobileOpen) setIsMobileOpen(false);
                   }}
                   className={`sidebar-nav-item ${isOpen ? 'active' : ''}`}
-                  title="Daftar Program Marketing & Penjualan"
+                  aria-label="Program"
+                  title={isCollapsed ? 'Program' : 'Daftar Program Marketing & Penjualan'}
                 >
-                  <span className="sidebar-left-indicator" aria-hidden="true" />
-                  <span
-                    className="sidebar-nav-box"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}
-                  >
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span className="sidebar-nav-box">
+                    <span className="sidebar-nav-icon-wrap">
                       <svg
                         className="nav-icon-outline"
-                        width="19"
-                        height="19"
+                        width="24"
+                        height="24"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -1350,19 +1213,20 @@ export default function AppSidebar({
                       </svg>
                       <svg
                         className="nav-icon-filled"
-                        width="19"
-                        height="19"
+                        width="24"
+                        height="24"
                         viewBox="0 0 24 24"
                         fill="currentColor"
                         aria-hidden="true"
                       >
                         <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" />
                       </svg>
-                      <span className="sidebar-nav-label">Program</span>
                     </span>
+                    <span className="sidebar-nav-label">Program</span>
                     <svg
-                      width="13"
-                      height="13"
+                      className="sidebar-nav-chevron"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -1370,10 +1234,8 @@ export default function AppSidebar({
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       style={{
-                        opacity: 0.5,
                         transform: isOpen ? 'rotate(90deg)' : 'none',
-                        transition: 'transform 0.2s ease',
-                        flexShrink: 0
+                        transition: 'transform 0.2s ease'
                       }}
                       aria-hidden="true"
                     >
@@ -1386,6 +1248,7 @@ export default function AppSidebar({
           )}
 
           {/* 5. Admin Panel */}
+          {isAdmin && <hr className="sidebar-divider" />}
           {isAdmin && (
             <button
               type="button"
@@ -1394,34 +1257,37 @@ export default function AppSidebar({
                 if (setIsMobileOpen) setIsMobileOpen(false);
               }}
               className={`sidebar-nav-item ${isControlActive ? 'active' : ''}`}
+              aria-label="Admin"
+              title={collapsedTitle('Admin')}
             >
-              <span className="sidebar-left-indicator" aria-hidden="true" />
               <span className="sidebar-nav-box">
-                <svg
-                  className="nav-icon-outline"
-                  width="19"
-                  height="19"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                <svg
-                  className="nav-icon-filled"
-                  width="19"
-                  height="19"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V21c0 .5.4.9.9.9h17.4c.5 0 .9-.4.9-.9v-1.8c0-3.2-6.4-4.8-9.6-4.8z" />
-                </svg>
+                <span className="sidebar-nav-icon-wrap">
+                  <svg
+                    className="nav-icon-outline"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <svg
+                    className="nav-icon-filled"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V21c0 .5.4.9.9.9h17.4c.5 0 .9-.4.9-.9v-1.8c0-3.2-6.4-4.8-9.6-4.8z" />
+                  </svg>
+                </span>
                 <span className="sidebar-nav-label">Admin</span>
               </span>
             </button>
@@ -1430,9 +1296,11 @@ export default function AppSidebar({
 
         {user ? (
           <div
+            className="sidebar-bottom-actions"
             style={{
               marginTop: 'auto',
-              padding: '24px 14px 0 14px'
+              padding: '16px 14px max(24px, env(safe-area-inset-bottom)) 14px',
+              borderTop: '1px solid rgba(255, 255, 255, 0.08)'
             }}
           >
             <button
@@ -1442,61 +1310,28 @@ export default function AppSidebar({
                 if (setIsMobileOpen) setIsMobileOpen(false);
               }}
               className="sidebar-logout-btn"
+              aria-label="Logout"
               title="Keluar dari akun (Logout)"
-              style={{
-                width: '100%',
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '10px 10px',
-                borderRadius: '8px',
-                backgroundColor: '#FFFFFF',
-                color: '#C8102E',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                boxSizing: 'border-box',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.16)',
-                transition: 'background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F8FAFC';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.22)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#FFFFFF';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.16)';
-              }}
             >
-              <svg
-                width="19"
-                height="19"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#C8102E"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                style={{ flexShrink: 0 }}
-              >
-                <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
-                <polyline points="8 16 4 12 8 8" />
-                <line x1="4" y1="12" x2="14" y2="12" />
-              </svg>
-              <span
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '13.5px',
-                  fontWeight: 600,
-                  color: '#C8102E',
-                  letterSpacing: '-0.1px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Logout
+              <span className="sidebar-logout-icon-wrap">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#800000"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  style={{ flexShrink: 0 }}
+                >
+                  <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
+                  <polyline points="8 16 4 12 8 8" />
+                  <line x1="4" y1="12" x2="14" y2="12" />
+                </svg>
               </span>
+              <span className="sidebar-logout-label">Logout</span>
             </button>
           </div>
         ) : (
@@ -1513,7 +1348,6 @@ export default function AppSidebar({
                 background: '#FFFFFF',
                 color: '#021329',
                 fontSize: '13px',
-                fontWeight: 600,
                 border: 'none',
                 cursor: 'pointer',
                 textAlign: 'center',
@@ -1528,7 +1362,6 @@ export default function AppSidebar({
     </>
   );
 }
-
 ```
 
 ---
@@ -1603,12 +1436,11 @@ export default function ProfileMenu({ user, isAdmin, setShowProfileModal, handle
     </>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/layout/ProgramMenu.jsx` (373 baris)
+## File: `gtm-monitor-frontend/src/components/layout/ProgramMenu.jsx` (367 baris)
 
 ```javascript
 import { useState, useRef, useCallback, useLayoutEffect, useEffect } from 'react';
@@ -1677,7 +1509,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
   }, []);
 
   return (
-    <div ref={programMenuRef} style={{ position: 'relative' }}>
+    <div ref={programMenuRef} style={{ position: 'relative', width: '100%' }}>
       {customButton ? (
         customButton({
           onClick: () => {
@@ -1709,10 +1541,9 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
         style={{
           background: 'none',
           border: 'none',
-          color: isProgramDropdownOpen ? '#800000' : '#64748B',
+          color: isProgramDropdownOpen ? '#0F172A' : '#64748B',
           fontFamily: 'var(--font-heading)',
           fontSize: '12px',
-          fontWeight: 600,
           letterSpacing: '0.8px',
           cursor: 'pointer',
           transition: 'color 0.2s ease',
@@ -1761,7 +1592,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
 
             return (
               <>
-                <div style={{ padding: '8px 16px 6px 16px', fontFamily: 'var(--font-heading)', fontSize: '11px', fontWeight: 600, color: '#64748B', letterSpacing: '0.4px', borderBottom: '1px solid #F1F5F9' }}>
+                <div style={{ padding: '8px 16px 6px 16px', fontFamily: 'var(--font-heading)', fontSize: '11px', color: '#64748B', letterSpacing: '0.4px', borderBottom: '1px solid #F1F5F9' }}>
                   Periode Program
                 </div>
 
@@ -1794,10 +1625,9 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                         padding: '10px 16px',
                         fontFamily: 'var(--font-body)',
                         fontSize: '12.5px',
-                        fontWeight: isCurrent ? 600 : 500,
                         letterSpacing: '-0.1px',
-                        color: !hasPrograms ? '#94A3B8' : (isHovered ? '#800000' : isCurrent ? '#0F172A' : '#334155'),
-                        background: isHovered && hasPrograms ? 'rgba(128, 0, 0, 0.04)' : 'transparent',
+                        color: !hasPrograms ? '#94A3B8' : (isHovered ? '#0F172A' : isCurrent ? '#0F172A' : '#334155'),
+                        background: isHovered && hasPrograms ? '#F1F5F9' : 'transparent',
                         cursor: hasPrograms ? 'pointer' : 'default',
                         display: 'flex',
                         alignItems: 'center',
@@ -1810,11 +1640,11 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                       </div>
 
                       {hasPrograms ? (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isHovered ? '#800000' : '#94A3B8'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isHovered ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s ease' }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isHovered ? '#0F172A' : '#94A3B8'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isHovered ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s ease' }}>
                           <polyline points="9 18 15 12 9 6" />
                         </svg>
                       ) : (
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: '10.5px', color: '#CBD5E1', fontWeight: 500 }}>Belum ada</span>
+                        <span style={{ fontFamily: 'var(--font-body)', fontSize: '10.5px', color: '#CBD5E1', }}>Belum ada</span>
                       )}
 
                       {/* LEVEL 2 SUBMENU (DESKTOP FLYOUT + MOBILE INLINE ACCORDION) */}
@@ -1844,7 +1674,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                 fontFamily: 'var(--font-body)'
                               }}
                             >
-                              <div style={{ padding: '8px 16px 6px 16px', fontFamily: 'var(--font-heading)', fontSize: '11px', fontWeight: 600, color: '#64748B', letterSpacing: '0.4px', borderBottom: '1px solid #F1F5F9' }}>
+                              <div style={{ padding: '8px 16px 6px 16px', fontFamily: 'var(--font-heading)', fontSize: '11px', color: '#64748B', letterSpacing: '0.4px', borderBottom: '1px solid #F1F5F9' }}>
                                 Program {m.label}
                               </div>
                               {programList.map((progItem, idx) => (
@@ -1863,7 +1693,6 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                     padding: '10px 16px',
                                     fontFamily: 'var(--font-body)',
                                     fontSize: '12.5px',
-                                    fontWeight: 500,
                                     letterSpacing: '-0.1px',
                                     color: '#334155',
                                     cursor: 'pointer',
@@ -1889,12 +1718,11 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                         flexShrink: 0,
                                         fontFamily: 'var(--font-body)',
                                         fontSize: '10px',
-                                        fontWeight: 600,
-                                        color: '#FF5E00',
-                                        background: 'rgba(255, 94, 0, 0.08)',
+                                        color: '#475569',
+                                        background: '#F1F5F9',
                                         padding: '2px 6px',
                                         borderRadius: '6px',
-                                        border: '1px solid rgba(255, 94, 0, 0.2)'
+                                        border: '1px solid #CBD5E1'
                                       }}
                                     >
                                       {progItem.data.images.length} Slide
@@ -1913,12 +1741,12 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                 borderRadius: '10px',
                                 margin: '6px 0 2px 0',
                                 padding: '4px 0',
-                                borderLeft: '3px solid #800000',
+                                borderLeft: '3px solid #0F172A',
                                 boxSizing: 'border-box',
                                 fontFamily: 'var(--font-body)'
                               }}
                             >
-                              <div style={{ padding: '6px 12px 4px 12px', fontFamily: 'var(--font-heading)', fontSize: '10.5px', fontWeight: 600, color: '#800000', letterSpacing: '0.4px' }}>
+                              <div style={{ padding: '6px 12px 4px 12px', fontFamily: 'var(--font-heading)', fontSize: '10.5px', color: '#0F172A', letterSpacing: '0.4px' }}>
                                 Daftar Program {m.label}:
                               </div>
                               {programList.map((progItem, idx) => (
@@ -1937,7 +1765,6 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                     padding: '8px 12px 8px 18px',
                                     fontFamily: 'var(--font-body)',
                                     fontSize: '12px',
-                                    fontWeight: 500,
                                     color: '#334155',
                                     cursor: 'pointer',
                                     display: 'flex',
@@ -1947,7 +1774,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                   }}
                                 >
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
-                                    <span style={{ color: '#FF5E00', fontWeight: '900', flexShrink: 0 }}>•</span>
+                                    <span style={{ color: '#0F172A', flexShrink: 0 }}>•</span>
                                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{progItem.name}</span>
                                   </div>
                                   {progItem.data?.images?.length > 1 && (
@@ -1956,8 +1783,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                         flexShrink: 0,
                                         fontFamily: 'var(--font-body)',
                                         fontSize: '9.5px',
-                                        fontWeight: 600,
-                                        color: '#FF5E00',
+                                        color: '#475569',
                                         background: 'rgba(255, 94, 0, 0.08)',
                                         padding: '1px 5px',
                                         borderRadius: '4px'
@@ -1983,12 +1809,11 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/layout/CekPairingNavItem.jsx` (133 baris)
+## File: `gtm-monitor-frontend/src/components/layout/CekPairingNavItem.jsx` (132 baris)
 
 ```javascript
 import { useState, useRef, useCallback, useLayoutEffect, useEffect } from 'react';
@@ -2092,9 +1917,8 @@ export default function CekPairingNavItem({ user, setShowLoginModal, customButto
           style={{
             background: 'none',
             border: 'none',
-            color: isPairingDropdownOpen ? '#800000' : '#64748B',
+            color: isPairingDropdownOpen ? '#0F172A' : '#64748B',
             fontSize: '12px',
-            fontWeight: 800,
             letterSpacing: '1.5px',
             cursor: 'pointer',
             transition: 'color 0.2s ease',
@@ -2123,59 +1947,219 @@ export default function CekPairingNavItem({ user, setShowLoginModal, customButto
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/layout/LoadingScreen.jsx` (40 baris)
+## File: `gtm-monitor-frontend/src/components/layout/LoadingScreen.jsx` (202 baris)
 
 ```javascript
-import { useState, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 
-// ─── LOADING SCREEN (di-definisikan di level modul agar TIDAK di-remount setiap App re-render) ───
-export default function LoadingScreen() {
-  const [dotsCount, setDotsCount] = useState(3);
+const LoadingScreen = memo(function LoadingScreen({ isVisible = true }) {
+  const [shouldRender, setShouldRender] = useState(isVisible);
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setDotsCount(prev => (prev % 3) + 1);
-    }, 450);
-    return () => clearInterval(interval);
-  }, []);
+    if (isVisible) {
+      setShouldRender(true);
+      setIsFadingOut(false);
+    } else {
+      setIsFadingOut(true);
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+        setIsFadingOut(false);
+      }, 360);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible]);
 
-  const dots = '.'.repeat(dotsCount);
+  if (!shouldRender) return null;
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FFFFFF', color: '#64748B', gap: '18px' }}>
-      <div style={{
-        width: '56px',
-        height: '56px',
-        borderRadius: '50%',
-        background: 'linear-gradient(135deg, #800000 0%, #FF5E00 100%)',
-        color: '#ffffff',
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Memuat sistem monitoring"
+      className="transition-loading-screen"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9999,
+        backgroundColor: '#021329',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        fontWeight: 900,
-        fontSize: '18px',
-        boxShadow: '0 8px 24px rgba(128, 0, 0, 0.35)',
-        letterSpacing: '-0.5px'
-      }}>
-        GTM
+        opacity: isFadingOut ? 0 : 1,
+        transition: 'opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+        pointerEvents: isFadingOut ? 'none' : 'auto',
+        fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
+        fontWeight: 400,
+        overflow: 'hidden',
+        userSelect: 'none'
+      }}
+    >
+      {/* Directional Deep Navy Spotlight Backdrop */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background:
+            'radial-gradient(circle at 50% 46%, rgba(14, 57, 115, 0.32) 0%, rgba(3, 20, 44, 0.18) 45%, rgba(2, 19, 41, 0) 75%)',
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Decorative Corner Grid Crosshairs (Echoing Networking Precision) */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: '32px',
+          left: '36px',
+          color: 'rgba(125, 211, 252, 0.35)',
+          fontSize: '11px',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase'
+        }}
+      >
+        TELKOMSEL TELEMETRY
       </div>
-      <div style={{ fontWeight: 700, fontSize: '15px', color: '#0F172A', fontFamily: 'inherit' }}>
-        Memuat data dari server<span style={{ display: 'inline-block', width: '24px', textAlign: 'left' }}>{dots}</span>
+
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          bottom: '28px',
+          right: '36px',
+          color: 'rgba(148, 163, 184, 0.45)',
+          fontSize: '11px',
+          letterSpacing: '0.12em'
+        }}
+      >
+        REGIONAL JATENG &amp; DIY
+      </div>
+
+      {/* Center Composition */}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          padding: '0 24px'
+        }}
+      >
+        {/* Telkomsel 'T' Symbol with Breathing Optical Telemetry Halo */}
+        <div
+          style={{
+            position: 'relative',
+            width: '84px',
+            height: '84px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '26px'
+          }}
+        >
+          {/* Outer Breathing Halo */}
+          <div
+            className="transition-loading-aura"
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: '-12px',
+              borderRadius: '50%',
+              background:
+                'radial-gradient(circle, rgba(225, 29, 72, 0.28) 0%, rgba(56, 189, 248, 0.16) 48%, transparent 72%)',
+              animation: 'telkomselAuraPulse 2.4s ease-in-out infinite',
+              pointerEvents: 'none'
+            }}
+          />
+
+          {/* Telkomsel 'T' Symbol Image */}
+          <img
+            src="/telkomsel-symbol.png"
+            alt="Telkomsel"
+            style={{
+              width: '46px',
+              height: 'auto',
+              display: 'block',
+              filter:
+                'drop-shadow(0 0 1px rgba(255, 255, 255, 0.9)) drop-shadow(0 4px 14px rgba(225, 29, 72, 0.35))',
+              position: 'relative',
+              zIndex: 2
+            }}
+          />
+        </div>
+
+        {/* Primary Status Title */}
+        <div
+          style={{
+            fontSize: '16px',
+            fontWeight: 400,
+            color: '#FFFFFF',
+            letterSpacing: '-0.2px',
+            marginBottom: '8px'
+          }}
+        >
+          Sinkronisasi Sistem Monitoring
+        </div>
+
+        {/* Secondary Subtitle */}
+        <div
+          style={{
+            fontSize: '12.5px',
+            fontWeight: 400,
+            color: 'rgba(203, 213, 225, 0.72)',
+            lineHeight: 1.5,
+            marginBottom: '24px'
+          }}
+        >
+          Menyiapkan telemetri ODP Regional Jateng &amp; DIY...
+        </div>
+
+        {/* Telemetry Precision Hairline Scanning Bar */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'relative',
+            width: '210px',
+            height: '2.5px',
+            borderRadius: '99px',
+            backgroundColor: 'rgba(125, 211, 252, 0.15)',
+            overflow: 'hidden'
+          }}
+        >
+          <div
+            className="transition-loading-beam"
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              width: '80px',
+              borderRadius: '99px',
+              background:
+                'linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.8) 40%, #FFFFFF 65%, rgba(225, 29, 72, 0.9) 100%)',
+              animation: 'telemetryScanningBeam 1.8s ease-in-out infinite'
+            }}
+          />
+        </div>
       </div>
     </div>
   );
-}
+});
 
+export default LoadingScreen;
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1002 baris)
+## File: `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1010 baris)
 
 ```javascript
 import { useState, useMemo, memo, useEffect, useCallback, useRef } from 'react';
@@ -2184,6 +2168,7 @@ import { ACT_TYPES, formatBranch } from '../utils';
 import ActivityStatus from './ActivityStatus';
 import UploadModal from './UploadModal';
 import ConfirmSubmitModal from './ConfirmSubmitModal';
+import TableScrollSlider from './TableScrollSlider';
 
 // Pilihan "Semua proyek" pada jumlah per halaman: seluruh baris ditampilkan dengan virtual scroll
 // (hanya baris yang terlihat di layar yang dirender) agar ribuan proyek tetap ringan.
@@ -2200,20 +2185,20 @@ const FilterIcon = () => (
 const SortIcon = ({ sort }) => {
   if (sort === 'asc') {
     return (
-      <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
         <polyline points="18 15 12 9 6 15" />
       </svg>
     );
   }
   if (sort === 'desc') {
     return (
-      <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
         <polyline points="6 9 12 15 18 9" />
       </svg>
     );
   }
   return (
-    <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6, flexShrink: 0 }}>
+    <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.85, flexShrink: 0 }}>
       <polyline points="8 9 12 5 16 9" />
       <polyline points="16 15 12 19 8 15" />
     </svg>
@@ -2683,6 +2668,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           onClick={() => handleSortCycle(col)}
           aria-label={`Urutkan kolom ${label} (${sort === 'asc' ? 'naik' : sort === 'desc' ? 'turun' : 'belum diurutkan'})`}
           title={`Klik untuk mengurutkan ${label}`}
+          className="table-sort-btn"
           style={{
             background: 'none',
             border: 'none',
@@ -2692,14 +2678,16 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             alignItems: 'center',
             gap: '4px',
             font: 'inherit',
-            color: sort ? '#0F172A' : '#475569',
-            textTransform: 'inherit',
-            letterSpacing: 'inherit',
+            fontSize: '11px',
+            fontWeight: 400,
+            color: '#FFFFFF',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
             whiteSpace: 'nowrap',
             flexShrink: 0
           }}
         >
-          <span>{label}</span>
+          <span style={{ color: '#FFFFFF' }}>{label}</span>
           <SortIcon sort={sort} />
         </button>
 
@@ -2709,12 +2697,12 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             aria-label={`Filter kolom ${label}`}
             onClick={(e) => { e.stopPropagation(); setFilterPopup(filterPopup === col ? null : col); }}
             style={{
-              background: 'none',
+              background: isFiltered ? '#FFFFFF' : 'none',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              color: isFiltered ? '#800000' : '#94A3B8',
+              color: isFiltered ? '#800000' : '#FFFFFF',
               padding: '2px',
               borderRadius: '4px',
               marginLeft: '2px',
@@ -2863,8 +2851,10 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
   const odpGrid = '34px 220px 165px 95px 125px 95px';
 
   return (
-    <div className="card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
-      <div ref={scrollRef} style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', maxHeight: '75vh' }}>
+    <>
+    <TableScrollSlider scrollRef={scrollRef} />
+    <div className="card project-table-card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
+      <div ref={scrollRef} className="project-table-scroll" style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', borderRadius: 'inherit' }}>
         <div style={{ minWidth: 'max-content', paddingBottom: filterPopup ? '400px' : '0' }}>
           {/* Header */}
           <div
@@ -2874,8 +2864,9 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               position: 'sticky',
               top: 0,
               zIndex: 20,
-              backgroundColor: '#F8FAFC',
-              borderBottom: '1px solid #E2E8F0',
+              backgroundColor: '#800000',
+              color: '#FFFFFF',
+              borderBottom: '1px solid #660000',
               boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)',
               minWidth: 'max-content',
               width: 'max-content',
@@ -2891,8 +2882,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             {ACT_TYPES.map(t => (
               <div key={t.key} className="activity-col-header">{t.label}</div>
             ))}
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progres</div>
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detail</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#FFFFFF' }}>Progres</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#FFFFFF' }}>Detail</div>
           </div>
 
           {/* Rows / Skeleton / Empty State */}
@@ -3177,9 +3168,9 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         </div>
       </div>
     </div>
+    </>
   );
 }
-
 ```
 
 ---
@@ -3406,12 +3397,11 @@ const ActivityStatus = memo(function ActivityStatus({
 });
 
 export default ActivityStatus;
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/HeroOccupancyCard.jsx` (133 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/HeroOccupancyCard.jsx` (132 baris)
 
 ```javascript
 import { useCountUp } from '../../hooks/useCountUp';
@@ -3430,7 +3420,6 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
         width: '100%',
         maxWidth: '360px',
         backgroundColor: '#800000',
-        backgroundImage: 'linear-gradient(160deg, #990000 0%, #660000 100%)',
         color: '#FFFFFF',
         borderRadius: '16px',
         padding: '24px 28px',
@@ -3546,12 +3535,11 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/RegionalMetricsSummaryCard.jsx` (252 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/RegionalMetricsSummaryCard.jsx` (251 baris)
 
 ```javascript
 import { useCountUp } from '../../hooks/useCountUp';
@@ -3713,7 +3701,6 @@ export default function RegionalMetricsSummaryCard({
                     height: '7px',
                     borderRadius: '50%',
                     background: s.color,
-                    border: s.color?.toUpperCase() === '#FFFF00' ? '1px solid #CBD5E1' : 'none',
                     boxSizing: 'border-box',
                     display: 'inline-block',
                     flexShrink: 0
@@ -3805,7 +3792,6 @@ export default function RegionalMetricsSummaryCard({
     </div>
   );
 }
-
 ```
 
 ---
@@ -4057,15 +4043,14 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/PortDistributionChartCard.jsx` (443 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/PortDistributionChartCard.jsx` (502 baris)
 
 ```javascript
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 // Formatter nama WOK agar muat proporsional dan jelas pada x-axis histogram
 function formatWokLabel(name) {
@@ -4100,91 +4085,150 @@ export default function PortDistributionChartCard({
   onSelectBranch
 }) {
   const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
 
-  // Trigger animasi pertumbuhan bar saat komponen masuk ke viewport
-  useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => {
-        setHasAnimated(true);
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [isInView]);
+  // Bangun daftar WOK dengan urutan kolom sumbu X yang stabil dari master branches,
+  // lalu pasangkan dengan nilai metrik hasil filter aktif (ranking) agar bar bergerak naik-turun secara mulus
+  const targetBars = useMemo(() => {
+    const bars = [];
+    const masterBranches = Array.isArray(branches) && branches.length > 0 ? branches : ranking;
 
-  // Siapkan Histogram Bars dari data ranking dan branches asli
-  const branchList = Array.isArray(ranking) && ranking.length > 0 ? ranking : branches;
+    masterBranches.forEach((rawBranch) => {
+      const bName = rawBranch.name || '';
+      const bUpper = bName.toUpperCase();
+      const rankedBranch = (ranking || []).find(
+        (r) => (r.name || '').toUpperCase() === bUpper
+      ) || rawBranch;
 
-  const histogramBars = [];
-  branchList.forEach((b) => {
-    // Cari data proyek lengkap dari cabang terkait untuk verifikasi kalkulasi port
-    const rawBranch = branches.find(br => (br.name || '').toUpperCase() === (b.name || '').toUpperCase()) || b;
-    const branchProjects = rawBranch.projects || [];
+      const allWokNames = Array.from(
+        new Set(
+          (rawBranch.projects || [])
+            .map((p) => (p.wok || '').toString().trim())
+            .filter((w) => w && w !== '-' && w !== 'NONE')
+        )
+      ).sort();
 
-    if (b.woks && b.woks.length > 0) {
-      b.woks.forEach((w) => {
-        let portUsed = w.totalUsed;
-        let portTotal = w.totalPort;
-
-        // Fallback agregasi langsung dari proyek jika properti total belum terhitung
-        if (portTotal === undefined || portTotal === null || portTotal === 0) {
-          const cleanW = (w.name || '').toUpperCase().replace(/[\s-]/g, '');
-          const matchingProjs = branchProjects.filter(p => {
-            const pWok = (p.wok || '').toUpperCase().replace(/[\s-]/g, '');
-            return pWok === cleanW || pWok.includes(cleanW) || cleanW.includes(pWok);
+      if (allWokNames.length > 0) {
+        allWokNames.forEach((wokName) => {
+          const cleanW = wokName.toUpperCase().replace(/[\s-]/g, '');
+          const matchedWok = (rankedBranch.woks || []).find((w) => {
+            const wClean = (w.name || '').toUpperCase().replace(/[\s-]/g, '');
+            return wClean === cleanW || wClean.includes(cleanW) || cleanW.includes(wClean);
           });
-          portUsed = matchingProjs.reduce((s, p) => s + (p.usedTotal ?? (p.odps || []).reduce((so, o) => so + (o.used || 0), 0)), 0);
-          portTotal = matchingProjs.reduce((s, p) => s + (p.totalPort ?? (p.odps || []).reduce((so, o) => so + (o.total || 0), 0)), 0);
-        }
 
-        const safePortTotal = portTotal > 0 ? portTotal : 1;
-        const occRate = w.occRate !== undefined && w.occRate !== null
-          ? w.occRate
-          : Math.round(((portUsed || 0) / safePortTotal) * 1000) / 10;
+          const portUsed = matchedWok ? (matchedWok.totalUsed || 0) : 0;
+          const portTotal = matchedWok ? (matchedWok.totalPort || 0) : 0;
+          const occRate = matchedWok && matchedWok.occRate !== undefined && matchedWok.occRate !== null
+            ? matchedWok.occRate
+            : (portTotal > 0 ? Math.round((portUsed / portTotal) * 1000) / 10 : 0);
 
-        histogramBars.push({
-          id: `${b.name}-${w.name}`,
-          branchName: b.name,
-          displayName: w.name,
-          shortWokLabel: formatWokLabel(w.name),
-          occRate,
-          portUsed: portUsed || 0,
-          portTotal: portTotal || 0,
-          portAvai: Math.max((portTotal || 0) - (portUsed || 0), 0),
-          delta: w.delta ?? 0,
-          branchCode: b.name.slice(0, 3).toUpperCase()
+          bars.push({
+            id: `${bName}-${wokName}`,
+            branchName: bName,
+            displayName: wokName,
+            shortWokLabel: formatWokLabel(wokName),
+            occRate,
+            portUsed,
+            portTotal,
+            portAvai: Math.max(portTotal - portUsed, 0),
+            delta: matchedWok ? (matchedWok.delta ?? 0) : 0,
+            branchCode: bName.slice(0, 3).toUpperCase()
+          });
         });
-      });
-    } else {
-      let portUsed = b.totalUsed;
-      let portTotal = b.totalPort;
+      } else if (rankedBranch.woks && rankedBranch.woks.length > 0) {
+        rankedBranch.woks.forEach((w) => {
+          const portUsed = w.totalUsed || 0;
+          const portTotal = w.totalPort || 0;
+          const occRate = w.occRate ?? (portTotal > 0 ? Math.round((portUsed / portTotal) * 1000) / 10 : 0);
 
-      if (portTotal === undefined || portTotal === null || portTotal === 0) {
-        portUsed = branchProjects.reduce((s, p) => s + (p.usedTotal ?? (p.odps || []).reduce((so, o) => so + (o.used || 0), 0)), 0);
-        portTotal = branchProjects.reduce((s, p) => s + (p.totalPort ?? (p.odps || []).reduce((so, o) => so + (o.total || 0), 0)), 0);
+          bars.push({
+            id: `${bName}-${w.name}`,
+            branchName: bName,
+            displayName: w.name,
+            shortWokLabel: formatWokLabel(w.name),
+            occRate,
+            portUsed,
+            portTotal,
+            portAvai: Math.max(portTotal - portUsed, 0),
+            delta: w.delta ?? 0,
+            branchCode: bName.slice(0, 3).toUpperCase()
+          });
+        });
+      } else {
+        const portUsed = rankedBranch.totalUsed || 0;
+        const portTotal = rankedBranch.totalPort || 0;
+        const occRate = rankedBranch.occRate ?? (portTotal > 0 ? Math.round((portUsed / portTotal) * 1000) / 10 : 0);
+
+        bars.push({
+          id: bName,
+          branchName: bName,
+          displayName: bName,
+          shortWokLabel: formatWokLabel(bName),
+          occRate,
+          portUsed,
+          portTotal,
+          portAvai: Math.max(portTotal - portUsed, 0),
+          delta: rankedBranch.delta ?? 0,
+          branchCode: bName.slice(0, 3).toUpperCase()
+        });
       }
+    });
 
-      const safePortTotal = portTotal > 0 ? portTotal : 1;
-      const occRate = b.occRate !== undefined && b.occRate !== null
-        ? b.occRate
-        : Math.round(((portUsed || 0) / safePortTotal) * 1000) / 10;
+    return bars;
+  }, [branches, ranking]);
 
-      histogramBars.push({
-        id: b.name,
-        branchName: b.name,
-        displayName: b.name,
-        shortWokLabel: formatWokLabel(b.name),
-        occRate,
-        portUsed: portUsed || 0,
-        portTotal: portTotal || 0,
-        portAvai: Math.max((portTotal || 0) - (portUsed || 0), 0),
-        delta: b.delta ?? 0,
-        branchCode: b.name.slice(0, 3).toUpperCase()
+  // Interpolasi frame-by-frame (requestAnimationFrame) untuk pergerakan naik-turun bar yang mulus
+  const currentAnimRef = useRef({});
+  const [animMap, setAnimMap] = useState({});
+
+  useEffect(() => {
+    if (!isInView || targetBars.length === 0) return;
+
+    const startValues = {};
+    targetBars.forEach((bar) => {
+      const prev = currentAnimRef.current[bar.id];
+      startValues[bar.id] = {
+        occRate: prev ? prev.occRate : 0,
+        portUsed: prev ? prev.portUsed : 0,
+        portTotal: prev ? prev.portTotal : 0
+      };
+    });
+
+    const duration = 650;
+    const startTime = performance.now();
+    let frameId = null;
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const rawProgress = Math.min(Math.max(elapsed / duration, 0), 1);
+      // Cubic ease-out yang halus
+      const ease = 1 - Math.pow(1 - rawProgress, 3);
+
+      const nextMap = {};
+      targetBars.forEach((bar) => {
+        const s = startValues[bar.id] || { occRate: 0, portUsed: 0, portTotal: 0 };
+        nextMap[bar.id] = {
+          occRate: s.occRate + (bar.occRate - s.occRate) * ease,
+          portUsed: s.portUsed + (bar.portUsed - s.portUsed) * ease,
+          portTotal: s.portTotal + (bar.portTotal - s.portTotal) * ease
+        };
       });
-    }
-  });
 
-  const activeBar = hoveredBarIndex !== null ? histogramBars[hoveredBarIndex] : null;
+      currentAnimRef.current = nextMap;
+      setAnimMap(nextMap);
+
+      if (rawProgress < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, [targetBars, isInView]);
+
+  const activeBar = hoveredBarIndex !== null ? targetBars[hoveredBarIndex] : null;
+  const activeAnim = activeBar ? (animMap[activeBar.id] || activeBar) : null;
   const PERCENTAGE_TICKS = [100, 80, 60, 40, 20, 0];
 
   return (
@@ -4235,7 +4279,7 @@ export default function PortDistributionChartCard({
             flexShrink: 1
           }}
         >
-          {activeBar ? (
+          {activeBar && activeAnim ? (
             <div
               style={{
                 fontSize: '11.5px',
@@ -4254,7 +4298,7 @@ export default function PortDistributionChartCard({
                 alignItems: 'center'
               }}
             >
-              <span style={{ color: '#0F172A' }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{activeBar.occRate}% ({activeBar.portUsed.toLocaleString('id-ID')} / {activeBar.portTotal.toLocaleString('id-ID')} port)
+              <span style={{ color: '#0F172A' }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{Math.round(activeAnim.occRate * 10) / 10}% ({Math.round(activeAnim.portUsed).toLocaleString('id-ID')} / {Math.round(activeAnim.portTotal).toLocaleString('id-ID')} port)
             </div>
           ) : (
             <div
@@ -4281,7 +4325,7 @@ export default function PortDistributionChartCard({
       {/* Kontainer Diagram Batang dengan Sumbu X, Sumbu Y Solid & Garis Kisi Solid */}
       <div style={{ width: '100%', overflowX: 'auto', paddingBottom: '6px' }}>
         <div style={{ minWidth: '660px', width: '100%' }}>
-          {histogramBars.length === 0 ? (
+          {targetBars.length === 0 ? (
             <div style={{ height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#64748B', fontStyle: 'italic', width: '100%' }}>
               Belum ada data distribusi port untuk ditampilkan.
             </div>
@@ -4377,10 +4421,11 @@ export default function PortDistributionChartCard({
                       padding: '0 8px'
                     }}
                   >
-                    {histogramBars.map((bar, idx) => {
+                    {targetBars.map((bar, idx) => {
                       const isHovered = hoveredBarIndex === idx;
-                      const safeOcc = Math.min(Math.max(bar.occRate, 0), 100);
-                      const currentHeight = hasAnimated ? safeOcc : 0;
+                      const anim = animMap[bar.id];
+                      const currentOcc = anim ? anim.occRate : 0;
+                      const safeOcc = Math.min(Math.max(currentOcc, 0), 100);
 
                       return (
                         <div
@@ -4401,18 +4446,17 @@ export default function PortDistributionChartCard({
                             minWidth: 0
                           }}
                         >
-                          {/* Box Progress Batang Port Terpakai Saja (Tanpa Outer Box & Tanpa Tanda Persen di Atasnya) */}
+                          {/* Box Progress Batang Port Terpakai Saja */}
                           <div
                             style={{
                               width: '100%',
                               maxWidth: '26px',
-                              height: `${currentHeight}%`,
-                              minHeight: safeOcc > 0 ? '3px' : '0',
+                              height: `${safeOcc}%`,
+                              minHeight: safeOcc > 0.15 ? '3px' : '0px',
                               backgroundColor: isHovered ? '#660000' : '#800000',
                               borderRadius: '4px 4px 0 0',
                               zIndex: 1,
-                              transition: 'height 0.7s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease',
-                              transitionDelay: hasAnimated ? `${idx * 20}ms` : '0ms',
+                              transition: 'background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease',
                               transform: isHovered ? 'translateY(-2px)' : 'none',
                               boxShadow: isHovered ? '0 4px 12px rgba(128, 0, 0, 0.25)' : 'none'
                             }}
@@ -4444,7 +4488,7 @@ export default function PortDistributionChartCard({
                     padding: '0 8px'
                   }}
                 >
-                  {histogramBars.map((bar, idx) => {
+                  {targetBars.map((bar, idx) => {
                     const isHovered = hoveredBarIndex === idx;
 
                     return (
@@ -4464,7 +4508,7 @@ export default function PortDistributionChartCard({
                           paddingTop: '6px'
                         }}
                       >
-                        {/* Label Singkat WOK (Tanpa Penanda Strip) */}
+                        {/* Label Singkat WOK */}
                         <span
                           title={`${bar.displayName} (${bar.branchName})`}
                           style={{
@@ -4507,16 +4551,14 @@ export default function PortDistributionChartCard({
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/OdpStatusDonutCard.jsx` (291 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/OdpStatusDonutCard.jsx` (344 baris)
 
 ```javascript
-import { useState, useMemo, useEffect } from 'react';
-import { useCountUp } from '../../hooks/useCountUp';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 // ─── STATUS DESCRIPTIONS & COLOR PALETTE ───
 const STATUS_DESCRIPTIONS = {
@@ -4529,54 +4571,110 @@ const STATUS_DESCRIPTIONS = {
 
 export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isInView = true }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [isAnimated, setIsAnimated] = useState(false);
 
-  useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => setIsAnimated(true), 60);
-      return () => clearTimeout(timer);
-    } else {
-      setIsAnimated(false);
-    }
-  }, [isInView]);
-
-  // Total count & anim counter
-  const safeTotal = useMemo(() => {
+  // Total ODP aktual berdasarkan filter aktif
+  const rawTotal = useMemo(() => {
     if (totalOdp > 0) return totalOdp;
-    return statusChips.reduce((sum, s) => sum + (s.count || 0), 0) || 1;
+    return statusChips.reduce((sum, s) => sum + (s.count || 0), 0);
   }, [totalOdp, statusChips]);
 
-  const countTotalOdp = useCountUp(safeTotal, { enabled: isInView, duration: 800 });
+  const safeDivisor = rawTotal > 0 ? rawTotal : 1;
+
+  // Target proporsi & kuantitas tiap status untuk diinterpolasi
+  const targetChips = useMemo(() => {
+    return statusChips.map((chip) => {
+      const count = chip.count || 0;
+      const share = rawTotal > 0 ? count / safeDivisor : 0;
+      return {
+        ...chip,
+        color: chip.color || '#334155',
+        targetCount: count,
+        targetShare: share,
+        description: STATUS_DESCRIPTIONS[chip.label] || chip.label
+      };
+    });
+  }, [statusChips, rawTotal, safeDivisor]);
+
+  // Interpolasi circular mulus (requestAnimationFrame) saat mount maupun saat ganti filter
+  const currentAnimRef = useRef({ total: 0, chips: {} });
+  const [animState, setAnimState] = useState({ total: 0, chips: {} });
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const startTotal = currentAnimRef.current.total || 0;
+    const startChips = {};
+    targetChips.forEach((c) => {
+      const prev = currentAnimRef.current.chips[c.label];
+      startChips[c.label] = {
+        count: prev ? prev.count : 0,
+        share: prev ? prev.share : 0
+      };
+    });
+
+    const duration = 700;
+    const startTime = performance.now();
+    let frameId = null;
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const rawProgress = Math.min(Math.max(elapsed / duration, 0), 1);
+      // Cubic ease-out untuk pergerakan rotasi busur donat yang halus
+      const ease = 1 - Math.pow(1 - rawProgress, 3);
+
+      const nextChips = {};
+      targetChips.forEach((c) => {
+        const s = startChips[c.label] || { count: 0, share: 0 };
+        nextChips[c.label] = {
+          count: s.count + (c.targetCount - s.count) * ease,
+          share: s.share + (c.targetShare - s.share) * ease
+        };
+      });
+
+      const nextState = {
+        total: startTotal + (rawTotal - startTotal) * ease,
+        chips: nextChips
+      };
+
+      currentAnimRef.current = nextState;
+      setAnimState(nextState);
+
+      if (rawProgress < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, [targetChips, rawTotal, isInView]);
 
   // Donut geometry: Center at (100, 100), Radius 66, Stroke 28
   const radius = 66;
   const circumference = 2 * Math.PI * radius; // ~414.69
 
-  // Calculate arc slices
+  // Hitung panjang busur (strokeLength) dan posisi rotasi (offset) di setiap frame
   const slices = useMemo(() => {
     let accumulatedOffset = 0;
-    return statusChips.map((chip) => {
-      const count = chip.count || 0;
-      const pct = (count / safeTotal);
-      const strokeLength = pct * circumference;
+    return targetChips.map((chip) => {
+      const anim = animState.chips[chip.label] || { count: 0, share: 0 };
+      const strokeLength = Math.max(anim.share * circumference, 0);
       const offset = accumulatedOffset;
       accumulatedOffset += strokeLength;
 
-      // Ensure Yellow strictly uses #FFFF00
-      const color = chip.label?.toLowerCase() === 'yellow' ? '#FFFF00' : (chip.color || '#334155');
-
       return {
         ...chip,
-        color,
-        pct: Math.round(pct * 1000) / 10,
+        count: Math.round(anim.count),
+        pct: Math.round(anim.share * 1000) / 10,
         strokeLength,
-        offset,
-        description: STATUS_DESCRIPTIONS[chip.label] || chip.label
+        offset
       };
     });
-  }, [statusChips, safeTotal, circumference]);
+  }, [targetChips, animState, circumference]);
 
   const activeChip = hoveredIndex !== null ? slices[hoveredIndex] : null;
+  const displayTotalOdp = Math.round(animState.total).toLocaleString('id-ID');
 
   return (
     <div
@@ -4608,7 +4706,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
             fontVariantNumeric: 'tabular-nums'
           }}
         >
-          {safeTotal.toLocaleString('id-ID')} ODP
+          {displayTotalOdp} ODP
         </span>
       </div>
 
@@ -4639,9 +4737,8 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
             {/* Slices */}
             {slices.map((slice, idx) => {
               const isHovered = hoveredIndex === idx;
-              // Animated stroke: grow from 0 to full length
-              const visibleLength = isAnimated ? slice.strokeLength : 0;
-              const gapAdjustedLength = Math.max(visibleLength - 1.5, 0); // 1.5px gap between segments
+              const visibleLength = slice.strokeLength;
+              const gapAdjustedLength = visibleLength > 2 ? visibleLength - 1.5 : Math.max(visibleLength, 0);
 
               return (
                 <circle
@@ -4652,11 +4749,11 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   fill="transparent"
                   stroke={slice.color}
                   strokeWidth={isHovered ? 34 : 28}
-                  strokeDasharray={`${gapAdjustedLength} ${circumference - gapAdjustedLength}`}
+                  strokeDasharray={`${gapAdjustedLength} ${Math.max(circumference - gapAdjustedLength, 0)}`}
                   strokeDashoffset={-slice.offset}
                   style={{
                     cursor: 'pointer',
-                    transition: 'stroke-width 0.18s ease, filter 0.18s ease, stroke-dasharray 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                    transition: 'stroke-width 0.18s ease, filter 0.18s ease',
                     filter: isHovered ? 'drop-shadow(0 2px 6px rgba(0,0,0,0.25))' : 'none'
                   }}
                   onMouseEnter={() => setHoveredIndex(idx)}
@@ -4713,7 +4810,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                     lineHeight: 1.1
                   }}
                 >
-                  {countTotalOdp}
+                  {displayTotalOdp}
                 </div>
                 <div
                   style={{
@@ -4759,7 +4856,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                       height: '8px',
                       borderRadius: '50%',
                       backgroundColor: slice.color,
-                      border: slice.color?.toUpperCase() === '#FFFF00' ? '1px solid #CBD5E1' : 'none',
                       boxSizing: 'border-box',
                       flexShrink: 0
                     }}
@@ -4805,7 +4901,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
     </div>
   );
 }
-
 ```
 
 ---
@@ -5172,7 +5267,6 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
     </div>
   );
 }
-
 ```
 
 ---
@@ -5693,7 +5787,6 @@ export default function ExecutiveSummarySection({
     </div>
   );
 }
-
 ```
 
 ---
@@ -6060,7 +6153,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
     </div>
   );
 }
-
 ```
 
 ---
@@ -6198,15 +6290,14 @@ const GtmExecutionInsightCard = memo(function GtmExecutionInsightCard({
 });
 
 export default GtmExecutionInsightCard;
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/BranchProjectsPieCard.jsx` (244 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/BranchProjectsPieCard.jsx` (311 baris)
 
 ```javascript
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { BRANCH_COLORS } from '../../utils';
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -6218,8 +6309,10 @@ function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
 }
 
 function describeArc(x, y, radius, startAngle, endAngle) {
+  const sweep = endAngle - startAngle;
+  if (sweep <= 0.08) return '';
   // Clamp angle so it doesn't wrap around 360 awkwardly
-  const safeEndAngle = endAngle - startAngle >= 359.99 ? startAngle + 359.99 : endAngle;
+  const safeEndAngle = sweep >= 359.99 ? startAngle + 359.99 : endAngle;
   const start = polarToCartesian(x, y, radius, safeEndAngle);
   const end = polarToCartesian(x, y, radius, startAngle);
   const largeArcFlag = safeEndAngle - startAngle <= 180 ? '0' : '1';
@@ -6234,45 +6327,106 @@ function describeArc(x, y, radius, startAngle, endAngle) {
 
 export default function BranchProjectsPieCard({ ranking = [], branches = [], goBranch, isInView = true }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [isAnimated, setIsAnimated] = useState(false);
 
-  useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => setIsAnimated(true), 60);
-      return () => clearTimeout(timer);
-    } else {
-      setIsAnimated(false);
-    }
-  }, [isInView]);
-
-  // Aggregate project count per branch & sort descending
+  // Urutan branch stabil dari master branches (urut volume terbesar keseluruhan)
+  // lalu pasangkan dengan projCount dari filter aktif (ranking) agar transisi sudut pie berputar mulus
   const branchData = useMemo(() => {
-    const list = Array.isArray(ranking) && ranking.length > 0 ? ranking : branches;
-    const mapped = list.map(b => {
-      const count = b.projCount ?? (b.projects?.length || 0);
-      const bUpper = b.name?.toString().trim().toUpperCase();
-      const color = b.color || BRANCH_COLORS[bUpper] || '#64748B';
+    const masterList = Array.isArray(branches) && branches.length > 0 ? branches : ranking;
+
+    const baseList = [...masterList].sort((a, b) => {
+      const countA = a.projects?.length ?? a.projCount ?? 0;
+      const countB = b.projects?.length ?? b.projCount ?? 0;
+      return countB - countA;
+    });
+
+    return baseList.map((b) => {
+      const bUpper = (b.name || '').toString().trim().toUpperCase();
+      const rankedMatch = (ranking || []).find(
+        (r) => (r.name || '').toString().trim().toUpperCase() === bUpper
+      );
+      const count = rankedMatch
+        ? (rankedMatch.projCount ?? 0)
+        : (b.projCount ?? (b.projects?.length || 0));
+      const color = rankedMatch?.color || b.color || BRANCH_COLORS[bUpper] || '#64748B';
 
       return {
         name: b.name,
         count,
         color
       };
-    }).sort((a, b) => b.count - a.count); // Largest share first
-
-    return mapped;
+    });
   }, [ranking, branches]);
 
-  const totalProjects = useMemo(() => {
-    return branchData.reduce((acc, b) => acc + (b.count || 0), 0) || 1;
+  const rawTotalProjects = useMemo(() => {
+    return branchData.reduce((acc, b) => acc + (b.count || 0), 0);
   }, [branchData]);
 
+  const safeDivisor = rawTotalProjects > 0 ? rawTotalProjects : 1;
 
-  // Compute angles for each pie slice
+  // Target nilai per branch untuk diinterpolasi
+  const targetBranches = useMemo(() => {
+    return branchData.map((b) => ({
+      ...b,
+      targetCount: b.count || 0,
+      targetShare: rawTotalProjects > 0 ? (b.count || 0) / safeDivisor : 0
+    }));
+  }, [branchData, rawTotalProjects, safeDivisor]);
+
+  // Interpolasi sudut circular (requestAnimationFrame) saat mount maupun saat ganti filter
+  const currentAnimRef = useRef({});
+  const [animMap, setAnimMap] = useState({});
+
+  useEffect(() => {
+    if (!isInView || targetBranches.length === 0) return;
+
+    const startValues = {};
+    targetBranches.forEach((b) => {
+      const prev = currentAnimRef.current[b.name];
+      startValues[b.name] = {
+        count: prev ? prev.count : 0,
+        share: prev ? prev.share : 0
+      };
+    });
+
+    const duration = 700;
+    const startTime = performance.now();
+    let frameId = null;
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const rawProgress = Math.min(Math.max(elapsed / duration, 0), 1);
+      // Cubic ease-out untuk rotasi juring lingkaran yang halus
+      const ease = 1 - Math.pow(1 - rawProgress, 3);
+
+      const nextMap = {};
+      targetBranches.forEach((b) => {
+        const s = startValues[b.name] || { count: 0, share: 0 };
+        nextMap[b.name] = {
+          count: s.count + (b.targetCount - s.count) * ease,
+          share: s.share + (b.targetShare - s.share) * ease
+        };
+      });
+
+      currentAnimRef.current = nextMap;
+      setAnimMap(nextMap);
+
+      if (rawProgress < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, [targetBranches, isInView]);
+
+  // Hitung sudut startAngle, endAngle, dan path SVG pada setiap frame animasi
   const slices = useMemo(() => {
     let currentAngle = 0;
-    return branchData.map((b) => {
-      const share = b.count / totalProjects;
+    return targetBranches.map((b) => {
+      const anim = animMap[b.name] || { count: 0, share: 0 };
+      const share = Math.max(anim.share, 0);
       const angle = share * 360;
       const startAngle = currentAngle;
       const endAngle = currentAngle + angle;
@@ -6285,6 +6439,8 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
 
       return {
         ...b,
+        count: Math.round(anim.count),
+        angle,
         startAngle,
         endAngle,
         midAngle,
@@ -6294,7 +6450,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
         path: describeArc(100, 100, 80, startAngle, endAngle)
       };
     });
-  }, [branchData, totalProjects]);
+  }, [targetBranches, animMap]);
 
   return (
     <div
@@ -6338,14 +6494,16 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
             height="255"
             viewBox="0 0 200 200"
             style={{
-              overflow: 'visible',
-              transform: isAnimated ? 'scale(1) rotate(0deg)' : 'scale(0.85) rotate(-15deg)',
-              opacity: isAnimated ? 1 : 0,
-              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease'
+              overflow: 'visible'
             }}
           >
+            {/* Lingkaran dasar abu-abu lembut saat transisi awal atau jika total 0 */}
+            <circle cx="100" cy="100" r="80" fill="#F1F5F9" />
+
             {slices.map((slice, idx) => {
+              if (!slice.path) return null;
               const isHovered = hoveredIndex === idx;
+              const isFullCircle = slice.angle >= 359.5;
 
               return (
                 <path
@@ -6353,7 +6511,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                   d={slice.path}
                   fill={slice.color}
                   stroke="#FFFFFF"
-                  strokeWidth="2"
+                  strokeWidth={isFullCircle ? '0' : '2'}
                   strokeLinejoin="round"
                   style={{
                     cursor: 'pointer',
@@ -6427,7 +6585,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                       fontVariantNumeric: 'tabular-nums'
                     }}
                   >
-                    {slice.count} <span style={{ fontSize: '10.5px', color: '#64748B', }}>proj</span>
+                    {slice.count} <span style={{ fontSize: '10.5px', color: '#64748B' }}>proj</span>
                   </span>
                   <span
                     style={{
@@ -6449,7 +6607,6 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
     </div>
   );
 }
-
 ```
 
 ---
@@ -6598,7 +6755,6 @@ export default function SearchFilterToolbar({
     </div>
   );
 }
-
 ```
 
 ---
@@ -6617,7 +6773,7 @@ function MiniProgressItem({ b, index, isLast, goBranch, isInView }) {
 
   const isPositive = b.delta > 0;
   const isNegative = b.delta < 0;
-  const deltaColor = isPositive ? '#16A34A' : isNegative ? '#DC2626' : '#64748B';
+  const deltaColor = isPositive ? '#16A34A' : isNegative ? '#800000' : '#64748B';
   const deltaFormatted = isPositive ? `+${b.delta}%` : `${b.delta}%`;
 
   return (
@@ -6703,7 +6859,7 @@ function MiniProgressItem({ b, index, isLast, goBranch, isInView }) {
                 height="13"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#DC2626"
+                stroke="#800000"
                 strokeWidth="2.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -6794,7 +6950,6 @@ export default memo(function RightWidgetPanel({
     </div>
   );
 });
-
 ```
 
 ---
@@ -6927,7 +7082,6 @@ export default function DashboardHeader({
     </div>
   );
 }
-
 ```
 
 ---
@@ -6940,19 +7094,18 @@ export default function AdminHeader() {
   return (
     <div className="page-title-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
       <div>
-        <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#0F172A', margin: 0, letterSpacing: '-0.3px' }}>
+        <h1 style={{ fontSize: '24px', color: '#0F172A', margin: 0, letterSpacing: '-0.3px' }}>
           Administrator Control Panel
         </h1>
       </div>
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/AdminTabs.jsx` (35 baris)
+## File: `gtm-monitor-frontend/src/components/admin/AdminTabs.jsx` (34 baris)
 
 ```javascript
 // ─── 3. NAVIGATION TABS (SEGMENTED PILL) ───
@@ -6975,7 +7128,6 @@ export default function AdminTabs() {
             padding: '0 16px',
             borderRadius: '6px',
             fontSize: '13px',
-            fontWeight: 600,
             background: '#FFFFFF',
             color: '#0F172A',
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
@@ -6989,12 +7141,11 @@ export default function AdminTabs() {
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/AdminKpiGrid.jsx` (314 baris)
+## File: `gtm-monitor-frontend/src/components/admin/AdminKpiGrid.jsx` (296 baris)
 
 ```javascript
 // ─── KPI SUMMARY GRID (4 CARDS MATCHING DASHBOARD & ACTIVITY STYLE) ───
@@ -7019,7 +7170,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
@@ -7033,7 +7183,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '48px',
-            fontWeight: 600,
             color: '#0F172A',
             letterSpacing: '-1.5px',
             margin: '18px 0 16px 0',
@@ -7047,7 +7196,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           <span
             style={{
               fontSize: '20px',
-              fontWeight: 500,
               color: '#64748B',
               letterSpacing: '-0.2px',
               marginLeft: '6px'
@@ -7060,7 +7208,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             height: '24px',
             display: 'flex',
@@ -7070,7 +7217,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           Tersebar di{' '}
           <span
             style={{
-              fontWeight: 600,
               color: '#1E293B',
               fontVariantNumeric: 'tabular-nums',
               fontFeatureSettings: '"tnum"',
@@ -7101,7 +7247,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
@@ -7115,7 +7260,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '48px',
-            fontWeight: 600,
             color: '#0F172A',
             letterSpacing: '-1.5px',
             margin: '18px 0 16px 0',
@@ -7129,7 +7273,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           <span
             style={{
               fontSize: '20px',
-              fontWeight: 500,
               color: '#64748B',
               letterSpacing: '-0.2px',
               marginLeft: '6px'
@@ -7142,7 +7285,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             height: '24px',
             display: 'flex',
@@ -7152,7 +7294,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           Kapasitas:{' '}
           <span
             style={{
-              fontWeight: 600,
               color: '#1E293B',
               fontVariantNumeric: 'tabular-nums',
               fontFeatureSettings: '"tnum"',
@@ -7185,7 +7326,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
@@ -7199,7 +7339,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '48px',
-            fontWeight: 600,
             color: '#0F172A',
             letterSpacing: '-1.5px',
             margin: '18px 0 16px 0',
@@ -7213,7 +7352,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           <span
             style={{
               fontSize: '20px',
-              fontWeight: 500,
               color: '#64748B',
               letterSpacing: '-0.2px',
               marginLeft: '6px'
@@ -7226,7 +7364,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             height: '24px',
             display: 'flex',
@@ -7255,7 +7392,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
@@ -7269,7 +7405,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '48px',
-            fontWeight: 600,
             color: '#0F172A',
             letterSpacing: '-1.5px',
             margin: '18px 0 16px 0',
@@ -7285,7 +7420,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             height: '24px',
             display: 'flex',
@@ -7295,7 +7429,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           Terverifikasi:{' '}
           <span
             style={{
-              fontWeight: 600,
               color: '#1E293B',
               fontVariantNumeric: 'tabular-nums',
               fontFeatureSettings: '"tnum"',
@@ -7310,12 +7443,11 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/AdminActionHubCard.jsx` (352 baris)
+## File: `gtm-monitor-frontend/src/components/admin/AdminActionHubCard.jsx` (351 baris)
 
 ```javascript
 import { useState, useEffect } from 'react';
@@ -7460,7 +7592,7 @@ export default function AdminActionHubCard({
       {/* Header Segmen */}
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #F1F5F9', paddingBottom: '16px' }}>
         <div>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '16px', fontWeight: 600, color: '#0F172A', margin: 0, letterSpacing: '-0.2px' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '16px', color: '#0F172A', margin: 0, letterSpacing: '-0.2px' }}>
             Pusat Pembaruan Database &amp; Program
           </h2>
           <div style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: '#64748B', marginTop: '4px' }}>
@@ -7497,7 +7629,7 @@ export default function AdminActionHubCard({
                 flex: 1
               }}
             >
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: '13.5px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.1px' }}>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: '13.5px', color: '#0F172A', letterSpacing: '-0.1px' }}>
                 {act.title}
               </span>
 
@@ -7520,9 +7652,9 @@ export default function AdminActionHubCard({
                     width: '20px',
                     height: '20px',
                     borderRadius: '50%',
-                    background: activeHintId === act.id ? '#EFF6FF' : '#FFFFFF',
-                    color: activeHintId === act.id ? '#1D4ED8' : '#64748B',
-                    border: activeHintId === act.id ? '1px solid #93C5FD' : '1px solid #CBD5E1',
+                    background: activeHintId === act.id ? '#F1F5F9' : '#FFFFFF',
+                    color: activeHintId === act.id ? '#0F172A' : '#64748B',
+                    border: activeHintId === act.id ? '1px solid #0F172A' : '1px solid #CBD5E1',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -7563,7 +7695,7 @@ export default function AdminActionHubCard({
                   >
                     {/* Header Hint Popover */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
-                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '13px', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '13px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                         {act.hint.title}
                       </div>
                       <button
@@ -7604,7 +7736,7 @@ export default function AdminActionHubCard({
 
                     {/* Ketentuan Upload Bersatu (Termasuk Format Berkas) */}
                     <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#475569', lineHeight: 1.55 }}>
-                      <div style={{ fontWeight: 600, color: '#0F172A', marginBottom: '6px', fontSize: '12px' }}>
+                      <div style={{ color: '#0F172A', marginBottom: '6px', fontSize: '12px' }}>
                         Ketentuan Upload:
                       </div>
                       <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -7629,12 +7761,11 @@ export default function AdminActionHubCard({
                   width: '170px',
                   height: '38px',
                   borderRadius: '8px',
-                  border: act.isDanger ? '1px solid #FCA5A5' : 'none',
+                  border: act.isDanger ? '1px solid #CBD5E1' : 'none',
                   background: act.isDanger ? '#FFFFFF' : '#800000',
-                  color: act.isDanger ? '#DC2626' : '#FFFFFF',
+                  color: act.isDanger ? '#0F172A' : '#FFFFFF',
                   fontFamily: 'var(--font-body)',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -7646,9 +7777,9 @@ export default function AdminActionHubCard({
                 onMouseEnter={(e) => {
                   if (act.isDanger) {
                     e.currentTarget.style.background = '#FEF2F2';
-                    e.currentTarget.style.borderColor = '#EF4444';
+                    e.currentTarget.style.borderColor = '#800000';
                   } else {
-                    e.currentTarget.style.background = '#990000';
+                    e.currentTarget.style.background = '#660000';
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -7669,7 +7800,6 @@ export default function AdminActionHubCard({
     </div>
   );
 }
-
 ```
 
 ---
@@ -7707,8 +7837,8 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
               userSelect: 'none' 
             }}
           >
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>Branch:</span>
-            <span style={{ flex: 1, whiteSpace: 'nowrap', fontWeight: 800, color: '#0F172A' }}>
+            <span style={{ fontSize: '12px', color: '#64748B' }}>Branch:</span>
+            <span style={{ flex: 1, whiteSpace: 'nowrap', color: '#0F172A' }}>
               {selectedBranch === 'Semua Branch' 
                 ? `Semua Branch (${totalProjects})` 
                 : `${formatBranch(selectedBranch)} (${priorityBranches.find(x => x.name === selectedBranch)?.projects?.length || 0})`}
@@ -7723,7 +7853,7 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
               <div 
                 className={`dropdown-item ${selectedBranch === 'Semua Branch' ? 'active' : ''}`}
                 onClick={() => { setSelectedBranch('Semua Branch'); setIsBranchDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: selectedBranch === 'Semua Branch' ? 800 : 600, color: selectedBranch === 'Semua Branch' ? '#800000' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', color: selectedBranch === 'Semua Branch' ? '#0F172A' : '#334155', cursor: 'pointer' }}
               >
                 Semua Branch ({totalProjects})
               </div>
@@ -7732,7 +7862,7 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
                   key={b.name}
                   className={`dropdown-item ${selectedBranch === b.name ? 'active' : ''}`}
                   onClick={() => { setSelectedBranch(b.name); setIsBranchDropdownOpen(false); }}
-                  style={{ padding: '12px 18px', fontSize: '13px', fontWeight: selectedBranch === b.name ? 800 : 600, color: selectedBranch === b.name ? '#800000' : '#334155', cursor: 'pointer' }}
+                  style={{ padding: '12px 18px', fontSize: '13px', color: selectedBranch === b.name ? '#0F172A' : '#334155', cursor: 'pointer' }}
                 >
                   {formatBranch(b.name)} ({b.projects?.length || 0})
                 </div>
@@ -7762,8 +7892,8 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
               userSelect: 'none' 
             }}
           >
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>Status:</span>
-            <span style={{ flex: 1, whiteSpace: 'nowrap', fontWeight: 800, color: '#0F172A' }}>
+            <span style={{ fontSize: '12px', color: '#64748B' }}>Status:</span>
+            <span style={{ flex: 1, whiteSpace: 'nowrap', color: '#0F172A' }}>
               {statusFilter === 'all' 
                 ? `Semua Status (${statusCounts.all})` 
                 : statusFilter === 'need_review' 
@@ -7782,28 +7912,28 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
               <div 
                 className={`dropdown-item ${statusFilter === 'all' ? 'active' : ''}`}
                 onClick={() => { setStatusFilter('all'); setIsStatusDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'all' ? 800 : 600, color: statusFilter === 'all' ? '#800000' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', color: statusFilter === 'all' ? '#0F172A' : '#334155', cursor: 'pointer' }}
               >
                 Semua Status ({statusCounts.all})
               </div>
               <div 
                 className={`dropdown-item ${statusFilter === 'need_review' ? 'active' : ''}`}
                 onClick={() => { setStatusFilter('need_review'); setIsStatusDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'need_review' ? 800 : 600, color: statusFilter === 'need_review' ? '#800000' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', color: statusFilter === 'need_review' ? '#0F172A' : '#334155', cursor: 'pointer' }}
               >
                 Menunggu Verifikasi ({statusCounts.need_review})
               </div>
               <div 
                 className={`dropdown-item ${statusFilter === 'verified' ? 'active' : ''}`}
                 onClick={() => { setStatusFilter('verified'); setIsStatusDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'verified' ? 800 : 600, color: statusFilter === 'verified' ? '#800000' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', color: statusFilter === 'verified' ? '#0F172A' : '#334155', cursor: 'pointer' }}
               >
                 Sudah Terverifikasi ({statusCounts.verified})
               </div>
               <div 
                 className={`dropdown-item ${statusFilter === 'pending' ? 'active' : ''}`}
                 onClick={() => { setStatusFilter('pending'); setIsStatusDropdownOpen(false); }}
-                style={{ padding: '12px 18px', fontSize: '13px', fontWeight: statusFilter === 'pending' ? 800 : 600, color: statusFilter === 'pending' ? '#800000' : '#334155', cursor: 'pointer' }}
+                style={{ padding: '12px 18px', fontSize: '13px', color: statusFilter === 'pending' ? '#0F172A' : '#334155', cursor: 'pointer' }}
               >
                 Belum Dikerjakan ({statusCounts.pending})
               </div>
@@ -7848,19 +7978,18 @@ export default function MonitoringTab({ priorityBranches, totalProjects, selecte
         )
       ) : (
         <div style={{ padding: '60px 20px', textAlign: 'center', background: '#FFFFFF', borderRadius: '18px', border: '1px solid #E2E8F0', color: '#64748B' }}>
-          <div style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A' }}>Tidak ada proyek yang sesuai filter</div>
+          <div style={{ fontSize: '16px', color: '#0F172A' }}>Tidak ada proyek yang sesuai filter</div>
           <p style={{ fontSize: '13px', color: '#64748B', margin: '4px 0 0' }}>Coba ganti filter branch, status verifikasi, atau kata kunci pencarian Anda.</p>
         </div>
       )}
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/OdpImportCard.jsx` (230 baris)
+## File: `gtm-monitor-frontend/src/components/admin/OdpImportCard.jsx` (224 baris)
 
 ```javascript
 // Kartu: Upload File Excel Data ODP
@@ -7896,7 +8025,7 @@ export default function OdpImportCard({
         {/* Header Zone */}
         <div style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px', color: '#0F172A', margin: 0 }}>
+            <h3 style={{ fontSize: '16px', letterSpacing: '-0.2px', color: '#0F172A', margin: 0 }}>
               Upload File Excel Data ODP
             </h3>
 
@@ -7915,7 +8044,6 @@ export default function OdpImportCard({
                 background: '#F8FAFC',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 800,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -7942,7 +8070,7 @@ export default function OdpImportCard({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>Target Update:</span>
+            <span style={{ fontSize: '12px', color: '#475569' }}>Target Update:</span>
             <div
               style={{
                 padding: '5px 12px',
@@ -7951,8 +8079,7 @@ export default function OdpImportCard({
                 background: '#F8FAFC',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600
-              }}
+                }}
             >
               Data ODP &amp; Port Mingguan
             </div>
@@ -7984,7 +8111,6 @@ export default function OdpImportCard({
                   border: '1px solid #CBD5E1',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -8007,8 +8133,7 @@ export default function OdpImportCard({
               <span
                 style={{
                   fontSize: '12.5px',
-                  color: file ? '#065F46' : '#94A3B8',
-                  fontWeight: file ? 600 : 400,
+                  color: file ? '#0F172A' : '#94A3B8',
                   flex: 1,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -8030,9 +8155,8 @@ export default function OdpImportCard({
                   style={{
                     border: 'none',
                     background: 'transparent',
-                    color: '#800000',
+                    color: '#0F172A',
                     fontSize: '15px',
-                    fontWeight: 700,
                     cursor: 'pointer',
                     padding: '0 4px',
                     lineHeight: 1
@@ -8054,13 +8178,13 @@ export default function OdpImportCard({
           </div>
 
           {message && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {message}
             </div>
           )}
 
           {error && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {error}
             </div>
           )}
@@ -8075,7 +8199,6 @@ export default function OdpImportCard({
               color: loading || !file ? '#94A3B8' : '#FFFFFF',
               border: 'none',
               borderRadius: '10px',
-              fontWeight: 600,
               fontSize: '13px',
               cursor: loading || !file ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s ease',
@@ -8092,12 +8215,11 @@ export default function OdpImportCard({
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/PairingImportCard.jsx` (235 baris)
+## File: `gtm-monitor-frontend/src/components/admin/PairingImportCard.jsx` (229 baris)
 
 ```javascript
 // Kartu: Upload File Excel Data Tsel One Pairing
@@ -8132,7 +8254,7 @@ export default function PairingImportCard({
         {/* Header Zone */}
         <div style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px', color: '#0F172A', margin: 0 }}>
+            <h3 style={{ fontSize: '16px', letterSpacing: '-0.2px', color: '#0F172A', margin: 0 }}>
               Upload File Excel Data Tsel One Pairing
             </h3>
 
@@ -8151,7 +8273,6 @@ export default function PairingImportCard({
                 background: '#F8FAFC',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 800,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -8178,7 +8299,7 @@ export default function PairingImportCard({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>Target Update:</span>
+            <span style={{ fontSize: '12px', color: '#475569' }}>Target Update:</span>
             <div
               style={{
                 padding: '5px 12px',
@@ -8187,8 +8308,7 @@ export default function PairingImportCard({
                 background: '#F8FAFC',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600
-              }}
+                }}
             >
               Data Tsel One Pairing
             </div>
@@ -8220,7 +8340,6 @@ export default function PairingImportCard({
                   border: '1px solid #CBD5E1',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -8243,8 +8362,7 @@ export default function PairingImportCard({
               <span
                 style={{
                   fontSize: '12.5px',
-                  color: pairingFile ? '#065F46' : '#94A3B8',
-                  fontWeight: pairingFile ? 600 : 400,
+                  color: pairingFile ? '#0F172A' : '#94A3B8',
                   flex: 1,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -8266,9 +8384,8 @@ export default function PairingImportCard({
                   style={{
                     border: 'none',
                     background: 'transparent',
-                    color: '#800000',
+                    color: '#0F172A',
                     fontSize: '15px',
-                    fontWeight: 700,
                     cursor: 'pointer',
                     padding: '0 4px',
                     lineHeight: 1
@@ -8296,13 +8413,13 @@ export default function PairingImportCard({
           </div>
 
           {pairingMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {pairingMessage}
             </div>
           )}
 
           {pairingError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {pairingError}
             </div>
           )}
@@ -8317,7 +8434,6 @@ export default function PairingImportCard({
               color: pairingLoading || !pairingFile ? '#94A3B8' : '#FFFFFF',
               border: 'none',
               borderRadius: '10px',
-              fontWeight: 600,
               fontSize: '13px',
               cursor: pairingLoading || !pairingFile ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s ease',
@@ -8334,12 +8450,11 @@ export default function PairingImportCard({
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/ProgramUploadCard.jsx` (369 baris)
+## File: `gtm-monitor-frontend/src/components/admin/ProgramUploadCard.jsx` (360 baris)
 
 ```javascript
 // Kartu: Upload Gambar Tracking Program Bulanan
@@ -8381,7 +8496,7 @@ export default function ProgramUploadCard({
         {/* Header Zone */}
         <div style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px', color: '#0F172A', margin: 0 }}>
+            <h3 style={{ fontSize: '16px', letterSpacing: '-0.2px', color: '#0F172A', margin: 0 }}>
               Upload Gambar Tracking Program Bulanan
             </h3>
 
@@ -8400,7 +8515,6 @@ export default function ProgramUploadCard({
                 background: '#F8FAFC',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 800,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -8429,7 +8543,7 @@ export default function ProgramUploadCard({
           {/* Month Selector & Program Option Selection */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '14px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569', minWidth: '90px' }}>Pilih Periode:</span>
+              <span style={{ fontSize: '12px', color: '#475569', minWidth: '90px' }}>Pilih Periode:</span>
               <select
                 value={programMonthLabel}
                 onChange={(e) => setProgramMonthLabel(e.target.value)}
@@ -8440,7 +8554,6 @@ export default function ProgramUploadCard({
                   background: '#F8FAFC',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   outline: 'none',
                   cursor: 'pointer',
                   flex: 1
@@ -8461,7 +8574,7 @@ export default function ProgramUploadCard({
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569', minWidth: '90px' }}>Nama Program:</span>
+                <span style={{ fontSize: '12px', color: '#475569', minWidth: '90px' }}>Nama Program:</span>
                 <input
                   type="text"
                   placeholder="Ketikkan atau pilih nama program..."
@@ -8475,7 +8588,6 @@ export default function ProgramUploadCard({
                     background: '#FFFFFF',
                     color: '#0F172A',
                     fontSize: '12px',
-                    fontWeight: 500,
                     flex: 1,
                     outline: 'none'
                   }}
@@ -8506,8 +8618,7 @@ export default function ProgramUploadCard({
                       background: '#EFF6FF',
                       border: '1px solid #BFDBFE',
                       fontSize: '11.5px',
-                      color: '#1D4ED8',
-                      fontWeight: 600,
+                      color: '#0F172A',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
@@ -8524,7 +8635,7 @@ export default function ProgramUploadCard({
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B', minWidth: '90px' }}>Link Manual:</span>
+              <span style={{ fontSize: '12px', color: '#64748B', minWidth: '90px' }}>Link Manual:</span>
               <input
                 type="url"
                 placeholder="http://... (Opsional - biarkan kosong untuk OCR otomatis)"
@@ -8536,7 +8647,6 @@ export default function ProgramUploadCard({
                   border: '1px solid #CBD5E1',
                   background: '#FFFFFF',
                   fontSize: '12px',
-                  fontWeight: 500,
                   flex: 1,
                   outline: 'none'
                 }}
@@ -8570,7 +8680,6 @@ export default function ProgramUploadCard({
                   border: '1px solid #CBD5E1',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -8593,8 +8702,7 @@ export default function ProgramUploadCard({
               <span
                 style={{
                   fontSize: '12.5px',
-                  color: programFile ? '#065F46' : '#94A3B8',
-                  fontWeight: programFile ? 600 : 400,
+                  color: programFile ? '#0F172A' : '#94A3B8',
                   flex: 1,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -8616,9 +8724,8 @@ export default function ProgramUploadCard({
                   style={{
                     border: 'none',
                     background: 'transparent',
-                    color: '#800000',
+                    color: '#0F172A',
                     fontSize: '15px',
-                    fontWeight: 700,
                     cursor: 'pointer',
                     padding: '0 4px',
                     lineHeight: 1
@@ -8645,36 +8752,36 @@ export default function ProgramUploadCard({
           </div>
 
           {programMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {programMessage}
             </div>
           )}
 
           {programError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {programError}
             </div>
           )}
 
           {programResultUpload && (
             <div style={{ padding: '14px', borderRadius: '10px', background: '#F8FAFC', border: '1px solid #E2E8F0', marginBottom: '16px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>
+              <div style={{ fontSize: '12px', color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>
                 Hasil Upload &amp; OCR Link Scan:
               </div>
               <div style={{ fontSize: '12px', color: '#334155', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div><strong>Status Cloudinary:</strong> <span style={{ color: '#059669', fontWeight: 600 }}>Tersimpan</span></div>
+                <div><strong>Status Cloudinary:</strong> <span style={{ color: '#0F172A', }}>Tersimpan</span></div>
                 {programResultUpload.totalSlides > 1 && (
                   <div>
                     <strong>Status Slide:</strong>{' '}
-                    <span style={{ color: '#2563EB', fontWeight: 600 }}>
+                    <span style={{ color: '#0F172A', }}>
                       Tersimpan sebagai Slide ke-{programResultUpload.totalSlides} (Total: {programResultUpload.totalSlides} slide gambar)
                     </span>
                   </div>
                 )}
-                <div><strong>Hasil Scan OCR:</strong> <span style={{ color: programResultUpload.scannedLink ? '#2563EB' : '#64748B', fontWeight: 600 }}>{programResultUpload.scannedLink || 'Tidak terdeteksi (Dapat diisi link manual)'}</span></div>
+                <div><strong>Hasil Scan OCR:</strong> <span style={{ color: programResultUpload.scannedLink ? '#0F172A' : '#64748B', }}>{programResultUpload.scannedLink || 'Tidak terdeteksi (Dapat diisi link manual)'}</span></div>
                 {programResultUpload.detailUrl && (
                   <div style={{ marginTop: '4px' }}>
-                    <a href={programResultUpload.detailUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#2563EB', fontWeight: 600, fontSize: '12px' }}>
+                    <a href={programResultUpload.detailUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#0F172A', fontSize: '12px' }}>
                       🔗 Buka Link Detail Resmi Slide Ini →
                     </a>
                   </div>
@@ -8693,7 +8800,6 @@ export default function ProgramUploadCard({
               color: programLoading || !programFile ? '#94A3B8' : '#FFFFFF',
               border: 'none',
               borderRadius: '10px',
-              fontWeight: 600,
               fontSize: '13px',
               cursor: programLoading || !programFile ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s ease',
@@ -8710,12 +8816,11 @@ export default function ProgramUploadCard({
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/ProgramDeleteCard.jsx` (177 baris)
+## File: `gtm-monitor-frontend/src/components/admin/ProgramDeleteCard.jsx` (173 baris)
 
 ```javascript
 // Kartu: Kelola & Hapus Program Terdaftar
@@ -8751,23 +8856,22 @@ export default function ProgramDeleteCard({
         {/* Header Zone */}
         <div style={{ marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px', color: '#0F172A', margin: '0' }}>
+            <h3 style={{ fontSize: '16px', letterSpacing: '-0.2px', color: '#0F172A', margin: '0' }}>
               Hapus Program Terdaftar
             </h3>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>Status Periode:</span>
+            <span style={{ fontSize: '12px', color: '#475569' }}>Status Periode:</span>
             <div
               style={{
                 padding: '5px 12px',
                 borderRadius: '8px',
                 background: deleteAvailablePrograms.length > 0 ? '#ECFDF5' : '#F1F5F9',
                 border: deleteAvailablePrograms.length > 0 ? '1px solid #A7F3D0' : '1px solid #E2E8F0',
-                color: deleteAvailablePrograms.length > 0 ? '#047857' : '#64748B',
+                color: deleteAvailablePrograms.length > 0 ? '#0F172A' : '#64748B',
                 fontSize: '12.5px',
-                fontWeight: 600
-              }}
+                }}
             >
               {deleteAvailablePrograms.length > 0 ? `${deleteAvailablePrograms.length} Program Ditemukan` : 'Tidak Ada Program'}
             </div>
@@ -8779,7 +8883,7 @@ export default function ProgramDeleteCard({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
             {/* Select Month */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>1. Pilih Periode Bulan:</label>
+              <label style={{ fontSize: '12px', color: '#334155' }}>1. Pilih Periode Bulan:</label>
               <select
                 value={deleteProgramMonth}
                 onChange={(e) => {
@@ -8796,7 +8900,6 @@ export default function ProgramDeleteCard({
                   background: '#F8FAFC',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   outline: 'none',
                   cursor: 'pointer'
                 }}
@@ -8816,7 +8919,7 @@ export default function ProgramDeleteCard({
 
             {/* Select Program Option */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
+              <label style={{ fontSize: '12px', color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
               <select
                 value={deleteProgramTarget}
                 onChange={(e) => {
@@ -8833,7 +8936,6 @@ export default function ProgramDeleteCard({
                   background: deleteAvailablePrograms.length === 0 ? '#F1F5F9' : '#FFFFFF',
                   color: deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   outline: 'none',
                   cursor: deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer'
                 }}
@@ -8849,13 +8951,13 @@ export default function ProgramDeleteCard({
           </div>
 
           {deleteMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {deleteMessage}
             </div>
           )}
 
           {deleteError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {deleteError}
             </div>
           )}
@@ -8871,7 +8973,6 @@ export default function ProgramDeleteCard({
               color: deleteLoading || deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#FFFFFF',
               border: 'none',
               borderRadius: '10px',
-              fontWeight: 600,
               fontSize: '13px',
               cursor: deleteLoading || deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s ease',
@@ -8894,8 +8995,5 @@ export default function ProgramDeleteCard({
     </div>
   );
 }
-
 ```
-
----
 

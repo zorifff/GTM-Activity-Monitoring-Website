@@ -199,6 +199,8 @@ export default function AppLayout() {
                 setActiveProgramModal={setActiveProgramModal}
                 isMobileOpen={isMobileSidebarOpen}
                 setIsMobileOpen={setIsMobileSidebarOpen}
+                isCollapsed={isSidebarCollapsed}
+                setIsCollapsed={setIsSidebarCollapsed}
                 handleLogout={handleLogout}
               />
 

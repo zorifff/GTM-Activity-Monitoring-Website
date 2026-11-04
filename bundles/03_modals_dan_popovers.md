@@ -6,22 +6,22 @@
 
 - `gtm-monitor-frontend/src/components/UploadModal.jsx` (356 baris)
 - `gtm-monitor-frontend/src/components/ConfirmSubmitModal.jsx` (128 baris)
-- `gtm-monitor-frontend/src/components/ReviewModal.jsx` (502 baris)
+- `gtm-monitor-frontend/src/components/ReviewModal.jsx` (501 baris)
 - `gtm-monitor-frontend/src/components/ConfirmRejectModal.jsx` (227 baris)
 - `gtm-monitor-frontend/src/components/ConfirmDeleteModal.jsx` (228 baris)
-- `gtm-monitor-frontend/src/components/ProgramViewerModal.jsx` (1092 baris)
-- `gtm-monitor-frontend/src/components/CekPairingPopover.jsx` (665 baris)
-- `gtm-monitor-frontend/src/components/admin/OdpImportModal.jsx` (296 baris)
-- `gtm-monitor-frontend/src/components/admin/PairingImportModal.jsx` (298 baris)
+- `gtm-monitor-frontend/src/components/ProgramViewerModal.jsx` (1082 baris)
+- `gtm-monitor-frontend/src/components/CekPairingPopover.jsx` (658 baris)
+- `gtm-monitor-frontend/src/components/admin/OdpImportModal.jsx` (289 baris)
+- `gtm-monitor-frontend/src/components/admin/PairingImportModal.jsx` (291 baris)
 - `gtm-monitor-frontend/src/components/admin/ExportRekapModal.jsx` (65 baris)
-- `gtm-monitor-frontend/src/components/admin/ProgramUploadModal.jsx` (445 baris)
-- `gtm-monitor-frontend/src/components/admin/ProgramDeleteModal.jsx` (276 baris)
-- `gtm-monitor-frontend/src/components/admin/DeleteProgramConfirmModal.jsx` (135 baris)
-- `gtm-monitor-frontend/src/components/admin/UploadGuideModal.jsx` (240 baris)
+- `gtm-monitor-frontend/src/components/admin/ProgramUploadModal.jsx` (434 baris)
+- `gtm-monitor-frontend/src/components/admin/ProgramDeleteModal.jsx` (270 baris)
+- `gtm-monitor-frontend/src/components/admin/DeleteProgramConfirmModal.jsx` (133 baris)
+- `gtm-monitor-frontend/src/components/admin/UploadGuideModal.jsx` (237 baris)
 - `gtm-monitor-frontend/src/components/layout/LogoutConfirmModal.jsx` (111 baris)
 - `gtm-monitor-frontend/src/components/layout/SessionExpiredModal.jsx` (70 baris)
 
-**Total Baris Kode**: 5.134 baris
+**Total Baris Kode**: 5.080 baris
 
 ---
 
@@ -172,7 +172,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: 600, color: '#FF5E00', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 600, color: '#800000', textTransform: 'uppercase', letterSpacing: '1px' }}>
               Upload Kegiatan GTM
             </div>
             <h3 id="upload-modal-title" style={{ fontSize: '18px', fontWeight: 600, color: '#0F172A', margin: '4px 0 2px 0', fontFamily: "var(--font-heading)" }}>
@@ -199,7 +199,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
         {/* Error Notification */}
         {errorMsg && (
           <div style={{
-            background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626',
+            background: '#FEF2F2', border: '1px solid #FECACA', color: '#800000',
             padding: '10px 14px', borderRadius: '12px', fontSize: '12.5px', fontWeight: 600,
             marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'
           }}>
@@ -214,7 +214,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {actKey === 'branding_outlet' && (
             <div>
               <label htmlFor="upload-nama-outlet" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Nama Outlet <span style={{ color: '#DC2626' }}>*</span>
+                Nama Outlet <span style={{ color: '#800000' }}>*</span>
               </label>
               <input
                 id="upload-nama-outlet"
@@ -236,7 +236,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {actKey === 'bumdes' && (
             <div>
               <label htmlFor="upload-nama-bumdes" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Nama BUMDES <span style={{ color: '#DC2626' }}>*</span>
+                Nama BUMDES <span style={{ color: '#800000' }}>*</span>
               </label>
               <input
                 id="upload-nama-bumdes"
@@ -258,7 +258,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {(actKey === 'open_table' || actKey === 'tsel_menyapa') && (
             <div>
               <label htmlFor="upload-plan-date" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Tanggal Kegiatan <span style={{ color: '#DC2626' }}>*</span>
+                Tanggal Kegiatan <span style={{ color: '#800000' }}>*</span>
               </label>
               <input
                 id="upload-plan-date"
@@ -279,7 +279,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {actKey === 'rekrutmen_sf' && (
             <div>
               <label htmlFor="upload-kode-sf" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Kode SF <span style={{ color: '#DC2626' }}>*</span>
+                Kode SF <span style={{ color: '#800000' }}>*</span>
               </label>
               <input
                 id="upload-kode-sf"
@@ -301,7 +301,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
           {actKey !== 'rekrutmen_sf' && (
             <div>
               <label htmlFor="upload-modal-file-input" style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
-                Foto Bukti Kegiatan {['branding_outlet', 'open_table', 'tsel_menyapa', 'bumdes'].includes(actKey) && <span style={{ color: '#DC2626' }}>*</span>}
+                Foto Bukti Kegiatan {['branding_outlet', 'open_table', 'tsel_menyapa', 'bumdes'].includes(actKey) && <span style={{ color: '#800000' }}>*</span>}
               </label>
 
               {previewUrl ? (
@@ -316,7 +316,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
                     style={{
                       position: 'absolute', top: '8px', right: '8px',
                       padding: '4px 10px', borderRadius: '8px', border: 'none',
-                      background: 'rgba(220, 38, 38, 0.9)', color: '#FFF', fontSize: '11px',
+                      background: 'rgba(128, 0, 0,0.9)', color: '#FFF', fontSize: '11px',
                       fontWeight: 700, cursor: 'pointer'
                     }}
                   >
@@ -368,7 +368,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
             <button
               type="submit"
               style={{
-                padding: '11px 22px', borderRadius: '10px', border: '1px solid #991B1B',
+                padding: '11px 22px', borderRadius: '10px', border: '1px solid #660000',
                 background: '#800000',
                 color: '#FFFFFF', fontSize: '13.5px', fontWeight: 600,
                 cursor: 'pointer', boxShadow: '0 2px 8px rgba(128, 0, 0, 0.25)'
@@ -383,7 +383,6 @@ export default function UploadModal({ data, onClose, onSubmit }) {
     document.body
   );
 }
-
 ```
 
 ---
@@ -462,8 +461,8 @@ export default function ConfirmSubmitModal({ data, onConfirm, onCancel, isSubmit
         {/* Badge Icon */}
         <div style={{
           width: '54px', height: '54px', borderRadius: '50%',
-          background: '#FFF7ED',
-          border: '1px solid #FED7AA', color: '#FF5E00',
+          background: '#FEF2F2',
+          border: '1px solid #FECACA', color: '#800000',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 16px auto'
         }}>
@@ -503,7 +502,7 @@ export default function ConfirmSubmitModal({ data, onConfirm, onCancel, isSubmit
             disabled={isSubmitting}
             style={{
               flex: 1, padding: '12px', borderRadius: '10px',
-              border: '1px solid #991B1B', background: '#800000',
+              border: '1px solid #660000', background: '#800000',
               color: '#FFFFFF', fontSize: '13.5px', fontWeight: 600,
               cursor: isSubmitting ? 'not-allowed' : 'pointer',
               boxShadow: '0 2px 8px rgba(128, 0, 0, 0.25)',
@@ -518,12 +517,11 @@ export default function ConfirmSubmitModal({ data, onConfirm, onCancel, isSubmit
     document.body
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/ReviewModal.jsx` (502 baris)
+## File: `gtm-monitor-frontend/src/components/ReviewModal.jsx` (501 baris)
 
 ```javascript
 import { useState, useEffect, useRef } from 'react';
@@ -723,7 +721,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
       >
         <div style={{ padding: '22px 26px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <div id="review-modal-title" style={{ fontFamily: "var(--font-heading)", fontSize: '18px', fontWeight: 600, color: '#0f172a' }}>{modalData.pName}</div>
+            <div id="review-modal-title" style={{ fontFamily: "var(--font-heading)", fontSize: '18px', color: '#0f172a' }}>{modalData.pName}</div>
             <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '3px' }}>{modalData.wok} · {modalData.bName}</div>
           </div>
           <button
@@ -740,29 +738,29 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
           {/* Project Stats Summary */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '22px' }}>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Available</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalAvai}</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', textTransform: 'uppercase' }}>Total Available</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalAvai}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Used</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalUsed}</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', textTransform: 'uppercase' }}>Total Used</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalUsed}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Port</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalPort}</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', textTransform: 'uppercase' }}>Total Port</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalPort}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Jumlah ODP</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.odpCount}</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', textTransform: 'uppercase' }}>Jumlah ODP</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.odpCount}</div>
             </div>
           </div>
 
           {/* ODP List */}
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>Daftar ODP dalam Proyek</div>
+          <div style={{ fontSize: '13px', color: '#0f172a', marginBottom: '8px' }}>Daftar ODP dalam Proyek</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
             {modalData.odps.map(o => (
               <span key={o.odp} style={{
-                fontSize: '11px', fontWeight: 600, padding: '4px 10px', borderRadius: '6px',
+                fontSize: '11px', padding: '4px 10px', borderRadius: '6px',
                 background: o.used === 0 ? '#e2e8f0' : '#dcfce7',
                 color: o.used === 0 ? '#334155' : '#16a34a'
               }}>
@@ -771,7 +769,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             ))}
           </div>
 
-          <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a', marginBottom: '12px' }}>Detail Activity GTM</div>
+          <div style={{ fontSize: '13.5px', color: '#0f172a', marginBottom: '12px' }}>Detail Activity GTM</div>
           
           {ACT_TYPES.map(actType => {
             const a = localActivities.find(x => x.type === actType.key);
@@ -793,8 +791,8 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             return (
               <div key={actType.key} style={{ border: '1px solid #f1f5f9', borderRadius: '10px', padding: '14px 16px', marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{actType.label}</div>
-                  <div style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, backgroundColor: meta.bg, color: meta.color }}>
+                  <div style={{ fontSize: '14px', color: '#0f172a' }}>{actType.label}</div>
+                  <div style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', backgroundColor: meta.bg, color: meta.color }}>
                     {meta.label} {photoList.length > 0 && (actType.key === 'rekrutmen_sf' ? '' : `(${photoList.length} Foto)`)}
                   </div>
                 </div>
@@ -819,12 +817,12 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                 title="Klik untuk melihat foto lebih besar"
                               >
                                 <img src={ph.photoUrl} alt={`Foto Bukti ${actType.label}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                                <div style={{ position: 'absolute', bottom: 0, inset: 'auto 0 0 0', background: 'rgba(15,23,42,0.75)', color: '#fff', fontSize: '9px', fontWeight: 700, textAlign: 'center', padding: '2px 0' }}>
+                                <div style={{ position: 'absolute', bottom: 0, inset: 'auto 0 0 0', background: 'rgba(15,23,42,0.75)', color: '#fff', fontSize: '9px', textAlign: 'center', padding: '2px 0' }}>
                                   Lihat
                                 </div>
                               </button>
                             ) : (
-                              <div style={{ width: '90px', height: '65px', borderRadius: '6px', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#64748b', fontWeight: 600, textAlign: 'center' }}>
+                              <div style={{ width: '90px', height: '65px', borderRadius: '6px', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#64748b', textAlign: 'center' }}>
                                 Tanpa Foto
                               </div>
                             )
@@ -832,7 +830,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
 
                           <div style={{ flex: 1, minWidth: '160px', fontSize: '12px', color: '#334155', lineHeight: 1.5 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '10.5px', fontWeight: 600, padding: '2px 8px', borderRadius: '4px', background: phMeta.bg, color: phMeta.color }}>
+                              <span style={{ fontSize: '10.5px', padding: '2px 8px', borderRadius: '4px', background: phMeta.bg, color: phMeta.color }}>
                                 {actType.key === 'rekrutmen_sf' ? phMeta.label : `Foto #${idx + 1}: ${phMeta.label}`}
                               </span>
                             </div>
@@ -851,7 +849,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                   <button
                                     type="button"
                                     onClick={() => triggerRejectConfirm(actType.key, ph.id, actType.label, idx)}
-                                    style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: '#dc2626', color: '#fff', fontSize: '11.5px', fontWeight: 700, cursor: 'pointer' }}
+                                    style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: '#dc2626', color: '#fff', fontSize: '11.5px', cursor: 'pointer' }}
                                   >
                                     Tolak
                                   </button>
@@ -868,7 +866,6 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                       background: verifyingId === ph.id ? '#15803d' : '#16a34a',
                                       color: '#fff',
                                       fontSize: '11.5px',
-                                      fontWeight: 700,
                                       cursor: verifyingId === ph.id ? 'not-allowed' : 'pointer',
                                       display: 'inline-flex',
                                       alignItems: 'center',
@@ -903,7 +900,8 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                               </>
                             )}
 
-                            {(deletePhoto || rejectActivity) && (
+                            {/* Foto menunggu verifikasi: Tolak sudah menghapus foto, jadi Hapus hanya untuk yang tidak punya Tolak */}
+                            {(deletePhoto || rejectActivity) && !(ph.status === 'upload' && rejectActivity) && (
                               <button
                                 type="button"
                                 onClick={() => triggerDeleteConfirm(actType.key, ph.id, actType.label, idx)}
@@ -912,9 +910,8 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                   borderRadius: '6px',
                                   border: '1px solid #fca5a5',
                                   background: '#fff1f2',
-                                  color: '#e11d48',
+                                  color: '#0F172A',
                                   fontSize: '11.5px',
-                                  fontWeight: 700,
                                   cursor: 'pointer',
                                   display: 'inline-flex',
                                   alignItems: 'center',
@@ -973,12 +970,12 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             }}
           >
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '16px' }}>
-              <div style={{ fontSize: '14.5px', fontWeight: 600, color: '#0f172a' }}>{previewPhoto.title}</div>
+              <div style={{ fontSize: '14.5px', color: '#0f172a' }}>{previewPhoto.title}</div>
               <button 
                 type="button"
                 onClick={() => setPreviewPhoto(null)} 
                 aria-label="Tutup pratinjau foto"
-                style={{ border: 'none', background: '#f1f5f9', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontWeight: 700, fontSize: '14px', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ border: 'none', background: '#f1f5f9', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontSize: '14px', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 ✕
               </button>
@@ -993,7 +990,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                 href={previewPhoto.url} 
                 target="_blank" 
                 rel="noreferrer" 
-                style={{ fontSize: '13px', color: '#2563EB', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                style={{ fontSize: '13px', color: '#0F172A', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -1027,7 +1024,6 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
     </div>
   );
 }
-
 ```
 
 ---
@@ -1126,12 +1122,12 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
             borderRadius: '50%',
             background: '#FEF2F2',
             border: '1px solid #FCA5A5',
-            color: '#DC2626',
+            color: '#800000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 18px auto',
-            boxShadow: '0 4px 12px rgba(220, 38, 38, 0.12)'
+            boxShadow: '0 4px 12px rgba(128, 0, 0,0.12)'
           }}
         >
           <svg
@@ -1242,13 +1238,13 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
               flex: 1,
               padding: '12px 16px',
               borderRadius: '10px',
-              border: '1px solid #B91C1C',
-              background: '#DC2626',
+              border: '1px solid #660000',
+              background: '#800000',
               color: '#FFFFFF',
               fontSize: '13.5px',
               fontWeight: 600,
               cursor: isRejecting ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)',
+              boxShadow: '0 2px 8px rgba(128, 0, 0,0.25)',
               opacity: isRejecting ? 0.7 : 1,
               transition: 'all 0.15s ease'
             }}
@@ -1261,7 +1257,6 @@ export default function ConfirmRejectModal({ isOpen, data, onConfirm, onCancel, 
     document.body
   );
 }
-
 ```
 
 ---
@@ -1358,14 +1353,14 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            background: '#FFE4E6',
-            border: '1px solid #FDA4AF',
-            color: '#E11D48',
+            background: '#FEE2E2',
+            border: '1px solid #FCA5A5',
+            color: '#800000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 18px auto',
-            boxShadow: '0 4px 12px rgba(225, 29, 72, 0.12)'
+            boxShadow: '0 4px 12px rgba(128, 0, 0,0.12)'
           }}
         >
           <svg
@@ -1477,13 +1472,13 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
               flex: 1,
               padding: '12px 16px',
               borderRadius: '10px',
-              border: '1px solid #BE123C',
-              background: '#E11D48',
+              border: '1px solid #660000',
+              background: '#800000',
               color: '#FFFFFF',
               fontSize: '13.5px',
               fontWeight: 600,
               cursor: isDeleting ? 'not-allowed' : 'pointer',
-              boxShadow: '0 2px 8px rgba(225, 29, 72, 0.25)',
+              boxShadow: '0 2px 8px rgba(128, 0, 0,0.25)',
               opacity: isDeleting ? 0.7 : 1,
               transition: 'all 0.15s ease'
             }}
@@ -1496,12 +1491,11 @@ export default function ConfirmDeleteModal({ isOpen, data, onConfirm, onCancel, 
     document.body
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/ProgramViewerModal.jsx` (1092 baris)
+## File: `gtm-monitor-frontend/src/components/ProgramViewerModal.jsx` (1082 baris)
 
 ```javascript
 import React, { useState, useRef, useEffect } from 'react';
@@ -1759,14 +1753,14 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
 
     if (strVal === 'PASS') {
       return (
-        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#DCFCE7', color: '#166534', fontWeight: 800, fontSize: '11px' }}>
+        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#F1F5F9', color: '#1E293B', fontSize: '11px' }}>
           PASS
         </span>
       );
     }
     if (strVal === 'NOT PASS') {
       return (
-        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#FEE2E2', color: '#991B1B', fontWeight: 800, fontSize: '11px' }}>
+        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#F1F5F9', color: '#475569', fontSize: '11px' }}>
           NOT PASS
         </span>
       );
@@ -1781,8 +1775,8 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
       const num = parseFloat(val);
       if (!isNaN(num)) {
         const pct = num <= 1 && num >= -1 ? Math.round(num * 1000) / 10 : Math.round(num * 10) / 10;
-        const color = pct > 0 && (header.includes('MOM') || header.includes('ACH')) ? '#16A34A' : pct < 0 && header.includes('MOM') ? '#DC2626' : 'inherit';
-        return <span style={{ color, fontWeight: 700 }}>{pct > 0 && header.includes('MOM') ? `+${pct}%` : `${pct}%`}</span>;
+        const color = 'inherit';
+        return <span style={{ color, }}>{pct > 0 && header.includes('MOM') ? `+${pct}%` : `${pct}%`}</span>;
       }
     }
 
@@ -1852,14 +1846,13 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: '#FF5E00',
-              boxShadow: '0 0 10px #FF5E00'
+              background: '#FFFFFF'
             }}
           />
-          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '13.5px', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.1px' }}>
+          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '13.5px', color: '#FFFFFF', letterSpacing: '-0.1px' }}>
             {program.sheetName || 'Program Tracking'}
           </span>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 500, color: '#94A3B8' }}>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#94A3B8' }}>
             • {monthLabel || 'Agustus 2026'}
           </span>
           {slides.length > 1 && (
@@ -1867,8 +1860,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               style={{
                 fontSize: '11px',
                 fontFamily: 'var(--font-body)',
-                fontWeight: 600,
-                color: '#60A5FA',
+                color: '#F8FAFC',
                 background: 'rgba(59, 130, 246, 0.15)',
                 padding: '2px 8px',
                 borderRadius: '20px',
@@ -1948,10 +1940,9 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     style={{
                       padding: '10px 14px',
                       borderRadius: '10px',
-                      color: '#60A5FA',
+                      color: '#F8FAFC',
                       fontFamily: 'var(--font-body)',
                       fontSize: '13px',
-                      fontWeight: 500,
                       textDecoration: 'none',
                       display: 'flex',
                       alignItems: 'center',
@@ -1968,7 +1959,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <span>Link Detail Program</span>
                       {slides.length > 1 && (
-                        <span style={{ fontSize: '10.5px', color: '#93C5FD', fontWeight: 600 }}>
+                        <span style={{ fontSize: '10.5px', color: '#94A3B8', }}>
                           (Slide {currentSlideIndex + 1})
                         </span>
                       )}
@@ -1990,7 +1981,6 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                       border: 'none',
                       fontFamily: 'var(--font-body)',
                       fontSize: '13px',
-                      fontWeight: 500,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -2009,7 +1999,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <span>Link Detail Program</span>
                       {slides.length > 1 && (
-                        <span style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 500 }}>
+                        <span style={{ fontSize: '10.5px', color: '#64748B', }}>
                           (Slide {currentSlideIndex + 1} - Tidak Ada)
                         </span>
                       )}
@@ -2033,7 +2023,6 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     border: 'none',
                     fontFamily: 'var(--font-body)',
                     fontSize: '13px',
-                    fontWeight: 500,
                     cursor: isDownloading ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -2071,12 +2060,11 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     style={{
                       padding: '10px 14px',
                       borderRadius: '10px',
-                      color: '#FB7185',
+                      color: '#F8FAFC',
                       background: 'transparent',
                       border: 'none',
                       fontFamily: 'var(--font-body)',
                       fontSize: '13px',
-                      fontWeight: 500,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -2086,7 +2074,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                       borderTop: '1px solid rgba(255, 255, 255, 0.08)',
                       transition: 'all 0.15s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(244, 63, 94, 0.12)'}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(128, 0, 0, 0.35)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -2109,12 +2097,11 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     style={{
                       padding: '10px 14px',
                       borderRadius: '10px',
-                      color: '#EF4444',
+                      color: '#F8FAFC',
                       background: 'transparent',
                       border: 'none',
                       fontFamily: 'var(--font-body)',
                       fontSize: '13px',
-                      fontWeight: 500,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -2124,7 +2111,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                       borderTop: slides.length <= 1 ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
                       transition: 'all 0.15s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(128, 0, 0, 0.35)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -2282,7 +2269,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               userSelect: 'none'
             }}
           >
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 600, color: '#F8FAFC', letterSpacing: '0.3px' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#F8FAFC', letterSpacing: '0.3px' }}>
               Slide {currentSlideIndex + 1} dari {slides.length}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -2298,7 +2285,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     width: idx === currentSlideIndex ? '22px' : '8px',
                     height: '8px',
                     borderRadius: '50px',
-                    background: idx === currentSlideIndex ? 'linear-gradient(135deg, #FF5E00, #800000)' : 'rgba(255, 255, 255, 0.35)',
+                    background: idx === currentSlideIndex ? '#FFFFFF' : 'rgba(255, 255, 255, 0.35)',
                     border: 'none',
                     padding: 0,
                     cursor: 'pointer',
@@ -2384,14 +2371,14 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
           >
             <div style={{ marginBottom: '16px', borderBottom: '2px solid #800000', paddingBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h4 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '15px', fontWeight: 700, color: '#800000', letterSpacing: '0.4px' }}>
+                <h4 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '15px', color: '#0F172A', letterSpacing: '0.4px' }}>
                   TELKOMSEL GTM ACTIVITY MONITORING
                 </h4>
-                <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 600, color: '#0F172A', marginTop: '2px' }}>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#0F172A', marginTop: '2px' }}>
                   {program.sheetName} · {monthLabel || 'Agustus 2026'}
                 </div>
               </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 600, color: '#64748B', background: '#F8FAFC', padding: '4px 10px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: '#64748B', background: '#F8FAFC', padding: '4px 10px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
                 Total {rows.length} Baris Data
               </div>
             </div>
@@ -2412,11 +2399,10 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                       key={colIdx}
                       style={{
                         padding: '12px 14px',
-                        fontWeight: 800,
                         fontSize: '11.5px',
                         letterSpacing: '0.5px',
                         textTransform: 'uppercase',
-                        border: '1px solid #A80C25',
+                        border: '1px solid #660000',
                         whiteSpace: 'nowrap'
                       }}
                     >
@@ -2450,7 +2436,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                 ))}
 
                 {summaryRow && (
-                  <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 800 }}>
+                  <tr style={{ background: '#0F172A', color: '#FFFFFF', }}>
                     {headers.map((h, colIdx) => (
                       <td
                         key={colIdx}
@@ -2509,12 +2495,12 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                 borderRadius: '50%',
                 background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
                 border: '1px solid #FDA4AF',
-                color: '#E11D48',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 16px auto',
-                boxShadow: '0 6px 16px rgba(225, 29, 72, 0.15)'
+                boxShadow: '0 6px 16px rgba(128, 0, 0,0.15)'
               }}
             >
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -2525,11 +2511,11 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               </svg>
             </div>
 
-            <h3 style={{ fontSize: '17px', fontWeight: 600, color: '#0F172A', margin: '0 0 8px 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
+            <h3 style={{ fontSize: '17px', color: '#0F172A', margin: '0 0 8px 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
               {deleteTargetType === 'SLIDE' ? 'Konfirmasi Hapus Slide' : 'Konfirmasi Hapus Program'}
             </h3>
 
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#475569', lineHeight: 1.5, margin: '0 0 18px 0', fontWeight: 500 }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#475569', lineHeight: 1.5, margin: '0 0 18px 0', }}>
               {deleteTargetType === 'SLIDE' ? (
                 <>
                   Apakah Anda yakin ingin menghapus <strong>Slide {currentSlideIndex + 1}</strong> dari program <strong>"{program.sheetName}"</strong>?
@@ -2542,7 +2528,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
             </p>
 
             {deleteError && (
-              <div style={{ fontFamily: 'var(--font-body)', padding: '10px 14px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '12px', fontWeight: 600, marginBottom: '16px' }}>
+              <div style={{ fontFamily: 'var(--font-body)', padding: '10px 14px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '12px', marginBottom: '16px' }}>
                 {deleteError}
               </div>
             )}
@@ -2561,7 +2547,6 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                   color: '#475569',
                   fontFamily: 'var(--font-body)',
                   fontSize: '13px',
-                  fontWeight: 600,
                   cursor: isDeleting ? 'not-allowed' : 'pointer'
                 }}
               >
@@ -2576,13 +2561,12 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                   padding: '11px 16px',
                   borderRadius: '12px',
                   border: 'none',
-                  background: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+                  background: '#800000',
                   color: '#FFFFFF',
                   fontFamily: 'var(--font-body)',
                   fontSize: '13px',
-                  fontWeight: 600,
                   cursor: isDeleting ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 4px 14px rgba(225, 29, 72, 0.35)'
+                  boxShadow: '0 4px 14px rgba(128, 0, 0,0.35)'
                 }}
               >
                 {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
@@ -2594,13 +2578,11 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
     </div>
   );
 }
-
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/CekPairingPopover.jsx` (665 baris)
+## File: `gtm-monitor-frontend/src/components/CekPairingPopover.jsx` (658 baris)
 
 ```javascript
 import { useState, useEffect, memo } from 'react';
@@ -2818,7 +2800,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
+                <h3 style={{ margin: 0, fontSize: '15px', color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
                   Pencarian Data Pairing
                 </h3>
 
@@ -2836,9 +2818,9 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       width: '20px',
                       height: '20px',
                       borderRadius: '50%',
-                      background: showGuide ? '#EFF6FF' : '#FFFFFF',
-                      color: showGuide ? '#1D4ED8' : '#64748B',
-                      border: showGuide ? '1px solid #93C5FD' : '1px solid #CBD5E1',
+                      background: showGuide ? '#F1F5F9' : '#FFFFFF',
+                      color: showGuide ? '#0F172A' : '#64748B',
+                      border: showGuide ? '1px solid #0F172A' : '1px solid #CBD5E1',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -2877,7 +2859,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
-                        <div style={{ fontFamily: 'var(--font-heading)', fontSize: '12.5px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                        <div style={{ fontFamily: 'var(--font-heading)', fontSize: '12.5px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                           Panduan Penggunaan
                         </div>
                         <button
@@ -2917,7 +2899,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       <ul style={{ margin: 0, paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '11.5px', color: '#475569', lineHeight: 1.5 }}>
                         <li>Masukkan <strong style={{ color: '#0F172A' }}>bb_id</strong>, nomor HP (<strong style={{ color: '#0F172A' }}>08...</strong> / <strong style={{ color: '#0F172A' }}>62...</strong>), atau <strong style={{ color: '#0F172A' }}>order_id</strong> lengkap.</li>
                         <li>Penulisan harus akurat sesuai data (minimal 6 karakter).</li>
-                        <li>Tekan <strong style={{ color: '#0F172A' }}>Enter</strong> atau klik tombol <strong style={{ color: '#800000' }}>Cari Data Pairing</strong>.</li>
+                        <li>Tekan <strong style={{ color: '#0F172A' }}>Enter</strong> atau klik tombol <strong style={{ color: '#0F172A' }}>Cari Data Pairing</strong>.</li>
                       </ul>
                     </div>
                   )}
@@ -2940,7 +2922,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 height: '26px',
                 borderRadius: '50%',
                 cursor: 'pointer',
-                fontWeight: 600,
                 fontSize: '12px',
                 display: 'flex',
                 alignItems: 'center',
@@ -2964,6 +2945,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
+                className="search-input-field"
                 aria-label="Kata kunci pencarian pairing"
                 placeholder="Cari bb_id, msisdn, atau order_id..."
                 value={query}
@@ -2974,25 +2956,25 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 autoFocus
                 style={{
                   width: '100%',
-                  padding: '10px 14px 10px 38px',
+                  height: '42px',
+                  paddingLeft: '38px',
+                  paddingRight: query ? '36px' : '14px',
                   borderRadius: '10px',
                   border: '1px solid #CBD5E1',
                   fontSize: '13px',
-                  fontWeight: 500,
                   fontFamily: 'var(--font-body)',
-                  background: '#F8FAFC',
+                  background: '#FFFFFF',
                   color: '#0F172A',
                   boxSizing: 'border-box',
                   outline: 'none',
-                  transition: 'border-color 0.15s ease, background 0.15s ease'
+                  boxShadow: 'none',
+                  transition: 'border-color 0.15s ease'
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = '#800000';
-                  e.currentTarget.style.background = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#0F172A';
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = '#CBD5E1';
-                  e.currentTarget.style.background = '#F8FAFC';
                 }}
               />
               <svg
@@ -3012,7 +2994,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             </div>
 
             {error && (
-              <div style={{ padding: '10px 12px', borderRadius: '8px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '12px', fontWeight: 500, lineHeight: 1.45 }}>
+              <div style={{ padding: '10px 12px', borderRadius: '8px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '12px', lineHeight: 1.45 }}>
                 {error}
               </div>
             )}
@@ -3029,7 +3011,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 color: loading || !query.trim() ? '#94A3B8' : '#FFFFFF',
                 fontFamily: 'var(--font-body)',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: loading || !query.trim() ? 'not-allowed' : 'pointer',
                 boxShadow: loading || !query.trim() ? 'none' : '0 1px 2px rgba(128, 0, 0, 0.2)',
                 transition: 'all 0.15s ease',
@@ -3039,7 +3020,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
               }}
               onMouseEnter={(e) => {
                 if (!loading && query.trim()) {
-                  e.currentTarget.style.background = '#990000';
+                  e.currentTarget.style.background = '#660000';
                 }
               }}
               onMouseLeave={(e) => {
@@ -3097,7 +3078,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             {/* Modal Header */}
             <div style={{ padding: '18px 24px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFC' }}>
               <div>
-                <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
+                <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '16px', color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
                   Hasil Deteksi Pairing
                 </h3>
                 <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px' }}>
@@ -3117,7 +3098,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                   height: '28px',
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  fontWeight: 600,
                   fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
@@ -3140,7 +3120,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             {/* Multiple Results Selector (if results count > 1) */}
             {results.length > 1 && (
               <div style={{ padding: '10px 24px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
-                <span style={{ fontWeight: 600, color: '#475569' }}>
+                <span style={{ color: '#475569' }}>
                   Ditemukan {results.length} data cocok ({selectedIdx + 1} dari {results.length}):
                 </span>
                 <div style={{ display: 'flex', gap: '6px' }}>
@@ -3154,7 +3134,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       border: '1px solid #CBD5E1',
                       background: '#FFFFFF',
                       fontSize: '11.5px',
-                      fontWeight: 600,
                       cursor: selectedIdx === 0 ? 'not-allowed' : 'pointer',
                       opacity: selectedIdx === 0 ? 0.5 : 1
                     }}
@@ -3171,7 +3150,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       border: '1px solid #CBD5E1',
                       background: '#FFFFFF',
                       fontSize: '11.5px',
-                      fontWeight: 600,
                       cursor: selectedIdx === results.length - 1 ? 'not-allowed' : 'pointer',
                       opacity: selectedIdx === results.length - 1 ? 0.5 : 1
                     }}
@@ -3195,7 +3173,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                           padding: '10px 14px',
                           background: '#800000',
                           color: '#FFFFFF',
-                          fontWeight: 600,
                           fontSize: '12px',
                           fontFamily: 'var(--font-body)',
                           letterSpacing: '-0.1px',
@@ -3217,7 +3194,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                           borderTopRightRadius: '8px',
                           borderBottomRightRadius: '8px',
                           color: '#0F172A',
-                          fontWeight: 500,
                           wordBreak: 'break-all',
                           verticalAlign: 'middle',
                           fontFamily: 'var(--font-body)'
@@ -3242,14 +3218,13 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                   border: 'none',
                   background: '#800000',
                   color: '#FFFFFF',
-                  fontWeight: 600,
                   fontSize: '12.5px',
                   cursor: 'pointer',
                   boxShadow: '0 1px 2px rgba(128, 0, 0, 0.2)',
                   transition: 'all 0.15s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#990000';
+                  e.currentTarget.style.background = '#660000';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = '#800000';
@@ -3267,12 +3242,11 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
 });
 
 export default CekPairingPopover;
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/OdpImportModal.jsx` (296 baris)
+## File: `gtm-monitor-frontend/src/components/admin/OdpImportModal.jsx` (289 baris)
 
 ```javascript
 import { useEffect } from 'react';
@@ -3345,8 +3319,8 @@ export default function OdpImportModal({
                 width: '38px',
                 height: '38px',
                 borderRadius: '10px',
-                background: '#FEF2F2',
-                color: '#800000',
+                background: '#F1F5F9',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -3362,10 +3336,10 @@ export default function OdpImportModal({
               </svg>
             </div>
             <div>
-              <h3 id="odp-modal-title" style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+              <h3 id="odp-modal-title" style={{ margin: 0, fontSize: '17px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                 Upload File Excel Data ODP
               </h3>
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
+              <span style={{ fontSize: '12px', color: '#64748B', }}>
                 Target: Data ODP &amp; Kapasitas Port Mingguan
               </span>
             </div>
@@ -3385,7 +3359,6 @@ export default function OdpImportModal({
                   background: '#F8FAFC',
                   color: '#475569',
                   fontSize: '13px',
-                  fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -3407,7 +3380,6 @@ export default function OdpImportModal({
                 background: '#F1F5F9',
                 color: '#64748B',
                 fontSize: '14px',
-                fontWeight: 700,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -3444,7 +3416,6 @@ export default function OdpImportModal({
                 border: '1px solid #CBD5E1',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -3467,8 +3438,7 @@ export default function OdpImportModal({
             <span
               style={{
                 fontSize: '12.5px',
-                color: file ? '#065F46' : '#94A3B8',
-                fontWeight: file ? 600 : 400,
+                color: file ? '#0F172A' : '#94A3B8',
                 flex: 1,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -3490,9 +3460,8 @@ export default function OdpImportModal({
                 style={{
                   border: 'none',
                   background: 'transparent',
-                  color: '#800000',
+                  color: '#0F172A',
                   fontSize: '15px',
-                  fontWeight: 700,
                   cursor: 'pointer',
                   padding: '0 4px',
                   lineHeight: 1
@@ -3513,13 +3482,13 @@ export default function OdpImportModal({
           </div>
 
           {message && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {message}
             </div>
           )}
 
           {error && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {error}
             </div>
           )}
@@ -3536,7 +3505,6 @@ export default function OdpImportModal({
                 background: '#FFFFFF',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -3553,7 +3521,6 @@ export default function OdpImportModal({
                 background: loading || !file ? '#E2E8F0' : '#800000',
                 color: loading || !file ? '#94A3B8' : '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: loading || !file ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
                 display: 'inline-flex',
@@ -3569,13 +3536,11 @@ export default function OdpImportModal({
     </div>
   );
 }
-
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/PairingImportModal.jsx` (298 baris)
+## File: `gtm-monitor-frontend/src/components/admin/PairingImportModal.jsx` (291 baris)
 
 ```javascript
 import { useEffect } from 'react';
@@ -3647,8 +3612,8 @@ export default function PairingImportModal({
                 width: '38px',
                 height: '38px',
                 borderRadius: '10px',
-                background: '#FEF2F2',
-                color: '#800000',
+                background: '#F1F5F9',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -3661,10 +3626,10 @@ export default function PairingImportModal({
               </svg>
             </div>
             <div>
-              <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+              <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '17px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                 Upload File Excel Data Pairing
               </h3>
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
+              <span style={{ fontSize: '12px', color: '#64748B', }}>
                 Target: Data Tsel One Pairing Pelanggan
               </span>
             </div>
@@ -3684,7 +3649,6 @@ export default function PairingImportModal({
                   background: '#F8FAFC',
                   color: '#475569',
                   fontSize: '13px',
-                  fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -3706,7 +3670,6 @@ export default function PairingImportModal({
                 background: '#F1F5F9',
                 color: '#64748B',
                 fontSize: '14px',
-                fontWeight: 700,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -3743,7 +3706,6 @@ export default function PairingImportModal({
                 border: '1px solid #CBD5E1',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -3766,8 +3728,7 @@ export default function PairingImportModal({
             <span
               style={{
                 fontSize: '12.5px',
-                color: pairingFile ? '#065F46' : '#94A3B8',
-                fontWeight: pairingFile ? 600 : 400,
+                color: pairingFile ? '#0F172A' : '#94A3B8',
                 flex: 1,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -3789,9 +3750,8 @@ export default function PairingImportModal({
                 style={{
                   border: 'none',
                   background: 'transparent',
-                  color: '#800000',
+                  color: '#0F172A',
                   fontSize: '15px',
-                  fontWeight: 700,
                   cursor: 'pointer',
                   padding: '0 4px',
                   lineHeight: 1
@@ -3818,13 +3778,13 @@ export default function PairingImportModal({
           </div>
 
           {pairingMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {pairingMessage}
             </div>
           )}
 
           {pairingError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {pairingError}
             </div>
           )}
@@ -3841,7 +3801,6 @@ export default function PairingImportModal({
                 background: '#FFFFFF',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -3858,7 +3817,6 @@ export default function PairingImportModal({
                 background: pairingLoading || !pairingFile ? '#E2E8F0' : '#800000',
                 color: pairingLoading || !pairingFile ? '#94A3B8' : '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: pairingLoading || !pairingFile ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
                 display: 'inline-flex',
@@ -3874,8 +3832,6 @@ export default function PairingImportModal({
     </div>
   );
 }
-
-
 ```
 
 ---
@@ -3909,7 +3865,7 @@ export default function ExportRekapModal({ setIsExportModalOpen, handleExportRek
         style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', width: '100%', maxWidth: '440px', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-          <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: '#dcfce7', color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: '#F1F5F9', color: '#0F172A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
@@ -3917,7 +3873,7 @@ export default function ExportRekapModal({ setIsExportModalOpen, handleExportRek
             </svg>
           </div>
           <div>
-            <h3 id="export-rekap-title" style={{ margin: 0, fontSize: '17px', fontWeight: 800, color: '#0f172a' }}>Konfirmasi Export Rekap</h3>
+            <h3 id="export-rekap-title" style={{ margin: 0, fontSize: '17px', color: '#0f172a' }}>Konfirmasi Export Rekap</h3>
             <span style={{ fontSize: '12.5px', color: '#64748b' }}>Format File Excel (.xlsx)</span>
           </div>
         </div>
@@ -3929,7 +3885,7 @@ export default function ExportRekapModal({ setIsExportModalOpen, handleExportRek
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
           <button
             onClick={() => setIsExportModalOpen(false)}
-            style={{ padding: '9px 16px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: '#475569', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}
+            style={{ padding: '9px 16px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: '#475569', fontSize: '13px', cursor: 'pointer' }}
           >
             Batal
           </button>
@@ -3938,7 +3894,7 @@ export default function ExportRekapModal({ setIsExportModalOpen, handleExportRek
               setIsExportModalOpen(false);
               handleExportRekapExcel();
             }}
-            style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', background: '#16a34a', color: '#fff', fontWeight: 700, fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(22, 163, 74, 0.25)' }}
+            style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', background: '#16a34a', color: '#fff', fontSize: '13px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(22, 163, 74, 0.25)' }}
           >
             Unduh Excel
           </button>
@@ -3947,12 +3903,11 @@ export default function ExportRekapModal({ setIsExportModalOpen, handleExportRek
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/ProgramUploadModal.jsx` (445 baris)
+## File: `gtm-monitor-frontend/src/components/admin/ProgramUploadModal.jsx` (434 baris)
 
 ```javascript
 import { useEffect } from 'react';
@@ -4033,8 +3988,8 @@ export default function ProgramUploadModal({
                 width: '38px',
                 height: '38px',
                 borderRadius: '10px',
-                background: '#FEF2F2',
-                color: '#800000',
+                background: '#F1F5F9',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -4048,10 +4003,10 @@ export default function ProgramUploadModal({
               </svg>
             </div>
             <div>
-              <h3 id="program-modal-title" style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+              <h3 id="program-modal-title" style={{ margin: 0, fontSize: '17px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                 Upload Gambar Tracking Program
               </h3>
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
+              <span style={{ fontSize: '12px', color: '#64748B', }}>
                 Unggah flyer program bulanan &amp; pindai teks link detail (OCR)
               </span>
             </div>
@@ -4071,7 +4026,6 @@ export default function ProgramUploadModal({
                   background: '#F8FAFC',
                   color: '#475569',
                   fontSize: '13px',
-                  fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -4093,7 +4047,6 @@ export default function ProgramUploadModal({
                 background: '#F1F5F9',
                 color: '#64748B',
                 fontSize: '14px',
-                fontWeight: 700,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -4109,7 +4062,7 @@ export default function ProgramUploadModal({
         <form onSubmit={handleProgramUpload} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Pilih Periode */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>Pilih Periode Bulan:</label>
+            <label style={{ fontSize: '12.5px', color: '#334155' }}>Pilih Periode Bulan:</label>
             <select
               value={programMonthLabel}
               onChange={(e) => setProgramMonthLabel(e.target.value)}
@@ -4121,7 +4074,6 @@ export default function ProgramUploadModal({
                 background: '#F8FAFC',
                 color: '#0F172A',
                 fontSize: '13px',
-                fontWeight: 600,
                 outline: 'none',
                 cursor: 'pointer'
               }}
@@ -4141,7 +4093,7 @@ export default function ProgramUploadModal({
 
           {/* Nama Program */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>Nama Program:</label>
+            <label style={{ fontSize: '12.5px', color: '#334155' }}>Nama Program:</label>
             <input
               type="text"
               placeholder="Ketikkan atau pilih nama program..."
@@ -4156,7 +4108,6 @@ export default function ProgramUploadModal({
                 background: '#FFFFFF',
                 color: '#0F172A',
                 fontSize: '13px',
-                fontWeight: 500,
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -4185,8 +4136,7 @@ export default function ProgramUploadModal({
                     background: '#EFF6FF',
                     border: '1px solid #BFDBFE',
                     fontSize: '11.5px',
-                    color: '#1D4ED8',
-                    fontWeight: 600,
+                    color: '#0F172A',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px'
@@ -4203,8 +4153,8 @@ export default function ProgramUploadModal({
 
           {/* Link Manual */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#64748B' }}>
-              Link Manual <span style={{ fontWeight: 400 }}>(Opsional)</span>:
+            <label style={{ fontSize: '12.5px', color: '#64748B' }}>
+              Link Manual <span style={{ }}>(Opsional)</span>:
             </label>
             <input
               type="url"
@@ -4218,7 +4168,6 @@ export default function ProgramUploadModal({
                 border: '1px solid #CBD5E1',
                 background: '#FFFFFF',
                 fontSize: '12.5px',
-                fontWeight: 500,
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -4248,7 +4197,6 @@ export default function ProgramUploadModal({
                 border: '1px solid #CBD5E1',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -4271,8 +4219,7 @@ export default function ProgramUploadModal({
             <span
               style={{
                 fontSize: '12.5px',
-                color: programFile ? '#065F46' : '#94A3B8',
-                fontWeight: programFile ? 600 : 400,
+                color: programFile ? '#0F172A' : '#94A3B8',
                 flex: 1,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -4294,9 +4241,8 @@ export default function ProgramUploadModal({
                 style={{
                   border: 'none',
                   background: 'transparent',
-                  color: '#800000',
+                  color: '#0F172A',
                   fontSize: '15px',
-                  fontWeight: 700,
                   cursor: 'pointer',
                   padding: '0 4px',
                   lineHeight: 1
@@ -4322,33 +4268,33 @@ export default function ProgramUploadModal({
           </div>
 
           {programMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {programMessage}
             </div>
           )}
 
           {programError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {programError}
             </div>
           )}
 
           {programResultUpload && (
             <div style={{ padding: '14px', borderRadius: '10px', background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>
+              <div style={{ fontSize: '12px', color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>
                 Hasil Upload &amp; OCR Link Scan:
               </div>
               <div style={{ fontSize: '12px', color: '#334155', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div><strong>Status:</strong> <span style={{ color: '#059669', fontWeight: 600 }}>Tersimpan di Cloudinary</span></div>
+                <div><strong>Status:</strong> <span style={{ color: '#0F172A', }}>Tersimpan di Cloudinary</span></div>
                 {programResultUpload.totalSlides > 1 && (
                   <div>
                     <strong>Status Slide:</strong>{' '}
-                    <span style={{ color: '#2563EB', fontWeight: 600 }}>
+                    <span style={{ color: '#0F172A', }}>
                       Slide ke-{programResultUpload.totalSlides} (Total: {programResultUpload.totalSlides} slide gambar)
                     </span>
                   </div>
                 )}
-                <div><strong>Hasil Scan OCR:</strong> <span style={{ color: programResultUpload.scannedLink ? '#2563EB' : '#64748B', fontWeight: 600 }}>{programResultUpload.scannedLink || 'Tidak terdeteksi'}</span></div>
+                <div><strong>Hasil Scan OCR:</strong> <span style={{ color: programResultUpload.scannedLink ? '#0F172A' : '#64748B', }}>{programResultUpload.scannedLink || 'Tidak terdeteksi'}</span></div>
               </div>
             </div>
           )}
@@ -4365,7 +4311,6 @@ export default function ProgramUploadModal({
                 background: '#FFFFFF',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -4382,7 +4327,6 @@ export default function ProgramUploadModal({
                 background: programLoading || !programFile ? '#E2E8F0' : '#800000',
                 color: programLoading || !programFile ? '#94A3B8' : '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: programLoading || !programFile ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
                 display: 'inline-flex',
@@ -4398,13 +4342,11 @@ export default function ProgramUploadModal({
     </div>
   );
 }
-
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/ProgramDeleteModal.jsx` (276 baris)
+## File: `gtm-monitor-frontend/src/components/admin/ProgramDeleteModal.jsx` (270 baris)
 
 ```javascript
 import { useEffect } from 'react';
@@ -4477,8 +4419,8 @@ export default function ProgramDeleteModal({
                 width: '38px',
                 height: '38px',
                 borderRadius: '10px',
-                background: '#FEF2F2',
-                color: '#DC2626',
+                background: '#F1F5F9',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -4493,10 +4435,10 @@ export default function ProgramDeleteModal({
               </svg>
             </div>
             <div>
-              <h3 id="delete-modal-title" style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+              <h3 id="delete-modal-title" style={{ margin: 0, fontSize: '17px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                 Kelola &amp; Hapus Program Terdaftar
               </h3>
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
+              <span style={{ fontSize: '12px', color: '#64748B', }}>
                 Hapus program terdaftar spesifik per bulan atau periode
               </span>
             </div>
@@ -4514,7 +4456,6 @@ export default function ProgramDeleteModal({
               background: '#F1F5F9',
               color: '#64748B',
               fontSize: '14px',
-              fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -4527,17 +4468,16 @@ export default function ProgramDeleteModal({
 
         {/* Status Periode Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>Status Periode:</span>
+          <span style={{ fontSize: '12px', color: '#475569' }}>Status Periode:</span>
           <div
             style={{
               padding: '4px 12px',
               borderRadius: '8px',
               background: deleteAvailablePrograms.length > 0 ? '#ECFDF5' : '#F1F5F9',
               border: deleteAvailablePrograms.length > 0 ? '1px solid #A7F3D0' : '1px solid #E2E8F0',
-              color: deleteAvailablePrograms.length > 0 ? '#047857' : '#64748B',
+              color: deleteAvailablePrograms.length > 0 ? '#0F172A' : '#64748B',
               fontSize: '12px',
-              fontWeight: 600
-            }}
+              }}
           >
             {deleteAvailablePrograms.length > 0 ? `${deleteAvailablePrograms.length} Program Ditemukan` : 'Tidak Ada Program Terdaftar'}
           </div>
@@ -4547,7 +4487,7 @@ export default function ProgramDeleteModal({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           {/* Pilih Periode */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>1. Pilih Periode Bulan:</label>
+            <label style={{ fontSize: '12.5px', color: '#334155' }}>1. Pilih Periode Bulan:</label>
             <select
               value={deleteProgramMonth}
               onChange={(e) => {
@@ -4564,7 +4504,6 @@ export default function ProgramDeleteModal({
                 background: '#F8FAFC',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 outline: 'none',
                 cursor: 'pointer'
               }}
@@ -4584,7 +4523,7 @@ export default function ProgramDeleteModal({
 
           {/* Pilih Opsi Program */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
+            <label style={{ fontSize: '12.5px', color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
             <select
               value={deleteProgramTarget}
               onChange={(e) => {
@@ -4601,7 +4540,6 @@ export default function ProgramDeleteModal({
                 background: deleteAvailablePrograms.length === 0 ? '#F1F5F9' : '#FFFFFF',
                 color: deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 outline: 'none',
                 cursor: deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer'
               }}
@@ -4616,13 +4554,13 @@ export default function ProgramDeleteModal({
           </div>
 
           {deleteMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {deleteMessage}
             </div>
           )}
 
           {deleteError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {deleteError}
             </div>
           )}
@@ -4639,7 +4577,6 @@ export default function ProgramDeleteModal({
                 background: '#FFFFFF',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -4656,10 +4593,9 @@ export default function ProgramDeleteModal({
                 padding: '10px 22px',
                 borderRadius: '10px',
                 border: 'none',
-                background: deleteLoading || deleteAvailablePrograms.length === 0 ? '#E2E8F0' : '#DC2626',
+                background: deleteLoading || deleteAvailablePrograms.length === 0 ? '#E2E8F0' : '#800000',
                 color: deleteLoading || deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: deleteLoading || deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
                 display: 'inline-flex',
@@ -4681,13 +4617,11 @@ export default function ProgramDeleteModal({
     </div>
   );
 }
-
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/DeleteProgramConfirmModal.jsx` (135 baris)
+## File: `gtm-monitor-frontend/src/components/admin/DeleteProgramConfirmModal.jsx` (133 baris)
 
 ```javascript
 import { useEffect } from 'react';
@@ -4744,12 +4678,12 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
             border: '1px solid #FDA4AF',
-            color: '#E11D48',
+            color: '#0F172A',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 18px auto',
-            boxShadow: '0 6px 16px rgba(225, 29, 72, 0.15)'
+            boxShadow: '0 6px 16px rgba(128, 0, 0, 0.15)'
           }}
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -4760,22 +4694,22 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
           </svg>
         </div>
 
-        <h3 id="delete-prog-title" style={{ fontSize: '20px', fontWeight: 900, color: '#0F172A', margin: '0 0 10px 0', fontFamily: "var(--font-heading)" }}>
+        <h3 id="delete-prog-title" style={{ fontSize: '20px', color: '#0F172A', margin: '0 0 10px 0', fontFamily: "var(--font-heading)" }}>
           Konfirmasi Hapus Program
         </h3>
 
-        <p style={{ fontSize: '13.5px', color: '#475569', lineHeight: 1.6, margin: '0 0 20px 0', fontWeight: 500 }}>
+        <p style={{ fontSize: '13.5px', color: '#475569', lineHeight: 1.6, margin: '0 0 20px 0', }}>
           Apakah Anda yakin ingin menghapus data program terdaftar ini? Program akan terhapus dari menu navigasi program.
         </p>
 
         <div style={{ background: '#F8FAFC', borderRadius: '14px', padding: '12px 16px', marginBottom: '22px', border: '1px solid #E2E8F0', textAlign: 'left', fontSize: '12.5px', color: '#334155', display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <div>
-            <span style={{ color: '#64748B', fontWeight: 600 }}>Periode Bulan:</span>{' '}
-            <strong style={{ color: '#0F172A', fontWeight: 700 }}>{deleteProgramMonth}</strong>
+            <span style={{ color: '#64748B', }}>Periode Bulan:</span>{' '}
+            <strong style={{ color: '#0F172A', }}>{deleteProgramMonth}</strong>
           </div>
           <div>
-            <span style={{ color: '#64748B', fontWeight: 600 }}>Target Hapus:</span>{' '}
-            <strong style={{ color: '#DC2626', fontWeight: 700 }}>
+            <span style={{ color: '#64748B', }}>Target Hapus:</span>{' '}
+            <strong style={{ color: '#0F172A', }}>
               {deleteProgramTarget === 'ALL' ? `Semua Program di ${deleteProgramMonth}` : deleteProgramTarget}
             </strong>
           </div>
@@ -4794,7 +4728,6 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
               background: '#F8FAFC',
               color: '#475569',
               fontSize: '13.5px',
-              fontWeight: 700,
               cursor: deleteLoading ? 'not-allowed' : 'pointer'
             }}
           >
@@ -4809,12 +4742,11 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
               padding: '12px 16px',
               borderRadius: '12px',
               border: 'none',
-              background: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+              background: '#800000',
               color: '#FFFFFF',
               fontSize: '13.5px',
-              fontWeight: 800,
               cursor: deleteLoading ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 14px rgba(225, 29, 72, 0.35)'
+              boxShadow: '0 4px 14px rgba(128, 0, 0, 0.35)'
             }}
           >
             {deleteLoading ? 'Menghapus...' : 'Ya, Hapus'}
@@ -4824,12 +4756,11 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
     </div>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/admin/UploadGuideModal.jsx` (240 baris)
+## File: `gtm-monitor-frontend/src/components/admin/UploadGuideModal.jsx` (237 baris)
 
 ```javascript
 import { useEffect } from 'react';
@@ -4887,11 +4818,10 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
                 height: '38px',
                 borderRadius: '10px',
                 background: activeInfoModal === 'delete' ? '#FEF2F2' : '#EFF6FF',
-                color: activeInfoModal === 'delete' ? '#DC2626' : '#2563EB',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontWeight: 800,
                 fontSize: '15px',
                 flexShrink: 0
               }}
@@ -4899,10 +4829,10 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
               i
             </div>
             <div>
-              <h3 id="guide-modal-title" style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: '#0F172A' }}>
+              <h3 id="guide-modal-title" style={{ margin: 0, fontSize: '17px', color: '#0F172A' }}>
                 Panduan &amp; Ketentuan
               </h3>
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>
+              <span style={{ fontSize: '12px', color: '#64748B', }}>
                 {activeInfoModal === 'program'
                   ? 'Tracking Program Bulanan (Flyer & OCR)'
                   : activeInfoModal === 'pairing'
@@ -4926,7 +4856,6 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
               height: '28px',
               borderRadius: '50%',
               cursor: 'pointer',
-              fontWeight: 700,
               fontSize: '13px',
               display: 'flex',
               alignItems: 'center',
@@ -4943,7 +4872,7 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
             <>
               {/* Section 1: Must Have */}
               <div style={{ background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#059669', fontSize: '13px', marginBottom: '8px' }}>
+                <div style={{ color: '#0F172A', fontSize: '13px', marginBottom: '8px' }}>
                   Persyaratan Wajib Upload Program:
                 </div>
                 <ul style={{ margin: 0, paddingLeft: '18px', color: '#334155', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -4955,11 +4884,11 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
               </div>
 
               {/* Section 2: Restrictions / Don'ts */}
-              <div style={{ background: '#FEF2F2', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#991B1B', fontSize: '13px', marginBottom: '8px' }}>
+              <div style={{ background: '#F8FAFC', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
+                <div style={{ color: '#0F172A', fontSize: '13px', marginBottom: '8px' }}>
                   Hal yang Dilarang / Pantangan:
                 </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', color: '#7F1D1D', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', color: '#475569', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <li><b>Dilarang</b> mengunggah berkas non-gambar (seperti berkas <code>.pdf</code>, <code>.docx</code>, atau <code>.xlsx</code>).</li>
                   <li><b>Dilarang</b> mengunggah gambar yang terlalu buram atau beresolusi sangat rendah sehingga teks tidak dapat dibaca OCR.</li>
                   <li><b>Dilarang</b> mengosongkan nama program saat mengunggah flyer materi.</li>
@@ -4970,7 +4899,7 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
             <>
               {/* Section 1: Must Have */}
               <div style={{ background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#059669', fontSize: '13px', marginBottom: '8px' }}>
+                <div style={{ color: '#0F172A', fontSize: '13px', marginBottom: '8px' }}>
                   Persyaratan Wajib Data Pairing:
                 </div>
                 <ul style={{ margin: 0, paddingLeft: '18px', color: '#334155', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -4981,11 +4910,11 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
               </div>
 
               {/* Section 2: Restrictions / Don'ts */}
-              <div style={{ background: '#FEF2F2', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#991B1B', fontSize: '13px', marginBottom: '8px' }}>
+              <div style={{ background: '#F8FAFC', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
+                <div style={{ color: '#0F172A', fontSize: '13px', marginBottom: '8px' }}>
                   Hal yang Dilarang / Pantangan:
                 </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', color: '#7F1D1D', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', color: '#475569', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <li><b>Dilarang</b> menghapus atau merusak struktur nama kolom baku (<code>bb_id</code>, <code>msisdn_parent</code>, <code>order_id</code>).</li>
                   <li><b>Dilarang</b> menggabungkan sel (*merged cells*) pada area baris data pairing.</li>
                   <li><b>Dilarang</b> mengunci file Excel dengan *password protection*.</li>
@@ -4996,7 +4925,7 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
             <>
               {/* Section 1: Must Have */}
               <div style={{ background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#059669', fontSize: '13px', marginBottom: '8px' }}>
+                <div style={{ color: '#0F172A', fontSize: '13px', marginBottom: '8px' }}>
                   Ketentuan Penghapusan Program:
                 </div>
                 <ul style={{ margin: 0, paddingLeft: '18px', color: '#334155', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -5007,11 +4936,11 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
               </div>
 
               {/* Section 2: Warning */}
-              <div style={{ background: '#FEF2F2', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#991B1B', fontSize: '13px', marginBottom: '8px' }}>
+              <div style={{ background: '#F8FAFC', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
+                <div style={{ color: '#0F172A', fontSize: '13px', marginBottom: '8px' }}>
                   Peringatan Penting:
                 </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', color: '#7F1D1D', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', color: '#475569', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <li>Tindakan penghapusan bersifat <b>permanen</b> dan tidak dapat diurungkan (*irreversible*).</li>
                   <li>File gambar pada CDN Cloudinary dan data program pada database akan dihapus dari server.</li>
                 </ul>
@@ -5021,7 +4950,7 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
             <>
               {/* Section 1: Must Have */}
               <div style={{ background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#059669', fontSize: '13px', marginBottom: '8px' }}>
+                <div style={{ color: '#0F172A', fontSize: '13px', marginBottom: '8px' }}>
                   Persyaratan Wajib Data ODP:
                 </div>
                 <ul style={{ margin: 0, paddingLeft: '18px', color: '#334155', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -5032,11 +4961,11 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
               </div>
 
               {/* Section 2: Restrictions / Don'ts */}
-              <div style={{ background: '#FEF2F2', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
-                <div style={{ fontWeight: 700, color: '#991B1B', fontSize: '13px', marginBottom: '8px' }}>
+              <div style={{ background: '#F8FAFC', borderRadius: '12px', border: '1px solid #FCA5A5', padding: '16px' }}>
+                <div style={{ color: '#0F172A', fontSize: '13px', marginBottom: '8px' }}>
                   Hal yang Dilarang / Pantangan:
                 </div>
-                <ul style={{ margin: 0, paddingLeft: '18px', color: '#7F1D1D', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <ul style={{ margin: 0, paddingLeft: '18px', color: '#475569', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <li><b>Dilarang</b> mengosongkan atau mengganti nama kolom <code>Branch</code>, <code>Project</code>, <code>WOK</code>, atau <code>ODP</code>.</li>
                   <li><b>Dilarang</b> mengisi nilai negatif atau karakter huruf pada kolom kapasitas port.</li>
                   <li><b>Dilarang</b> menggunakan *merged cells* (sel gabungan) pada area tabel data ODP.</li>
@@ -5058,7 +4987,6 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
               border: 'none',
               background: '#800000',
               color: '#FFFFFF',
-              fontWeight: 600,
               fontSize: '12.5px',
               cursor: 'pointer',
               boxShadow: '0 1px 2px rgba(128, 0, 0, 0.2)'
@@ -5071,7 +4999,6 @@ export default function UploadGuideModal({ activeInfoModal, setActiveInfoModal }
     </div>
   );
 }
-
 ```
 
 ---
@@ -5169,18 +5096,18 @@ export default function LogoutConfirmModal({ setShowLogoutConfirmModal, executeL
               flex: 1,
               padding: '10px 16px',
               borderRadius: '10px',
-              border: '1px solid #DC2626',
-              background: '#DC2626',
+              border: '1px solid #800000',
+              background: '#800000',
               color: '#FFFFFF',
               fontFamily: 'var(--font-body)',
               fontSize: '13.5px',
               fontWeight: 600,
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)',
+              boxShadow: '0 4px 12px rgba(128, 0, 0,0.25)',
               transition: 'all 0.15s ease'
             }}
-            onMouseOver={e => { e.currentTarget.style.background = '#B91C1C'; e.currentTarget.style.borderColor = '#B91C1C'; }}
-            onMouseOut={e => { e.currentTarget.style.background = '#DC2626'; e.currentTarget.style.borderColor = '#DC2626'; }}
+            onMouseOver={e => { e.currentTarget.style.background = '#660000'; e.currentTarget.style.borderColor = '#660000'; }}
+            onMouseOut={e => { e.currentTarget.style.background = '#800000'; e.currentTarget.style.borderColor = '#800000'; }}
           >
             Ya, Log Out
           </button>
@@ -5189,7 +5116,6 @@ export default function LogoutConfirmModal({ setShowLogoutConfirmModal, executeL
     </div>
   );
 }
-
 ```
 
 ---
@@ -5229,8 +5155,8 @@ export default function SessionExpiredModal({ sessionExpiredNotice, setSessionEx
       }}>
         <div style={{
           width: '54px', height: '54px', borderRadius: '50%',
-          background: '#FFF7ED', border: '1px solid #FFEDD5',
-          color: '#F97316', display: 'flex', alignItems: 'center',
+          background: '#FEF2F2', border: '1px solid #FEE2E2',
+          color: '#800000', display: 'flex', alignItems: 'center',
           justifyContent: 'center', margin: '0 auto 16px auto'
         }}>
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -5254,7 +5180,7 @@ export default function SessionExpiredModal({ sessionExpiredNotice, setSessionEx
           onClick={() => setSessionExpiredNotice(false)}
           style={{
             width: '100%', padding: '12px', borderRadius: '12px',
-            border: 'none', background: 'linear-gradient(135deg, #800000 0%, #FF5E00 100%)',
+            border: 'none', background: '#800000',
             color: '#FFFFFF', fontSize: '14px', fontWeight: 700,
             cursor: 'pointer', boxShadow: '0 4px 14px rgba(128, 0, 0, 0.35)',
             transition: 'all 0.2s'
@@ -5266,8 +5192,5 @@ export default function SessionExpiredModal({ sessionExpiredNotice, setSessionEx
     </div>
   );
 }
-
 ```
-
----
 

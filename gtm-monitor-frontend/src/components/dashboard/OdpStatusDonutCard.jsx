@@ -1,5 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
-import { useCountUp } from '../../hooks/useCountUp';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 // ─── STATUS DESCRIPTIONS & COLOR PALETTE ───
 const STATUS_DESCRIPTIONS = {
@@ -12,53 +11,110 @@ const STATUS_DESCRIPTIONS = {
 
 export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isInView = true }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [isAnimated, setIsAnimated] = useState(false);
 
-  useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => setIsAnimated(true), 60);
-      return () => clearTimeout(timer);
-    } else {
-      setIsAnimated(false);
-    }
-  }, [isInView]);
-
-  // Total count & anim counter
-  const safeTotal = useMemo(() => {
+  // Total ODP aktual berdasarkan filter aktif
+  const rawTotal = useMemo(() => {
     if (totalOdp > 0) return totalOdp;
-    return statusChips.reduce((sum, s) => sum + (s.count || 0), 0) || 1;
+    return statusChips.reduce((sum, s) => sum + (s.count || 0), 0);
   }, [totalOdp, statusChips]);
 
-  const countTotalOdp = useCountUp(safeTotal, { enabled: isInView, duration: 800 });
+  const safeDivisor = rawTotal > 0 ? rawTotal : 1;
+
+  // Target proporsi & kuantitas tiap status untuk diinterpolasi
+  const targetChips = useMemo(() => {
+    return statusChips.map((chip) => {
+      const count = chip.count || 0;
+      const share = rawTotal > 0 ? count / safeDivisor : 0;
+      return {
+        ...chip,
+        color: chip.color || '#334155',
+        targetCount: count,
+        targetShare: share,
+        description: STATUS_DESCRIPTIONS[chip.label] || chip.label
+      };
+    });
+  }, [statusChips, rawTotal, safeDivisor]);
+
+  // Interpolasi circular mulus (requestAnimationFrame) saat mount maupun saat ganti filter
+  const currentAnimRef = useRef({ total: 0, chips: {} });
+  const [animState, setAnimState] = useState({ total: 0, chips: {} });
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const startTotal = currentAnimRef.current.total || 0;
+    const startChips = {};
+    targetChips.forEach((c) => {
+      const prev = currentAnimRef.current.chips[c.label];
+      startChips[c.label] = {
+        count: prev ? prev.count : 0,
+        share: prev ? prev.share : 0
+      };
+    });
+
+    const duration = 700;
+    const startTime = performance.now();
+    let frameId = null;
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const rawProgress = Math.min(Math.max(elapsed / duration, 0), 1);
+      // Cubic ease-out untuk pergerakan rotasi busur donat yang halus
+      const ease = 1 - Math.pow(1 - rawProgress, 3);
+
+      const nextChips = {};
+      targetChips.forEach((c) => {
+        const s = startChips[c.label] || { count: 0, share: 0 };
+        nextChips[c.label] = {
+          count: s.count + (c.targetCount - s.count) * ease,
+          share: s.share + (c.targetShare - s.share) * ease
+        };
+      });
+
+      const nextState = {
+        total: startTotal + (rawTotal - startTotal) * ease,
+        chips: nextChips
+      };
+
+      currentAnimRef.current = nextState;
+      setAnimState(nextState);
+
+      if (rawProgress < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, [targetChips, rawTotal, isInView]);
 
   // Donut geometry: Center at (100, 100), Radius 66, Stroke 28
   const radius = 66;
   const circumference = 2 * Math.PI * radius; // ~414.69
 
-  // Calculate arc slices
+  // Hitung panjang busur (strokeLength) dan posisi rotasi (offset) di setiap frame
   const slices = useMemo(() => {
     let accumulatedOffset = 0;
-    return statusChips.map((chip) => {
-      const count = chip.count || 0;
-      const pct = (count / safeTotal);
-      const strokeLength = pct * circumference;
+    return targetChips.map((chip) => {
+      const anim = animState.chips[chip.label] || { count: 0, share: 0 };
+      const strokeLength = Math.max(anim.share * circumference, 0);
       const offset = accumulatedOffset;
       accumulatedOffset += strokeLength;
 
-      const color = chip.color || '#334155';
-
       return {
         ...chip,
-        color,
-        pct: Math.round(pct * 1000) / 10,
+        count: Math.round(anim.count),
+        pct: Math.round(anim.share * 1000) / 10,
         strokeLength,
-        offset,
-        description: STATUS_DESCRIPTIONS[chip.label] || chip.label
+        offset
       };
     });
-  }, [statusChips, safeTotal, circumference]);
+  }, [targetChips, animState, circumference]);
 
   const activeChip = hoveredIndex !== null ? slices[hoveredIndex] : null;
+  const displayTotalOdp = Math.round(animState.total).toLocaleString('id-ID');
 
   return (
     <div
@@ -90,7 +146,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
             fontVariantNumeric: 'tabular-nums'
           }}
         >
-          {safeTotal.toLocaleString('id-ID')} ODP
+          {displayTotalOdp} ODP
         </span>
       </div>
 
@@ -121,9 +177,8 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
             {/* Slices */}
             {slices.map((slice, idx) => {
               const isHovered = hoveredIndex === idx;
-              // Animated stroke: grow from 0 to full length
-              const visibleLength = isAnimated ? slice.strokeLength : 0;
-              const gapAdjustedLength = Math.max(visibleLength - 1.5, 0); // 1.5px gap between segments
+              const visibleLength = slice.strokeLength;
+              const gapAdjustedLength = visibleLength > 2 ? visibleLength - 1.5 : Math.max(visibleLength, 0);
 
               return (
                 <circle
@@ -134,11 +189,11 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   fill="transparent"
                   stroke={slice.color}
                   strokeWidth={isHovered ? 34 : 28}
-                  strokeDasharray={`${gapAdjustedLength} ${circumference - gapAdjustedLength}`}
+                  strokeDasharray={`${gapAdjustedLength} ${Math.max(circumference - gapAdjustedLength, 0)}`}
                   strokeDashoffset={-slice.offset}
                   style={{
                     cursor: 'pointer',
-                    transition: 'stroke-width 0.18s ease, filter 0.18s ease, stroke-dasharray 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                    transition: 'stroke-width 0.18s ease, filter 0.18s ease',
                     filter: isHovered ? 'drop-shadow(0 2px 6px rgba(0,0,0,0.25))' : 'none'
                   }}
                   onMouseEnter={() => setHoveredIndex(idx)}
@@ -195,7 +250,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                     lineHeight: 1.1
                   }}
                 >
-                  {countTotalOdp}
+                  {displayTotalOdp}
                 </div>
                 <div
                   style={{

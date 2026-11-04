@@ -4,25 +4,25 @@
 
 **Daftar Berkas Terlampir (8 berkas):**
 
-- `gtm-monitor-frontend/src/routes/pages.jsx` (132 baris)
+- `gtm-monitor-frontend/src/routes/pages.jsx` (139 baris)
 - `gtm-monitor-frontend/src/components/Dashboard.jsx` (179 baris)
-- `gtm-monitor-frontend/src/components/UploadView.jsx` (876 baris)
-- `gtm-monitor-frontend/src/components/BranchView.jsx` (494 baris)
+- `gtm-monitor-frontend/src/components/UploadView.jsx` (860 baris)
+- `gtm-monitor-frontend/src/components/BranchView.jsx` (480 baris)
 - `gtm-monitor-frontend/src/components/AdminPanel.jsx` (91 baris)
-- `gtm-monitor-frontend/src/components/LandingPage.jsx` (266 baris)
-- `gtm-monitor-frontend/src/components/Auth/LoginModal.jsx` (345 baris)
+- `gtm-monitor-frontend/src/components/LandingPage.jsx` (230 baris)
+- `gtm-monitor-frontend/src/components/Auth/LoginModal.jsx` (504 baris)
 - `gtm-monitor-frontend/src/components/Auth/TurnstileWidget.jsx` (74 baris)
 
-**Total Baris Kode**: 2.597 baris
+**Total Baris Kode**: 2.542 baris
 
 ---
 
-## File: `gtm-monitor-frontend/src/routes/pages.jsx` (136 baris)
+## File: `gtm-monitor-frontend/src/routes/pages.jsx` (139 baris)
 
 ```javascript
 // Halaman-halaman rute: menghubungkan URL & data (TanStack Query, lewat AppLayout) ke komponen tampilan
 import { useCallback, useMemo } from 'react';
-import { Navigate, useNavigate, useOutletContext, useParams } from 'react-router';
+import { useNavigate, useOutletContext, useParams } from 'react-router';
 import LandingPage from '../components/LandingPage';
 import Dashboard from '../components/Dashboard';
 import BranchView from '../components/BranchView';
@@ -62,11 +62,10 @@ export function LoginRoute() {
 
 export function DashboardRoute() {
   const navigate = useNavigate();
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const { branches, importMeta, typeDesignFilter, setTypeDesignFilter } = useOutletContext();
   const { kpi, statusChips } = useOdpSummary(branches, importMeta, typeDesignFilter);
   const ranking = useGtmMonitoring(branches, typeDesignFilter);
-  const { uploadPhoto, verifyActivity, rejectActivity, deletePhoto } = useActivityActions();
 
   // Detail branch hanya untuk Admin (akun branch tetap di Dashboard)
   const goBranch = useCallback((name) => {
@@ -74,43 +73,20 @@ export function DashboardRoute() {
     navigate(PATHS.branch(name));
   }, [isAdmin, navigate]);
 
-  // Untuk aktivitas/upload: Akun User (Non-Admin) HANYA menerima data branch tempat ia bertugas
-  const uploadBranches = useMemo(() => {
-    if (user && user.role === 'USER' && user.branchName) {
-      const filtered = branches.filter(b => b.name === user.branchName);
-      return filtered.length > 0 ? filtered : branches;
-    }
-    return branches;
-  }, [branches, user]);
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <section id="dashboard-section" style={{ scrollMarginTop: '80px' }}>
-        <Dashboard
-          branches={branches}
-          goBranch={goBranch}
-          kpi={kpi}
-          importMeta={importMeta}
-          statusChips={statusChips}
-          ranking={ranking}
-          typeDesignFilter={typeDesignFilter}
-          setTypeDesignFilter={setTypeDesignFilter}
-          isAdmin={isAdmin}
-        />
-      </section>
-
-      <section id="activity-section" style={{ scrollMarginTop: '80px' }}>
-        <UploadView
-          branches={uploadBranches}
-          initialBranch={null}
-          uploadPhoto={uploadPhoto}
-          verifyActivity={isAdmin ? verifyActivity : null}
-          rejectActivity={isAdmin ? rejectActivity : null}
-          deletePhoto={deletePhoto}
-          isAdmin={isAdmin}
-        />
-      </section>
-    </div>
+    <section id="dashboard-section" style={{ scrollMarginTop: '80px' }}>
+      <Dashboard
+        branches={branches}
+        goBranch={goBranch}
+        kpi={kpi}
+        importMeta={importMeta}
+        statusChips={statusChips}
+        ranking={ranking}
+        typeDesignFilter={typeDesignFilter}
+        setTypeDesignFilter={setTypeDesignFilter}
+        isAdmin={isAdmin}
+      />
+    </section>
   );
 }
 
@@ -123,7 +99,8 @@ export function BranchRoute() {
   const goDashboard = useCallback(() => navigate(PATHS.dashboard), [navigate]);
 
   return (
-    <BranchView
+    <section id="branch-section" style={{ scrollMarginTop: '80px' }}>
+      <BranchView
       branches={branches}
       activeBranch={branchName}
       goDashboard={goDashboard}
@@ -131,12 +108,38 @@ export function BranchRoute() {
       verifyActivity={isAdmin ? verifyActivity : null}
       rejectActivity={isAdmin ? rejectActivity : null}
       deletePhoto={deletePhoto}
-    />
+      />
+    </section>
   );
 }
 
 export function UploadRoute() {
-  return <Navigate to="/dashboard#activity" replace />;
+  const { user, isAdmin } = useAuth();
+  const { branches } = useOutletContext();
+  const { uploadPhoto, verifyActivity, rejectActivity, deletePhoto } = useActivityActions();
+
+  // Akun User (Non-Admin) HANYA menerima data branch tempat ia bertugas
+  const uploadBranches = useMemo(() => {
+    if (user && user.role === 'USER' && user.branchName) {
+      const filtered = branches.filter(b => b.name === user.branchName);
+      return filtered.length > 0 ? filtered : branches;
+    }
+    return branches;
+  }, [branches, user]);
+
+  return (
+    <section id="activity-section" style={{ scrollMarginTop: '80px' }}>
+      <UploadView
+        branches={uploadBranches}
+        initialBranch={null}
+        uploadPhoto={uploadPhoto}
+        verifyActivity={isAdmin ? verifyActivity : null}
+        rejectActivity={isAdmin ? rejectActivity : null}
+        deletePhoto={deletePhoto}
+        isAdmin={isAdmin}
+      />
+    </section>
+  );
 }
 
 export function AdminRoute() {
@@ -155,7 +158,6 @@ export function AdminRoute() {
     </section>
   );
 }
-
 ```
 
 ---
@@ -341,12 +343,11 @@ const Dashboard = memo(function Dashboard({
 });
 
 export default Dashboard;
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/UploadView.jsx` (859 baris)
+## File: `gtm-monitor-frontend/src/components/UploadView.jsx` (860 baris)
 
 ```javascript
 import { useState, useEffect, useMemo, useRef, memo } from 'react';
@@ -825,7 +826,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       </div>
 
       {/* ─── 3. CONTROLS BAR (FILTER BRANCH, SEARCH, & EXPORT EXCEL) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
         {/* Branch Dropdown */}
         {branches.length === 1 ? (
           <div className="branch-filter-capsule" style={{ height: '42px', minWidth: 'auto', border: '1px solid #CBD5E1', color: '#0F172A', display: 'flex', alignItems: 'center', padding: '0 16px', borderRadius: '10px', background: '#FFFFFF', boxSizing: 'border-box' }}>
@@ -1150,9 +1151,9 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       {/* ─── 4. PROJECT TABLES & ACTIVITY CARDS ─── */}
       {selectedBranch === 'Semua Branch' ? (
         branchesWithFilteredProjects.length > 0 && (
-          <div style={{ marginBottom: '32px' }}>
-            <ProjectTable 
-              projects={allProjectsMultiBranch} 
+          <div>
+            <ProjectTable
+              projects={allProjectsMultiBranch}
               branchName="Multi Branch" 
               uploadPhoto={uploadPhoto}
               onReview={openModal}
@@ -1162,7 +1163,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         )
       ) : (
         branchesWithFilteredProjects.map(b => (
-          <div key={b.name} style={{ marginBottom: '32px' }}>
+          <div key={b.name}>
             <ProjectTable 
               projects={b.projects} 
               branchName={b.name} 
@@ -1176,6 +1177,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       
       {branchesWithFilteredProjects.length === 0 && (
         <div style={{
+          marginTop: '14px',
           textAlign: 'center',
           padding: '48px 24px',
           background: '#FFFFFF',
@@ -1207,12 +1209,11 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
 });
 
 export default UploadView;
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/BranchView.jsx` (479 baris)
+## File: `gtm-monitor-frontend/src/components/BranchView.jsx` (480 baris)
 
 ```javascript
 import { useState, useMemo, memo } from 'react';
@@ -1547,7 +1548,7 @@ const BranchView = memo(function BranchView({
       </div>
 
       {/* ─── CONTROLS BAR (EXPORT EXCEL & SEARCH INPUT) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
         {/* Tombol Export Excel */}
         <button
           type="button"
@@ -1661,6 +1662,7 @@ const BranchView = memo(function BranchView({
         />
       ) : (
         <div style={{
+          marginTop: '14px',
           textAlign: 'center',
           padding: '48px 24px',
           background: '#FFFFFF',
@@ -1693,7 +1695,6 @@ const BranchView = memo(function BranchView({
 });
 
 export default BranchView;
-
 ```
 
 ---
@@ -1791,34 +1792,36 @@ const AdminPanel = memo(function AdminPanel({ branches = [], onUpdate, verifyAct
 });
 
 export default AdminPanel;
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/LandingPage.jsx` (266 baris)
+## File: `gtm-monitor-frontend/src/components/LandingPage.jsx` (230 baris)
 
 ```javascript
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
+import LoginModal from './Auth/LoginModal';
 
-const REGIONAL_BRANCHES = [
-  'SEMARANG',
-  'SURAKARTA',
-  'YOGYAKARTA',
-  'MAGELANG',
-  'PEKALONGAN',
-  'PURWOKERTO'
-];
+const LandingPage = memo(function LandingPage({
+  initialLoginOpen = false,
+  onLoginSuccess,
+  onCloseLoginRoute
+}) {
+  const [isLoginOpen, setIsLoginOpen] = useState(Boolean(initialLoginOpen));
 
-const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
-  const handleLogin = (e) => {
+  useEffect(() => {
+    setIsLoginOpen(Boolean(initialLoginOpen));
+  }, [initialLoginOpen]);
+
+  const handleOpenLogin = (e) => {
     if (e) e.preventDefault();
-    if (onLoginClick) {
-      onLoginClick();
-    } else if (onExplore) {
-      onExplore();
-    } else {
-      window.location.hash = 'login';
+    setIsLoginOpen(true);
+  };
+
+  const handleCloseLogin = () => {
+    setIsLoginOpen(false);
+    if (onCloseLoginRoute) {
+      onCloseLoginRoute();
     }
   };
 
@@ -1832,7 +1835,7 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
         margin: 0,
         padding: '24px',
         overflow: 'hidden',
-        backgroundColor: '#021329',
+        backgroundColor: '#F8FAFC',
         fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, var(--font-body))",
         fontWeight: 400,
         boxSizing: 'border-box',
@@ -1842,7 +1845,7 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
         justifyContent: 'center'
       }}
     >
-      {/* Architectural Navy Networking & Angular Planes Background */}
+      {/* Background Layer 1: Bright Daylight Telecommunications BTS Tower Photography */}
       <div
         style={{
           position: 'absolute',
@@ -1853,7 +1856,7 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
         }}
       >
         <img
-          src="/landing-network-mesh.svg"
+          src="/landing-bts-daylight.jpg"
           alt=""
           aria-hidden="true"
           width="1920"
@@ -1863,12 +1866,29 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            display: 'block'
+            objectPosition: 'center',
+            display: 'block',
+            filter: 'brightness(1.02) contrast(1.02)',
+            transform: isLoginOpen ? 'scale(1.03)' : 'scale(1)',
+            transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease'
           }}
         />
       </div>
 
-      {/* Top-Left: Telkomsel Brand Logo (Identical to Sidebar) */}
+      {/* Background Layer 2: Clean Airy White Scrim (Maximizing Brightness & Text Legibility) */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 1,
+          background:
+            'linear-gradient(90deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.74) 40%, rgba(255, 255, 255, 0.32) 75%, rgba(255, 255, 255, 0.08) 100%)',
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Top-Left: Telkomsel Brand Logo */}
       <div
         style={{
           position: 'absolute',
@@ -1888,7 +1908,7 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
             height: '28px',
             width: 'auto',
             display: 'block',
-            filter: 'drop-shadow(0 0 1px rgba(255, 255, 255, 0.9)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25))'
+            filter: 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12))'
           }}
         />
         <img
@@ -1898,13 +1918,14 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
             height: '22px',
             width: 'auto',
             display: 'block',
-            filter: 'brightness(0) invert(1)'
+            filter: 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.10))'
           }}
         />
       </div>
 
-{/* Center: Architectural Hero Composition */}
+      {/* Center: Architectural Hero Composition (Smoothly recedes when Login Pop-up opens) */}
       <div
+        aria-hidden={isLoginOpen}
         style={{
           maxWidth: '880px',
           width: '100%',
@@ -1914,15 +1935,17 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
           alignItems: 'center',
           textAlign: 'center',
           padding: '0 16px',
-          marginBottom: '28px'
+          marginBottom: 0,
+          opacity: isLoginOpen ? 0 : 1,
+          transform: isLoginOpen ? 'scale(0.96) translateY(-8px)' : 'scale(1) translateY(0)',
+          pointerEvents: isLoginOpen ? 'none' : 'auto',
+          transition: 'opacity 0.24s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1)'
         }}
       >
-
-        {/* 2. Two-Tone Headline in Gordita Regular (Ref #2 & Ref #3 style) */}
+        {/* Two-Tone Headline in Gordita Regular harmonized with Bright Telkomsel Corporate Palette */}
         <h1
           style={{
             fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
-            color: '#FFFFFF',
             fontSize: 'clamp(32px, 4.3vw, 56px)',
             fontWeight: 400,
             lineHeight: 1.22,
@@ -1931,22 +1954,18 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
             userSelect: 'none'
           }}
         >
-          <span style={{ color: '#FFFFFF' }}>
-            Monitoring Okupansi ODP
-          </span>
+          <span style={{ color: '#0F172A' }}>Monitoring Okupansi ODP</span>
           <br />
-          <span style={{ color: '#7DD3FC' }}>
-            Regional Jateng &amp; DIY
-          </span>
+          <span style={{ color: '#E0001B' }}>Regional Jateng &amp; DIY</span>
         </h1>
 
-        {/* 3. Concise Supporting Sub-Headline */}
+        {/* Concise Supporting Sub-Headline with High Contrast */}
         <p
           style={{
             fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
             fontSize: 'clamp(13.5px, 1.15vw, 15.5px)',
             fontWeight: 400,
-            color: 'rgba(203, 213, 225, 0.78)',
+            color: '#334155',
             lineHeight: 1.65,
             maxWidth: '580px',
             margin: '0 0 36px 0'
@@ -1956,137 +1975,111 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
           dan evaluasi distribusi Sales Force secara terpadu.
         </p>
 
-        {/* 4. Transparent Ghost Login Button with Precision Rim Highlight */}
+        {/* Crisp Telkomsel Red Signature Button */}
         <button
           type="button"
           id="landing-login-btn"
-          onClick={handleLogin}
+          tabIndex={isLoginOpen ? -1 : 0}
+          onClick={handleOpenLogin}
           style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            backgroundColor: '#E0001B',
             color: '#FFFFFF',
-            border: '1.5px solid rgba(186, 230, 253, 0.55)',
+            border: 'none',
             borderRadius: '10px',
             padding: '12px 56px',
             fontSize: '16px',
             fontWeight: 400,
             cursor: 'pointer',
-            boxShadow: 'none',
+            boxShadow: '0 4px 16px rgba(224, 0, 27, 0.28)',
             fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'all 0.2s ease',
-            backdropFilter: 'blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)'
+            transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(125, 211, 252, 0.14)';
-            e.currentTarget.style.borderColor = '#FFFFFF';
+            e.currentTarget.style.backgroundColor = '#C50017';
             e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = '0 6px 22px rgba(224, 0, 27, 0.38)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
-            e.currentTarget.style.borderColor = 'rgba(186, 230, 253, 0.55)';
+            e.currentTarget.style.backgroundColor = '#E0001B';
             e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(224, 0, 27, 0.28)';
           }}
         >
           Login
         </button>
       </div>
 
-      {/* Bottom Regional Coverage HUD Strip (Ref #2 & Ref #3 style) */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 10,
-          borderTop: '1px solid rgba(148, 163, 184, 0.12)',
-          backgroundColor: 'rgba(2, 16, 36, 0.55)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          padding: '14px clamp(20px, 4vw, 44px)',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '12px'
+      {/* Dynamic Frosted Crimson Login Pop-up Modal */}
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={handleCloseLogin}
+        onLoginSuccess={(loggedInUser, expiresAt) => {
+          setIsLoginOpen(false);
+          if (onLoginSuccess) {
+            onLoginSuccess(loggedInUser, expiresAt);
+          }
         }}
-      >
-        <div
-          style={{
-            fontSize: '11px',
-            fontWeight: 400,
-            letterSpacing: '0.12em',
-            color: 'rgba(148, 163, 184, 0.7)',
-            textTransform: 'uppercase'
-          }}
-        >
-          CAKUPAN WILAYAH OPERASIONAL
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            gap: 'clamp(10px, 2vw, 22px)'
-          }}
-        >
-          {REGIONAL_BRANCHES.map((branch, idx) => (
-            <span
-              key={branch}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 'clamp(10px, 2vw, 22px)',
-                fontSize: '11.5px',
-                fontWeight: 400,
-                letterSpacing: '0.1em',
-                color: 'rgba(226, 232, 240, 0.8)'
-              }}
-            >
-              <span>{branch}</span>
-              {idx < REGIONAL_BRANCHES.length - 1 && (
-                <span aria-hidden="true" style={{ color: 'rgba(56, 189, 248, 0.45)' }}>
-                  &bull;
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
-      </div>
+      />
     </div>
   );
 });
 
 export default LandingPage;
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/Auth/LoginPage.jsx` (420 baris)
+## File: `gtm-monitor-frontend/src/components/Auth/LoginModal.jsx` (504 baris)
 
 ```javascript
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { API_BASE_URL } from '../../apiConfig';
 import TurnstileWidget, { TURNSTILE_SITE_KEY } from './TurnstileWidget';
 
-export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
+export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
+  const [isSubmitHovered, setIsSubmitHovered] = useState(false);
+  const [isCloseHovered, setIsCloseHovered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [turnstileToken, setTurnstileToken] = useState(null);
+
+  const usernameInputRef = useRef(null);
   const turnstileRef = useRef(null);
+
+  // Auto-focus username field when modal opens & handle Escape key to close (Antislop R-26 & R-32)
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const focusTimer = setTimeout(() => {
+      usernameInputRef.current?.focus();
+    }, 60);
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !loading && onClose) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(focusTimer);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, loading, onClose]);
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+
     if (!username.trim() || !password) {
       setError('Silakan masukkan username dan password Anda.');
       return;
@@ -2103,23 +2096,26 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // server memasang cookie sesi HttpOnly
+        credentials: 'include',
         body: JSON.stringify({ username, password, turnstileToken })
       });
       const data = await res.json().catch(() => ({}));
 
       if (res.ok && data.success && data.user) {
-        if (onLoginSuccess) onLoginSuccess(data.user, data.expiresAt);
+        if (onLoginSuccess) {
+          onLoginSuccess(data.user, data.expiresAt);
+        }
       } else {
-        const fallbackMsg = res.status >= 500
-          ? 'Terjadi gangguan pada server backend. Silakan coba beberapa saat lagi.'
-          : 'Login gagal. Periksa kembali username dan password Anda.';
+        const fallbackMsg =
+          res.status >= 500
+            ? 'Terjadi gangguan pada server backend. Silakan coba beberapa saat lagi.'
+            : 'Login gagal. Periksa kembali username dan password Anda.';
         setError(data.message || data.error || fallbackMsg);
-        turnstileRef.current?.reset(); // token captcha hanya berlaku sekali
+        turnstileRef.current?.reset();
       }
     } catch (err) {
       console.error(err);
-      setError('Gagal terhubung ke server. Pastikan server backend sedang aktif.');
+      setError('Gagal terhubung ke server. Periksa koneksi internet Anda.');
       turnstileRef.current?.reset();
     } finally {
       setLoading(false);
@@ -2128,368 +2124,420 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
 
   return (
     <div
-      className="login-root-container"
+      role="presentation"
+      className="landing-login-modal-backdrop"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !loading && onClose) {
+          onClose();
+        }
+      }}
       style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 50,
         display: 'flex',
-        minHeight: '100dvh',
-        width: '100%',
-        backgroundColor: '#FFFFFF',
-        fontFamily: 'var(--font-body)',
-        position: 'relative',
-        overflow: 'hidden'
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+        backgroundColor: 'rgba(15, 23, 42, 0.42)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        animation: 'landingModalBackdropIn 0.22s ease-out forwards',
+        boxSizing: 'border-box'
       }}
     >
-      {/* ─── LEFT PANE: 57.2% WIDTH (EXACT MOCKUP PROPORTION 781px / 1366px) ─── */}
       <div
-        className="login-form-pane"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="login-modal-title"
+        className="landing-login-modal"
         style={{
-          minHeight: '100dvh',
-          backgroundColor: '#FFFFFF',
           position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '40px 24px',
+          width: '100%',
+          maxWidth: '410px',
+          padding: '36px 32px 32px',
+          borderRadius: '22px',
+          background: 'rgba(255, 255, 255, 0.92)',
+          backdropFilter: 'blur(24px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+          border: '1px solid rgba(255, 255, 255, 0.95)',
+          boxShadow:
+            '0 24px 56px rgba(15, 23, 42, 0.18), 0 4px 16px rgba(15, 23, 42, 0.08), inset 0 1px 0 #FFFFFF',
+          fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
+          fontWeight: 400,
+          color: '#0F172A',
           boxSizing: 'border-box',
-          overflow: 'hidden'
+          animation: 'landingModalCardIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards'
         }}
       >
-        {/* Proportional Accent Wave Lines SVG Background */}
-        <svg
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            pointerEvents: 'none',
-            zIndex: 1
-          }}
-          viewBox="0 0 781 768"
-          preserveAspectRatio="none"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Top-Right Waves: Flowing smoothly from x=435 down to right border */}
-          <path
-            d="M 435,0 C 445,55 480,95 540,115 C 620,140 700,125 781,148"
-            stroke="#FFB8BC"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M 475,0 C 485,65 520,110 580,130 C 655,155 715,145 781,168"
-            stroke="#FFB8BC"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-
-          {/* Bottom-Left Waves: Concentric curves in bottom-left corner */}
-          <path
-            d="M 0,620 C 70,620 130,645 125,710 C 120,745 60,768 0,768"
-            stroke="#FFB8BC"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M 0,660 C 50,660 95,680 90,735 C 85,758 45,768 0,768"
-            stroke="#FFB8BC"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M 0,700 C 35,700 65,715 60,755 C 55,765 25,768 0,768"
-            stroke="#FFB8BC"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-        </svg>
-
-        {/* Top-Left: Proportional Telkomsel Wordmark Logo (x: 79px, y: 101px, w: 117px) */}
-        <div
-          className="login-logo-container"
-          style={{
-            position: 'absolute',
-            top: 'clamp(36px, 13.1vh, 101px)',
-            left: 'clamp(32px, 5.8vw, 79px)',
-            zIndex: 10
-          }}
-        >
-          <img
-            src="/telkomsel-logo.png"
-            alt="Telkomsel"
-            style={{
-              width: '117px',
-              height: 'auto',
-              display: 'block'
-            }}
-          />
-        </div>
-
-        {/* Top-Right: Back to Landing Page Button */}
-        {onBackToLanding && (
+        {/* Top-Right Close Button */}
+        {onClose && (
           <button
             type="button"
-            className="login-back-btn"
-            onClick={onBackToLanding}
+            id="login-modal-close-btn"
+            aria-label="Tutup pop up login"
+            disabled={loading}
+            onClick={onClose}
+            onMouseEnter={() => setIsCloseHovered(true)}
+            onMouseLeave={() => setIsCloseHovered(false)}
             style={{
               position: 'absolute',
-              top: 'clamp(28px, 6vh, 48px)',
-              right: '32px',
-              zIndex: 20,
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              fontSize: '13px',
-              fontWeight: 500,
-              color: '#64748B',
-              cursor: 'pointer',
+              top: '16px',
+              right: '16px',
+              width: '32px',
+              height: '32px',
+              borderRadius: '10px',
+              border: isCloseHovered ? '1px solid #CBD5E1' : '1px solid #E2E8F0',
+              backgroundColor: isCloseHovered ? '#F1F5F9' : 'rgba(255, 255, 255, 0.8)',
+              color: isCloseHovered ? '#0F172A' : '#64748B',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '4px',
-              transition: 'color 0.2s ease',
-              outline: 'none'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#0F172A';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#64748B';
+              justifyContent: 'center',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.18s ease',
+              padding: 0
             }}
           >
-            <span>← Kembali ke Beranda</span>
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         )}
 
-        {/* Center: Welcome Heading & Proportional Form Container (Width: 542px) */}
-        <div
-          className="login-card-inner"
-          style={{
-            zIndex: 10,
-            boxSizing: 'border-box',
-            marginTop: '10px'
-          }}
-        >
-          <h1
+        {/* Modal Header with Telkomsel Symbol */}
+        <div style={{ textAlign: 'center', marginBottom: '26px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+            <img
+              src="/telkomsel-symbol.png"
+              alt=""
+              aria-hidden="true"
+              style={{
+                height: '32px',
+                width: 'auto',
+                display: 'block',
+                filter: 'drop-shadow(0 2px 6px rgba(224, 0, 27, 0.25))'
+              }}
+            />
+          </div>
+          <h2
+            id="login-modal-title"
             style={{
-              fontSize: '32px',
-              fontWeight: 800,
-              color: '#111827',
-              textAlign: 'center',
-              margin: '0 0 44px 0',
-              letterSpacing: '-0.5px',
-              fontFamily: 'var(--font-heading)'
+              fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
+              fontSize: '24px',
+              fontWeight: 400,
+              color: '#0F172A',
+              letterSpacing: '-0.3px',
+              margin: '0 0 6px 0'
             }}
           >
-            Welcome!
-          </h1>
+            Login Petugas
+          </h2>
+          <p
+            style={{
+              fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
+              fontSize: '13px',
+              fontWeight: 400,
+              color: '#475569',
+              lineHeight: 1.5,
+              margin: 0
+            }}
+          >
+            Masuk untuk mengakses monitoring okupansi ODP
+          </p>
+        </div>
 
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            {/* Username Field */}
-            <div style={{ marginBottom: '28px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: '#1F2937',
-                  marginBottom: '6px'
-                }}
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="login-username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Masukkan username atau email"
-                style={{
-                  width: '100%',
-                  height: '44px',
-                  boxSizing: 'border-box',
-                  border: '1px solid #0F172A',
-                  borderRadius: 0,
-                  backgroundColor: '#FFFFFF',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  color: '#0F172A',
-                  outline: 'none',
-                  fontFamily: 'var(--font-body)',
-                  transition: 'border-color 0.15s ease'
-                }}
-              />
-            </div>
-
-            {/* Password Field */}
-            <div style={{ marginBottom: TURNSTILE_SITE_KEY ? '28px' : '40px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: '#1F2937',
-                  marginBottom: '6px'
-                }}
-              >
-                Password
-              </label>
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="login-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  style={{
-                    width: '100%',
-                    height: '44px',
-                    boxSizing: 'border-box',
-                    border: '1px solid #0F172A',
-                    borderRadius: 0,
-                    backgroundColor: '#FFFFFF',
-                    padding: '10px 42px 10px 14px',
-                    fontSize: '14px',
-                    color: '#0F172A',
-                    letterSpacing: showPassword ? 'normal' : '4px',
-                    outline: 'none',
-                    fontFamily: 'var(--font-body)',
-                    transition: 'border-color 0.15s ease'
-                  }}
-                />
-
-                {/* Eye Icon Toggle */}
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
-                  style={{
-                    position: 'absolute',
-                    right: '12px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    color: '#64748B',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    outline: 'none'
-                  }}
-                >
-                  {showPassword ? (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                      <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                  ) : (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Captcha Cloudflare Turnstile (lebar penuh, sejajar field di atasnya) */}
-            {TURNSTILE_SITE_KEY && (
-              <div style={{ marginBottom: '40px' }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    color: '#1F2937',
-                    marginBottom: '8px'
-                  }}
-                >
-                  Captcha
-                </label>
-                <TurnstileWidget
-                  ref={turnstileRef}
-                  action="login"
-                  onToken={setTurnstileToken}
-                  onError={() => setError('Captcha gagal dimuat. Periksa koneksi internet, lalu muat ulang halaman.')}
-                />
-              </div>
-            )}
-
-            {error && (
-              <div
-                role="alert"
-                style={{
-                  margin: '-20px 0 20px 0',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: '#DC2626',
-                  textAlign: 'center',
-                  fontFamily: 'var(--font-body)'
-                }}
-              >
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              id="login-submit-btn"
-              disabled={loading}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              className="login-btn-interactive"
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          {/* Username Input Box */}
+          <div style={{ marginBottom: '18px', textAlign: 'left' }}>
+            <label
+              htmlFor="login-username"
               style={{
-                width: '100%',
-                height: '52px',
-                borderRadius: 0,
-                border: '1.5px solid #0F172A',
-                backgroundColor: isHovered ? '#0F172A' : '#FFFFFF',
-                color: isHovered ? '#FFFFFF' : '#0F172A',
-                fontSize: '15px',
-                fontWeight: 600,
-                cursor: loading ? 'wait' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                outline: 'none',
-                fontFamily: 'var(--font-body)',
-                boxShadow: 'none',
-                transition: 'background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease'
+                display: 'block',
+                fontSize: '12.5px',
+                fontWeight: 400,
+                color: '#1E293B',
+                marginBottom: '8px',
+                letterSpacing: '0.01em'
               }}
             >
-              {loading ? 'Memproses...' : 'Login'}
-            </button>
-          </form>
-        </div>
-      </div>
+              Username
+            </label>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <input
+                ref={usernameInputRef}
+                type="text"
+                id="login-username"
+                name="username"
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onFocus={() => setFocusedField('username')}
+                onBlur={() => setFocusedField(null)}
+                placeholder="Masukkan username"
+                style={{
+                  width: '100%',
+                  height: '46px',
+                  boxSizing: 'border-box',
+                  borderRadius: '12px',
+                  border:
+                    focusedField === 'username'
+                      ? '1.5px solid #E0001B'
+                      : '1px solid #CBD5E1',
+                  backgroundColor:
+                    focusedField === 'username'
+                      ? '#FFFFFF'
+                      : 'rgba(248, 250, 252, 0.95)',
+                  outline: 'none',
+                  boxShadow: 'none',
+                  padding: '10px 42px 10px 16px',
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  color: '#0F172A',
+                  fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
+                  transition: 'all 0.18s ease'
+                }}
+              />
+              {/* Right User Icon */}
+              <span
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  right: '14px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: focusedField === 'username' ? '#E0001B' : '#94A3B8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  pointerEvents: 'none',
+                  transition: 'color 0.18s ease'
+                }}
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </span>
+            </div>
+          </div>
 
-      {/* ─── RIGHT PANE: 42.8% WIDTH (TELKOMSEL AGENT PHOTOGRAPHY 585px / 1366px) ─── */}
-      <div
-        className="login-image-pane"
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          backgroundColor: '#0F172A'
-        }}
-      >
-        <img
-          src="/login-agent-hero.webp"
-          alt="Telkomsel Officer"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center 22%',
-            display: 'block'
-          }}
-        />
+          {/* Password Input Box */}
+          <div
+            style={{
+              marginBottom: TURNSTILE_SITE_KEY ? '18px' : '24px',
+              textAlign: 'left'
+            }}
+          >
+            <label
+              htmlFor="login-password"
+              style={{
+                display: 'block',
+                fontSize: '12.5px',
+                fontWeight: 400,
+                color: '#1E293B',
+                marginBottom: '8px',
+                letterSpacing: '0.01em'
+              }}
+            >
+              Password
+            </label>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="login-password"
+                name="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField(null)}
+                placeholder="Masukkan password"
+                style={{
+                  width: '100%',
+                  height: '46px',
+                  boxSizing: 'border-box',
+                  borderRadius: '12px',
+                  border:
+                    focusedField === 'password'
+                      ? '1.5px solid #E0001B'
+                      : '1px solid #CBD5E1',
+                  backgroundColor:
+                    focusedField === 'password'
+                      ? '#FFFFFF'
+                      : 'rgba(248, 250, 252, 0.95)',
+                  outline: 'none',
+                  boxShadow: 'none',
+                  padding: '10px 44px 10px 16px',
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  color: '#0F172A',
+                  letterSpacing: showPassword || !password ? 'normal' : '2.5px',
+                  fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
+                  transition: 'all 0.18s ease'
+                }}
+              />
+
+              {/* Eye Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  padding: '6px',
+                  color: focusedField === 'password' ? '#E0001B' : '#94A3B8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'color 0.18s ease'
+                }}
+              >
+                {showPassword ? (
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                ) : (
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Optional Cloudflare Turnstile Captcha */}
+          {TURNSTILE_SITE_KEY && (
+            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+              <label
+                style={{
+                  display: 'block',
+                  fontSize: '12.5px',
+                  fontWeight: 400,
+                  color: '#1E293B',
+                  marginBottom: '8px'
+                }}
+              >
+                Verifikasi Keamanan
+              </label>
+              <TurnstileWidget
+                ref={turnstileRef}
+                action="login"
+                onToken={setTurnstileToken}
+                onError={() =>
+                  setError(
+                    'Captcha gagal dimuat. Periksa koneksi internet, lalu muat ulang halaman.'
+                  )
+                }
+              />
+            </div>
+          )}
+
+          {/* Error Feedback Banner */}
+          {error && (
+            <div
+              role="alert"
+              style={{
+                marginBottom: '16px',
+                padding: '10px 14px',
+                borderRadius: '10px',
+                backgroundColor: '#FEF2F2',
+                border: '1px solid #FECACA',
+                color: '#B91C1C',
+                fontSize: '12.5px',
+                fontWeight: 400,
+                lineHeight: 1.45,
+                textAlign: 'center'
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          {/* Dynamic Telkomsel Red Signature Submit Button */}
+          <button
+            type="submit"
+            id="login-submit-btn"
+            disabled={loading}
+            onMouseEnter={() => setIsSubmitHovered(true)}
+            onMouseLeave={() => setIsSubmitHovered(false)}
+            style={{
+              width: '100%',
+              height: '46px',
+              borderRadius: '12px',
+              border: 'none',
+              backgroundColor: isSubmitHovered ? '#C50017' : '#E0001B',
+              color: '#FFFFFF',
+              fontSize: '15.5px',
+              fontWeight: 400,
+              fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
+              cursor: loading ? 'wait' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: isSubmitHovered
+                ? '0 6px 20px rgba(224, 0, 27, 0.35)'
+                : '0 4px 14px rgba(224, 0, 27, 0.25)',
+              transform: isSubmitHovered && !loading ? 'translateY(-1px)' : 'translateY(0)',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {loading ? 'Memproses...' : 'Login'}
+          </button>
+        </form>
       </div>
     </div>
   );
 }
-
 ```
 
 ---
@@ -2570,8 +2618,5 @@ export default function TurnstileWidget({ action, onToken, onError, ref }) {
   // Tinggi widget Turnstile 65px: ruang dipesan agar form tidak bergeser saat widget muncul
   return <div ref={containerRef} className="cf-turnstile" style={{ width: '100%', minHeight: '65px' }} />;
 }
-
 ```
-
----
 

@@ -6,17 +6,17 @@
 
 - `gtm-monitor-frontend/package.json` (33 baris)
 - `gtm-monitor-frontend/vite.config.js` (31 baris)
-- `gtm-monitor-frontend/index.html` (21 baris)
-- `gtm-monitor-frontend/src/index.css` (1291 baris)
+- `gtm-monitor-frontend/index.html` (22 baris)
+- `gtm-monitor-frontend/src/index.css` (1624 baris)
 - `gtm-monitor-frontend/src/apiConfig.js` (64 baris)
 - `gtm-monitor-frontend/src/lib/queryClient.js` (18 baris)
 - `gtm-monitor-frontend/src/main.jsx` (21 baris)
 - `gtm-monitor-frontend/src/App.jsx` (34 baris)
-- `gtm-monitor-frontend/src/routes/paths.js` (31 baris)
+- `gtm-monitor-frontend/src/routes/paths.js` (32 baris)
 - `gtm-monitor-frontend/src/routes/guards.jsx` (29 baris)
 - `gtm-monitor-frontend/src/auth/AuthContext.jsx` (188 baris)
 
-**Total Baris Kode**: 1.637 baris
+**Total Baris Kode**: 2.096 baris
 
 ---
 
@@ -55,7 +55,6 @@
     "vite": "^8.1.1"
   }
 }
-
 ```
 
 ---
@@ -93,29 +92,27 @@ export default defineConfig({
     }
   }
 })
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/index.html` (21 baris)
+## File: `gtm-monitor-frontend/index.html` (22 baris)
 
 ```html
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/telkomsel-symbol.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/telkomsel-symbol.png" />
-
     <link rel="shortcut icon" type="image/png" href="/telkomsel-symbol.png" />
+    <link rel="apple-touch-icon" href="/telkomsel-symbol.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GTM Activity Monitor - Jateng DIY</title>
     <!-- Google Fonts: Inter & Geist (Modern Neo-Grotesque / Geometric Sans-Serif UI Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://db.onlinewebfonts.com/c/0825e48b888e2966c14f17034b133d07?family=Gordita-Regular" rel="stylesheet">
+    <link href="https://db.onlinewebfonts.com/c/0825e48b888e2966c14f17034b133d07?family=Gordita-Regular" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   </head>
   <body>
@@ -123,12 +120,11 @@ export default defineConfig({
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/index.css` (1291 baris)
+## File: `gtm-monitor-frontend/src/index.css` (1624 baris)
 
 ```css
 @font-face {
@@ -161,11 +157,8 @@ export default defineConfig({
   --font-body: 'Gordita', 'Gordita-Regular', sans-serif;
   --font-landing: 'Gordita', 'Gordita-Regular', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  /* Spektrum Merah - Jingga - Hitam - Putih */
+  /* Warna utama: maroon. Hover/border: #660000. Latar lembut: #FEF2F2 / #FEE2E2. Di atas latar gelap: putih atau #FCA5A5 */
   --primary-red: #800000;
-  --primary-orange: #FF5E00;
-  --grad-red-orange: linear-gradient(135deg, #800000 0%, #FF5E00 100%);
-  --grad-orange-red: linear-gradient(135deg, #FF5E00 0%, #800000 100%);
   --bg-dark: #090A0F;
   --bg-dark-card: rgba(255, 255, 255, 0.04);
 }
@@ -315,7 +308,7 @@ button {
 }
 
 /* Accessible focus ring replacement for keyboard navigation (R-32) */
-:focus-visible:not(input):not(textarea):not(select):not(.login-btn-interactive):not(#login-submit-btn) {
+:focus-visible:not(input):not(textarea):not(select):not(.login-btn-interactive):not(#login-submit-btn):not(.sidebar-nav-item):not(.sidebar-toggle-btn):not(.sidebar-brand-btn) {
   outline: 2px solid #0F172A !important;
   outline-offset: 2px !important;
 }
@@ -370,7 +363,7 @@ button {
   padding: 12px 16px;
   background: #f8fafc;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 400;
   color: #475569;
   text-transform: uppercase;
   letter-spacing: .04em;
@@ -406,6 +399,104 @@ button {
   50% { opacity: 0.4; }
 }
 
+/* Slider geser tabel: selalu terjangkau di bawah top bar (65px), tanpa perlu turun ke dasar tabel */
+.table-scroll-slider {
+  position: sticky;
+  top: 65px;
+  z-index: 22; /* di atas header tabel (20), di bawah dropdown filter (25) */
+  background: #FFFFFF;
+}
+
+.table-scroll-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 16px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.table-scroll-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: #E2E8F0;
+}
+
+.table-scroll-thumb {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: #800000;
+  cursor: grab;
+  transition: background-color 0.15s ease;
+}
+
+.table-scroll-track:hover .table-scroll-thumb,
+.table-scroll-track.dragging .table-scroll-thumb {
+  background: #660000;
+}
+
+.table-scroll-track.dragging .table-scroll-thumb {
+  cursor: grabbing;
+}
+
+/* Scrollbar bawaan disembunyikan: geser samping lewat slider, geser baris lewat roda mouse atau sentuhan */
+.project-table-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  scrollbar-width: none;
+}
+
+.project-table-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Tinggi maksimal = layar - top bar 65 - slider 16 - gap 6 - sisa bawah 12, supaya tabel penuh sampai bawah */
+.project-table-card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin-top: 6px;
+  min-height: 320px;
+  max-height: calc(100dvh - 99px);
+}
+
+.saas-main-viewport.saas-main-viewport-table {
+  padding-bottom: 12px !important;
+}
+
+/* Perangkat sentuh: tombol sedikit lebih besar, area sentuh tetap 44px tanpa memperlebar jarak */
+@media (pointer: coarse) {
+  .table-scroll-track {
+    height: 28px;
+  }
+
+  .table-scroll-track::before {
+    content: '';
+    position: absolute;
+    inset: -8px 0;
+  }
+
+  .table-scroll-rail {
+    height: 6px;
+  }
+
+  .table-scroll-thumb {
+    height: 12px;
+  }
+
+  .project-table-card {
+    max-height: calc(100dvh - 111px);
+  }
+}
+
 .activity-col-header {
   white-space: normal; /* allow wrapping for activity headers */
   text-align: center;
@@ -425,7 +516,7 @@ button {
 }
 .dropdown-item.active {
   background: #f8fafc;
-  font-weight: 600;
+  font-weight: 400;
   color: #0f172a;
 }
 
@@ -499,12 +590,12 @@ button {
 }
 
 .profile-menu-item.logout {
-  color: #dc2626;
+  color: #800000;
 }
 
 .profile-menu-item.logout:hover {
   background: #fef2f2;
-  color: #b91c1c;
+  color: #660000;
 }
 
 /* ─── COMPREHENSIVE RESPONSIVE MOBILE STYLES (VERSATILE ACROSS ALL RESOLUTIONS) ─── */
@@ -560,11 +651,20 @@ button {
     padding-top: 56px !important;
   }
 
-  nav, .main-top-nav {
+  .main-top-nav {
     padding: 8px 12px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .sidebar-nav-menu {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    padding: 0 !important;
     gap: 6px !important;
   }
 
@@ -795,6 +895,22 @@ button {
 }
 
 @media (max-width: 640px) {
+  .header-notification-dropdown {
+    position: fixed !important;
+    top: 68px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100dvh - 84px) !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.2), 0 8px 16px -6px rgba(15, 23, 42, 0.1) !important;
+    z-index: 1000 !important;
+  }
+
   .page-title-header {
     padding-left: 10px !important;
     padding-right: 10px !important;
@@ -892,7 +1008,7 @@ button {
   border-radius: 10px;
   border: 1px solid #E2E8F0;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   background: #FFFFFF;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
@@ -1117,7 +1233,7 @@ button {
   font-size: 10px;
   font-weight: 700;
   color: #FFFFFF;
-  background-color: #DC2626;
+  background-color: #800000;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.2px;
   line-height: 1.2;
@@ -1146,7 +1262,7 @@ button {
   border: none !important;
   background-color: transparent !important;
   color: rgba(255, 255, 255, 0.78);
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
@@ -1157,31 +1273,15 @@ button {
   transition: color 0.16s ease;
 }
 
-.sidebar-nav-item .sidebar-left-indicator {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%) scaleY(0.35);
-  width: 5px;
-  height: 25px;
-  border-radius: 0 6px 6px 0;
-  background-color: #FF1E27;
-  box-shadow: 0 0 12px rgba(255, 30, 39, 0.75);
-  opacity: 0;
-  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .sidebar-nav-item .sidebar-nav-box {
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 100%;
-  margin: 0;
-  padding: 11px 24px;
+  gap: 24px;
+  width: calc(100% - 24px);
+  margin: 0 12px;
+  padding: 10px 12px;
   min-height: 44px;
-  border-radius: 0;
+  border-radius: 10px;
   background-color: transparent;
   border: none !important;
   box-sizing: border-box;
@@ -1197,14 +1297,14 @@ button {
 
 .sidebar-nav-item .nav-icon-filled {
   display: none;
-  color: #FF1E27;
+  color: #FFFFFF;
   flex-shrink: 0;
   transition: color 0.16s ease;
 }
 
 .sidebar-nav-item .sidebar-nav-label {
   display: inline-block;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.72);
   transition: color 0.16s ease, font-weight 0.16s ease;
@@ -1219,25 +1319,17 @@ button {
   outline: none;
 }
 
-.sidebar-nav-item.active .sidebar-left-indicator,
-.sidebar-nav-item:hover .sidebar-left-indicator,
-.sidebar-nav-item:focus-visible .sidebar-left-indicator {
-  opacity: 1;
-  transform: translateY(-50%) scaleY(1);
-  background-color: #FF1E27 !important;
-}
-
 .sidebar-nav-item.active .sidebar-nav-box {
-  background: linear-gradient(90deg, rgba(255, 30, 39, 0.24) 0%, rgba(255, 30, 39, 0.06) 100%) !important;
+  background: #800000 !important;
 }
 
-.sidebar-nav-item:hover .sidebar-nav-box,
-.sidebar-nav-item:focus-visible .sidebar-nav-box {
-  background: rgba(255, 30, 39, 0.14) !important;
+.sidebar-nav-item:not(.active):hover .sidebar-nav-box,
+.sidebar-nav-item:not(.active):focus-visible .sidebar-nav-box {
+  background: rgba(128, 0, 0, 0.45) !important;
 }
 
 .sidebar-nav-item:focus-visible .sidebar-nav-box {
-  outline: 2px solid #FF1E27;
+  outline: 2px solid #FFFFFF;
   outline-offset: -2px;
 }
 
@@ -1251,7 +1343,7 @@ button {
 .sidebar-nav-item:hover .nav-icon-filled,
 .sidebar-nav-item:focus-visible .nav-icon-filled {
   display: block;
-  color: #FF1E27 !important;
+  color: #FFFFFF !important;
 }
 
 .sidebar-nav-item.active .sidebar-nav-label {
@@ -1266,9 +1358,104 @@ button {
 }
 
 .sidebar-brand-btn:focus-visible {
-  outline: 2px solid #FF1E27;
+  outline: 2px solid #FFFFFF;
   outline-offset: 4px;
   border-radius: 8px;
+}
+
+/* Baris logo setinggi top bar (64px). Garis tiga segaris dengan ikon menu di bawahnya.
+   margin-bottom 25px = border top bar 1px + padding atas konten 24px, supaya menu pertama sejajar dengan kartu pertama */
+.sidebar-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 64px;
+  padding: 0 12px 0 14px;
+  margin-bottom: 25px;
+  box-sizing: border-box;
+}
+
+.sidebar-brand-btn {
+  display: inline-flex;
+}
+
+.sidebar-brand-word {
+  display: block;
+}
+
+.sidebar-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.sidebar-toggle-btn:active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.sidebar-toggle-btn:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: -2px;
+}
+
+.sidebar-nav-chevron {
+  margin-left: auto;
+}
+
+/* Ruang kosong setinggi satu menu (44px, termasuk gap 4px milik nav) sebelum garis */
+.sidebar-divider {
+  width: 100%;
+  margin: 40px 0 8px;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.sidebar-logout-btn {
+  padding: 10px;
+}
+
+@media (min-width: 1025px) {
+  .app-sidebar.collapsed {
+    width: 72px;
+  }
+
+  .app-sidebar.collapsed .sidebar-brand-row {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .app-sidebar.collapsed .sidebar-brand-btn,
+  .app-sidebar.collapsed .sidebar-nav-label,
+  .app-sidebar.collapsed .sidebar-nav-chevron,
+  .app-sidebar.collapsed .sidebar-divider,
+  .app-sidebar.collapsed .sidebar-logout-label {
+    display: none;
+  }
+
+  .app-sidebar.collapsed .sidebar-nav-box {
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .app-sidebar.collapsed .sidebar-logout-btn {
+    justify-content: center;
+    padding: 10px 0;
+  }
 }
 
 .sidebar-login-btn {
@@ -1317,8 +1504,10 @@ button {
 }
 
 .app-sidebar {
+  width: 256px;
   height: 100vh;
   min-height: 100dvh;
+  transition: width 0.2s ease;
 }
 
 @media (max-width: 1024px) {
@@ -1472,6 +1661,95 @@ button {
   flex-shrink: 0 !important;
 }
 
+
+/* ─── LANDING LOGIN POP-UP MODAL ANIMATIONS & GLASS INPUTS ─── */
+@keyframes landingModalBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes landingModalCardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+
+.landing-login-modal input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.landing-login-modal input::placeholder {
+  color: rgba(255, 214, 204, 0.56);
+  font-weight: 400;
+}
+
+.landing-login-modal input:-webkit-autofill,
+.landing-login-modal input:-webkit-autofill:hover,
+.landing-login-modal input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #FFFFFF !important;
+  -webkit-box-shadow: 0 0 0 1000px #380005 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.landing-login-modal button:focus-visible,
+#landing-login-btn:focus-visible {
+  outline: 2px solid #FFB4A2 !important;
+  outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-login-modal-backdrop,
+  .landing-login-modal {
+    animation: none !important;
+  }
+}
+
+
+/* ─── TRANSITIONAL LOADING SCREEN KEYFRAMES & ACCENTS ─── */
+@keyframes telkomselAuraPulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+}
+
+@keyframes telemetryScanningBeam {
+  0% {
+    left: -40%;
+  }
+  50% {
+    left: 80%;
+  }
+  100% {
+    left: -40%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-loading-aura,
+  .transition-loading-beam {
+    animation: none !important;
+  }
+}
 ```
 
 ---
@@ -1542,7 +1820,6 @@ export const authFetch = async (url, options = {}) => {
   }
   return res;
 };
-
 ```
 
 ---
@@ -1567,7 +1844,6 @@ export const queryClient = new QueryClient({
     }
   }
 });
-
 ```
 
 ---
@@ -1595,7 +1871,6 @@ createRoot(document.getElementById('root')).render(
     </QueryClientProvider>
   </StrictMode>,
 )
-
 ```
 
 ---
@@ -1636,12 +1911,11 @@ export default function App() {
     </Routes>
   );
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/routes/paths.js` (31 baris)
+## File: `gtm-monitor-frontend/src/routes/paths.js` (32 baris)
 
 ```javascript
 // Alamat halaman aplikasi (React Router). `view` = nama halaman yang dipakai komponen lama (menu aktif, animasi).
@@ -1669,12 +1943,12 @@ export const LEGACY_HASH_PATHS = {
   '#dashboard': PATHS.dashboard,
   '#monitoring': PATHS.dashboard,
   '#upload': PATHS.upload,
+  '#activity': PATHS.upload,
   '#admin': PATHS.admin,
   '#login': PATHS.login,
   '#landing': PATHS.landing,
   '#overview': PATHS.landing
 };
-
 ```
 
 ---
@@ -1710,7 +1984,6 @@ export function FallbackRedirect() {
   const { user } = useAuth();
   return <Navigate to={user ? PATHS.dashboard : PATHS.landing} replace />;
 }
-
 ```
 
 ---
@@ -1905,8 +2178,5 @@ export function useAuth() {
   if (!context) throw new Error('useAuth harus dipakai di dalam <AuthProvider>');
   return context;
 }
-
 ```
-
----
 

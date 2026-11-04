@@ -78,7 +78,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
       }
     } catch (err) {
       console.error(err);
-      setError('Gagal terhubung ke server. Pastikan server backend sedang aktif.');
+      setError('Gagal terhubung ke server. Periksa koneksi internet Anda.');
       turnstileRef.current?.reset();
     } finally {
       setLoading(false);
@@ -87,6 +87,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
   return (
     <div
+      role="presentation"
       className="landing-login-modal-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget && !loading && onClose) {
@@ -101,9 +102,9 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px',
-        backgroundColor: 'rgba(1, 10, 24, 0.42)',
-        backdropFilter: 'blur(4px)',
-        WebkitBackdropFilter: 'blur(4px)',
+        backgroundColor: 'rgba(15, 23, 42, 0.42)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         animation: 'landingModalBackdropIn 0.22s ease-out forwards',
         boxSizing: 'border-box'
       }}
@@ -117,23 +118,22 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           position: 'relative',
           width: '100%',
           maxWidth: '410px',
-          padding: '38px 34px 34px',
+          padding: '36px 32px 32px',
           borderRadius: '22px',
-          background:
-            'linear-gradient(155deg, rgba(14, 48, 94, 0.62) 0%, rgba(5, 22, 48, 0.78) 55%, rgba(2, 13, 29, 0.88) 100%)',
-          backdropFilter: 'blur(20px) saturate(145%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(145%)',
-          border: '1px solid rgba(125, 211, 252, 0.34)',
+          background: 'rgba(255, 255, 255, 0.92)',
+          backdropFilter: 'blur(24px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+          border: '1px solid rgba(255, 255, 255, 0.95)',
           boxShadow:
-            '0 28px 64px rgba(0, 5, 16, 0.68), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            '0 24px 56px rgba(15, 23, 42, 0.18), 0 4px 16px rgba(15, 23, 42, 0.08), inset 0 1px 0 #FFFFFF',
           fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
           fontWeight: 400,
-          color: '#FFFFFF',
+          color: '#0F172A',
           boxSizing: 'border-box',
           animation: 'landingModalCardIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards'
         }}
       >
-        {/* Top-Right Close Button (Ref #2) */}
+        {/* Top-Right Close Button */}
         {onClose && (
           <button
             type="button"
@@ -147,16 +147,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               position: 'absolute',
               top: '16px',
               right: '16px',
-              width: '34px',
-              height: '34px',
+              width: '32px',
+              height: '32px',
               borderRadius: '10px',
-              border: isCloseHovered
-                ? '1px solid rgba(186, 230, 253, 0.55)'
-                : '1px solid rgba(125, 211, 252, 0.18)',
-              backgroundColor: isCloseHovered
-                ? 'rgba(125, 211, 252, 0.14)'
-                : 'rgba(255, 255, 255, 0.04)',
-              color: isCloseHovered ? '#FFFFFF' : 'rgba(226, 232, 240, 0.78)',
+              border: isCloseHovered ? '1px solid #CBD5E1' : '1px solid #E2E8F0',
+              backgroundColor: isCloseHovered ? '#F1F5F9' : 'rgba(255, 255, 255, 0.8)',
+              color: isCloseHovered ? '#0F172A' : '#64748B',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -166,12 +162,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
             }}
           >
             <svg
-              width="16"
-              height="16"
+              width="15"
+              height="15"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
@@ -182,27 +178,40 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           </button>
         )}
 
-        {/* Modal Header (Ref #1 & Ref #4) */}
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+        {/* Modal Header with Telkomsel Symbol */}
+        <div style={{ textAlign: 'center', marginBottom: '26px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+            <img
+              src="/telkomsel-symbol.png"
+              alt=""
+              aria-hidden="true"
+              style={{
+                height: '32px',
+                width: 'auto',
+                display: 'block',
+                filter: 'drop-shadow(0 2px 6px rgba(224, 0, 27, 0.25))'
+              }}
+            />
+          </div>
           <h2
             id="login-modal-title"
             style={{
               fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
-              fontSize: '28px',
+              fontSize: '24px',
               fontWeight: 400,
-              color: '#FFFFFF',
+              color: '#0F172A',
               letterSpacing: '-0.3px',
-              margin: '0 0 8px 0'
+              margin: '0 0 6px 0'
             }}
           >
-            Login
+            Login Petugas
           </h2>
           <p
             style={{
               fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
               fontSize: '13px',
               fontWeight: 400,
-              color: 'rgba(203, 213, 225, 0.76)',
+              color: '#475569',
               lineHeight: 1.5,
               margin: 0
             }}
@@ -214,14 +223,14 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         {/* Login Form */}
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           {/* Username Input Box */}
-          <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+          <div style={{ marginBottom: '18px', textAlign: 'left' }}>
             <label
               htmlFor="login-username"
               style={{
                 display: 'block',
                 fontSize: '12.5px',
                 fontWeight: 400,
-                color: 'rgba(226, 232, 240, 0.88)',
+                color: '#1E293B',
                 marginBottom: '8px',
                 letterSpacing: '0.01em'
               }}
@@ -247,25 +256,23 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                   borderRadius: '12px',
                   border:
                     focusedField === 'username'
-                      ? '1px solid #7DD3FC'
-                      : '1px solid rgba(125, 211, 252, 0.26)',
+                      ? '1.5px solid #E0001B'
+                      : '1px solid #CBD5E1',
                   backgroundColor:
                     focusedField === 'username'
-                      ? 'rgba(4, 22, 48, 0.72)'
-                      : 'rgba(2, 12, 27, 0.52)',
-                  boxShadow:
-                    focusedField === 'username'
-                      ? '0 0 0 3px rgba(56, 189, 248, 0.14)'
-                      : 'none',
+                      ? '#FFFFFF'
+                      : 'rgba(248, 250, 252, 0.95)',
+                  outline: 'none',
+                  boxShadow: 'none',
                   padding: '10px 42px 10px 16px',
                   fontSize: '14px',
                   fontWeight: 400,
-                  color: '#FFFFFF',
+                  color: '#0F172A',
                   fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
                   transition: 'all 0.18s ease'
                 }}
               />
-              {/* Right User Icon (Ref #4) */}
+              {/* Right User Icon */}
               <span
                 aria-hidden="true"
                 style={{
@@ -273,10 +280,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                   right: '14px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  color:
-                    focusedField === 'username'
-                      ? '#7DD3FC'
-                      : 'rgba(148, 163, 184, 0.65)',
+                  color: focusedField === 'username' ? '#E0001B' : '#94A3B8',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -304,7 +308,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           {/* Password Input Box */}
           <div
             style={{
-              marginBottom: TURNSTILE_SITE_KEY ? '20px' : '26px',
+              marginBottom: TURNSTILE_SITE_KEY ? '18px' : '24px',
               textAlign: 'left'
             }}
           >
@@ -314,7 +318,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                 display: 'block',
                 fontSize: '12.5px',
                 fontWeight: 400,
-                color: 'rgba(226, 232, 240, 0.88)',
+                color: '#1E293B',
                 marginBottom: '8px',
                 letterSpacing: '0.01em'
               }}
@@ -339,27 +343,25 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                   borderRadius: '12px',
                   border:
                     focusedField === 'password'
-                      ? '1px solid #7DD3FC'
-                      : '1px solid rgba(125, 211, 252, 0.26)',
+                      ? '1.5px solid #E0001B'
+                      : '1px solid #CBD5E1',
                   backgroundColor:
                     focusedField === 'password'
-                      ? 'rgba(4, 22, 48, 0.72)'
-                      : 'rgba(2, 12, 27, 0.52)',
-                  boxShadow:
-                    focusedField === 'password'
-                      ? '0 0 0 3px rgba(56, 189, 248, 0.14)'
-                      : 'none',
+                      ? '#FFFFFF'
+                      : 'rgba(248, 250, 252, 0.95)',
+                  outline: 'none',
+                  boxShadow: 'none',
                   padding: '10px 44px 10px 16px',
                   fontSize: '14px',
                   fontWeight: 400,
-                  color: '#FFFFFF',
+                  color: '#0F172A',
                   letterSpacing: showPassword || !password ? 'normal' : '2.5px',
                   fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
                   transition: 'all 0.18s ease'
                 }}
               />
 
-              {/* Eye Toggle Button (Ref #1 & Ref #4) */}
+              {/* Eye Toggle Button */}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -374,10 +376,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                   borderRadius: '8px',
                   cursor: 'pointer',
                   padding: '6px',
-                  color:
-                    focusedField === 'password'
-                      ? '#7DD3FC'
-                      : 'rgba(148, 163, 184, 0.72)',
+                  color: focusedField === 'password' ? '#E0001B' : '#94A3B8',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -421,13 +420,13 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
           {/* Optional Cloudflare Turnstile Captcha */}
           {TURNSTILE_SITE_KEY && (
-            <div style={{ marginBottom: '22px', textAlign: 'left' }}>
+            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
               <label
                 style={{
                   display: 'block',
                   fontSize: '12.5px',
                   fontWeight: 400,
-                  color: 'rgba(226, 232, 240, 0.88)',
+                  color: '#1E293B',
                   marginBottom: '8px'
                 }}
               >
@@ -451,12 +450,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
             <div
               role="alert"
               style={{
-                marginBottom: '18px',
+                marginBottom: '16px',
                 padding: '10px 14px',
                 borderRadius: '10px',
-                backgroundColor: 'rgba(220, 38, 38, 0.18)',
-                border: '1px solid rgba(248, 113, 113, 0.45)',
-                color: '#FECACA',
+                backgroundColor: '#FEF2F2',
+                border: '1px solid #FECACA',
+                color: '#B91C1C',
                 fontSize: '12.5px',
                 fontWeight: 400,
                 lineHeight: 1.45,
@@ -467,7 +466,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
             </div>
           )}
 
-          {/* Dynamic Frosted Cyan-Navy Submit Button */}
+          {/* Dynamic Telkomsel Red Signature Submit Button */}
           <button
             type="submit"
             id="login-submit-btn"
@@ -478,12 +477,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               width: '100%',
               height: '46px',
               borderRadius: '12px',
-              border: isSubmitHovered
-                ? '1.5px solid #FFFFFF'
-                : '1.5px solid rgba(186, 230, 253, 0.62)',
-              background: isSubmitHovered
-                ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.32) 0%, rgba(14, 116, 144, 0.48) 100%)'
-                : 'linear-gradient(135deg, rgba(56, 189, 248, 0.18) 0%, rgba(14, 116, 144, 0.32) 100%)',
+              border: 'none',
+              backgroundColor: isSubmitHovered ? '#C50017' : '#E0001B',
               color: '#FFFFFF',
               fontSize: '15.5px',
               fontWeight: 400,
@@ -492,6 +487,9 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              boxShadow: isSubmitHovered
+                ? '0 6px 20px rgba(224, 0, 27, 0.35)'
+                : '0 4px 14px rgba(224, 0, 27, 0.25)',
               transform: isSubmitHovered && !loading ? 'translateY(-1px)' : 'translateY(0)',
               transition: 'all 0.2s ease'
             }}
@@ -503,4 +501,3 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     </div>
   );
 }
-

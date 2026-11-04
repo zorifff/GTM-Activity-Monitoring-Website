@@ -26,7 +26,7 @@
 - `gtm-monitor-frontend/src/hooks/useProgramDelete.js` (65 baris)
 - `gtm-monitor-frontend/src/hooks/useAdminMonitoring.js` (98 baris)
 - `gtm-monitor-frontend/src/hooks/useProjectReviewModal.js` (33 baris)
-- `gtm-monitor-frontend/src/hooks/useCountUp.js` (102 baris)
+- `gtm-monitor-frontend/src/hooks/useCountUp.js` (89 baris)
 - `gtm-monitor-frontend/src/hooks/useInView.js` (55 baris)
 - `gtm-monitor-frontend/src/hooks/useLastUpdateLabel.js` (44 baris)
 
@@ -47,9 +47,9 @@ export const ACT_TYPES = [
 
 export const BRANCH_COLORS = {
   MAGELANG: '#10b981',   // Emerald Green
-  PEKALONGAN: '#f97316', // Sunset Orange
+  PEKALONGAN: '#64748b', // Slate
   PURWOKERTO: '#3b82f6', // Royal Blue
-  SEMARANG: '#ef4444',   // Telkomsel Red / Crimson
+  SEMARANG: '#800000',   // Maroon
   SURAKARTA: '#8b5cf6',  // Royal Purple / Violet
   YOGYAKARTA: '#06b6d4'  // Cyan / Turquoise
 };
@@ -82,7 +82,7 @@ export function getOdpCoords(odpName, branchName, existingLat, existingLon) {
 export function actMeta(status) {
   if (status === 'verified') return { label: 'Terverifikasi', bg: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0' };
   if (status === 'upload') return { label: 'Menunggu Verifikasi', bg: '#fef3c7', color: '#b45309', border: '1px solid #fde68a' };
-  if (status === 'gagal' || status === 'rejected') return { label: 'Ditolak', bg: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca' };
+  if (status === 'gagal' || status === 'rejected') return { label: 'Ditolak', bg: '#fee2e2', color: '#800000', border: '1px solid #fecaca' };
   if (status === 'proses' || status === 'processing') return { label: 'Diproses', bg: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe' };
   return { label: 'Belum Dikerjakan', bg: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0' };
 }
@@ -276,7 +276,7 @@ export function exportProjectsToExcel(branches, selectedBranchName = null) {
         ws[cellRef].s = {
           fill: {
             patternType: "solid",
-            fgColor: { rgb: "C8102E" } // Telkomsel Red (#800000)
+            fgColor: { rgb: "800000" } // Maroon
           },
           font: {
             name: "Calibri",
@@ -330,7 +330,6 @@ export function exportProjectsToExcel(branches, selectedBranchName = null) {
     XLSX.writeFile(wb, fileName);
   });
 }
-
 ```
 
 ---
@@ -366,7 +365,6 @@ export const PROGRAM_PLACEHOLDERS = {
     'Program Open Table Tematik'
   ]
 };
-
 ```
 
 ---
@@ -409,7 +407,6 @@ export const ACT_TYPES_ORDER = [
   { key: 'rekrutmen_sf', shortLabel: 'Rekrut SF', label: 'Rekrut SF' },
   { key: 'open_table', shortLabel: 'Open Table', label: 'Open Table' }
 ];
-
 ```
 
 ---
@@ -501,7 +498,6 @@ export const WOK_GAP_WOW_MAP = {
     'YOGYAKARTA||YOGYA 2': 0.0110
   }
 };
-
 ```
 
 ---
@@ -556,7 +552,6 @@ export async function fetchAuthSession(attempt = 1) {
   }
   return data;
 }
-
 ```
 
 ---
@@ -634,7 +629,6 @@ export const watchJobEvents = async (url, { onProgress, signal } = {}) => {
     await sleep(3000);
   }
 };
-
 ```
 
 ---
@@ -734,8 +728,6 @@ export function useAppNotifications(branches, user, isAdmin) {
     };
   }, [branches, user, isAdmin]);
 }
-
-
 ```
 
 ---
@@ -778,7 +770,6 @@ export function useMonitoringData() {
     refresh
   };
 }
-
 ```
 
 ---
@@ -944,7 +935,6 @@ export function useActivityActions() {
 
   return { uploadPhoto, verifyActivity, rejectActivity, deletePhoto };
 }
-
 ```
 
 ---
@@ -991,7 +981,7 @@ export function useOdpSummary(branches, importMeta, typeDesignFilter) {
     });
     return [
       { label: 'Green', count: counts.GREEN || 0, color: '#16a34a' },
-      { label: 'Yellow', count: counts.YELLOW || 0, color: '#FFFF00' },
+      { label: 'Yellow', count: counts.YELLOW || 0, color: '#EAB308' },
       { label: 'Orange', count: counts.ORANGE || 0, color: '#f97316' },
       { label: 'Red', count: counts.RED || 0, color: '#dc2626' },
       { label: 'Black', count: counts.BLACK || 0, color: '#334155' }
@@ -1000,7 +990,6 @@ export function useOdpSummary(branches, importMeta, typeDesignFilter) {
 
   return { allOdps, kpi, statusChips };
 }
-
 ```
 
 ---
@@ -1101,7 +1090,6 @@ export function useGtmMonitoring(branches, typeDesignFilter) {
     }).sort((a, b) => a.occRate - b.occRate);
   }, [branches, typeDesignFilter]);
 }
-
 ```
 
 ---
@@ -1193,7 +1181,6 @@ export function useExecutiveSummary(branches) {
     };
   }, [branches]);
 }
-
 ```
 
 ---
@@ -1261,7 +1248,6 @@ export function useExecutiveSummaryExport() {
 
   return { isExportingPng, handleDownloadPNG };
 }
-
 ```
 
 ---
@@ -1391,7 +1377,7 @@ export function useRekapExcelExport(branches) {
         worksheet[cellRef].s = {
           fill: {
             patternType: "solid",
-            fgColor: { rgb: "C8102E" } // Telkomsel Red (#800000)
+            fgColor: { rgb: "800000" } // Maroon
           },
           font: {
             name: "Calibri",
@@ -1438,7 +1424,6 @@ export function useRekapExcelExport(branches) {
     XLSX.writeFile(workbook, `Rekap_GTM_Activity_${todayStr}.xlsx`);
   }, [branches]);
 }
-
 ```
 
 ---
@@ -1537,7 +1522,6 @@ export function useOdpImport({ onUpdate }) {
 
   return { file, setFile, loading, importProgress, message, setMessage, error, setError, handleFileChange, handleUpload };
 }
-
 ```
 
 ---
@@ -1630,7 +1614,6 @@ export function usePairingImport() {
 
   return { pairingFile, setPairingFile, pairingLoading, pairingProgress, pairingMessage, setPairingMessage, pairingError, setPairingError, handlePairingUpload };
 }
-
 ```
 
 ---
@@ -1664,7 +1647,6 @@ async function searchPairing(cleanQ) {
 export function usePairingSearch() {
   return useMutation({ mutationFn: searchPairing });
 }
-
 ```
 
 ---
@@ -1702,7 +1684,6 @@ export function useInvalidatePrograms() {
   const queryClient = useQueryClient();
   return useCallback(() => queryClient.invalidateQueries({ queryKey: queryKeys.programsAll }), [queryClient]);
 }
-
 ```
 
 ---
@@ -1793,7 +1774,6 @@ export function useProgramUpload() {
     programError, setProgramError, programResultUpload, uploadAvailablePrograms, handleProgramUpload
   };
 }
-
 ```
 
 ---
@@ -1865,7 +1845,6 @@ export function useProgramDelete() {
     showDeleteConfirmModal, setShowDeleteConfirmModal, handleExecuteDeleteProgram
   };
 }
-
 ```
 
 ---
@@ -1970,7 +1949,6 @@ export function useAdminMonitoring(branches) {
     filteredBranches, stats, statusCounts, branchesWithFilteredProjects, allProjectsMultiBranch
   };
 }
-
 ```
 
 ---
@@ -2010,23 +1988,21 @@ export function useProjectReviewModal(branches) {
 
   return { modalData, openModal, closeModal };
 }
-
 ```
 
 ---
 
-## File: `gtm-monitor-frontend/src/hooks/useCountUp.js` (102 baris)
+## File: `gtm-monitor-frontend/src/hooks/useCountUp.js` (89 baris)
 
 ```javascript
 import { useState, useEffect, useRef } from 'react';
 
 /**
  * useCountUp hook
- * Animates a numeric value from startVal (or previous value) to targetVal
+ * Animates a numeric value from current displayed value to targetValue
  * Uses cubic ease-out: 1 - Math.pow(1 - progress, 3)
- * Respects prefers-reduced-motion and in-view enabled trigger
  *
- * @param {number} targetValue - Target number to count up to
+ * @param {number} targetValue - Target number to count up/down to
  * @param {object} options
  * @param {boolean} [options.enabled=true] - Only start animation when enabled is true
  * @param {number} [options.duration=800] - Duration in ms
@@ -2042,31 +2018,20 @@ export function useCountUp(targetValue = 0, {
   delay = 0,
   formatThousands = true
 } = {}) {
-  const isReducedMotion = typeof window !== 'undefined' 
-    && window.matchMedia 
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const [displayValue, setDisplayValue] = useState(() => (isReducedMotion ? (Number(targetValue) || 0) : 0));
-  
-  const prevTargetRef = useRef(0);
+  const [displayValue, setDisplayValue] = useState(0);
+  const currentValRef = useRef(0);
   const animFrameRef = useRef(null);
 
   useEffect(() => {
-    // If not enabled yet, keep at 0
     if (!enabled) {
       return;
     }
 
     const endVal = Number(targetValue) || 0;
+    const startVal = currentValRef.current;
 
-    if (isReducedMotion) {
+    if (startVal === endVal) {
       setDisplayValue(endVal);
-      prevTargetRef.current = endVal;
-      return;
-    }
-
-    const startVal = prevTargetRef.current;
-    if (startVal === endVal && displayValue === endVal) {
       return;
     }
 
@@ -2084,13 +2049,14 @@ export function useCountUp(targetValue = 0, {
       const easeProgress = 1 - Math.pow(1 - rawProgress, 3);
       const currentVal = startVal + (endVal - startVal) * easeProgress;
 
+      currentValRef.current = currentVal;
       setDisplayValue(currentVal);
 
       if (rawProgress < 1) {
         animFrameRef.current = requestAnimationFrame(animate);
       } else {
+        currentValRef.current = endVal;
         setDisplayValue(endVal);
-        prevTargetRef.current = endVal;
       }
     };
 
@@ -2101,7 +2067,7 @@ export function useCountUp(targetValue = 0, {
         cancelAnimationFrame(animFrameRef.current);
       }
     };
-  }, [targetValue, duration, delay, isReducedMotion, enabled]);
+  }, [targetValue, duration, delay, enabled]);
 
   const numVal = Number(displayValue) || 0;
 
@@ -2117,9 +2083,6 @@ export function useCountUp(targetValue = 0, {
   }
   return String(roundedInt);
 }
-
-export default useCountUp;
-
 ```
 
 ---
@@ -2181,7 +2144,6 @@ export function useInView({
 }
 
 export default useInView;
-
 ```
 
 ---
@@ -2232,8 +2194,5 @@ export function useLastUpdateLabel(importMeta, branches) {
     return `${d.getDate()} ${monthsIndo[d.getMonth()]} ${d.getFullYear()}`;
   }, [importMeta, branches]);
 }
-
 ```
-
----
 

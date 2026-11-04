@@ -34,7 +34,7 @@ const SortIcon = ({ sort }) => {
     );
   }
   return (
-    <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255, 255, 255, 0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6, flexShrink: 0 }}>
+    <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.85, flexShrink: 0 }}>
       <polyline points="8 9 12 5 16 9" />
       <polyline points="16 15 12 19 8 15" />
     </svg>
@@ -504,6 +504,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           onClick={() => handleSortCycle(col)}
           aria-label={`Urutkan kolom ${label} (${sort === 'asc' ? 'naik' : sort === 'desc' ? 'turun' : 'belum diurutkan'})`}
           title={`Klik untuk mengurutkan ${label}`}
+          className="table-sort-btn"
           style={{
             background: 'none',
             border: 'none',
@@ -513,14 +514,16 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             alignItems: 'center',
             gap: '4px',
             font: 'inherit',
-            color: sort ? '#0F172A' : '#475569',
-            textTransform: 'inherit',
-            letterSpacing: 'inherit',
+            fontSize: '11px',
+            fontWeight: 400,
+            color: '#FFFFFF',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
             whiteSpace: 'nowrap',
             flexShrink: 0
           }}
         >
-          <span>{label}</span>
+          <span style={{ color: '#FFFFFF' }}>{label}</span>
           <SortIcon sort={sort} />
         </button>
 
@@ -535,7 +538,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              color: isFiltered ? '#800000' : 'rgba(255, 255, 255, 0.8)',
+              color: isFiltered ? '#800000' : '#FFFFFF',
               padding: '2px',
               borderRadius: '4px',
               marginLeft: '2px',
@@ -715,8 +718,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             {ACT_TYPES.map(t => (
               <div key={t.key} className="activity-col-header">{t.label}</div>
             ))}
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progres</div>
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detail</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#FFFFFF' }}>Progres</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#FFFFFF' }}>Detail</div>
           </div>
 
           {/* Rows / Skeleton / Empty State */}

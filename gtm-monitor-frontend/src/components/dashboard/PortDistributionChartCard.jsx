@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 // Formatter nama WOK agar muat proporsional dan jelas pada x-axis histogram
 function formatWokLabel(name) {
@@ -33,91 +33,150 @@ export default function PortDistributionChartCard({
   onSelectBranch
 }) {
   const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
 
-  // Trigger animasi pertumbuhan bar saat komponen masuk ke viewport
-  useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => {
-        setHasAnimated(true);
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [isInView]);
+  // Bangun daftar WOK dengan urutan kolom sumbu X yang stabil dari master branches,
+  // lalu pasangkan dengan nilai metrik hasil filter aktif (ranking) agar bar bergerak naik-turun secara mulus
+  const targetBars = useMemo(() => {
+    const bars = [];
+    const masterBranches = Array.isArray(branches) && branches.length > 0 ? branches : ranking;
 
-  // Siapkan Histogram Bars dari data ranking dan branches asli
-  const branchList = Array.isArray(ranking) && ranking.length > 0 ? ranking : branches;
+    masterBranches.forEach((rawBranch) => {
+      const bName = rawBranch.name || '';
+      const bUpper = bName.toUpperCase();
+      const rankedBranch = (ranking || []).find(
+        (r) => (r.name || '').toUpperCase() === bUpper
+      ) || rawBranch;
 
-  const histogramBars = [];
-  branchList.forEach((b) => {
-    // Cari data proyek lengkap dari cabang terkait untuk verifikasi kalkulasi port
-    const rawBranch = branches.find(br => (br.name || '').toUpperCase() === (b.name || '').toUpperCase()) || b;
-    const branchProjects = rawBranch.projects || [];
+      const allWokNames = Array.from(
+        new Set(
+          (rawBranch.projects || [])
+            .map((p) => (p.wok || '').toString().trim())
+            .filter((w) => w && w !== '-' && w !== 'NONE')
+        )
+      ).sort();
 
-    if (b.woks && b.woks.length > 0) {
-      b.woks.forEach((w) => {
-        let portUsed = w.totalUsed;
-        let portTotal = w.totalPort;
-
-        // Fallback agregasi langsung dari proyek jika properti total belum terhitung
-        if (portTotal === undefined || portTotal === null || portTotal === 0) {
-          const cleanW = (w.name || '').toUpperCase().replace(/[\s-]/g, '');
-          const matchingProjs = branchProjects.filter(p => {
-            const pWok = (p.wok || '').toUpperCase().replace(/[\s-]/g, '');
-            return pWok === cleanW || pWok.includes(cleanW) || cleanW.includes(pWok);
+      if (allWokNames.length > 0) {
+        allWokNames.forEach((wokName) => {
+          const cleanW = wokName.toUpperCase().replace(/[\s-]/g, '');
+          const matchedWok = (rankedBranch.woks || []).find((w) => {
+            const wClean = (w.name || '').toUpperCase().replace(/[\s-]/g, '');
+            return wClean === cleanW || wClean.includes(cleanW) || cleanW.includes(wClean);
           });
-          portUsed = matchingProjs.reduce((s, p) => s + (p.usedTotal ?? (p.odps || []).reduce((so, o) => so + (o.used || 0), 0)), 0);
-          portTotal = matchingProjs.reduce((s, p) => s + (p.totalPort ?? (p.odps || []).reduce((so, o) => so + (o.total || 0), 0)), 0);
-        }
 
-        const safePortTotal = portTotal > 0 ? portTotal : 1;
-        const occRate = w.occRate !== undefined && w.occRate !== null
-          ? w.occRate
-          : Math.round(((portUsed || 0) / safePortTotal) * 1000) / 10;
+          const portUsed = matchedWok ? (matchedWok.totalUsed || 0) : 0;
+          const portTotal = matchedWok ? (matchedWok.totalPort || 0) : 0;
+          const occRate = matchedWok && matchedWok.occRate !== undefined && matchedWok.occRate !== null
+            ? matchedWok.occRate
+            : (portTotal > 0 ? Math.round((portUsed / portTotal) * 1000) / 10 : 0);
 
-        histogramBars.push({
-          id: `${b.name}-${w.name}`,
-          branchName: b.name,
-          displayName: w.name,
-          shortWokLabel: formatWokLabel(w.name),
-          occRate,
-          portUsed: portUsed || 0,
-          portTotal: portTotal || 0,
-          portAvai: Math.max((portTotal || 0) - (portUsed || 0), 0),
-          delta: w.delta ?? 0,
-          branchCode: b.name.slice(0, 3).toUpperCase()
+          bars.push({
+            id: `${bName}-${wokName}`,
+            branchName: bName,
+            displayName: wokName,
+            shortWokLabel: formatWokLabel(wokName),
+            occRate,
+            portUsed,
+            portTotal,
+            portAvai: Math.max(portTotal - portUsed, 0),
+            delta: matchedWok ? (matchedWok.delta ?? 0) : 0,
+            branchCode: bName.slice(0, 3).toUpperCase()
+          });
         });
-      });
-    } else {
-      let portUsed = b.totalUsed;
-      let portTotal = b.totalPort;
+      } else if (rankedBranch.woks && rankedBranch.woks.length > 0) {
+        rankedBranch.woks.forEach((w) => {
+          const portUsed = w.totalUsed || 0;
+          const portTotal = w.totalPort || 0;
+          const occRate = w.occRate ?? (portTotal > 0 ? Math.round((portUsed / portTotal) * 1000) / 10 : 0);
 
-      if (portTotal === undefined || portTotal === null || portTotal === 0) {
-        portUsed = branchProjects.reduce((s, p) => s + (p.usedTotal ?? (p.odps || []).reduce((so, o) => so + (o.used || 0), 0)), 0);
-        portTotal = branchProjects.reduce((s, p) => s + (p.totalPort ?? (p.odps || []).reduce((so, o) => so + (o.total || 0), 0)), 0);
+          bars.push({
+            id: `${bName}-${w.name}`,
+            branchName: bName,
+            displayName: w.name,
+            shortWokLabel: formatWokLabel(w.name),
+            occRate,
+            portUsed,
+            portTotal,
+            portAvai: Math.max(portTotal - portUsed, 0),
+            delta: w.delta ?? 0,
+            branchCode: bName.slice(0, 3).toUpperCase()
+          });
+        });
+      } else {
+        const portUsed = rankedBranch.totalUsed || 0;
+        const portTotal = rankedBranch.totalPort || 0;
+        const occRate = rankedBranch.occRate ?? (portTotal > 0 ? Math.round((portUsed / portTotal) * 1000) / 10 : 0);
+
+        bars.push({
+          id: bName,
+          branchName: bName,
+          displayName: bName,
+          shortWokLabel: formatWokLabel(bName),
+          occRate,
+          portUsed,
+          portTotal,
+          portAvai: Math.max(portTotal - portUsed, 0),
+          delta: rankedBranch.delta ?? 0,
+          branchCode: bName.slice(0, 3).toUpperCase()
+        });
       }
+    });
 
-      const safePortTotal = portTotal > 0 ? portTotal : 1;
-      const occRate = b.occRate !== undefined && b.occRate !== null
-        ? b.occRate
-        : Math.round(((portUsed || 0) / safePortTotal) * 1000) / 10;
+    return bars;
+  }, [branches, ranking]);
 
-      histogramBars.push({
-        id: b.name,
-        branchName: b.name,
-        displayName: b.name,
-        shortWokLabel: formatWokLabel(b.name),
-        occRate,
-        portUsed: portUsed || 0,
-        portTotal: portTotal || 0,
-        portAvai: Math.max((portTotal || 0) - (portUsed || 0), 0),
-        delta: b.delta ?? 0,
-        branchCode: b.name.slice(0, 3).toUpperCase()
+  // Interpolasi frame-by-frame (requestAnimationFrame) untuk pergerakan naik-turun bar yang mulus
+  const currentAnimRef = useRef({});
+  const [animMap, setAnimMap] = useState({});
+
+  useEffect(() => {
+    if (!isInView || targetBars.length === 0) return;
+
+    const startValues = {};
+    targetBars.forEach((bar) => {
+      const prev = currentAnimRef.current[bar.id];
+      startValues[bar.id] = {
+        occRate: prev ? prev.occRate : 0,
+        portUsed: prev ? prev.portUsed : 0,
+        portTotal: prev ? prev.portTotal : 0
+      };
+    });
+
+    const duration = 650;
+    const startTime = performance.now();
+    let frameId = null;
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const rawProgress = Math.min(Math.max(elapsed / duration, 0), 1);
+      // Cubic ease-out yang halus
+      const ease = 1 - Math.pow(1 - rawProgress, 3);
+
+      const nextMap = {};
+      targetBars.forEach((bar) => {
+        const s = startValues[bar.id] || { occRate: 0, portUsed: 0, portTotal: 0 };
+        nextMap[bar.id] = {
+          occRate: s.occRate + (bar.occRate - s.occRate) * ease,
+          portUsed: s.portUsed + (bar.portUsed - s.portUsed) * ease,
+          portTotal: s.portTotal + (bar.portTotal - s.portTotal) * ease
+        };
       });
-    }
-  });
 
-  const activeBar = hoveredBarIndex !== null ? histogramBars[hoveredBarIndex] : null;
+      currentAnimRef.current = nextMap;
+      setAnimMap(nextMap);
+
+      if (rawProgress < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, [targetBars, isInView]);
+
+  const activeBar = hoveredBarIndex !== null ? targetBars[hoveredBarIndex] : null;
+  const activeAnim = activeBar ? (animMap[activeBar.id] || activeBar) : null;
   const PERCENTAGE_TICKS = [100, 80, 60, 40, 20, 0];
 
   return (
@@ -168,7 +227,7 @@ export default function PortDistributionChartCard({
             flexShrink: 1
           }}
         >
-          {activeBar ? (
+          {activeBar && activeAnim ? (
             <div
               style={{
                 fontSize: '11.5px',
@@ -187,7 +246,7 @@ export default function PortDistributionChartCard({
                 alignItems: 'center'
               }}
             >
-              <span style={{ color: '#0F172A' }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{activeBar.occRate}% ({activeBar.portUsed.toLocaleString('id-ID')} / {activeBar.portTotal.toLocaleString('id-ID')} port)
+              <span style={{ color: '#0F172A' }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{Math.round(activeAnim.occRate * 10) / 10}% ({Math.round(activeAnim.portUsed).toLocaleString('id-ID')} / {Math.round(activeAnim.portTotal).toLocaleString('id-ID')} port)
             </div>
           ) : (
             <div
@@ -214,7 +273,7 @@ export default function PortDistributionChartCard({
       {/* Kontainer Diagram Batang dengan Sumbu X, Sumbu Y Solid & Garis Kisi Solid */}
       <div style={{ width: '100%', overflowX: 'auto', paddingBottom: '6px' }}>
         <div style={{ minWidth: '660px', width: '100%' }}>
-          {histogramBars.length === 0 ? (
+          {targetBars.length === 0 ? (
             <div style={{ height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#64748B', fontStyle: 'italic', width: '100%' }}>
               Belum ada data distribusi port untuk ditampilkan.
             </div>
@@ -310,10 +369,11 @@ export default function PortDistributionChartCard({
                       padding: '0 8px'
                     }}
                   >
-                    {histogramBars.map((bar, idx) => {
+                    {targetBars.map((bar, idx) => {
                       const isHovered = hoveredBarIndex === idx;
-                      const safeOcc = Math.min(Math.max(bar.occRate, 0), 100);
-                      const currentHeight = hasAnimated ? safeOcc : 0;
+                      const anim = animMap[bar.id];
+                      const currentOcc = anim ? anim.occRate : 0;
+                      const safeOcc = Math.min(Math.max(currentOcc, 0), 100);
 
                       return (
                         <div
@@ -334,18 +394,17 @@ export default function PortDistributionChartCard({
                             minWidth: 0
                           }}
                         >
-                          {/* Box Progress Batang Port Terpakai Saja (Tanpa Outer Box & Tanpa Tanda Persen di Atasnya) */}
+                          {/* Box Progress Batang Port Terpakai Saja */}
                           <div
                             style={{
                               width: '100%',
                               maxWidth: '26px',
-                              height: `${currentHeight}%`,
-                              minHeight: safeOcc > 0 ? '3px' : '0',
+                              height: `${safeOcc}%`,
+                              minHeight: safeOcc > 0.15 ? '3px' : '0px',
                               backgroundColor: isHovered ? '#660000' : '#800000',
                               borderRadius: '4px 4px 0 0',
                               zIndex: 1,
-                              transition: 'height 0.7s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease',
-                              transitionDelay: hasAnimated ? `${idx * 20}ms` : '0ms',
+                              transition: 'background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease',
                               transform: isHovered ? 'translateY(-2px)' : 'none',
                               boxShadow: isHovered ? '0 4px 12px rgba(128, 0, 0, 0.25)' : 'none'
                             }}
@@ -377,7 +436,7 @@ export default function PortDistributionChartCard({
                     padding: '0 8px'
                   }}
                 >
-                  {histogramBars.map((bar, idx) => {
+                  {targetBars.map((bar, idx) => {
                     const isHovered = hoveredBarIndex === idx;
 
                     return (
@@ -397,7 +456,7 @@ export default function PortDistributionChartCard({
                           paddingTop: '6px'
                         }}
                       >
-                        {/* Label Singkat WOK (Tanpa Penanda Strip) */}
+                        {/* Label Singkat WOK */}
                         <span
                           title={`${bar.displayName} (${bar.branchName})`}
                           style={{

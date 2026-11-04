@@ -21,7 +21,7 @@ export default function TopHeaderBar({
   isAdmin,
   activeSection = 'dashboard',
   onLoginClick,
-  onLogoutClick,
+  _onLogoutClick,
   pendingCount = 0,
   notifications = [],
   notificationCount = 0,
@@ -37,18 +37,14 @@ export default function TopHeaderBar({
   const isAdminPage = location.pathname.startsWith('/admin');
   const isActivityPage = location.pathname.startsWith('/upload');
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const notifRef = useRef(null);
-  const profileRef = useRef(null);
 
   useEffect(() => {
     const handleOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotificationDropdown(false);
       }
-      if (profileRef.current && !profileRef.current.contains(e.target)) {
-        setShowProfileDropdown(false);
-      }
+
     };
     document.addEventListener('mousedown', handleOutside);
     return () => document.removeEventListener('mousedown', handleOutside);
@@ -458,130 +454,61 @@ export default function TopHeaderBar({
           )}
         </div>
 
-        <div ref={profileRef} style={{ position: 'relative' }}>
+        <div>
           {user ? (
-            <>
-              <button
-                type="button"
-                className="header-profile-badge"
-                onClick={() => setShowProfileDropdown(prev => !prev)}
-                aria-expanded={showProfileDropdown}
-                aria-haspopup="menu"
-                title="Klik untuk membuka menu akun / keluar"
+            <div
+              className="header-profile-badge"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                minHeight: '44px',
+                padding: '6px 10px 6px 6px',
+                borderRadius: '12px',
+                userSelect: 'none',
+                cursor: 'default',
+                background: 'transparent',
+                border: 'none',
+                outline: 'none'
+              }}
+            >
+              <div
                 style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  minHeight: '44px',
-                  padding: '6px 10px 6px 6px',
-                  borderRadius: '12px',
-                  userSelect: 'none',
-                  cursor: 'pointer',
-                  background: showProfileDropdown ? '#F1F5F9' : 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  transition: 'background-color 0.15s ease'
+                  justifyContent: 'center',
+                  flexShrink: 0
                 }}
               >
-                <div
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
-                    background: 'transparent',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}
+                <svg
+                  width="19"
+                  height="19"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#0F172A"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
                 >
-                  <svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#0F172A"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                </div>
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
 
-                <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                  <div style={{ fontSize: '12.5px', color: '#0F172A', whiteSpace: 'nowrap' }}>
-                    {user.username || 'admin'}
-                  </div>
-                  <div style={{ fontSize: '10.5px', color: '#475569', }}>
-                    {user.role === 'ADMIN' ? 'admin 1' : 'user'}
-                  </div>
+              <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
+                <div style={{ fontSize: '12.5px', color: '#0F172A', whiteSpace: 'nowrap' }}>
+                  {user.username || 'admin'}
                 </div>
-              </button>
-
-              {showProfileDropdown && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '48px',
-                    right: 0,
-                    width: '240px',
-                    background: '#FFFFFF',
-                    borderRadius: '14px',
-                    border: '1px solid #E2E8F0',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08)',
-                    zIndex: 99999,
-                    overflow: 'hidden',
-                    animation: 'fadeIn 0.15s ease-out'
-                  }}
-                >
-                  <div style={{ padding: '12px 14px', borderBottom: '1px solid #F1F5F9', backgroundColor: '#F8FAFC' }}>
-                    <div style={{ fontSize: '13px', color: '#0F172A' }}>
-                      {user.username || 'Pengguna'}
-                    </div>
-                    <div style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', }}>
-                      {user.role === 'ADMIN' ? 'Administrator' : `User (${formatBranch(user.branch || '')})`}
-                    </div>
-                  </div>
-
-                  <div style={{ padding: '6px' }}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowProfileDropdown(false);
-                        if (onLogoutClick) onLogoutClick();
-                      }}
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '9px 12px',
-                        border: 'none',
-                        borderRadius: '8px',
-                        backgroundColor: 'transparent',
-                        color: '#0F172A',
-                        fontSize: '12.5px',
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        transition: 'background-color 0.15s ease'
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FEF2F2'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline>
-                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                      </svg>
-                      <span>Keluar (Logout)</span>
-                    </button>
-                  </div>
+                <div style={{ fontSize: '10.5px', color: '#475569' }}>
+                  {user.role === 'ADMIN' ? 'admin 1' : 'user'}
                 </div>
-              )}
-            </>
+              </div>
+            </div>
           ) : (
             <button
               type="button"

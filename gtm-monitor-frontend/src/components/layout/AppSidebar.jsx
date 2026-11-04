@@ -34,7 +34,7 @@ export default function AppSidebar({
     }
     if (setIsCollapsed) setIsCollapsed(!isCollapsed);
   };
-  const toggleLabel = isMobileOpen || !isCollapsed ? 'Tutup sidebar' : 'Buka sidebar';
+  const toggleLabel = isCollapsed ? 'Buka sidebar' : 'Tutup sidebar';
   const collapsedTitle = (label) => (isCollapsed ? label : undefined);
 
   return (
@@ -90,24 +90,9 @@ export default function AppSidebar({
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (goDashboard) goDashboard();
-              if (setIsMobileOpen) setIsMobileOpen(false);
-            }}
+          <div
             className="sidebar-brand-btn"
-            style={{
-              alignItems: 'center',
-              gap: '10px',
-              minHeight: '44px',
-              background: 'transparent',
-              border: 'none',
-              padding: '4px 0',
-              cursor: 'pointer',
-              textAlign: 'left'
-            }}
-            title="Beranda GTM Activity Monitoring"
+            aria-hidden="true"
           >
             <img
               src="/telkomsel-symbol.png"
@@ -117,6 +102,7 @@ export default function AppSidebar({
                 height: '32px',
                 width: 'auto',
                 display: 'block',
+                flexShrink: 0,
                 filter: 'drop-shadow(0 0 1px rgba(255, 255, 255, 0.9)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25))'
               }}
             />
@@ -127,23 +113,14 @@ export default function AppSidebar({
               style={{
                 height: '24px',
                 width: 'auto',
+                flexShrink: 0,
                 filter: 'brightness(0) invert(1)'
               }}
             />
-          </button>
+          </div>
         </div>
 
-        <div
-          style={{
-            padding: '0 24px',
-            marginBottom: '10px',
-            fontSize: '11px',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'rgba(255, 255, 255, 0.55)',
-            userSelect: 'none'
-          }}
-        >
+        <div className="sidebar-menu-header">
           MENU
         </div>
 
@@ -170,36 +147,38 @@ export default function AppSidebar({
             title={collapsedTitle('Dashboard')}
           >
             <span className="sidebar-nav-box">
-              <svg
-                className="nav-icon-outline"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
-                <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
-                <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
-                <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
-              </svg>
-              <svg
-                className="nav-icon-filled"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
-                <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
-                <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
-                <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
-              </svg>
+              <span className="sidebar-nav-icon-wrap">
+                <svg
+                  className="nav-icon-outline"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
+                  <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
+                  <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
+                  <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
+                </svg>
+                <svg
+                  className="nav-icon-filled"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="7.5" height="7.5" rx="2" />
+                  <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" />
+                  <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" />
+                  <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" />
+                </svg>
+              </span>
               <span className="sidebar-nav-label">Dashboard</span>
             </span>
           </button>
@@ -216,33 +195,35 @@ export default function AppSidebar({
             title={collapsedTitle('Activity')}
           >
             <span className="sidebar-nav-box">
-              <svg
-                className="nav-icon-outline"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="4" y="3" width="16" height="18" rx="2.5" />
-                <line x1="8" y1="8" x2="16" y2="8" />
-                <line x1="8" y1="12" x2="16" y2="12" />
-                <line x1="8" y1="16" x2="13" y2="16" />
-              </svg>
-              <svg
-                className="nav-icon-filled"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M6.5 2h11A3.5 3.5 0 0 1 21 5.5v13a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 18.5v-13A3.5 3.5 0 0 1 6.5 2zm1.5 5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8zm0 4a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8zm0 4a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H8z" />
-              </svg>
+              <span className="sidebar-nav-icon-wrap">
+                <svg
+                  className="nav-icon-outline"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="4" y="3" width="16" height="18" rx="2.5" />
+                  <line x1="8" y1="8" x2="16" y2="8" />
+                  <line x1="8" y1="12" x2="16" y2="12" />
+                  <line x1="8" y1="16" x2="13" y2="16" />
+                </svg>
+                <svg
+                  className="nav-icon-filled"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M6.5 2h11A3.5 3.5 0 0 1 21 5.5v13a3.5 3.5 0 0 1-3.5 3.5h-11A3.5 3.5 0 0 1 3 18.5v-13A3.5 3.5 0 0 1 6.5 2zm1.5 5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8zm0 4a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8zm0 4a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H8z" />
+                </svg>
+              </span>
               <span className="sidebar-nav-label">Activity</span>
             </span>
           </button>
@@ -266,7 +247,7 @@ export default function AppSidebar({
                 title={isCollapsed ? 'Cek Pairing' : 'Pencarian Data Telkomsel One Pairing'}
               >
                 <span className="sidebar-nav-box">
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                  <span className="sidebar-nav-icon-wrap">
                     <svg
                       className="nav-icon-outline"
                       width="24"
@@ -297,8 +278,8 @@ export default function AppSidebar({
                       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                     </svg>
-                    <span className="sidebar-nav-label">Cek Pairing</span>
                   </span>
+                  <span className="sidebar-nav-label">Cek Pairing</span>
                   <svg
                     className="sidebar-nav-chevron"
                     width="16"
@@ -310,10 +291,8 @@ export default function AppSidebar({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     style={{
-                      opacity: 0.5,
                       transform: isOpen ? 'rotate(90deg)' : 'none',
-                      transition: 'transform 0.2s ease',
-                      flexShrink: 0
+                      transition: 'transform 0.2s ease'
                     }}
                     aria-hidden="true"
                   >
@@ -344,7 +323,7 @@ export default function AppSidebar({
                   title={isCollapsed ? 'Program' : 'Daftar Program Marketing & Penjualan'}
                 >
                   <span className="sidebar-nav-box">
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                    <span className="sidebar-nav-icon-wrap">
                       <svg
                         className="nav-icon-outline"
                         width="24"
@@ -372,8 +351,8 @@ export default function AppSidebar({
                       >
                         <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" />
                       </svg>
-                      <span className="sidebar-nav-label">Program</span>
                     </span>
+                    <span className="sidebar-nav-label">Program</span>
                     <svg
                       className="sidebar-nav-chevron"
                       width="16"
@@ -385,10 +364,8 @@ export default function AppSidebar({
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       style={{
-                        opacity: 0.5,
                         transform: isOpen ? 'rotate(90deg)' : 'none',
-                        transition: 'transform 0.2s ease',
-                        flexShrink: 0
+                        transition: 'transform 0.2s ease'
                       }}
                       aria-hidden="true"
                     >
@@ -414,31 +391,33 @@ export default function AppSidebar({
               title={collapsedTitle('Admin')}
             >
               <span className="sidebar-nav-box">
-                <svg
-                  className="nav-icon-outline"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                <svg
-                  className="nav-icon-filled"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V21c0 .5.4.9.9.9h17.4c.5 0 .9-.4.9-.9v-1.8c0-3.2-6.4-4.8-9.6-4.8z" />
-                </svg>
+                <span className="sidebar-nav-icon-wrap">
+                  <svg
+                    className="nav-icon-outline"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <svg
+                    className="nav-icon-filled"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V21c0 .5.4.9.9.9h17.4c.5 0 .9-.4.9-.9v-1.8c0-3.2-6.4-4.8-9.6-4.8z" />
+                  </svg>
+                </span>
                 <span className="sidebar-nav-label">Admin</span>
               </span>
             </button>
@@ -463,59 +442,26 @@ export default function AppSidebar({
               className="sidebar-logout-btn"
               aria-label="Logout"
               title="Keluar dari akun (Logout)"
-              style={{
-                width: '100%',
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '24px',
-                borderRadius: '8px',
-                backgroundColor: '#FFFFFF',
-                color: '#0F172A',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                boxSizing: 'border-box',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.16)',
-                transition: 'background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F8FAFC';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.22)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#FFFFFF';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.16)';
-              }}
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#800000"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                style={{ flexShrink: 0 }}
-              >
-                <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
-                <polyline points="8 16 4 12 8 8" />
-                <line x1="4" y1="12" x2="14" y2="12" />
-              </svg>
-              <span
-                className="sidebar-logout-label"
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '13.5px',
-                  color: '#0F172A',
-                  letterSpacing: '-0.1px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Logout
+              <span className="sidebar-logout-icon-wrap">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#800000"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  style={{ flexShrink: 0 }}
+                >
+                  <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
+                  <polyline points="8 16 4 12 8 8" />
+                  <line x1="4" y1="12" x2="14" y2="12" />
+                </svg>
               </span>
+              <span className="sidebar-logout-label">Logout</span>
             </button>
           </div>
         ) : (
