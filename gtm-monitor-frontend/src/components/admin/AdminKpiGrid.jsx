@@ -1,7 +1,7 @@
 // ─── KPI SUMMARY GRID (4 CARDS MATCHING DASHBOARD & ACTIVITY STYLE) ───
 export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalProjects = 0 }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px', width: '100%' }}>
       {/* Card 1: Total Proyek Prioritas */}
       <div
         className="saas-card"
@@ -14,16 +14,16 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minWidth: 0
         }}
       >
         <div
           style={{
             fontSize: '15px',
             color: '#475569',
-            whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
-            height: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -58,10 +58,11 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            whiteSpace: 'nowrap',
-            height: '24px',
+            minHeight: '24px',
+            height: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap'
           }}
         >
           Tersebar di{' '}
@@ -91,16 +92,16 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minWidth: 0
         }}
       >
         <div
           style={{
             fontSize: '15px',
             color: '#475569',
-            whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
-            height: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -135,19 +136,20 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            whiteSpace: 'nowrap',
-            height: '24px',
+            minHeight: '24px',
+            height: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '2px 4px'
           }}
         >
-          Kapasitas:{' '}
+          <span>Kapasitas:</span>
           <span
             style={{
               color: '#1E293B',
               fontVariantNumeric: 'tabular-nums',
-              fontFeatureSettings: '"tnum"',
-              margin: '0 4px'
+              fontFeatureSettings: '"tnum"'
             }}
           >
             {(stats.totalPort || 0).toLocaleString('id-ID')}
@@ -170,16 +172,16 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minWidth: 0
         }}
       >
         <div
           style={{
             fontSize: '15px',
             color: '#475569',
-            whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
-            height: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -214,10 +216,11 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            whiteSpace: 'nowrap',
-            height: '24px',
+            minHeight: '24px',
+            height: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap'
           }}
         >
           {stats.actUploaded > 0 ? 'Butuh tindakan review admin' : 'Semua kegiatan telah ditinjau'}
@@ -236,16 +239,16 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minWidth: 0
         }}
       >
         <div
           style={{
             fontSize: '15px',
             color: '#475569',
-            whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
-            height: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -270,10 +273,11 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            whiteSpace: 'nowrap',
-            height: '24px',
+            minHeight: '24px',
+            height: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap'
           }}
         >
           Terverifikasi:{' '}

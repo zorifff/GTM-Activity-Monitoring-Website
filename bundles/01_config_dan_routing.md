@@ -7,7 +7,7 @@
 - `gtm-monitor-frontend/package.json` (33 baris)
 - `gtm-monitor-frontend/vite.config.js` (31 baris)
 - `gtm-monitor-frontend/index.html` (22 baris)
-- `gtm-monitor-frontend/src/index.css` (1624 baris)
+- `gtm-monitor-frontend/src/index.css` (1881 baris)
 - `gtm-monitor-frontend/src/apiConfig.js` (64 baris)
 - `gtm-monitor-frontend/src/lib/queryClient.js` (18 baris)
 - `gtm-monitor-frontend/src/main.jsx` (21 baris)
@@ -124,7 +124,7 @@ export default defineConfig({
 
 ---
 
-## File: `gtm-monitor-frontend/src/index.css` (1624 baris)
+## File: `gtm-monitor-frontend/src/index.css` (1881 baris)
 
 ```css
 @font-face {
@@ -361,14 +361,21 @@ button {
   gap: 8px;
   align-items: center;
   padding: 12px 16px;
-  background: #f8fafc;
+  background-color: #800000 !important;
+  color: #FFFFFF !important;
   font-size: 11px;
   font-weight: 400;
-  color: #475569;
   text-transform: uppercase;
   letter-spacing: .04em;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #660000;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.table-header button,
+.table-header .table-sort-btn,
+.table-header span,
+.table-header .activity-col-header {
+  color: #FFFFFF !important;
 }
 
 .table-row {
@@ -399,12 +406,18 @@ button {
   50% { opacity: 0.4; }
 }
 
-/* Slider geser tabel: selalu terjangkau di bawah top bar (65px), tanpa perlu turun ke dasar tabel */
+/* Slider geser tabel: terkunci di bagian atas kartu tabel tepat sebelum header kolom */
 .table-scroll-slider {
-  position: sticky;
-  top: 65px;
-  z-index: 22; /* di atas header tabel (20), di bawah dropdown filter (25) */
+  position: relative;
+  z-index: 22;
   background: #FFFFFF;
+  padding: 6px 16px 4px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom: 1px solid #E2E8F0;
+  box-sizing: border-box;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .table-scroll-track {
@@ -458,14 +471,17 @@ button {
   height: 0;
 }
 
-/* Tinggi maksimal = layar - top bar 65 - slider 16 - gap 6 - sisa bawah 12, supaya tabel penuh sampai bawah */
+/* Tinggi maksimal kartu tabel dengan posisi sticky tepat di bawah top bar */
 .project-table-card {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   margin-top: 6px;
   min-height: 320px;
-  max-height: calc(100dvh - 99px);
+  max-height: calc(100dvh - 84px);
+  position: sticky;
+  top: 64px;
+  z-index: 20;
 }
 
 .saas-main-viewport.saas-main-viewport-table {
@@ -474,14 +490,18 @@ button {
 
 /* Perangkat sentuh: tombol sedikit lebih besar, area sentuh tetap 44px tanpa memperlebar jarak */
 @media (pointer: coarse) {
+  .table-scroll-slider {
+    padding: 6px 14px 4px;
+  }
+
   .table-scroll-track {
-    height: 28px;
+    height: 24px;
   }
 
   .table-scroll-track::before {
     content: '';
     position: absolute;
-    inset: -8px 0;
+    inset: -6px 0;
   }
 
   .table-scroll-rail {
@@ -493,7 +513,7 @@ button {
   }
 
   .project-table-card {
-    max-height: calc(100dvh - 111px);
+    max-height: calc(100dvh - 78px);
   }
 }
 
@@ -922,36 +942,76 @@ button {
     border-radius: 14px !important;
     margin-bottom: 16px !important;
   }
+
+  .saas-card {
+    padding: 18px 16px !important;
+    border-radius: 14px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .chart-donut-svg-wrap {
+    width: min(210px, 100%) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+  }
   
   .controls-bar-container {
     flex-wrap: wrap !important;
     gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .controls-bar-container > .filter-dropdown-wrapper {
+    flex: 1 1 calc(50% - 6px) !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
   }
   
   .branch-filter-capsule,
+  .status-filter-capsule,
   .control-btn-mobile {
-    flex: 1 1 calc(50% - 6px) !important;
+    width: 100% !important;
     min-width: 0 !important;
-    max-width: none !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
-    justify-content: center !important;
-    padding: 8px 12px !important;
-    font-size: 12px !important;
+    padding: 0 12px !important;
+    font-size: 12.5px !important;
     gap: 6px !important;
+  }
+
+  .branch-filter-capsule,
+  .status-filter-capsule {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    text-align: left !important;
+  }
+
+  .controls-bar-container > .export-excel-btn {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    justify-content: center !important;
     text-align: center !important;
   }
   
-  .branch-text-label {
+  .branch-text-label,
+  .status-text-label {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     max-width: none !important;
     display: inline-block !important;
+    min-width: 0 !important;
   }
 
   .search-container-mobile {
     flex: 1 1 100% !important;
     width: 100% !important;
+    min-width: 0 !important;
     margin-top: 2px !important;
   }
   
@@ -1276,16 +1336,28 @@ button {
 .sidebar-nav-item .sidebar-nav-box {
   display: flex;
   align-items: center;
-  gap: 24px;
-  width: calc(100% - 24px);
-  margin: 0 12px;
-  padding: 10px 12px;
+  gap: 20px;
+  width: calc(100% - 28px);
+  margin: 0 14px;
+  padding: 0 10px;
+  height: 44px;
   min-height: 44px;
   border-radius: 10px;
   background-color: transparent;
   border: none !important;
   box-sizing: border-box;
-  transition: background-color 0.18s ease;
+  overflow: hidden;
+  transition: width 0.24s cubic-bezier(0.2, 0, 0, 1), gap 0.24s cubic-bezier(0.2, 0, 0, 1), background-color 0.18s ease;
+}
+
+.sidebar-nav-icon-wrap {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar-nav-item .nav-icon-outline {
@@ -1307,7 +1379,12 @@ button {
   font-size: 15px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.72);
-  transition: color 0.16s ease, font-weight 0.16s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  max-width: 160px;
+  transform: translateX(0);
+  transition: opacity 0.16s ease, max-width 0.24s cubic-bezier(0.2, 0, 0, 1), transform 0.24s ease, color 0.16s ease, font-weight 0.16s ease;
 }
 
 .sidebar-nav-item.active,
@@ -1357,30 +1434,39 @@ button {
   font-weight: 500 !important;
 }
 
-.sidebar-brand-btn:focus-visible {
-  outline: 2px solid #FFFFFF;
-  outline-offset: 4px;
-  border-radius: 8px;
-}
-
-/* Baris logo setinggi top bar (64px). Garis tiga segaris dengan ikon menu di bawahnya.
-   margin-bottom 25px = border top bar 1px + padding atas konten 24px, supaya menu pertama sejajar dengan kartu pertama */
+/* Brand Row & Toggle Button */
 .sidebar-brand-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   min-height: 64px;
-  padding: 0 12px 0 14px;
+  height: 64px;
+  padding: 0 14px;
   margin-bottom: 25px;
   box-sizing: border-box;
+  overflow: hidden;
+  transition: gap 0.24s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .sidebar-brand-btn {
   display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 0;
+  cursor: default;
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  max-width: 180px;
+  transition: opacity 0.16s ease, max-width 0.24s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .sidebar-brand-word {
   display: block;
+  flex-shrink: 0;
 }
 
 .sidebar-toggle-btn {
@@ -1413,48 +1499,146 @@ button {
   outline-offset: -2px;
 }
 
-.sidebar-nav-chevron {
-  margin-left: auto;
+.sidebar-menu-header {
+  padding: 0 24px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  max-height: 20px;
+  transition: opacity 0.14s ease, max-height 0.24s cubic-bezier(0.2, 0, 0, 1), margin-bottom 0.24s ease;
 }
 
-/* Ruang kosong setinggi satu menu (44px, termasuk gap 4px milik nav) sebelum garis */
+.sidebar-nav-chevron {
+  margin-left: auto;
+  flex-shrink: 0;
+  opacity: 0.5;
+  max-width: 16px;
+  overflow: hidden;
+  transition: opacity 0.16s ease, max-width 0.24s cubic-bezier(0.2, 0, 0, 1);
+}
+
 .sidebar-divider {
-  width: 100%;
-  margin: 40px 0 8px;
+  width: calc(100% - 28px);
+  margin: 30px 14px 8px;
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
+  transition: opacity 0.16s ease, margin 0.24s ease;
 }
 
 .sidebar-logout-btn {
-  padding: 10px;
+  width: 100%;
+  height: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #0F172A;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  transition: width 0.24s cubic-bezier(0.2, 0, 0, 1), gap 0.24s cubic-bezier(0.2, 0, 0, 1), background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+.sidebar-logout-btn:hover {
+  background-color: #F8FAFC;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+}
+
+.sidebar-logout-icon-wrap {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-logout-label {
+  font-family: var(--font-heading);
+  font-size: 13.5px;
+  color: #0F172A;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  max-width: 100px;
+  transform: translateX(0);
+  transition: opacity 0.16s ease, max-width 0.24s cubic-bezier(0.2, 0, 0, 1), transform 0.24s ease;
+}
+
+/* Collapsed State: Zero-jump, ultra-smooth transition (Khusus Desktop > 1024px agar di mobile nama menu tetap tampil) */
 @media (min-width: 1025px) {
   .app-sidebar.collapsed {
-    width: 72px;
+    width: 72px !important;
   }
 
   .app-sidebar.collapsed .sidebar-brand-row {
-    justify-content: center;
-    padding: 0;
+    gap: 0 !important;
   }
 
-  .app-sidebar.collapsed .sidebar-brand-btn,
-  .app-sidebar.collapsed .sidebar-nav-label,
-  .app-sidebar.collapsed .sidebar-nav-chevron,
-  .app-sidebar.collapsed .sidebar-divider,
-  .app-sidebar.collapsed .sidebar-logout-label {
-    display: none;
+  .app-sidebar.collapsed .sidebar-brand-btn {
+    opacity: 0 !important;
+    max-width: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .app-sidebar.collapsed .sidebar-menu-header {
+    opacity: 0 !important;
+    max-height: 0 !important;
+    margin-bottom: 0 !important;
+    pointer-events: none !important;
   }
 
   .app-sidebar.collapsed .sidebar-nav-box {
-    justify-content: center;
-    padding: 10px 0;
+    width: 44px !important;
+    gap: 0 !important;
+  }
+
+  .app-sidebar.collapsed .sidebar-nav-label {
+    opacity: 0 !important;
+    max-width: 0 !important;
+    transform: translateX(-8px) !important;
+    pointer-events: none !important;
+  }
+
+  .app-sidebar.collapsed .sidebar-nav-chevron {
+    opacity: 0 !important;
+    max-width: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .app-sidebar.collapsed .sidebar-divider {
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 
   .app-sidebar.collapsed .sidebar-logout-btn {
-    justify-content: center;
-    padding: 10px 0;
+    width: 44px !important;
+    gap: 0 !important;
+  }
+
+  .app-sidebar.collapsed .sidebar-logout-label {
+    opacity: 0 !important;
+    max-width: 0 !important;
+    transform: translateX(-8px) !important;
+    pointer-events: none !important;
+  }
+
+  .app-sidebar.collapsed .sidebar-login-btn {
+    display: none !important;
   }
 }
 
@@ -1507,7 +1691,13 @@ button {
   width: 256px;
   height: 100vh;
   min-height: 100dvh;
-  transition: width 0.2s ease;
+  transition: width 0.24s cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (min-width: 769px) {
+  .mobile-profile-popover {
+    display: none !important;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -1516,6 +1706,7 @@ button {
     left: 0;
     top: 0;
     bottom: 0;
+    width: 256px !important;
     height: 100dvh !important;
     max-height: 100dvh !important;
     min-height: 100dvh !important;
@@ -1550,6 +1741,8 @@ button {
 
   .saas-main-viewport {
     padding: 16px 20px 40px !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
 
   .app-sidebar .sidebar-bottom-actions {
@@ -1571,12 +1764,76 @@ button {
     display: none !important;
   }
 
+  .header-profile-badge {
+    cursor: pointer !important;
+    padding: 6px 8px !important;
+    transition: background-color 0.15s ease !important;
+  }
+
+  .header-profile-badge:hover,
+  .header-profile-badge:active {
+    background-color: #F1F5F9 !important;
+  }
+
   .header-segmented-filter {
     display: none !important;
   }
 
   .saas-main-viewport {
     padding: 14px 14px 32px !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .controls-bar-container {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .controls-bar-container > .filter-dropdown-wrapper {
+    flex: 1 1 calc(50% - 6px) !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .controls-bar-container .branch-filter-capsule,
+  .controls-bar-container .status-filter-capsule {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 12px !important;
+    font-size: 12.5px !important;
+    box-sizing: border-box !important;
+  }
+
+  .controls-bar-container > .search-container-mobile {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .controls-bar-container > .export-excel-btn {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+  }
+
+  .status-dropdown-popover {
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  .project-table-card {
+    top: 64px !important;
+    max-height: calc(100dvh - 78px) !important;
+    margin-top: 4px !important;
   }
 }
 
@@ -1690,21 +1947,21 @@ button {
 }
 
 .landing-login-modal input::placeholder {
-  color: rgba(255, 214, 204, 0.56);
+  color: #94A3B8;
   font-weight: 400;
 }
 
 .landing-login-modal input:-webkit-autofill,
 .landing-login-modal input:-webkit-autofill:hover,
 .landing-login-modal input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #FFFFFF !important;
-  -webkit-box-shadow: 0 0 0 1000px #380005 inset !important;
+  -webkit-text-fill-color: #0F172A !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
 .landing-login-modal button:focus-visible,
 #landing-login-btn:focus-visible {
-  outline: 2px solid #FFB4A2 !important;
+  outline: 2px solid #E0001B !important;
   outline-offset: 2px !important;
 }
 

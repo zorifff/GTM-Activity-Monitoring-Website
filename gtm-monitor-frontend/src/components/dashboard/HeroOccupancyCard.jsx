@@ -13,6 +13,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
       style={{
         width: '100%',
         maxWidth: '360px',
+        minWidth: 0,
         backgroundColor: '#800000',
         color: '#FFFFFF',
         borderRadius: '16px',
@@ -27,13 +28,14 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
       }}
     >
       {/* Baris 1: Header (Judul & WoW Badge) */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', height: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', minHeight: '24px', height: 'auto' }}>
         <span
           style={{
             fontSize: '15px',
             color: '#FFFFFF',
             letterSpacing: '-0.1px',
-            whiteSpace: 'nowrap'
+            lineHeight: 1.35,
+            minWidth: 0
           }}
         >
           Okupansi Regional Jateng & DIY
@@ -47,7 +49,8 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
               borderRadius: '6px',
               background: 'rgba(255, 255, 255, 0.2)',
               color: '#FFFFFF',
-              fontVariantNumeric: 'tabular-nums'
+              fontVariantNumeric: 'tabular-nums',
+              flexShrink: 0
             }}
           >
             {safeKpi.gapWoW > 0 ? `+${safeKpi.gapWoW}%` : `${safeKpi.gapWoW}%`} WoW
@@ -75,15 +78,18 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
           gap: '8px',
-          height: '24px'
+          minHeight: '24px',
+          height: 'auto'
         }}
       >
         <div
           style={{
             fontSize: '13px',
             color: 'rgba(255, 255, 255, 0.9)',
-            whiteSpace: 'nowrap'
+            lineHeight: 1.4,
+            minWidth: 0
           }}
         >
           <span style={{ color: '#FFFFFF' }}>{countTotalUsed}</span> dari{' '}

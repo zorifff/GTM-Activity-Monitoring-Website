@@ -189,10 +189,10 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
       {/* ─── KONTEN: PIE CHART SVG (KIRI) + LEGEND PER BRANCH (KANAN) ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap' }}>
         {/* SVG Pie Chart (~50% diperbesar dari 170px ke 255px) */}
-        <div style={{ position: 'relative', width: '255px', height: '255px', flexShrink: 0, margin: '0 auto' }}>
+        <div className="chart-donut-svg-wrap" style={{ position: 'relative', width: '255px', height: '255px', flexShrink: 0, margin: '0 auto' }}>
           <svg
-            width="255"
-            height="255"
+            width="100%"
+            height="100%"
             viewBox="0 0 200 200"
             style={{
               overflow: 'visible'
@@ -233,7 +233,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
         </div>
 
         {/* Legend Sisi Kanan (Ranking Volume Proyek) */}
-        <div style={{ flex: 1, minWidth: '190px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+        <div style={{ flex: 1, minWidth: 'min(100%, 190px)', display: 'flex', flexDirection: 'column', gap: '5px' }}>
           {slices.map((slice, idx) => {
             const isHovered = hoveredIndex === idx;
 

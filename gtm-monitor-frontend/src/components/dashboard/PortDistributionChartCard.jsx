@@ -189,7 +189,10 @@ export default function PortDistributionChartCard({
         border: '1px solid #E2E8F0',
         boxShadow: 'none',
         boxSizing: 'border-box',
-        width: '100%'
+        width: '100%',
+        minWidth: 0,
+        maxWidth: '100%',
+        overflow: 'hidden'
       }}
     >
       {/* Header Baris Chart dengan Judul dan Legend / Inspector Slot */}
@@ -198,10 +201,11 @@ export default function PortDistributionChartCard({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
           marginBottom: '16px',
-          minHeight: '30px',
-          height: '30px',
-          gap: '12px'
+          minHeight: '28px',
+          height: 'auto',
+          gap: '6px 12px'
         }}
       >
         <div
@@ -209,8 +213,10 @@ export default function PortDistributionChartCard({
             fontSize: '15px',
             color: '#475569',
             letterSpacing: '-0.1px',
-            whiteSpace: 'nowrap',
-            flexShrink: 0
+            whiteSpace: 'normal',
+            lineHeight: 1.35,
+            minWidth: 0,
+            flex: '1 1 220px'
           }}
         >
           Distribusi Utilisasi Kapasitas Port per Branch & WOK
@@ -222,9 +228,11 @@ export default function PortDistributionChartCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end',
-            height: '26px',
+            minHeight: '24px',
+            height: 'auto',
             minWidth: 0,
-            flexShrink: 1
+            maxWidth: '100%',
+            flexShrink: 0
           }}
         >
           {activeBar && activeAnim ? (
@@ -238,12 +246,14 @@ export default function PortDistributionChartCard({
                 border: '1px solid #E2E8F0',
                 fontVariantNumeric: 'tabular-nums',
                 boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
-                whiteSpace: 'nowrap',
+                whiteSpace: 'normal',
                 lineHeight: '18px',
-                height: '26px',
+                minHeight: '26px',
+                height: 'auto',
                 boxSizing: 'border-box',
                 display: 'inline-flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                flexWrap: 'wrap'
               }}
             >
               <span style={{ color: '#0F172A' }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{Math.round(activeAnim.occRate * 10) / 10}% ({Math.round(activeAnim.portUsed).toLocaleString('id-ID')} / {Math.round(activeAnim.portTotal).toLocaleString('id-ID')} port)
@@ -256,13 +266,14 @@ export default function PortDistributionChartCard({
                 gap: '14px',
                 fontSize: '11px',
                 color: '#64748B',
-                height: '26px',
+                minHeight: '24px',
+                height: 'auto',
                 lineHeight: '18px',
                 boxSizing: 'border-box'
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#800000' }} />
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#800000', flexShrink: 0 }} />
                 Utilisasi Port Terpakai
               </span>
             </div>

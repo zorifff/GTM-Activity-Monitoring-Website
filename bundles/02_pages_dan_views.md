@@ -6,7 +6,7 @@
 
 - `gtm-monitor-frontend/src/routes/pages.jsx` (139 baris)
 - `gtm-monitor-frontend/src/components/Dashboard.jsx` (179 baris)
-- `gtm-monitor-frontend/src/components/UploadView.jsx` (860 baris)
+- `gtm-monitor-frontend/src/components/UploadView.jsx` (869 baris)
 - `gtm-monitor-frontend/src/components/BranchView.jsx` (480 baris)
 - `gtm-monitor-frontend/src/components/AdminPanel.jsx` (91 baris)
 - `gtm-monitor-frontend/src/components/LandingPage.jsx` (230 baris)
@@ -282,9 +282,10 @@ const Dashboard = memo(function Dashboard({
         aria-label="Distribusi Kategori ODP dan Sebaran Proyek per Branch"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
           gap: '20px',
-          width: '100%'
+          width: '100%',
+          minWidth: 0
         }}
       >
         <OdpStatusDonutCard
@@ -347,7 +348,7 @@ export default Dashboard;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/UploadView.jsx` (860 baris)
+## File: `gtm-monitor-frontend/src/components/UploadView.jsx` (869 baris)
 
 ```javascript
 import { useState, useEffect, useMemo, useRef, memo } from 'react';
@@ -604,11 +605,9 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
   }, [stats.totalUsed, stats.totalPort]);
 
   return (
-    <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
-      
-
+    <div style={{ animation: 'fadeIn 0.3s ease-in-out', width: '100%', maxWidth: '100%', minWidth: 0 }}>
       {/* ─── 2. KPI SUMMARY GRID (3 CARDS MATCHING DASHBOARD METRICS STYLE) ─── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px', marginBottom: '24px', width: '100%' }}>
         {/* Card 1: Port Tersedia */}
         <div
           className="saas-card"
@@ -621,16 +620,16 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -655,24 +654,25 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '2px 4px'
             }}
           >
-            Kapasitas:{' '}
+            <span>Kapasitas:</span>
             <span
               style={{
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
-                fontFeatureSettings: '"tnum"',
-                marginLeft: '4px'
+                fontFeatureSettings: '"tnum"'
               }}
             >
               {stats.totalPort.toLocaleString('id-ID')}
             </span>
-            <span style={{ marginLeft: '6px', color: '#64748B' }}>
+            <span style={{ color: '#64748B' }}>
               ({stats.totalUsed.toLocaleString('id-ID')} terpakai • {usedPct.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
             </span>
           </div>
@@ -690,16 +690,16 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -734,10 +734,11 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             Mencakup{' '}
@@ -767,16 +768,16 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -801,10 +802,11 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             Terverifikasi:{' '}
@@ -826,14 +828,16 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       </div>
 
       {/* ─── 3. CONTROLS BAR (FILTER BRANCH, SEARCH, & EXPORT EXCEL) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap', width: '100%' }}>
         {/* Branch Dropdown */}
         {branches.length === 1 ? (
-          <div className="branch-filter-capsule" style={{ height: '42px', minWidth: 'auto', border: '1px solid #CBD5E1', color: '#0F172A', display: 'flex', alignItems: 'center', padding: '0 16px', borderRadius: '10px', background: '#FFFFFF', boxSizing: 'border-box' }}>
-            <span className="branch-text-label" style={{ fontSize: '13px' }}>Branch: {formatBranch(branches[0].name)}</span>
+          <div className="filter-dropdown-wrapper" style={{ position: 'relative' }}>
+            <div className="branch-filter-capsule" style={{ height: '42px', minWidth: 'auto', border: '1px solid #CBD5E1', color: '#0F172A', display: 'flex', alignItems: 'center', padding: '0 16px', borderRadius: '10px', background: '#FFFFFF', boxSizing: 'border-box' }}>
+              <span className="branch-text-label" style={{ fontSize: '13px' }}>Branch: {formatBranch(branches[0].name)}</span>
+            </div>
           </div>
         ) : (
-          <div ref={branchDropdownRef} style={{ position: 'relative' }}>
+          <div ref={branchDropdownRef} className="filter-dropdown-wrapper" style={{ position: 'relative' }}>
             <button 
               type="button"
               className="branch-filter-capsule"
@@ -849,6 +853,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 textAlign: 'left',
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'space-between',
                 padding: '0 16px',
                 borderRadius: '10px',
                 minWidth: '220px',
@@ -869,7 +874,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
               </svg>
             </button>
             {isDropdownOpen && (
-              <div role="listbox" aria-label="Daftar pilihan branch" style={{ position: 'absolute', top: '100%', left: 0, marginTop: '6px', width: '240px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.12)', zIndex: 1000, overflow: 'hidden' }}>
+              <div role="listbox" aria-label="Daftar pilihan branch" style={{ position: 'absolute', top: '100%', left: 0, marginTop: '6px', width: '240px', maxWidth: 'calc(100vw - 28px)', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.12)', zIndex: 1000, overflow: 'hidden' }}>
                 <button 
                   type="button"
                   role="option"
@@ -900,10 +905,10 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
 
         {/* Filter Dropdown Status: Belum Ada, Review, Selesai (Khusus Admin) */}
         {isAdmin && (
-          <div ref={statusDropdownRef} style={{ position: 'relative' }}>
+          <div ref={statusDropdownRef} className="filter-dropdown-wrapper" style={{ position: 'relative' }}>
             <button
               type="button"
-              className="control-btn-mobile"
+              className="control-btn-mobile status-filter-capsule"
               aria-haspopup="true"
               aria-expanded={isStatusDropdownOpen}
               aria-label="Filter status proyek"
@@ -913,6 +918,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'space-between',
                 gap: '8px',
                 padding: '0 16px',
                 borderRadius: '10px',
@@ -938,7 +944,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 }
               }}
             >
-              <span className="status-text-label" style={{ fontSize: '13px' }}>
+              <span className="status-text-label" style={{ fontSize: '13px', flex: 1, textAlign: 'left' }}>
                 Status ({statusMatchingProjectsCount})
               </span>
               <svg
@@ -964,6 +970,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
               <div
                 role="dialog"
                 aria-label="Pilihan filter status proyek"
+                className="status-dropdown-popover"
                 style={{
                   position: 'absolute',
                   top: '100%',
@@ -975,10 +982,12 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                   boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.18)',
                   zIndex: 1000,
                   width: '210px',
+                  maxWidth: 'calc(100vw - 28px)',
                   padding: '12px',
                   fontSize: '12px',
                   color: '#334155',
-                  textAlign: 'left'
+                  textAlign: 'left',
+                  boxSizing: 'border-box'
                 }}
               >
                 {/* Opsi Pilih Semua */}
@@ -1049,10 +1058,10 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                           }}
                           style={{ cursor: 'pointer', flexShrink: 0 }}
                         />
-                        <span style={{ fontSize: '12px', color: '#0F172A',  }}>
+                        <span style={{ fontSize: '12px', color: '#0F172A' }}>
                           {st}
                         </span>
-                        <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', }}>
+                        <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px' }}>
                           ({count})
                         </span>
                       </label>
@@ -1065,7 +1074,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         )}
 
         {/* Search Input with Icon */}
-        <div style={{ flex: 1, minWidth: '240px', position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <div className="search-container-mobile" style={{ flex: 1, minWidth: 'min(100%, 240px)', position: 'relative', display: 'flex', alignItems: 'center' }}>
           <svg
             aria-hidden="true"
             width="15"
@@ -1087,7 +1096,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             placeholder="Cari nama proyek, WOK, atau ODP..." 
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{ height: '42px', paddingLeft: '38px', paddingRight: search ? '36px' : '16px', border: '1px solid #CBD5E1', borderRadius: '10px', fontSize: '13px' }}
+            style={{ width: '100%', boxSizing: 'border-box', height: '42px', paddingLeft: '38px', paddingRight: search ? '36px' : '16px', border: '1px solid #CBD5E1', borderRadius: '10px', fontSize: '13px' }}
             aria-label="Cari proyek, WOK, atau ODP"
           />
           {search && (
@@ -1108,13 +1117,14 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         {/* Tombol Export Excel */}
         <button
           type="button"
-          className="control-btn-mobile"
+          className="control-btn-mobile export-excel-btn"
           onClick={() => exportProjectsToExcel(branches, selectedBranch)}
           aria-label="Ekspor data rekap proyek ke format file Excel (.xlsx)"
           style={{
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: '8px',
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
@@ -1151,7 +1161,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       {/* ─── 4. PROJECT TABLES & ACTIVITY CARDS ─── */}
       {selectedBranch === 'Semua Branch' ? (
         branchesWithFilteredProjects.length > 0 && (
-          <div>
+          <div style={{ display: 'contents' }}>
             <ProjectTable
               projects={allProjectsMultiBranch}
               branchName="Multi Branch" 
@@ -1163,7 +1173,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         )
       ) : (
         branchesWithFilteredProjects.map(b => (
-          <div key={b.name}>
+          <div key={b.name} style={{ display: 'contents' }}>
             <ProjectTable 
               projects={b.projects} 
               branchName={b.name} 
@@ -1318,7 +1328,7 @@ const BranchView = memo(function BranchView({
   }
 
   return (
-    <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
+    <div style={{ animation: 'fadeIn 0.3s ease-in-out', width: '100%', maxWidth: '100%', minWidth: 0 }}>
       {/* Header Title */}
       <div className="page-title-header" style={{ marginBottom: '24px' }}>
         <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', color: '#0F172A', margin: 0, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
@@ -1327,7 +1337,7 @@ const BranchView = memo(function BranchView({
       </div>
 
       {/* ─── KPI SUMMARY GRID (3 CARDS MATCHING ACTIVITY VIEW STYLE) ─── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px', marginBottom: '24px', width: '100%' }}>
         {/* Card 1: Total Proyek Greenfield */}
         <div
           className="saas-card"
@@ -1340,16 +1350,16 @@ const BranchView = memo(function BranchView({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -1384,10 +1394,11 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             OCC &lt; 35% &amp; ODP &gt; 1
@@ -1406,16 +1417,16 @@ const BranchView = memo(function BranchView({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -1450,10 +1461,11 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             <span
@@ -1482,16 +1494,16 @@ const BranchView = memo(function BranchView({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -1526,10 +1538,11 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             <span
@@ -1548,17 +1561,18 @@ const BranchView = memo(function BranchView({
       </div>
 
       {/* ─── CONTROLS BAR (EXPORT EXCEL & SEARCH INPUT) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap', width: '100%' }}>
         {/* Tombol Export Excel */}
         <button
           type="button"
-          className="control-btn-mobile"
+          className="control-btn-mobile export-excel-btn"
           onClick={() => exportProjectsToExcel([branch], branch.name)}
           aria-label={`Ekspor data branch ${formatBranch(branch.name)} ke format file Excel (.xlsx)`}
           style={{
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: '8px',
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
@@ -1591,7 +1605,7 @@ const BranchView = memo(function BranchView({
         </button>
 
         {/* Search Input with Icon */}
-        <div style={{ flex: 1, minWidth: '240px', position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <div className="search-container-mobile" style={{ flex: 1, minWidth: 'min(100%, 240px)', position: 'relative', display: 'flex', alignItems: 'center' }}>
           <svg
             aria-hidden="true"
             width="15"

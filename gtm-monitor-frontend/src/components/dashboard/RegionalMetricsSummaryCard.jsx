@@ -22,6 +22,7 @@ export default function RegionalMetricsSummaryCard({
       className="saas-card regional-metrics-card"
       style={{
         flex: 1,
+        minWidth: 0,
         backgroundColor: '#FFFFFF',
         borderRadius: '16px',
         padding: '24px 28px',
@@ -38,7 +39,7 @@ export default function RegionalMetricsSummaryCard({
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
           gap: '32px',
           alignItems: 'flex-start',
           width: '100%'
@@ -50,9 +51,8 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -77,10 +77,11 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             Kapasitas:{' '}
@@ -103,9 +104,8 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -133,7 +133,8 @@ export default function RegionalMetricsSummaryCard({
               alignItems: 'center',
               gap: '8px',
               flexWrap: 'wrap',
-              height: '24px'
+              minHeight: '24px',
+              height: 'auto'
             }}
           >
             {safeStatusChips.map((s) => (
@@ -176,9 +177,8 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -203,10 +203,11 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
               alignItems: 'center',
+              flexWrap: 'wrap',
               gap: '4px'
             }}
           >

@@ -100,7 +100,7 @@ const BranchView = memo(function BranchView({
   }
 
   return (
-    <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
+    <div style={{ animation: 'fadeIn 0.3s ease-in-out', width: '100%', maxWidth: '100%', minWidth: 0 }}>
       {/* Header Title */}
       <div className="page-title-header" style={{ marginBottom: '24px' }}>
         <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', color: '#0F172A', margin: 0, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
@@ -109,7 +109,7 @@ const BranchView = memo(function BranchView({
       </div>
 
       {/* ─── KPI SUMMARY GRID (3 CARDS MATCHING ACTIVITY VIEW STYLE) ─── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px', marginBottom: '24px', width: '100%' }}>
         {/* Card 1: Total Proyek Greenfield */}
         <div
           className="saas-card"
@@ -122,16 +122,16 @@ const BranchView = memo(function BranchView({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -166,10 +166,11 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             OCC &lt; 35% &amp; ODP &gt; 1
@@ -188,16 +189,16 @@ const BranchView = memo(function BranchView({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -232,10 +233,11 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             <span
@@ -264,16 +266,16 @@ const BranchView = memo(function BranchView({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            minWidth: 0
           }}
         >
           <div
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -308,10 +310,11 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             <span
@@ -330,17 +333,18 @@ const BranchView = memo(function BranchView({
       </div>
 
       {/* ─── CONTROLS BAR (EXPORT EXCEL & SEARCH INPUT) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap', width: '100%' }}>
         {/* Tombol Export Excel */}
         <button
           type="button"
-          className="control-btn-mobile"
+          className="control-btn-mobile export-excel-btn"
           onClick={() => exportProjectsToExcel([branch], branch.name)}
           aria-label={`Ekspor data branch ${formatBranch(branch.name)} ke format file Excel (.xlsx)`}
           style={{
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: '8px',
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
@@ -373,7 +377,7 @@ const BranchView = memo(function BranchView({
         </button>
 
         {/* Search Input with Icon */}
-        <div style={{ flex: 1, minWidth: '240px', position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <div className="search-container-mobile" style={{ flex: 1, minWidth: 'min(100%, 240px)', position: 'relative', display: 'flex', alignItems: 'center' }}>
           <svg
             aria-hidden="true"
             width="15"

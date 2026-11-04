@@ -687,9 +687,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
   const odpGrid = '34px 220px 165px 95px 125px 95px';
 
   return (
-    <>
-    <TableScrollSlider scrollRef={scrollRef} />
     <div className="card project-table-card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
+      <TableScrollSlider scrollRef={scrollRef} />
       <div ref={scrollRef} className="project-table-scroll" style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', borderRadius: 'inherit' }}>
         <div style={{ minWidth: 'max-content', paddingBottom: filterPopup ? '400px' : '0' }}>
           {/* Header */}
@@ -1004,6 +1003,5 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         </div>
       </div>
     </div>
-    </>
   );
 }

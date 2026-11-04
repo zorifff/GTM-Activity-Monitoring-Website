@@ -11,7 +11,7 @@
 - `gtm-monitor-frontend/src/components/layout/ProgramMenu.jsx` (367 baris)
 - `gtm-monitor-frontend/src/components/layout/CekPairingNavItem.jsx` (132 baris)
 - `gtm-monitor-frontend/src/components/layout/LoadingScreen.jsx` (202 baris)
-- `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1010 baris)
+- `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1008 baris)
 - `gtm-monitor-frontend/src/components/ActivityStatus.jsx` (220 baris)
 - `gtm-monitor-frontend/src/components/dashboard/HeroOccupancyCard.jsx` (132 baris)
 - `gtm-monitor-frontend/src/components/dashboard/RegionalMetricsSummaryCard.jsx` (251 baris)
@@ -260,6 +260,7 @@ export default function AppLayout() {
                   flexDirection: 'column',
                   backgroundColor: '#FFFFFF',
                   overflowY: 'auto',
+                  overflowX: 'hidden',
                   scrollPaddingTop: '80px',
                   scrollBehavior: 'smooth'
                 }}
@@ -285,6 +286,9 @@ export default function AppLayout() {
                   className="saas-main-viewport"
                   style={{
                     flex: 1,
+                    minWidth: 0,
+                    maxWidth: '100%',
+                    overflowX: 'hidden',
                     padding: '24px 32px 48px',
                     boxSizing: 'border-box'
                   }}
@@ -359,17 +363,31 @@ export default function TopHeaderBar({
   const isAdminPage = location.pathname.startsWith('/admin');
   const isActivityPage = location.pathname.startsWith('/upload');
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const notifRef = useRef(null);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     const handleOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotificationDropdown(false);
       }
-
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfileDropdown(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowNotificationDropdown(false);
+        setShowProfileDropdown(false);
+      }
     };
     document.addEventListener('mousedown', handleOutside);
-    return () => document.removeEventListener('mousedown', handleOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   return (
@@ -581,7 +599,10 @@ export default function TopHeaderBar({
         <div ref={notifRef} style={{ position: 'relative' }}>
           <button
             type="button"
-            onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+            onClick={() => {
+              setShowNotificationDropdown(!showNotificationDropdown);
+              setShowProfileDropdown(false);
+            }}
             title={displayCount > 0 ? `${displayCount} pemberitahuan baru` : 'Tidak ada pemberitahuan baru'}
             aria-label={displayCount > 0 ? `${displayCount} pemberitahuan baru` : 'Notifikasi aktivitas'}
             aria-expanded={showNotificationDropdown}
@@ -760,7 +781,7 @@ export default function TopHeaderBar({
                         <span style={{ color: '#64748B' }}>
                           Branch {formatBranch(item.branchName)}{item.wok ? ` · ${item.wok}` : ''}
                         </span>
-                        <span style={{ color: '#0F172A', }}>
+                        <span style={{ color: '#0F172A' }}>
                           Buka di Activity →
                         </span>
                       </div>
@@ -776,61 +797,183 @@ export default function TopHeaderBar({
           )}
         </div>
 
-        <div>
+        <div ref={profileRef} style={{ position: 'relative' }}>
           {user ? (
-            <div
-              className="header-profile-badge"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                minHeight: '44px',
-                padding: '6px 10px 6px 6px',
-                borderRadius: '12px',
-                userSelect: 'none',
-                cursor: 'default',
-                background: 'transparent',
-                border: 'none',
-                outline: 'none'
-              }}
-            >
-              <div
+            <>
+              <button
+                type="button"
+                className="header-profile-badge"
+                onClick={() => {
+                  if (window.matchMedia('(max-width: 768px)').matches) {
+                    setShowProfileDropdown((prev) => !prev);
+                    setShowNotificationDropdown(false);
+                  }
+                }}
+                aria-label={`Profil pengguna ${user.username || 'admin'}`}
+                aria-expanded={showProfileDropdown}
                 style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
-                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
+                  gap: '10px',
+                  minHeight: '44px',
+                  minWidth: '44px',
                   justifyContent: 'center',
-                  flexShrink: 0
+                  padding: '6px 10px 6px 6px',
+                  borderRadius: '12px',
+                  userSelect: 'none',
+                  cursor: 'default',
+                  background: showProfileDropdown ? '#F1F5F9' : 'transparent',
+                  border: 'none',
+                  outline: 'none'
                 }}
               >
-                <svg
-                  width="19"
-                  height="19"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#0F172A"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
+                <div
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
+                    background: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
                 >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
+                  <svg
+                    width="19"
+                    height="19"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#0F172A"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
 
-              <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                <div style={{ fontSize: '12.5px', color: '#0F172A', whiteSpace: 'nowrap' }}>
-                  {user.username || 'admin'}
+                <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '12.5px', color: '#0F172A', whiteSpace: 'nowrap' }}>
+                    {user.username || 'admin'}
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: '#475569' }}>
+                    {user.role === 'ADMIN' ? 'admin 1' : 'user'}
+                  </div>
                 </div>
-                <div style={{ fontSize: '10.5px', color: '#475569' }}>
-                  {user.role === 'ADMIN' ? 'admin 1' : 'user'}
+              </button>
+
+              {showProfileDropdown && (
+                <div
+                  className="mobile-profile-popover"
+                  role="dialog"
+                  aria-label="Informasi profil aktif"
+                  style={{
+                    position: 'absolute',
+                    top: '48px',
+                    right: 0,
+                    minWidth: '215px',
+                    maxWidth: 'calc(100vw - 24px)',
+                    background: '#FFFFFF',
+                    borderRadius: '12px',
+                    border: '1px solid #CBD5E1',
+                    boxShadow: '0 12px 28px -5px rgba(15, 23, 42, 0.16), 0 6px 12px -6px rgba(15, 23, 42, 0.08)',
+                    padding: '12px 14px',
+                    zIndex: 120,
+                    animation: 'fadeIn 0.15s ease-out',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      paddingBottom: '8px',
+                      marginBottom: '10px',
+                      borderBottom: '1px solid #F1F5F9'
+                    }}
+                  >
+                    <span style={{ fontSize: '11px', color: '#64748B', letterSpacing: '0.2px' }}>
+                      Profil Sedang Digunakan
+                    </span>
+                    <span
+                      style={{
+                        width: '7px',
+                        height: '7px',
+                        borderRadius: '50%',
+                        backgroundColor: '#16A34A',
+                        display: 'inline-block',
+                        flexShrink: 0
+                      }}
+                      title="Aktif"
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        backgroundColor: '#F8FAFC',
+                        border: '1px solid #E2E8F0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#0F172A"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </div>
+
+                    <div style={{ minWidth: 0, textAlign: 'left', lineHeight: 1.35 }}>
+                      <div
+                        style={{
+                          fontSize: '13.5px',
+                          color: '#0F172A',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {user.username || 'admin'}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '11.5px',
+                          color: '#64748B',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {user.role === 'ADMIN'
+                          ? 'admin 1 · Administrator'
+                          : user.branch
+                            ? `user · Branch ${formatBranch(user.branch)}`
+                            : 'user'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           ) : (
             <button
               type="button"
@@ -904,8 +1047,8 @@ export default function AppSidebar({
     }
     if (setIsCollapsed) setIsCollapsed(!isCollapsed);
   };
-  const toggleLabel = isCollapsed ? 'Buka sidebar' : 'Tutup sidebar';
-  const collapsedTitle = (label) => (isCollapsed ? label : undefined);
+  const toggleLabel = isMobileOpen ? 'Tutup sidebar' : isCollapsed ? 'Buka sidebar' : 'Tutup sidebar';
+  const collapsedTitle = (label) => (isCollapsed && !isMobileOpen ? label : undefined);
 
   return (
     <>
@@ -2159,7 +2302,7 @@ export default LoadingScreen;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1010 baris)
+## File: `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1008 baris)
 
 ```javascript
 import { useState, useMemo, memo, useEffect, useCallback, useRef } from 'react';
@@ -2851,9 +2994,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
   const odpGrid = '34px 220px 165px 95px 125px 95px';
 
   return (
-    <>
-    <TableScrollSlider scrollRef={scrollRef} />
     <div className="card project-table-card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
+      <TableScrollSlider scrollRef={scrollRef} />
       <div ref={scrollRef} className="project-table-scroll" style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', borderRadius: 'inherit' }}>
         <div style={{ minWidth: 'max-content', paddingBottom: filterPopup ? '400px' : '0' }}>
           {/* Header */}
@@ -3168,7 +3310,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         </div>
       </div>
     </div>
-    </>
   );
 }
 ```
@@ -3419,6 +3560,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
       style={{
         width: '100%',
         maxWidth: '360px',
+        minWidth: 0,
         backgroundColor: '#800000',
         color: '#FFFFFF',
         borderRadius: '16px',
@@ -3433,13 +3575,14 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
       }}
     >
       {/* Baris 1: Header (Judul & WoW Badge) */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', height: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', minHeight: '24px', height: 'auto' }}>
         <span
           style={{
             fontSize: '15px',
             color: '#FFFFFF',
             letterSpacing: '-0.1px',
-            whiteSpace: 'nowrap'
+            lineHeight: 1.35,
+            minWidth: 0
           }}
         >
           Okupansi Regional Jateng & DIY
@@ -3453,7 +3596,8 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
               borderRadius: '6px',
               background: 'rgba(255, 255, 255, 0.2)',
               color: '#FFFFFF',
-              fontVariantNumeric: 'tabular-nums'
+              fontVariantNumeric: 'tabular-nums',
+              flexShrink: 0
             }}
           >
             {safeKpi.gapWoW > 0 ? `+${safeKpi.gapWoW}%` : `${safeKpi.gapWoW}%`} WoW
@@ -3481,15 +3625,18 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
           gap: '8px',
-          height: '24px'
+          minHeight: '24px',
+          height: 'auto'
         }}
       >
         <div
           style={{
             fontSize: '13px',
             color: 'rgba(255, 255, 255, 0.9)',
-            whiteSpace: 'nowrap'
+            lineHeight: 1.4,
+            minWidth: 0
           }}
         >
           <span style={{ color: '#FFFFFF' }}>{countTotalUsed}</span> dari{' '}
@@ -3566,6 +3713,7 @@ export default function RegionalMetricsSummaryCard({
       className="saas-card regional-metrics-card"
       style={{
         flex: 1,
+        minWidth: 0,
         backgroundColor: '#FFFFFF',
         borderRadius: '16px',
         padding: '24px 28px',
@@ -3582,7 +3730,7 @@ export default function RegionalMetricsSummaryCard({
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
           gap: '32px',
           alignItems: 'flex-start',
           width: '100%'
@@ -3594,9 +3742,8 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -3621,10 +3768,11 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexWrap: 'wrap'
             }}
           >
             Kapasitas:{' '}
@@ -3647,9 +3795,8 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -3677,7 +3824,8 @@ export default function RegionalMetricsSummaryCard({
               alignItems: 'center',
               gap: '8px',
               flexWrap: 'wrap',
-              height: '24px'
+              minHeight: '24px',
+              height: 'auto'
             }}
           >
             {safeStatusChips.map((s) => (
@@ -3720,9 +3868,8 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '15px',
               color: '#475569',
-              whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
-              height: '24px',
+              minHeight: '24px',
               display: 'flex',
               alignItems: 'center'
             }}
@@ -3747,10 +3894,11 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              whiteSpace: 'nowrap',
-              height: '24px',
+              minHeight: '24px',
+              height: 'auto',
               display: 'flex',
               alignItems: 'center',
+              flexWrap: 'wrap',
               gap: '4px'
             }}
           >
@@ -4241,7 +4389,10 @@ export default function PortDistributionChartCard({
         border: '1px solid #E2E8F0',
         boxShadow: 'none',
         boxSizing: 'border-box',
-        width: '100%'
+        width: '100%',
+        minWidth: 0,
+        maxWidth: '100%',
+        overflow: 'hidden'
       }}
     >
       {/* Header Baris Chart dengan Judul dan Legend / Inspector Slot */}
@@ -4250,10 +4401,11 @@ export default function PortDistributionChartCard({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
           marginBottom: '16px',
-          minHeight: '30px',
-          height: '30px',
-          gap: '12px'
+          minHeight: '28px',
+          height: 'auto',
+          gap: '6px 12px'
         }}
       >
         <div
@@ -4261,8 +4413,10 @@ export default function PortDistributionChartCard({
             fontSize: '15px',
             color: '#475569',
             letterSpacing: '-0.1px',
-            whiteSpace: 'nowrap',
-            flexShrink: 0
+            whiteSpace: 'normal',
+            lineHeight: 1.35,
+            minWidth: 0,
+            flex: '1 1 220px'
           }}
         >
           Distribusi Utilisasi Kapasitas Port per Branch & WOK
@@ -4274,9 +4428,11 @@ export default function PortDistributionChartCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end',
-            height: '26px',
+            minHeight: '24px',
+            height: 'auto',
             minWidth: 0,
-            flexShrink: 1
+            maxWidth: '100%',
+            flexShrink: 0
           }}
         >
           {activeBar && activeAnim ? (
@@ -4290,12 +4446,14 @@ export default function PortDistributionChartCard({
                 border: '1px solid #E2E8F0',
                 fontVariantNumeric: 'tabular-nums',
                 boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
-                whiteSpace: 'nowrap',
+                whiteSpace: 'normal',
                 lineHeight: '18px',
-                height: '26px',
+                minHeight: '26px',
+                height: 'auto',
                 boxSizing: 'border-box',
                 display: 'inline-flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                flexWrap: 'wrap'
               }}
             >
               <span style={{ color: '#0F172A' }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{Math.round(activeAnim.occRate * 10) / 10}% ({Math.round(activeAnim.portUsed).toLocaleString('id-ID')} / {Math.round(activeAnim.portTotal).toLocaleString('id-ID')} port)
@@ -4308,13 +4466,14 @@ export default function PortDistributionChartCard({
                 gap: '14px',
                 fontSize: '11px',
                 color: '#64748B',
-                height: '26px',
+                minHeight: '24px',
+                height: 'auto',
                 lineHeight: '18px',
                 boxSizing: 'border-box'
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#800000' }} />
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#800000', flexShrink: 0 }} />
                 Utilisasi Port Terpakai
               </span>
             </div>
@@ -4713,10 +4872,10 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
       {/* ─── KONTEN: DONUT SVG (KIRI) + INTERACTIVE LEGEND (KANAN) ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap' }}>
         {/* SVG Donut Chart (~50% diperbesar dari 170px ke 255px) */}
-        <div style={{ position: 'relative', width: '255px', height: '255px', flexShrink: 0, margin: '0 auto' }}>
+        <div className="chart-donut-svg-wrap" style={{ position: 'relative', width: '255px', height: '255px', flexShrink: 0, margin: '0 auto' }}>
           <svg
-            width="255"
-            height="255"
+            width="100%"
+            height="100%"
             viewBox="0 0 200 200"
             style={{
               overflow: 'visible',
@@ -4829,7 +4988,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
         </div>
 
         {/* Legend Interaktif Sisi Kanan */}
-        <div style={{ flex: 1, minWidth: '190px', display: 'flex', flexDirection: 'column', gap: '7px' }}>
+        <div style={{ flex: 1, minWidth: 'min(100%, 190px)', display: 'flex', flexDirection: 'column', gap: '7px' }}>
           {slices.map((slice, idx) => {
             const isHovered = hoveredIndex === idx;
 
@@ -6488,10 +6647,10 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
       {/* ─── KONTEN: PIE CHART SVG (KIRI) + LEGEND PER BRANCH (KANAN) ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap' }}>
         {/* SVG Pie Chart (~50% diperbesar dari 170px ke 255px) */}
-        <div style={{ position: 'relative', width: '255px', height: '255px', flexShrink: 0, margin: '0 auto' }}>
+        <div className="chart-donut-svg-wrap" style={{ position: 'relative', width: '255px', height: '255px', flexShrink: 0, margin: '0 auto' }}>
           <svg
-            width="255"
-            height="255"
+            width="100%"
+            height="100%"
             viewBox="0 0 200 200"
             style={{
               overflow: 'visible'
@@ -6532,7 +6691,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
         </div>
 
         {/* Legend Sisi Kanan (Ranking Volume Proyek) */}
-        <div style={{ flex: 1, minWidth: '190px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+        <div style={{ flex: 1, minWidth: 'min(100%, 190px)', display: 'flex', flexDirection: 'column', gap: '5px' }}>
           {slices.map((slice, idx) => {
             const isHovered = hoveredIndex === idx;
 
@@ -7151,7 +7310,7 @@ export default function AdminTabs() {
 // ─── KPI SUMMARY GRID (4 CARDS MATCHING DASHBOARD & ACTIVITY STYLE) ───
 export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalProjects = 0 }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px', width: '100%' }}>
       {/* Card 1: Total Proyek Prioritas */}
       <div
         className="saas-card"
@@ -7164,16 +7323,16 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minWidth: 0
         }}
       >
         <div
           style={{
             fontSize: '15px',
             color: '#475569',
-            whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
-            height: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -7208,10 +7367,11 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            whiteSpace: 'nowrap',
-            height: '24px',
+            minHeight: '24px',
+            height: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap'
           }}
         >
           Tersebar di{' '}
@@ -7241,16 +7401,16 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minWidth: 0
         }}
       >
         <div
           style={{
             fontSize: '15px',
             color: '#475569',
-            whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
-            height: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -7285,19 +7445,20 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            whiteSpace: 'nowrap',
-            height: '24px',
+            minHeight: '24px',
+            height: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '2px 4px'
           }}
         >
-          Kapasitas:{' '}
+          <span>Kapasitas:</span>
           <span
             style={{
               color: '#1E293B',
               fontVariantNumeric: 'tabular-nums',
-              fontFeatureSettings: '"tnum"',
-              margin: '0 4px'
+              fontFeatureSettings: '"tnum"'
             }}
           >
             {(stats.totalPort || 0).toLocaleString('id-ID')}
@@ -7320,16 +7481,16 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minWidth: 0
         }}
       >
         <div
           style={{
             fontSize: '15px',
             color: '#475569',
-            whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
-            height: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -7364,10 +7525,11 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            whiteSpace: 'nowrap',
-            height: '24px',
+            minHeight: '24px',
+            height: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap'
           }}
         >
           {stats.actUploaded > 0 ? 'Butuh tindakan review admin' : 'Semua kegiatan telah ditinjau'}
@@ -7386,16 +7548,16 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minWidth: 0
         }}
       >
         <div
           style={{
             fontSize: '15px',
             color: '#475569',
-            whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
-            height: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center'
           }}
@@ -7420,10 +7582,11 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            whiteSpace: 'nowrap',
-            height: '24px',
+            minHeight: '24px',
+            height: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap'
           }}
         >
           Terverifikasi:{' '}
@@ -7586,7 +7749,8 @@ export default function AdminActionHubCard({
         padding: '24px 28px',
         display: 'flex',
         flexDirection: 'column',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        minWidth: 0
       }}
     >
       {/* Header Segmen */}
@@ -7610,13 +7774,15 @@ export default function AdminActionHubCard({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '20px',
+              flexWrap: 'wrap',
+              gap: '12px 20px',
               padding: '14px 20px',
               borderRadius: '12px',
               background: '#F8FAFC',
               border: '1px solid #E2E8F0',
               transition: 'all 0.15s ease',
-              position: 'relative'
+              position: 'relative',
+              minWidth: 0
             }}
           >
             {/* Sisi Kiri: Judul + Tanda Hint + Badge (Tanpa Icon Besar, Tanpa Subtext) */}
@@ -7626,7 +7792,8 @@ export default function AdminActionHubCard({
                 alignItems: 'center',
                 gap: '8px',
                 flexWrap: 'wrap',
-                flex: 1
+                flex: '1 1 200px',
+                minWidth: 0
               }}
             >
               <span style={{ fontFamily: 'var(--font-body)', fontSize: '13.5px', color: '#0F172A', letterSpacing: '-0.1px' }}>
@@ -7682,7 +7849,7 @@ export default function AdminActionHubCard({
                       left: '0',
                       zIndex: 60,
                       width: '350px',
-                      maxWidth: 'calc(100vw - 40px)',
+                      maxWidth: 'calc(100vw - 48px)',
                       backgroundColor: '#FFFFFF',
                       borderRadius: '12px',
                       border: '1px solid #E2E8F0',
@@ -7753,7 +7920,7 @@ export default function AdminActionHubCard({
             </div>
 
             {/* Sisi Kanan: Tombol Sejajar Presisi (170px) */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', minWidth: '170px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', minWidth: '170px', flex: '0 1 auto' }}>
               <button
                 type="button"
                 onClick={() => onOpenModal(act.id)}

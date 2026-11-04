@@ -215,6 +215,7 @@ export default function AppLayout() {
                   flexDirection: 'column',
                   backgroundColor: '#FFFFFF',
                   overflowY: 'auto',
+                  overflowX: 'hidden',
                   scrollPaddingTop: '80px',
                   scrollBehavior: 'smooth'
                 }}
@@ -240,6 +241,9 @@ export default function AppLayout() {
                   className="saas-main-viewport"
                   style={{
                     flex: 1,
+                    minWidth: 0,
+                    maxWidth: '100%',
+                    overflowX: 'hidden',
                     padding: '24px 32px 48px',
                     boxSizing: 'border-box'
                   }}

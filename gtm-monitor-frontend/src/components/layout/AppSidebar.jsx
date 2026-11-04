@@ -34,8 +34,8 @@ export default function AppSidebar({
     }
     if (setIsCollapsed) setIsCollapsed(!isCollapsed);
   };
-  const toggleLabel = isCollapsed ? 'Buka sidebar' : 'Tutup sidebar';
-  const collapsedTitle = (label) => (isCollapsed ? label : undefined);
+  const toggleLabel = isMobileOpen ? 'Tutup sidebar' : isCollapsed ? 'Buka sidebar' : 'Tutup sidebar';
+  const collapsedTitle = (label) => (isCollapsed && !isMobileOpen ? label : undefined);
 
   return (
     <>

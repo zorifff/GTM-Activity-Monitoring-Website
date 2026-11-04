@@ -37,17 +37,31 @@ export default function TopHeaderBar({
   const isAdminPage = location.pathname.startsWith('/admin');
   const isActivityPage = location.pathname.startsWith('/upload');
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const notifRef = useRef(null);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     const handleOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotificationDropdown(false);
       }
-
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfileDropdown(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowNotificationDropdown(false);
+        setShowProfileDropdown(false);
+      }
     };
     document.addEventListener('mousedown', handleOutside);
-    return () => document.removeEventListener('mousedown', handleOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   return (
@@ -259,7 +273,10 @@ export default function TopHeaderBar({
         <div ref={notifRef} style={{ position: 'relative' }}>
           <button
             type="button"
-            onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+            onClick={() => {
+              setShowNotificationDropdown(!showNotificationDropdown);
+              setShowProfileDropdown(false);
+            }}
             title={displayCount > 0 ? `${displayCount} pemberitahuan baru` : 'Tidak ada pemberitahuan baru'}
             aria-label={displayCount > 0 ? `${displayCount} pemberitahuan baru` : 'Notifikasi aktivitas'}
             aria-expanded={showNotificationDropdown}
@@ -438,7 +455,7 @@ export default function TopHeaderBar({
                         <span style={{ color: '#64748B' }}>
                           Branch {formatBranch(item.branchName)}{item.wok ? ` · ${item.wok}` : ''}
                         </span>
-                        <span style={{ color: '#0F172A', }}>
+                        <span style={{ color: '#0F172A' }}>
                           Buka di Activity →
                         </span>
                       </div>
@@ -454,61 +471,183 @@ export default function TopHeaderBar({
           )}
         </div>
 
-        <div>
+        <div ref={profileRef} style={{ position: 'relative' }}>
           {user ? (
-            <div
-              className="header-profile-badge"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                minHeight: '44px',
-                padding: '6px 10px 6px 6px',
-                borderRadius: '12px',
-                userSelect: 'none',
-                cursor: 'default',
-                background: 'transparent',
-                border: 'none',
-                outline: 'none'
-              }}
-            >
-              <div
+            <>
+              <button
+                type="button"
+                className="header-profile-badge"
+                onClick={() => {
+                  if (window.matchMedia('(max-width: 768px)').matches) {
+                    setShowProfileDropdown((prev) => !prev);
+                    setShowNotificationDropdown(false);
+                  }
+                }}
+                aria-label={`Profil pengguna ${user.username || 'admin'}`}
+                aria-expanded={showProfileDropdown}
                 style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
-                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
+                  gap: '10px',
+                  minHeight: '44px',
+                  minWidth: '44px',
                   justifyContent: 'center',
-                  flexShrink: 0
+                  padding: '6px 10px 6px 6px',
+                  borderRadius: '12px',
+                  userSelect: 'none',
+                  cursor: 'default',
+                  background: showProfileDropdown ? '#F1F5F9' : 'transparent',
+                  border: 'none',
+                  outline: 'none'
                 }}
               >
-                <svg
-                  width="19"
-                  height="19"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#0F172A"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
+                <div
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
+                    background: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
                 >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
+                  <svg
+                    width="19"
+                    height="19"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#0F172A"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
 
-              <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                <div style={{ fontSize: '12.5px', color: '#0F172A', whiteSpace: 'nowrap' }}>
-                  {user.username || 'admin'}
+                <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '12.5px', color: '#0F172A', whiteSpace: 'nowrap' }}>
+                    {user.username || 'admin'}
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: '#475569' }}>
+                    {user.role === 'ADMIN' ? 'admin 1' : 'user'}
+                  </div>
                 </div>
-                <div style={{ fontSize: '10.5px', color: '#475569' }}>
-                  {user.role === 'ADMIN' ? 'admin 1' : 'user'}
+              </button>
+
+              {showProfileDropdown && (
+                <div
+                  className="mobile-profile-popover"
+                  role="dialog"
+                  aria-label="Informasi profil aktif"
+                  style={{
+                    position: 'absolute',
+                    top: '48px',
+                    right: 0,
+                    minWidth: '215px',
+                    maxWidth: 'calc(100vw - 24px)',
+                    background: '#FFFFFF',
+                    borderRadius: '12px',
+                    border: '1px solid #CBD5E1',
+                    boxShadow: '0 12px 28px -5px rgba(15, 23, 42, 0.16), 0 6px 12px -6px rgba(15, 23, 42, 0.08)',
+                    padding: '12px 14px',
+                    zIndex: 120,
+                    animation: 'fadeIn 0.15s ease-out',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      paddingBottom: '8px',
+                      marginBottom: '10px',
+                      borderBottom: '1px solid #F1F5F9'
+                    }}
+                  >
+                    <span style={{ fontSize: '11px', color: '#64748B', letterSpacing: '0.2px' }}>
+                      Profil Sedang Digunakan
+                    </span>
+                    <span
+                      style={{
+                        width: '7px',
+                        height: '7px',
+                        borderRadius: '50%',
+                        backgroundColor: '#16A34A',
+                        display: 'inline-block',
+                        flexShrink: 0
+                      }}
+                      title="Aktif"
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        backgroundColor: '#F8FAFC',
+                        border: '1px solid #E2E8F0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#0F172A"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </div>
+
+                    <div style={{ minWidth: 0, textAlign: 'left', lineHeight: 1.35 }}>
+                      <div
+                        style={{
+                          fontSize: '13.5px',
+                          color: '#0F172A',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {user.username || 'admin'}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '11.5px',
+                          color: '#64748B',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {user.role === 'ADMIN'
+                          ? 'admin 1 · Administrator'
+                          : user.branch
+                            ? `user · Branch ${formatBranch(user.branch)}`
+                            : 'user'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           ) : (
             <button
               type="button"

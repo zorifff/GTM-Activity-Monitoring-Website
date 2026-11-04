@@ -115,9 +115,10 @@ const Dashboard = memo(function Dashboard({
         aria-label="Distribusi Kategori ODP dan Sebaran Proyek per Branch"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
           gap: '20px',
-          width: '100%'
+          width: '100%',
+          minWidth: 0
         }}
       >
         <OdpStatusDonutCard

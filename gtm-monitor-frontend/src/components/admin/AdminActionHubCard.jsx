@@ -134,7 +134,8 @@ export default function AdminActionHubCard({
         padding: '24px 28px',
         display: 'flex',
         flexDirection: 'column',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        minWidth: 0
       }}
     >
       {/* Header Segmen */}
@@ -158,13 +159,15 @@ export default function AdminActionHubCard({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '20px',
+              flexWrap: 'wrap',
+              gap: '12px 20px',
               padding: '14px 20px',
               borderRadius: '12px',
               background: '#F8FAFC',
               border: '1px solid #E2E8F0',
               transition: 'all 0.15s ease',
-              position: 'relative'
+              position: 'relative',
+              minWidth: 0
             }}
           >
             {/* Sisi Kiri: Judul + Tanda Hint + Badge (Tanpa Icon Besar, Tanpa Subtext) */}
@@ -174,7 +177,8 @@ export default function AdminActionHubCard({
                 alignItems: 'center',
                 gap: '8px',
                 flexWrap: 'wrap',
-                flex: 1
+                flex: '1 1 200px',
+                minWidth: 0
               }}
             >
               <span style={{ fontFamily: 'var(--font-body)', fontSize: '13.5px', color: '#0F172A', letterSpacing: '-0.1px' }}>
@@ -230,7 +234,7 @@ export default function AdminActionHubCard({
                       left: '0',
                       zIndex: 60,
                       width: '350px',
-                      maxWidth: 'calc(100vw - 40px)',
+                      maxWidth: 'calc(100vw - 48px)',
                       backgroundColor: '#FFFFFF',
                       borderRadius: '12px',
                       border: '1px solid #E2E8F0',
@@ -301,7 +305,7 @@ export default function AdminActionHubCard({
             </div>
 
             {/* Sisi Kanan: Tombol Sejajar Presisi (170px) */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', minWidth: '170px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', minWidth: '170px', flex: '0 1 auto' }}>
               <button
                 type="button"
                 onClick={() => onOpenModal(act.id)}
