@@ -133,13 +133,29 @@ export default function AppSidebar({
           </button>
         </div>
 
+        <div
+          style={{
+            padding: '0 24px',
+            marginBottom: '10px',
+            fontSize: '11px',
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: 'rgba(255, 255, 255, 0.55)',
+            userSelect: 'none'
+          }}
+        >
+          MENU
+        </div>
+
         <nav
           aria-label="Menu Utama"
+          className="sidebar-nav-menu"
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '4px',
-            width: '100%'
+            gap: '6px',
+            width: '100%',
+            alignItems: 'stretch'
           }}
         >
           {/* 1. Dashboard */}
@@ -455,7 +471,7 @@ export default function AppSidebar({
                 gap: '24px',
                 borderRadius: '8px',
                 backgroundColor: '#FFFFFF',
-                color: '#800000',
+                color: '#0F172A',
                 border: 'none',
                 cursor: 'pointer',
                 textAlign: 'left',
@@ -492,9 +508,8 @@ export default function AppSidebar({
                 className="sidebar-logout-label"
                 style={{
                   fontFamily: 'var(--font-heading)',
-                  fontSize: '15px',
-                  fontWeight: 600,
-                  color: '#800000',
+                  fontSize: '13.5px',
+                  color: '#0F172A',
                   letterSpacing: '-0.1px',
                   whiteSpace: 'nowrap'
                 }}
@@ -517,7 +532,6 @@ export default function AppSidebar({
                 background: '#FFFFFF',
                 color: '#021329',
                 fontSize: '13px',
-                fontWeight: 600,
                 border: 'none',
                 cursor: 'pointer',
                 textAlign: 'center',

@@ -20,7 +20,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
@@ -34,7 +33,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '48px',
-            fontWeight: 600,
             color: '#0F172A',
             letterSpacing: '-1.5px',
             margin: '18px 0 16px 0',
@@ -48,7 +46,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           <span
             style={{
               fontSize: '20px',
-              fontWeight: 500,
               color: '#64748B',
               letterSpacing: '-0.2px',
               marginLeft: '6px'
@@ -61,7 +58,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             height: '24px',
             display: 'flex',
@@ -71,7 +67,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           Tersebar di{' '}
           <span
             style={{
-              fontWeight: 600,
               color: '#1E293B',
               fontVariantNumeric: 'tabular-nums',
               fontFeatureSettings: '"tnum"',
@@ -102,7 +97,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
@@ -116,7 +110,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '48px',
-            fontWeight: 600,
             color: '#0F172A',
             letterSpacing: '-1.5px',
             margin: '18px 0 16px 0',
@@ -130,7 +123,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           <span
             style={{
               fontSize: '20px',
-              fontWeight: 500,
               color: '#64748B',
               letterSpacing: '-0.2px',
               marginLeft: '6px'
@@ -143,7 +135,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             height: '24px',
             display: 'flex',
@@ -153,7 +144,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           Kapasitas:{' '}
           <span
             style={{
-              fontWeight: 600,
               color: '#1E293B',
               fontVariantNumeric: 'tabular-nums',
               fontFeatureSettings: '"tnum"',
@@ -186,7 +176,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
@@ -200,7 +189,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '48px',
-            fontWeight: 600,
             color: '#0F172A',
             letterSpacing: '-1.5px',
             margin: '18px 0 16px 0',
@@ -214,7 +202,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           <span
             style={{
               fontSize: '20px',
-              fontWeight: 500,
               color: '#64748B',
               letterSpacing: '-0.2px',
               marginLeft: '6px'
@@ -227,7 +214,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             height: '24px',
             display: 'flex',
@@ -256,7 +242,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             whiteSpace: 'nowrap',
             letterSpacing: '-0.1px',
@@ -270,7 +255,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
         <div
           style={{
             fontSize: '48px',
-            fontWeight: 600,
             color: '#0F172A',
             letterSpacing: '-1.5px',
             margin: '18px 0 16px 0',
@@ -286,7 +270,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           style={{
             fontSize: '13px',
             color: '#64748B',
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             height: '24px',
             display: 'flex',
@@ -296,7 +279,6 @@ export default function AdminKpiGrid({ priorityBranches = [], stats = {}, totalP
           Terverifikasi:{' '}
           <span
             style={{
-              fontWeight: 600,
               color: '#1E293B',
               fontVariantNumeric: 'tabular-nums',
               fontFeatureSettings: '"tnum"',

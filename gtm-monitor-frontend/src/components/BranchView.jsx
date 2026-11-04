@@ -85,13 +85,13 @@ const BranchView = memo(function BranchView({
   if (!branch) {
     return (
       <div style={{ padding: '60px 20px', textAlign: 'center', background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', margin: '24px 0' }}>
-        <div style={{ fontSize: '16px', fontWeight: 600, color: '#0F172A', marginBottom: '8px' }}>
+        <div style={{ fontSize: '16px', color: '#0F172A', marginBottom: '8px' }}>
           Data Branch "{activeBranch}" Tidak Ditemukan
         </div>
         <button
           type="button"
           onClick={goDashboard}
-          style={{ padding: '8px 20px', borderRadius: '8px', background: '#800000', color: '#FFF', border: 'none', fontWeight: 600, cursor: 'pointer', marginTop: '12px', fontSize: '13px' }}
+          style={{ padding: '8px 20px', borderRadius: '8px', background: '#800000', color: '#FFF', border: 'none', cursor: 'pointer', marginTop: '12px', fontSize: '13px' }}
         >
           Kembali ke Monitoring
         </button>
@@ -103,7 +103,7 @@ const BranchView = memo(function BranchView({
     <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
       {/* Header Title */}
       <div className="page-title-header" style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', fontWeight: 600, color: '#0F172A', margin: 0, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', color: '#0F172A', margin: 0, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
           Branch {formatBranch(branch.name)}
         </h1>
       </div>
@@ -128,7 +128,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -142,7 +141,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -156,7 +154,6 @@ const BranchView = memo(function BranchView({
             <span
               style={{
                 fontSize: '20px',
-                fontWeight: 500,
                 color: '#64748B',
                 letterSpacing: '-0.2px',
                 marginLeft: '6px'
@@ -169,7 +166,6 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -198,7 +194,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -212,7 +207,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -226,7 +220,6 @@ const BranchView = memo(function BranchView({
             <span
               style={{
                 fontSize: '20px',
-                fontWeight: 500,
                 color: '#64748B',
                 letterSpacing: '-0.2px',
                 marginLeft: '6px'
@@ -239,7 +232,6 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -248,7 +240,6 @@ const BranchView = memo(function BranchView({
           >
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -279,7 +270,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -293,7 +283,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -307,7 +296,6 @@ const BranchView = memo(function BranchView({
             <span
               style={{
                 fontSize: '20px',
-                fontWeight: 500,
                 color: '#64748B',
                 letterSpacing: '-0.2px',
                 marginLeft: '6px'
@@ -320,7 +308,6 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -329,8 +316,7 @@ const BranchView = memo(function BranchView({
           >
             <span
               style={{
-                fontWeight: 600,
-                color: stats.actUploaded > 0 ? '#B45309' : '#1E293B',
+                color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
                 marginRight: '4px'
@@ -359,7 +345,6 @@ const BranchView = memo(function BranchView({
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
             color: '#0F172A',
-            fontWeight: 600,
             fontSize: '13px',
             padding: '0 18px',
             height: '42px',
@@ -471,7 +456,7 @@ const BranchView = memo(function BranchView({
           justifyContent: 'center',
           gap: '6px'
         }}>
-          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.1px' }}>
+          <div style={{ fontSize: '15px', color: '#0F172A', letterSpacing: '-0.1px' }}>
             Tidak ada proyek yang sesuai kriteria
           </div>
           <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '440px', lineHeight: 1.5 }}>

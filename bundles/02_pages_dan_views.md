@@ -9,22 +9,21 @@
 - `gtm-monitor-frontend/src/components/UploadView.jsx` (876 baris)
 - `gtm-monitor-frontend/src/components/BranchView.jsx` (494 baris)
 - `gtm-monitor-frontend/src/components/AdminPanel.jsx` (91 baris)
-- `gtm-monitor-frontend/src/components/LandingPage.jsx` (142 baris)
-- `gtm-monitor-frontend/src/components/Auth/LoginPage.jsx` (429 baris)
+- `gtm-monitor-frontend/src/components/LandingPage.jsx` (266 baris)
+- `gtm-monitor-frontend/src/components/Auth/LoginModal.jsx` (345 baris)
 - `gtm-monitor-frontend/src/components/Auth/TurnstileWidget.jsx` (74 baris)
 
 **Total Baris Kode**: 2.597 baris
 
 ---
 
-## File: `gtm-monitor-frontend/src/routes/pages.jsx` (132 baris)
+## File: `gtm-monitor-frontend/src/routes/pages.jsx` (136 baris)
 
 ```javascript
 // Halaman-halaman rute: menghubungkan URL & data (TanStack Query, lewat AppLayout) ke komponen tampilan
 import { useCallback, useMemo } from 'react';
 import { Navigate, useNavigate, useOutletContext, useParams } from 'react-router';
 import LandingPage from '../components/LandingPage';
-import LoginPage from '../components/Auth/LoginPage';
 import Dashboard from '../components/Dashboard';
 import BranchView from '../components/BranchView';
 import UploadView from '../components/UploadView';
@@ -36,11 +35,13 @@ import { useActivityActions } from '../hooks/useActivityActions';
 import { PATHS } from './paths';
 
 export function LandingRoute() {
-  const navigate = useNavigate();
+  const { login } = useAuth();
   return (
     <LandingPage
-      onLoginClick={() => navigate(PATHS.login)}
-      onExplore={() => navigate(PATHS.login)}
+      initialLoginOpen={false}
+      onLoginSuccess={(loggedInUser, expiresAt) => {
+        login(loggedInUser, expiresAt);
+      }}
     />
   );
 }
@@ -49,11 +50,12 @@ export function LoginRoute() {
   const navigate = useNavigate();
   const { login } = useAuth();
   return (
-    <LoginPage
+    <LandingPage
+      initialLoginOpen={true}
       onLoginSuccess={(loggedInUser, expiresAt) => {
         login(loggedInUser, expiresAt);
       }}
-      onBackToLanding={() => navigate(PATHS.landing)}
+      onCloseLoginRoute={() => navigate(PATHS.landing, { replace: true })}
     />
   );
 }
@@ -141,14 +143,16 @@ export function AdminRoute() {
   const { branches, refreshMonitoring } = useOutletContext();
   const { uploadPhoto, verifyActivity, rejectActivity, deletePhoto } = useActivityActions();
   return (
-    <AdminPanel
-      branches={branches}
-      onUpdate={refreshMonitoring}
-      verifyActivity={verifyActivity}
-      rejectActivity={rejectActivity}
-      uploadPhoto={uploadPhoto}
-      deletePhoto={deletePhoto}
-    />
+    <section id="admin-section" style={{ scrollMarginTop: '80px' }}>
+      <AdminPanel
+        branches={branches}
+        onUpdate={refreshMonitoring}
+        verifyActivity={verifyActivity}
+        rejectActivity={rejectActivity}
+        uploadPhoto={uploadPhoto}
+        deletePhoto={deletePhoto}
+      />
+    </section>
   );
 }
 
@@ -342,7 +346,7 @@ export default Dashboard;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/UploadView.jsx` (876 baris)
+## File: `gtm-monitor-frontend/src/components/UploadView.jsx` (859 baris)
 
 ```javascript
 import { useState, useEffect, useMemo, useRef, memo } from 'react';
@@ -622,7 +626,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -636,7 +639,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -652,7 +654,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -662,7 +663,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             Kapasitas:{' '}
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -695,7 +695,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -709,7 +708,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -723,7 +721,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             <span
               style={{
                 fontSize: '20px',
-                fontWeight: 500,
                 color: '#64748B',
                 letterSpacing: '-0.2px',
                 marginLeft: '6px'
@@ -736,7 +733,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -746,7 +742,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             Mencakup{' '}
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -777,7 +772,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -791,7 +785,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -807,7 +800,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -817,7 +809,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             Terverifikasi:{' '}
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -838,7 +829,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         {/* Branch Dropdown */}
         {branches.length === 1 ? (
           <div className="branch-filter-capsule" style={{ height: '42px', minWidth: 'auto', border: '1px solid #CBD5E1', color: '#0F172A', display: 'flex', alignItems: 'center', padding: '0 16px', borderRadius: '10px', background: '#FFFFFF', boxSizing: 'border-box' }}>
-            <span className="branch-text-label" style={{ fontWeight: 600, fontSize: '13px' }}>Branch: {formatBranch(branches[0].name)}</span>
+            <span className="branch-text-label" style={{ fontSize: '13px' }}>Branch: {formatBranch(branches[0].name)}</span>
           </div>
         ) : (
           <div ref={branchDropdownRef} style={{ position: 'relative' }}>
@@ -867,7 +858,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#94A3B8'; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#CBD5E1'; }}
             >
-              <span className="branch-text-label" style={{ flex: 1, fontWeight: 600, color: '#0F172A', fontSize: '13px' }}>
+              <span className="branch-text-label" style={{ flex: 1, color: '#0F172A', fontSize: '13px' }}>
                 {selectedBranch === 'Semua Branch' 
                   ? `Semua Branch (${totalProjects})` 
                   : `${formatBranch(selectedBranch)} (${priorityBranches.find(x => x.name === selectedBranch)?.projects?.length || 0})`}
@@ -884,7 +875,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                   aria-selected={selectedBranch === 'Semua Branch'}
                   className={`dropdown-item ${selectedBranch === 'Semua Branch' ? 'active' : ''}`}
                   onClick={() => { setSelectedBranch('Semua Branch'); setIsDropdownOpen(false); }}
-                  style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === 'Semua Branch' ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', fontWeight: selectedBranch === 'Semua Branch' ? 600 : 500, color: '#0F172A', cursor: 'pointer' }}
+                  style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === 'Semua Branch' ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', color: '#0F172A', cursor: 'pointer' }}
                 >
                   Semua Branch ({totalProjects})
                 </button>
@@ -896,7 +887,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                     aria-selected={selectedBranch === b.name}
                     className={`dropdown-item ${selectedBranch === b.name ? 'active' : ''}`}
                     onClick={() => { setSelectedBranch(b.name); setIsDropdownOpen(false); }}
-                    style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === b.name ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', fontWeight: selectedBranch === b.name ? 600 : 500, color: '#0F172A', cursor: 'pointer' }}
+                    style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === b.name ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', color: '#0F172A', cursor: 'pointer' }}
                   >
                     {formatBranch(b.name)} ({b.projects?.length || 0})
                   </button>
@@ -925,13 +916,12 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 padding: '0 16px',
                 borderRadius: '10px',
                 fontSize: '13px',
-                fontWeight: 600,
                 flexShrink: 0,
                 boxSizing: 'border-box',
                 transition: 'all 0.15s ease',
-                border: isStatusFiltered ? '1.5px solid #800000' : '1px solid #CBD5E1',
-                backgroundColor: isStatusFiltered ? '#FFF5F5' : '#FFFFFF',
-                color: isStatusFiltered ? '#800000' : '#0F172A',
+                border: isStatusFiltered ? '1.5px solid #0F172A' : '1px solid #CBD5E1',
+                backgroundColor: isStatusFiltered ? '#F1F5F9' : '#FFFFFF',
+                color: '#0F172A',
                 boxShadow: 'none'
               }}
               onMouseEnter={(e) => {
@@ -947,7 +937,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 }
               }}
             >
-              <span className="status-text-label" style={{ fontWeight: 600, fontSize: '13px' }}>
+              <span className="status-text-label" style={{ fontSize: '13px' }}>
                 Status ({statusMatchingProjectsCount})
               </span>
               <svg
@@ -955,7 +945,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 height="14"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke={isStatusFiltered ? '#800000' : '#64748B'}
+                stroke={isStatusFiltered ? '#0F172A' : '#64748B'}
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -987,7 +977,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                   padding: '12px',
                   fontSize: '12px',
                   color: '#334155',
-                  fontWeight: 500,
                   textAlign: 'left'
                 }}
               >
@@ -999,7 +988,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                     gap: '8px',
                     padding: '4px 2px',
                     cursor: 'pointer',
-                    fontWeight: 600,
                     borderBottom: '1px solid #F1F5F9',
                     marginBottom: '6px',
                     fontSize: '12px',
@@ -1019,7 +1007,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                     style={{ cursor: 'pointer' }}
                   />
                   <span>(Pilih Semua)</span>
-                  <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', fontWeight: 600 }}>
+                  <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px' }}>
                     ({totalProjectsInFilter})
                   </span>
                 </label>
@@ -1060,10 +1048,10 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                           }}
                           style={{ cursor: 'pointer', flexShrink: 0 }}
                         />
-                        <span style={{ fontSize: '12px', color: '#0F172A', fontWeight: isChecked ? 600 : 500 }}>
+                        <span style={{ fontSize: '12px', color: '#0F172A',  }}>
                           {st}
                         </span>
-                        <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', fontWeight: 600 }}>
+                        <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', }}>
                           ({count})
                         </span>
                       </label>
@@ -1130,7 +1118,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
             color: '#0F172A',
-            fontWeight: 600,
             fontSize: '13px',
             padding: '0 18px',
             height: '42px',
@@ -1200,7 +1187,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           justifyContent: 'center',
           gap: '6px'
         }}>
-          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.1px' }}>
+          <div style={{ fontSize: '15px', color: '#0F172A', letterSpacing: '-0.1px' }}>
             {isAdmin && isStatusFiltered 
               ? 'Tidak ada proyek dengan status terpilih' 
               : 'Tidak ada proyek yang sesuai kriteria'}
@@ -1225,7 +1212,7 @@ export default UploadView;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/BranchView.jsx` (494 baris)
+## File: `gtm-monitor-frontend/src/components/BranchView.jsx` (479 baris)
 
 ```javascript
 import { useState, useMemo, memo } from 'react';
@@ -1315,13 +1302,13 @@ const BranchView = memo(function BranchView({
   if (!branch) {
     return (
       <div style={{ padding: '60px 20px', textAlign: 'center', background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E2E8F0', margin: '24px 0' }}>
-        <div style={{ fontSize: '16px', fontWeight: 600, color: '#0F172A', marginBottom: '8px' }}>
+        <div style={{ fontSize: '16px', color: '#0F172A', marginBottom: '8px' }}>
           Data Branch "{activeBranch}" Tidak Ditemukan
         </div>
         <button
           type="button"
           onClick={goDashboard}
-          style={{ padding: '8px 20px', borderRadius: '8px', background: '#800000', color: '#FFF', border: 'none', fontWeight: 600, cursor: 'pointer', marginTop: '12px', fontSize: '13px' }}
+          style={{ padding: '8px 20px', borderRadius: '8px', background: '#800000', color: '#FFF', border: 'none', cursor: 'pointer', marginTop: '12px', fontSize: '13px' }}
         >
           Kembali ke Monitoring
         </button>
@@ -1333,7 +1320,7 @@ const BranchView = memo(function BranchView({
     <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
       {/* Header Title */}
       <div className="page-title-header" style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', fontWeight: 600, color: '#0F172A', margin: 0, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontSize: '28px', color: '#0F172A', margin: 0, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
           Branch {formatBranch(branch.name)}
         </h1>
       </div>
@@ -1358,7 +1345,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -1372,7 +1358,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -1386,7 +1371,6 @@ const BranchView = memo(function BranchView({
             <span
               style={{
                 fontSize: '20px',
-                fontWeight: 500,
                 color: '#64748B',
                 letterSpacing: '-0.2px',
                 marginLeft: '6px'
@@ -1399,7 +1383,6 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -1428,7 +1411,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -1442,7 +1424,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -1456,7 +1437,6 @@ const BranchView = memo(function BranchView({
             <span
               style={{
                 fontSize: '20px',
-                fontWeight: 500,
                 color: '#64748B',
                 letterSpacing: '-0.2px',
                 marginLeft: '6px'
@@ -1469,7 +1449,6 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -1478,7 +1457,6 @@ const BranchView = memo(function BranchView({
           >
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -1509,7 +1487,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -1523,7 +1500,6 @@ const BranchView = memo(function BranchView({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -1537,7 +1513,6 @@ const BranchView = memo(function BranchView({
             <span
               style={{
                 fontSize: '20px',
-                fontWeight: 500,
                 color: '#64748B',
                 letterSpacing: '-0.2px',
                 marginLeft: '6px'
@@ -1550,7 +1525,6 @@ const BranchView = memo(function BranchView({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -1559,8 +1533,7 @@ const BranchView = memo(function BranchView({
           >
             <span
               style={{
-                fontWeight: 600,
-                color: stats.actUploaded > 0 ? '#B45309' : '#1E293B',
+                color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
                 marginRight: '4px'
@@ -1589,7 +1562,6 @@ const BranchView = memo(function BranchView({
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
             color: '#0F172A',
-            fontWeight: 600,
             fontSize: '13px',
             padding: '0 18px',
             height: '42px',
@@ -1700,7 +1672,7 @@ const BranchView = memo(function BranchView({
           justifyContent: 'center',
           gap: '6px'
         }}>
-          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.1px' }}>
+          <div style={{ fontSize: '15px', color: '#0F172A', letterSpacing: '-0.1px' }}>
             Tidak ada proyek yang sesuai kriteria
           </div>
           <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '440px', lineHeight: 1.5 }}>
@@ -1824,10 +1796,19 @@ export default AdminPanel;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/LandingPage.jsx` (142 baris)
+## File: `gtm-monitor-frontend/src/components/LandingPage.jsx` (266 baris)
 
 ```javascript
 import { memo } from 'react';
+
+const REGIONAL_BRANCHES = [
+  'SEMARANG',
+  'SURAKARTA',
+  'YOGYAKARTA',
+  'MAGELANG',
+  'PEKALONGAN',
+  'PURWOKERTO'
+];
 
 const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
   const handleLogin = (e) => {
@@ -1849,119 +1830,232 @@ const LandingPage = memo(function LandingPage({ onLoginClick, onExplore }) {
         minHeight: '100dvh',
         height: '100dvh',
         margin: 0,
-        padding: 0,
+        padding: '24px',
         overflow: 'hidden',
-        backgroundImage: "url('/landing-bg.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        fontFamily: 'var(--font-body)',
-        boxSizing: 'border-box'
+        backgroundColor: '#021329',
+        fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, var(--font-body))",
+        fontWeight: 400,
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}
     >
-      {/* Dark Vignette Overlay on the Left Side to ensure high contrast & legibility */}
+      {/* Architectural Navy Networking & Angular Planes Background */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.45) 36%, rgba(0, 0, 0, 0.12) 65%, transparent 100%)',
-          zIndex: 1,
+          zIndex: 0,
+          overflow: 'hidden',
           pointerEvents: 'none'
-        }}
-      />
-
-      {/* Top Left: Telkomsel White Container Badge (Flush against the left screen edge) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 'clamp(36px, 5.5vh, 48px)',
-          left: 0,
-          zIndex: 10,
-          backgroundColor: '#FFFFFF',
-          borderRadius: '0 4px 4px 0',
-          padding: '0 24px 0 32px',
-          height: '52px',
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.14)'
         }}
       >
         <img
-          src="/telkomsel-logo.png"
-          alt="Telkomsel"
+          src="/landing-network-mesh.svg"
+          alt=""
+          aria-hidden="true"
+          width="1920"
+          height="1080"
+          fetchpriority="high"
           style={{
-            width: '135px',
-            height: 'auto',
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
             display: 'block'
           }}
         />
       </div>
 
-      {/* Center Left: Main Headline & Flat Red Login Button (No Glow Effect) */}
+      {/* Top-Left: Telkomsel Brand Logo (Identical to Sidebar) */}
       <div
         style={{
           position: 'absolute',
-          top: '50%',
-          left: 'clamp(24px, 4.5vw, 56px)',
-          transform: 'translateY(-50%)',
-          maxWidth: '640px',
+          top: 'clamp(24px, 4vh, 36px)',
+          left: 'clamp(24px, 4vw, 44px)',
+          zIndex: 10,
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}
+      >
+        <img
+          src="/telkomsel-symbol.png"
+          alt=""
+          aria-hidden="true"
+          style={{
+            height: '28px',
+            width: 'auto',
+            display: 'block',
+            filter: 'drop-shadow(0 0 1px rgba(255, 255, 255, 0.9)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25))'
+          }}
+        />
+        <img
+          src="/telkomsel-logo.png"
+          alt="Telkomsel"
+          style={{
+            height: '22px',
+            width: 'auto',
+            display: 'block',
+            filter: 'brightness(0) invert(1)'
+          }}
+        />
+      </div>
+
+{/* Center: Architectural Hero Composition */}
+      <div
+        style={{
+          maxWidth: '880px',
+          width: '100%',
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'flex-start'
+          alignItems: 'center',
+          textAlign: 'center',
+          padding: '0 16px',
+          marginBottom: '28px'
         }}
       >
+
+        {/* 2. Two-Tone Headline in Gordita Regular (Ref #2 & Ref #3 style) */}
         <h1
           style={{
-            fontFamily: 'var(--font-heading)',
+            fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
             color: '#FFFFFF',
-            fontSize: 'clamp(32px, 3.8vw, 52px)',
-            fontWeight: 800,
-            lineHeight: 1.18,
-            letterSpacing: '-0.5px',
-            margin: '0 0 32px 0',
-            textShadow: '0 2px 12px rgba(0, 0, 0, 0.55)',
+            fontSize: 'clamp(32px, 4.3vw, 56px)',
+            fontWeight: 400,
+            lineHeight: 1.22,
+            letterSpacing: '-0.3px',
+            margin: '0 0 22px 0',
             userSelect: 'none'
           }}
         >
-          Platform Pemantauan<br />
-          Okupansi ODP<br />
-          Regional Jawa Tengah<br />
-          dan Yogyakarta
+          <span style={{ color: '#FFFFFF' }}>
+            Monitoring Okupansi ODP
+          </span>
+          <br />
+          <span style={{ color: '#7DD3FC' }}>
+            Regional Jateng &amp; DIY
+          </span>
         </h1>
 
+        {/* 3. Concise Supporting Sub-Headline */}
+        <p
+          style={{
+            fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
+            fontSize: 'clamp(13.5px, 1.15vw, 15.5px)',
+            fontWeight: 400,
+            color: 'rgba(203, 213, 225, 0.78)',
+            lineHeight: 1.65,
+            maxWidth: '580px',
+            margin: '0 0 36px 0'
+          }}
+        >
+          Sistem pemantauan utilisasi kapasitas port ODP Greenfield, verifikasi kegiatan lapangan,
+          dan evaluasi distribusi Sales Force secara terpadu.
+        </p>
+
+        {/* 4. Transparent Ghost Login Button with Precision Rim Highlight */}
         <button
           type="button"
           id="landing-login-btn"
           onClick={handleLogin}
           style={{
-            backgroundColor: '#800000',
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
             color: '#FFFFFF',
-            border: 'none',
-            borderRadius: '12px',
-            padding: '11px 44px',
-            fontSize: '17px',
-            fontWeight: 700,
+            border: '1.5px solid rgba(186, 230, 253, 0.55)',
+            borderRadius: '10px',
+            padding: '12px 56px',
+            fontSize: '16px',
+            fontWeight: 400,
             cursor: 'pointer',
-            boxShadow: 'none', // Strictly no glow effect
-            fontFamily: 'var(--font-body)',
+            boxShadow: 'none',
+            fontFamily: "'Gordita', 'Gordita-Regular', var(--font-landing, sans-serif)",
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'background-color 0.2s ease, transform 0.15s ease'
+            transition: 'all 0.2s ease',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#660000';
-            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.backgroundColor = 'rgba(125, 211, 252, 0.14)';
+            e.currentTarget.style.borderColor = '#FFFFFF';
+            e.currentTarget.style.transform = 'translateY(-1px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#800000';
-            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+            e.currentTarget.style.borderColor = 'rgba(186, 230, 253, 0.55)';
+            e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
           Login
         </button>
+      </div>
+
+      {/* Bottom Regional Coverage HUD Strip (Ref #2 & Ref #3 style) */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          borderTop: '1px solid rgba(148, 163, 184, 0.12)',
+          backgroundColor: 'rgba(2, 16, 36, 0.55)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          padding: '14px clamp(20px, 4vw, 44px)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px'
+        }}
+      >
+        <div
+          style={{
+            fontSize: '11px',
+            fontWeight: 400,
+            letterSpacing: '0.12em',
+            color: 'rgba(148, 163, 184, 0.7)',
+            textTransform: 'uppercase'
+          }}
+        >
+          CAKUPAN WILAYAH OPERASIONAL
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: 'clamp(10px, 2vw, 22px)'
+          }}
+        >
+          {REGIONAL_BRANCHES.map((branch, idx) => (
+            <span
+              key={branch}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 'clamp(10px, 2vw, 22px)',
+                fontSize: '11.5px',
+                fontWeight: 400,
+                letterSpacing: '0.1em',
+                color: 'rgba(226, 232, 240, 0.8)'
+              }}
+            >
+              <span>{branch}</span>
+              {idx < REGIONAL_BRANCHES.length - 1 && (
+                <span aria-hidden="true" style={{ color: 'rgba(56, 189, 248, 0.45)' }}>
+                  &bull;
+                </span>
+              )}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -1973,7 +2067,7 @@ export default LandingPage;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/Auth/LoginPage.jsx` (425 baris)
+## File: `gtm-monitor-frontend/src/components/Auth/LoginPage.jsx` (420 baris)
 
 ```javascript
 import { useRef, useState } from 'react';
@@ -2143,29 +2237,24 @@ export default function LoginPage({ onLoginSuccess, onBackToLanding }) {
               top: 'clamp(28px, 6vh, 48px)',
               right: '32px',
               zIndex: 20,
-              background: '#F8FAFC',
-              border: '1px solid #E2E8F0',
-              borderRadius: '20px',
-              padding: '6px 14px',
-              fontSize: '12px',
-              fontWeight: 600,
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              fontSize: '13px',
+              fontWeight: 500,
               color: '#64748B',
               cursor: 'pointer',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.2s ease',
+              gap: '4px',
+              transition: 'color 0.2s ease',
               outline: 'none'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#800000';
-              e.currentTarget.style.borderColor = '#800000';
-              e.currentTarget.style.backgroundColor = '#FFF5F5';
+              e.currentTarget.style.color = '#0F172A';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color = '#64748B';
-              e.currentTarget.style.borderColor = '#E2E8F0';
-              e.currentTarget.style.backgroundColor = '#F8FAFC';
             }}
           >
             <span>← Kembali ke Beranda</span>

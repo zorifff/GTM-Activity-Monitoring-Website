@@ -107,14 +107,13 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
     >
       {/* ─── HEADER KARTU ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
-        <div style={{ fontSize: '15px', fontWeight: 600, color: '#475569', letterSpacing: '-0.1px' }}>
+        <div style={{ fontSize: '15px', color: '#475569', letterSpacing: '-0.1px' }}>
           Sebaran Volume Proyek per Branch
         </div>
 
         <span
           style={{
             fontSize: '12px',
-            fontWeight: 500,
             color: '#475569'
           }}
         >
@@ -204,7 +203,6 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: isHovered ? 600 : 500,
                       color: isHovered ? '#0F172A' : '#334155',
                       whiteSpace: 'nowrap'
                     }}
@@ -217,17 +215,15 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: 500,
                       color: '#0F172A',
                       fontVariantNumeric: 'tabular-nums'
                     }}
                   >
-                    {slice.count} <span style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 500 }}>proj</span>
+                    {slice.count} <span style={{ fontSize: '10.5px', color: '#64748B', }}>proj</span>
                   </span>
                   <span
                     style={{
                       fontSize: '11px',
-                      fontWeight: 600,
                       color: '#64748B',
                       fontVariantNumeric: 'tabular-nums',
                       minWidth: '38px',

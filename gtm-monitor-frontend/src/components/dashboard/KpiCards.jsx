@@ -28,7 +28,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
       {/* ─── CARD 1: TOTAL OCCUPANCY RATE ─── */}
       <div className="kpi-metric-card kpi-card-animated stagger-1">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '22px' }}>
-          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Total Occupancy Rate
           </span>
           {safeKpi.gapWoW != null && (
@@ -41,7 +41,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
         <div>
           <div style={{ 
             fontSize: '28px', 
-            fontWeight: 800, 
             color: '#0F172A', 
             letterSpacing: '-0.5px',
             fontVariantNumeric: 'tabular-nums',
@@ -65,7 +64,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
           </div>
         </div>
 
-        <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
+        <div style={{ fontSize: '12px', color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
           {countTotalUsed} dari {countTotalPort} port terpakai
         </div>
       </div>
@@ -73,12 +72,11 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
       {/* ─── CARD 2: PORT TERSEDIA ─── */}
       <div className="kpi-metric-card kpi-card-animated stagger-2">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '22px' }}>
-          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Port Tersedia
           </span>
           <span style={{ 
             fontSize: '11px', 
-            fontWeight: 600, 
             padding: '2px 8px', 
             background: '#F1F5F9', 
             color: '#475569', 
@@ -91,7 +89,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
         <div>
           <div style={{ 
             fontSize: '28px', 
-            fontWeight: 800, 
             color: '#0F172A', 
             letterSpacing: '-0.5px',
             fontVariantNumeric: 'tabular-nums',
@@ -115,7 +112,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
           </div>
         </div>
 
-        <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
+        <div style={{ fontSize: '12px', color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
           Total kapasitas {countTotalPort} port di {countOdpCount} ODP
         </div>
       </div>
@@ -123,12 +120,11 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
       {/* ─── CARD 3: TOTAL ODP TERPANTAU ─── */}
       <div className="kpi-metric-card kpi-card-animated stagger-3">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '22px' }}>
-          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Total ODP Terpantau
           </span>
           <span style={{ 
             fontSize: '11px', 
-            fontWeight: 600, 
             padding: '2px 8px', 
             background: '#F1F5F9', 
             color: '#475569', 
@@ -141,7 +137,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
         <div>
           <div style={{ 
             fontSize: '28px', 
-            fontWeight: 800, 
             color: '#0F172A', 
             letterSpacing: '-0.5px',
             fontVariantNumeric: 'tabular-nums',
@@ -187,7 +182,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
                 gap: '3.5px', 
                 fontSize: '11px', 
                 color: '#475569', 
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums'
               }}
             >
@@ -201,12 +195,11 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
       {/* ─── CARD 4: AKTIVITAS GTM SELESAI ─── */}
       <div className="kpi-metric-card kpi-card-animated stagger-4">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '22px' }}>
-          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Aktivitas GTM Selesai
           </span>
           <span style={{ 
             fontSize: '11px', 
-            fontWeight: 600, 
             padding: '2px 8px', 
             background: '#F1F5F9', 
             color: '#475569', 
@@ -219,7 +212,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
         <div>
           <div style={{ 
             fontSize: '28px', 
-            fontWeight: 800, 
             color: '#0F172A', 
             letterSpacing: '-0.5px',
             fontVariantNumeric: 'tabular-nums',
@@ -243,7 +235,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
           </div>
         </div>
 
-        <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
+        <div style={{ fontSize: '12px', color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
           {countActVerified} terverifikasi · {countActUploaded} diunggah · {countActPending} belum
         </div>
       </div>

@@ -76,8 +76,8 @@ export default function ProgramUploadModal({
                 width: '38px',
                 height: '38px',
                 borderRadius: '10px',
-                background: '#FEF2F2',
-                color: '#800000',
+                background: '#F1F5F9',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -91,10 +91,10 @@ export default function ProgramUploadModal({
               </svg>
             </div>
             <div>
-              <h3 id="program-modal-title" style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+              <h3 id="program-modal-title" style={{ margin: 0, fontSize: '17px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                 Upload Gambar Tracking Program
               </h3>
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
+              <span style={{ fontSize: '12px', color: '#64748B', }}>
                 Unggah flyer program bulanan &amp; pindai teks link detail (OCR)
               </span>
             </div>
@@ -114,7 +114,6 @@ export default function ProgramUploadModal({
                   background: '#F8FAFC',
                   color: '#475569',
                   fontSize: '13px',
-                  fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -136,7 +135,6 @@ export default function ProgramUploadModal({
                 background: '#F1F5F9',
                 color: '#64748B',
                 fontSize: '14px',
-                fontWeight: 700,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -152,7 +150,7 @@ export default function ProgramUploadModal({
         <form onSubmit={handleProgramUpload} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Pilih Periode */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>Pilih Periode Bulan:</label>
+            <label style={{ fontSize: '12.5px', color: '#334155' }}>Pilih Periode Bulan:</label>
             <select
               value={programMonthLabel}
               onChange={(e) => setProgramMonthLabel(e.target.value)}
@@ -164,7 +162,6 @@ export default function ProgramUploadModal({
                 background: '#F8FAFC',
                 color: '#0F172A',
                 fontSize: '13px',
-                fontWeight: 600,
                 outline: 'none',
                 cursor: 'pointer'
               }}
@@ -184,7 +181,7 @@ export default function ProgramUploadModal({
 
           {/* Nama Program */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>Nama Program:</label>
+            <label style={{ fontSize: '12.5px', color: '#334155' }}>Nama Program:</label>
             <input
               type="text"
               placeholder="Ketikkan atau pilih nama program..."
@@ -199,7 +196,6 @@ export default function ProgramUploadModal({
                 background: '#FFFFFF',
                 color: '#0F172A',
                 fontSize: '13px',
-                fontWeight: 500,
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -228,8 +224,7 @@ export default function ProgramUploadModal({
                     background: '#EFF6FF',
                     border: '1px solid #BFDBFE',
                     fontSize: '11.5px',
-                    color: '#1D4ED8',
-                    fontWeight: 600,
+                    color: '#0F172A',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px'
@@ -246,8 +241,8 @@ export default function ProgramUploadModal({
 
           {/* Link Manual */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#64748B' }}>
-              Link Manual <span style={{ fontWeight: 400 }}>(Opsional)</span>:
+            <label style={{ fontSize: '12.5px', color: '#64748B' }}>
+              Link Manual <span style={{ }}>(Opsional)</span>:
             </label>
             <input
               type="url"
@@ -261,7 +256,6 @@ export default function ProgramUploadModal({
                 border: '1px solid #CBD5E1',
                 background: '#FFFFFF',
                 fontSize: '12.5px',
-                fontWeight: 500,
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -291,7 +285,6 @@ export default function ProgramUploadModal({
                 border: '1px solid #CBD5E1',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -314,8 +307,7 @@ export default function ProgramUploadModal({
             <span
               style={{
                 fontSize: '12.5px',
-                color: programFile ? '#065F46' : '#94A3B8',
-                fontWeight: programFile ? 600 : 400,
+                color: programFile ? '#0F172A' : '#94A3B8',
                 flex: 1,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -337,9 +329,8 @@ export default function ProgramUploadModal({
                 style={{
                   border: 'none',
                   background: 'transparent',
-                  color: '#800000',
+                  color: '#0F172A',
                   fontSize: '15px',
-                  fontWeight: 700,
                   cursor: 'pointer',
                   padding: '0 4px',
                   lineHeight: 1
@@ -365,33 +356,33 @@ export default function ProgramUploadModal({
           </div>
 
           {programMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {programMessage}
             </div>
           )}
 
           {programError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#800000', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {programError}
             </div>
           )}
 
           {programResultUpload && (
             <div style={{ padding: '14px', borderRadius: '10px', background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>
+              <div style={{ fontSize: '12px', color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>
                 Hasil Upload &amp; OCR Link Scan:
               </div>
               <div style={{ fontSize: '12px', color: '#334155', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div><strong>Status:</strong> <span style={{ color: '#059669', fontWeight: 600 }}>Tersimpan di Cloudinary</span></div>
+                <div><strong>Status:</strong> <span style={{ color: '#0F172A', }}>Tersimpan di Cloudinary</span></div>
                 {programResultUpload.totalSlides > 1 && (
                   <div>
                     <strong>Status Slide:</strong>{' '}
-                    <span style={{ color: '#2563EB', fontWeight: 600 }}>
+                    <span style={{ color: '#0F172A', }}>
                       Slide ke-{programResultUpload.totalSlides} (Total: {programResultUpload.totalSlides} slide gambar)
                     </span>
                   </div>
                 )}
-                <div><strong>Hasil Scan OCR:</strong> <span style={{ color: programResultUpload.scannedLink ? '#2563EB' : '#64748B', fontWeight: 600 }}>{programResultUpload.scannedLink || 'Tidak terdeteksi'}</span></div>
+                <div><strong>Hasil Scan OCR:</strong> <span style={{ color: programResultUpload.scannedLink ? '#0F172A' : '#64748B', }}>{programResultUpload.scannedLink || 'Tidak terdeteksi'}</span></div>
               </div>
             </div>
           )}
@@ -408,7 +399,6 @@ export default function ProgramUploadModal({
                 background: '#FFFFFF',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -425,7 +415,6 @@ export default function ProgramUploadModal({
                 background: programLoading || !programFile ? '#E2E8F0' : '#800000',
                 color: programLoading || !programFile ? '#94A3B8' : '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: programLoading || !programFile ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
                 display: 'inline-flex',

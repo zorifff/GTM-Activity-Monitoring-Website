@@ -30,7 +30,7 @@ export default function PairingImportCard({
         {/* Header Zone */}
         <div style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px', color: '#0F172A', margin: 0 }}>
+            <h3 style={{ fontSize: '16px', letterSpacing: '-0.2px', color: '#0F172A', margin: 0 }}>
               Upload File Excel Data Tsel One Pairing
             </h3>
 
@@ -49,7 +49,6 @@ export default function PairingImportCard({
                 background: '#F8FAFC',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 800,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -76,7 +75,7 @@ export default function PairingImportCard({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>Target Update:</span>
+            <span style={{ fontSize: '12px', color: '#475569' }}>Target Update:</span>
             <div
               style={{
                 padding: '5px 12px',
@@ -85,8 +84,7 @@ export default function PairingImportCard({
                 background: '#F8FAFC',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600
-              }}
+                }}
             >
               Data Tsel One Pairing
             </div>
@@ -118,7 +116,6 @@ export default function PairingImportCard({
                   border: '1px solid #CBD5E1',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -141,8 +138,7 @@ export default function PairingImportCard({
               <span
                 style={{
                   fontSize: '12.5px',
-                  color: pairingFile ? '#065F46' : '#94A3B8',
-                  fontWeight: pairingFile ? 600 : 400,
+                  color: pairingFile ? '#0F172A' : '#94A3B8',
                   flex: 1,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -164,9 +160,8 @@ export default function PairingImportCard({
                   style={{
                     border: 'none',
                     background: 'transparent',
-                    color: '#800000',
+                    color: '#0F172A',
                     fontSize: '15px',
-                    fontWeight: 700,
                     cursor: 'pointer',
                     padding: '0 4px',
                     lineHeight: 1
@@ -194,13 +189,13 @@ export default function PairingImportCard({
           </div>
 
           {pairingMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {pairingMessage}
             </div>
           )}
 
           {pairingError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {pairingError}
             </div>
           )}
@@ -215,7 +210,6 @@ export default function PairingImportCard({
               color: pairingLoading || !pairingFile ? '#94A3B8' : '#FFFFFF',
               border: 'none',
               borderRadius: '10px',
-              fontWeight: 600,
               fontSize: '13px',
               cursor: pairingLoading || !pairingFile ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s ease',

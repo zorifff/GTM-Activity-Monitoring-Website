@@ -31,23 +31,22 @@ export default function ProgramDeleteCard({
         {/* Header Zone */}
         <div style={{ marginBottom: '16px' }}>
           <div>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, letterSpacing: '-0.2px', color: '#0F172A', margin: '0' }}>
+            <h3 style={{ fontSize: '16px', letterSpacing: '-0.2px', color: '#0F172A', margin: '0' }}>
               Hapus Program Terdaftar
             </h3>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>Status Periode:</span>
+            <span style={{ fontSize: '12px', color: '#475569' }}>Status Periode:</span>
             <div
               style={{
                 padding: '5px 12px',
                 borderRadius: '8px',
                 background: deleteAvailablePrograms.length > 0 ? '#ECFDF5' : '#F1F5F9',
                 border: deleteAvailablePrograms.length > 0 ? '1px solid #A7F3D0' : '1px solid #E2E8F0',
-                color: deleteAvailablePrograms.length > 0 ? '#047857' : '#64748B',
+                color: deleteAvailablePrograms.length > 0 ? '#0F172A' : '#64748B',
                 fontSize: '12.5px',
-                fontWeight: 600
-              }}
+                }}
             >
               {deleteAvailablePrograms.length > 0 ? `${deleteAvailablePrograms.length} Program Ditemukan` : 'Tidak Ada Program'}
             </div>
@@ -59,7 +58,7 @@ export default function ProgramDeleteCard({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
             {/* Select Month */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>1. Pilih Periode Bulan:</label>
+              <label style={{ fontSize: '12px', color: '#334155' }}>1. Pilih Periode Bulan:</label>
               <select
                 value={deleteProgramMonth}
                 onChange={(e) => {
@@ -76,7 +75,6 @@ export default function ProgramDeleteCard({
                   background: '#F8FAFC',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   outline: 'none',
                   cursor: 'pointer'
                 }}
@@ -96,7 +94,7 @@ export default function ProgramDeleteCard({
 
             {/* Select Program Option */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
+              <label style={{ fontSize: '12px', color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
               <select
                 value={deleteProgramTarget}
                 onChange={(e) => {
@@ -113,7 +111,6 @@ export default function ProgramDeleteCard({
                   background: deleteAvailablePrograms.length === 0 ? '#F1F5F9' : '#FFFFFF',
                   color: deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   outline: 'none',
                   cursor: deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer'
                 }}
@@ -129,13 +126,13 @@ export default function ProgramDeleteCard({
           </div>
 
           {deleteMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {deleteMessage}
             </div>
           )}
 
           {deleteError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', marginBottom: '16px' }}>
               {deleteError}
             </div>
           )}
@@ -151,7 +148,6 @@ export default function ProgramDeleteCard({
               color: deleteLoading || deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#FFFFFF',
               border: 'none',
               borderRadius: '10px',
-              fontWeight: 600,
               fontSize: '13px',
               cursor: deleteLoading || deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s ease',

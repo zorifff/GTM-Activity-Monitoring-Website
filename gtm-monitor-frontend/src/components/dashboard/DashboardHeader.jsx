@@ -26,7 +26,6 @@ export default function DashboardHeader({
           style={{
             fontFamily: 'var(--font-heading)',
             fontSize: '28px',
-            fontWeight: 600,
             color: '#0F172A',
             margin: 0,
             letterSpacing: '-0.5px',
@@ -42,7 +41,6 @@ export default function DashboardHeader({
               alignItems: 'center',
               gap: '6px',
               fontSize: '12px',
-              fontWeight: 500,
               color: '#64748B',
               marginTop: '6px'
             }}
@@ -95,7 +93,6 @@ export default function DashboardHeader({
                   borderRadius: '8px',
                   border: 'none',
                   fontSize: '13px',
-                  fontWeight: isActive ? 600 : 400,
                   cursor: 'pointer',
                   background: isActive ? '#FFFFFF' : 'transparent',
                   color: isActive ? '#0F172A' : '#475569',

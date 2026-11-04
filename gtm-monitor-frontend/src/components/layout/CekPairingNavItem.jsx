@@ -99,9 +99,8 @@ export default function CekPairingNavItem({ user, setShowLoginModal, customButto
           style={{
             background: 'none',
             border: 'none',
-            color: isPairingDropdownOpen ? '#800000' : '#64748B',
+            color: isPairingDropdownOpen ? '#0F172A' : '#64748B',
             fontSize: '12px',
-            fontWeight: 800,
             letterSpacing: '1.5px',
             cursor: 'pointer',
             transition: 'color 0.2s ease',

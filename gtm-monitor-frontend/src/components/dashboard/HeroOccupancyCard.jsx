@@ -31,7 +31,6 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
         <span
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#FFFFFF',
             letterSpacing: '-0.1px',
             whiteSpace: 'nowrap'
@@ -44,7 +43,6 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
           <span
             style={{
               fontSize: '11px',
-              fontWeight: 600,
               padding: '2px 8px',
               borderRadius: '6px',
               background: 'rgba(255, 255, 255, 0.2)',
@@ -61,7 +59,6 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
       <div
         style={{
           fontSize: '48px',
-          fontWeight: 600,
           lineHeight: 1,
           letterSpacing: '-1.5px',
           margin: '18px 0 16px 0',
@@ -86,12 +83,11 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
           style={{
             fontSize: '13px',
             color: 'rgba(255, 255, 255, 0.9)',
-            fontWeight: 500,
             whiteSpace: 'nowrap'
           }}
         >
-          <span style={{ fontWeight: 600, color: '#FFFFFF' }}>{countTotalUsed}</span> dari{' '}
-          <span style={{ fontWeight: 600, color: '#FFFFFF' }}>{countTotalPort}</span> port
+          <span style={{ color: '#FFFFFF' }}>{countTotalUsed}</span> dari{' '}
+          <span style={{ color: '#FFFFFF' }}>{countTotalPort}</span> port
         </div>
 
         {isAdmin && onReviewBranch && (
@@ -105,8 +101,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
               alignItems: 'center',
               gap: '4px',
               backgroundColor: '#FFFFFF',
-              color: '#800000',
-              fontWeight: 600,
+              color: '#0F172A',
               fontSize: '11.5px',
               padding: '3px 9px',
               borderRadius: '6px',
@@ -117,7 +112,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
               flexShrink: 0
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#FEF2F2';
+              e.currentTarget.style.backgroundColor = '#F1F5F9';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = '#FFFFFF';

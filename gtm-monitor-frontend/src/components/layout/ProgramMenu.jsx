@@ -64,7 +64,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
   }, []);
 
   return (
-    <div ref={programMenuRef} style={{ position: 'relative' }}>
+    <div ref={programMenuRef} style={{ position: 'relative', width: '100%' }}>
       {customButton ? (
         customButton({
           onClick: () => {
@@ -96,10 +96,9 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
         style={{
           background: 'none',
           border: 'none',
-          color: isProgramDropdownOpen ? '#800000' : '#64748B',
+          color: isProgramDropdownOpen ? '#0F172A' : '#64748B',
           fontFamily: 'var(--font-heading)',
           fontSize: '12px',
-          fontWeight: 600,
           letterSpacing: '0.8px',
           cursor: 'pointer',
           transition: 'color 0.2s ease',
@@ -148,7 +147,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
 
             return (
               <>
-                <div style={{ padding: '8px 16px 6px 16px', fontFamily: 'var(--font-heading)', fontSize: '11px', fontWeight: 600, color: '#64748B', letterSpacing: '0.4px', borderBottom: '1px solid #F1F5F9' }}>
+                <div style={{ padding: '8px 16px 6px 16px', fontFamily: 'var(--font-heading)', fontSize: '11px', color: '#64748B', letterSpacing: '0.4px', borderBottom: '1px solid #F1F5F9' }}>
                   Periode Program
                 </div>
 
@@ -181,10 +180,9 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                         padding: '10px 16px',
                         fontFamily: 'var(--font-body)',
                         fontSize: '12.5px',
-                        fontWeight: isCurrent ? 600 : 500,
                         letterSpacing: '-0.1px',
-                        color: !hasPrograms ? '#94A3B8' : (isHovered ? '#800000' : isCurrent ? '#0F172A' : '#334155'),
-                        background: isHovered && hasPrograms ? 'rgba(128, 0, 0, 0.04)' : 'transparent',
+                        color: !hasPrograms ? '#94A3B8' : (isHovered ? '#0F172A' : isCurrent ? '#0F172A' : '#334155'),
+                        background: isHovered && hasPrograms ? '#F1F5F9' : 'transparent',
                         cursor: hasPrograms ? 'pointer' : 'default',
                         display: 'flex',
                         alignItems: 'center',
@@ -197,11 +195,11 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                       </div>
 
                       {hasPrograms ? (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isHovered ? '#800000' : '#94A3B8'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isHovered ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s ease' }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isHovered ? '#0F172A' : '#94A3B8'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isHovered ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s ease' }}>
                           <polyline points="9 18 15 12 9 6" />
                         </svg>
                       ) : (
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: '10.5px', color: '#CBD5E1', fontWeight: 500 }}>Belum ada</span>
+                        <span style={{ fontFamily: 'var(--font-body)', fontSize: '10.5px', color: '#CBD5E1', }}>Belum ada</span>
                       )}
 
                       {/* LEVEL 2 SUBMENU (DESKTOP FLYOUT + MOBILE INLINE ACCORDION) */}
@@ -231,7 +229,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                 fontFamily: 'var(--font-body)'
                               }}
                             >
-                              <div style={{ padding: '8px 16px 6px 16px', fontFamily: 'var(--font-heading)', fontSize: '11px', fontWeight: 600, color: '#64748B', letterSpacing: '0.4px', borderBottom: '1px solid #F1F5F9' }}>
+                              <div style={{ padding: '8px 16px 6px 16px', fontFamily: 'var(--font-heading)', fontSize: '11px', color: '#64748B', letterSpacing: '0.4px', borderBottom: '1px solid #F1F5F9' }}>
                                 Program {m.label}
                               </div>
                               {programList.map((progItem, idx) => (
@@ -250,7 +248,6 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                     padding: '10px 16px',
                                     fontFamily: 'var(--font-body)',
                                     fontSize: '12.5px',
-                                    fontWeight: 500,
                                     letterSpacing: '-0.1px',
                                     color: '#334155',
                                     cursor: 'pointer',
@@ -276,12 +273,11 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                         flexShrink: 0,
                                         fontFamily: 'var(--font-body)',
                                         fontSize: '10px',
-                                        fontWeight: 600,
-                                        color: '#800000',
-                                        background: 'rgba(128, 0, 0,0.08)',
+                                        color: '#475569',
+                                        background: '#F1F5F9',
                                         padding: '2px 6px',
                                         borderRadius: '6px',
-                                        border: '1px solid rgba(128, 0, 0,0.2)'
+                                        border: '1px solid #CBD5E1'
                                       }}
                                     >
                                       {progItem.data.images.length} Slide
@@ -300,12 +296,12 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                 borderRadius: '10px',
                                 margin: '6px 0 2px 0',
                                 padding: '4px 0',
-                                borderLeft: '3px solid #800000',
+                                borderLeft: '3px solid #0F172A',
                                 boxSizing: 'border-box',
                                 fontFamily: 'var(--font-body)'
                               }}
                             >
-                              <div style={{ padding: '6px 12px 4px 12px', fontFamily: 'var(--font-heading)', fontSize: '10.5px', fontWeight: 600, color: '#800000', letterSpacing: '0.4px' }}>
+                              <div style={{ padding: '6px 12px 4px 12px', fontFamily: 'var(--font-heading)', fontSize: '10.5px', color: '#0F172A', letterSpacing: '0.4px' }}>
                                 Daftar Program {m.label}:
                               </div>
                               {programList.map((progItem, idx) => (
@@ -324,7 +320,6 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                     padding: '8px 12px 8px 18px',
                                     fontFamily: 'var(--font-body)',
                                     fontSize: '12px',
-                                    fontWeight: 500,
                                     color: '#334155',
                                     cursor: 'pointer',
                                     display: 'flex',
@@ -334,7 +329,7 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                   }}
                                 >
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
-                                    <span style={{ color: '#800000', fontWeight: '900', flexShrink: 0 }}>•</span>
+                                    <span style={{ color: '#0F172A', flexShrink: 0 }}>•</span>
                                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{progItem.name}</span>
                                   </div>
                                   {progItem.data?.images?.length > 1 && (
@@ -343,9 +338,8 @@ export default function ProgramMenu({ user, setShowLoginModal, dynamicMonthsData
                                         flexShrink: 0,
                                         fontFamily: 'var(--font-body)',
                                         fontSize: '9.5px',
-                                        fontWeight: 600,
-                                        color: '#800000',
-                                        background: 'rgba(128, 0, 0,0.08)',
+                                        color: '#475569',
+                                        background: 'rgba(255, 94, 0, 0.08)',
                                         padding: '1px 5px',
                                         borderRadius: '4px'
                                       }}

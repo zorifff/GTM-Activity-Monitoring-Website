@@ -681,6 +681,7 @@ export default function TopHeaderBar({
 
           {showNotificationDropdown && (
             <div
+              className="header-notification-dropdown"
               style={{
                 position: 'absolute',
                 top: '48px',
@@ -1125,11 +1126,13 @@ export default function AppSidebar({
 
         <nav
           aria-label="Menu Utama"
+          className="sidebar-nav-menu"
           style={{
             display: 'flex',
             flexDirection: 'column',
             gap: '6px',
-            width: '100%'
+            width: '100%',
+            alignItems: 'stretch'
           }}
         >
           {/* 1. Dashboard */}
@@ -2172,12 +2175,12 @@ export default function LoadingScreen() {
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1006 baris)
+## File: `gtm-monitor-frontend/src/components/ProjectTable.jsx` (1002 baris)
 
 ```javascript
 import { useState, useMemo, memo, useEffect, useCallback, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { ACT_TYPES, actMeta, formatBranch } from '../utils';
+import { ACT_TYPES, formatBranch } from '../utils';
 import ActivityStatus from './ActivityStatus';
 import UploadModal from './UploadModal';
 import ConfirmSubmitModal from './ConfirmSubmitModal';
@@ -2220,19 +2223,19 @@ const SortIcon = ({ sort }) => {
 // ─── OPTIMASI 3: ON-DEMAND LOADING & MEMOIZED ODP ROW ───
 const OdpRow = memo(({ o, odpGrid }) => {
   const occRate = o.total > 0 ? Math.round((o.used / o.total) * 100) : 0;
-  const badgeBg = o.used === 0 ? '#e2e8f0' : occRate < 50 ? '#dcfce7' : occRate < 75 ? '#fef3c7' : '#fee2e2';
-  const badgeColor = o.used === 0 ? '#334155' : occRate < 50 ? '#16a34a' : occRate < 75 ? '#B45309' : '#dc2626';
+  const badgeBg = '#F1F5F9';
+  const badgeColor = '#0F172A';
 
   return (
     <div
       className="table-row"
-      style={{ gridTemplateColumns: odpGrid, backgroundColor: '#fafbfc', borderTop: '1px solid #f8fafc', minHeight: '44px' }}
+      style={{ gridTemplateColumns: odpGrid, backgroundColor: '#fafbfc', borderTop: '1px solid #f8fafc', minHeight: '44px', minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
     >
       <div></div>
-      <div style={{ fontSize: '13px', fontWeight: 600, paddingLeft: '14px', textAlign: 'left' }}>{o.odp}</div>
+      <div style={{ fontSize: '13px', paddingLeft: '14px', textAlign: 'left' }}>{o.odp}</div>
 
       <div style={{
-        fontSize: '11.5px', fontWeight: 600, padding: '3px 9px', borderRadius: '6px',
+        fontSize: '11.5px', padding: '3px 9px', borderRadius: '6px',
         display: 'inline-block',
         backgroundColor: badgeBg,
         color: badgeColor,
@@ -2262,7 +2265,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
       {/* Project row with activity status & action buttons */}
       <div
         className={`table-row ${isEven ? 'table-row-even' : ''}`}
-        style={{ gridTemplateColumns: tableGrid }}
+        style={{ gridTemplateColumns: tableGrid, minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
       >
         <button
           type="button"
@@ -2292,7 +2295,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
           type="button"
           aria-label={`Toggle detail proyek ${p.name}`}
           style={{
-            fontSize: '13.5px', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis',
+            fontSize: '13.5px', overflow: 'hidden', textOverflow: 'ellipsis',
             cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'left',
             color: '#0F172A', display: 'block', width: '100%'
           }}
@@ -2306,15 +2309,14 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
           style={{
             fontSize: '12px', color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis',
             cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'left',
-            display: 'block', width: '100%', fontWeight: 500
-          }}
+            display: 'block', width: '100%', }}
           onClick={() => toggleProject(p.name)}
         >
           {formatBranch(bName)} · {p.wok}
         </button>
-        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', fontWeight: 600, color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(usedTotal || 0).toLocaleString('id-ID')}</div>
-        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', fontWeight: 600, color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(avaiTotal || 0).toLocaleString('id-ID')}</div>
-        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', fontWeight: 600, color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(totalPort || 0).toLocaleString('id-ID')}</div>
+        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(usedTotal || 0).toLocaleString('id-ID')}</div>
+        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(avaiTotal || 0).toLocaleString('id-ID')}</div>
+        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(totalPort || 0).toLocaleString('id-ID')}</div>
 
         {/* Activity cells using unified ActivityStatus component */}
         {ACT_TYPES.map(actType => {
@@ -2394,8 +2396,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
               <span
                 style={{
                   fontSize: '11px',
-                  fontWeight: 600,
-                  color: completedCount === ACT_TYPES.length ? '#15803D' : completedCount > 0 ? '#B45309' : '#64748B',
+                  color: completedCount > 0 ? '#0F172A' : '#64748B',
                   whiteSpace: 'nowrap'
                 }}
               >
@@ -2415,7 +2416,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
                   style={{
                     width: `${progressPct}%`,
                     height: '100%',
-                    backgroundColor: completedCount === ACT_TYPES.length ? '#16A34A' : completedCount > 0 ? '#D97706' : '#94A3B8',
+                    backgroundColor: completedCount === ACT_TYPES.length ? '#0F172A' : completedCount > 0 ? '#475569' : '#CBD5E1',
                     borderRadius: '9999px',
                     transition: 'width 0.3s ease'
                   }}
@@ -2438,7 +2439,6 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
               borderRadius: '8px',
               padding: '6px 14px',
               fontSize: '12px',
-              fontWeight: 600,
               color: '#0F172A',
               cursor: 'pointer',
               display: 'inline-flex',
@@ -2674,7 +2674,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           paddingRight: align === 'right' ? '6px' : '0',
           paddingLeft: align === 'left' ? '2px' : '0',
           width: '100%',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          whiteSpace: 'nowrap'
         }}
       >
         <button
@@ -2692,7 +2693,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             gap: '4px',
             font: 'inherit',
             color: sort ? '#0F172A' : '#475569',
-            fontWeight: 600,
             textTransform: 'inherit',
             letterSpacing: 'inherit',
             whiteSpace: 'nowrap',
@@ -2767,7 +2767,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           padding: '12px',
           fontSize: '12px',
           color: '#334155',
-          fontWeight: 500,
           textAlign: 'left',
           textTransform: 'none',
           letterSpacing: 'normal'
@@ -2776,14 +2775,14 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         <button
           type="button"
           onClick={() => { updateFilter(col, 'sort', filters[col].sort === 'asc' ? null : 'asc'); setFilterPopup(null); }}
-          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'asc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: filters[col].sort === 'asc' ? '#800000' : '#334155', textAlign: 'left' }}
+          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'asc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', color: filters[col].sort === 'asc' ? '#800000' : '#334155', textAlign: 'left' }}
         >
           <span style={{ fontSize: '14px' }}>↓</span> {isStringCol ? 'Sort A to Z' : 'Sort Kecil ke Besar'}
         </button>
         <button
           type="button"
           onClick={() => { updateFilter(col, 'sort', filters[col].sort === 'desc' ? null : 'desc'); setFilterPopup(null); }}
-          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'desc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: filters[col].sort === 'desc' ? '#800000' : '#334155', textAlign: 'left' }}
+          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'desc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', color: filters[col].sort === 'desc' ? '#800000' : '#334155', textAlign: 'left' }}
         >
           <span style={{ fontSize: '14px' }}>↑</span> {isStringCol ? 'Sort Z to A' : 'Sort Besar ke Kecil'}
         </button>
@@ -2800,7 +2799,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         />
 
         <div style={{ maxHeight: '160px', overflowY: 'auto', paddingRight: '2px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 2px', cursor: 'pointer', fontWeight: 600, borderBottom: '1px solid #F1F5F9', marginBottom: '4px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 2px', cursor: 'pointer', borderBottom: '1px solid #F1F5F9', marginBottom: '4px' }}>
             <input
               type="checkbox"
               checked={currentUncheckedStr.length === 0}
@@ -2829,7 +2828,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   }}
                 />
                 <span style={{ lineHeight: '1.3', fontSize: '11.5px', color: '#0F172A' }}>
-                  {strVal} <span style={{ color: '#64748B', fontSize: '10.5px', fontWeight: 600 }}>({valueCounts[v]})</span>
+                  {strVal} <span style={{ color: '#64748B', fontSize: '10.5px', }}>({valueCounts[v]})</span>
                 </span>
               </label>
             );
@@ -2844,14 +2843,14 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               updateFilter(col, 'search', '');
               updateFilter(col, 'sort', null);
             }}
-            style={{ padding: '4px 8px', border: 'none', background: 'transparent', color: '#64748B', cursor: 'pointer', fontSize: '11px', fontWeight: 600 }}
+            style={{ padding: '4px 8px', border: 'none', background: 'transparent', color: '#64748B', cursor: 'pointer', fontSize: '11px', }}
           >
             Reset
           </button>
           <button
             type="button"
             onClick={() => setFilterPopup(null)}
-            style={{ padding: '4px 12px', border: 'none', borderRadius: '6px', background: '#0F172A', color: '#FFFFFF', cursor: 'pointer', fontSize: '11px', fontWeight: 600 }}
+            style={{ padding: '4px 12px', border: 'none', borderRadius: '6px', background: '#0F172A', color: '#FFFFFF', cursor: 'pointer', fontSize: '11px', }}
           >
             Terapkan
           </button>
@@ -2860,8 +2859,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
     );
   };
 
-  const tableGrid = '34px 210px 130px 90px 120px 85px 120px 120px 120px 120px 120px 115px 85px';
-  const odpGrid = '34px 210px 130px 90px 120px 85px';
+  const tableGrid = '34px 220px 165px 95px 125px 95px 135px 145px 135px 135px 135px 115px 85px';
+  const odpGrid = '34px 220px 165px 95px 125px 95px';
 
   return (
     <div className="card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
@@ -2877,7 +2876,10 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               zIndex: 20,
               backgroundColor: '#F8FAFC',
               borderBottom: '1px solid #E2E8F0',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)'
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)',
+              minWidth: 'max-content',
+              width: 'max-content',
+              boxSizing: 'border-box'
             }}
           >
             <div></div>
@@ -2889,8 +2891,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             {ACT_TYPES.map(t => (
               <div key={t.key} className="activity-col-header">{t.label}</div>
             ))}
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progres</div>
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detail</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progres</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detail</div>
           </div>
 
           {/* Rows / Skeleton / Empty State */}
@@ -2900,7 +2902,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                 <div
                   key={idx}
                   className="table-row"
-                  style={{ gridTemplateColumns: tableGrid, minHeight: '52px' }}
+                  style={{ gridTemplateColumns: tableGrid, minHeight: '52px', minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
                 >
                   <div style={{ width: '16px', height: '16px', borderRadius: '4px', background: '#E2E8F0', animation: 'pulse 1.5s infinite' }} />
                   <div style={{ width: '150px', height: '14px', borderRadius: '4px', background: '#E2E8F0', animation: 'pulse 1.5s infinite' }} />
@@ -2939,7 +2941,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   <line x1="8" y1="11" x2="14" y2="11"></line>
                 </svg>
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A' }}>
+              <div style={{ fontSize: '15px', color: '#0F172A' }}>
                 Tidak ada proyek yang sesuai dengan filter
               </div>
               <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '420px', lineHeight: 1.5 }}>
@@ -2966,7 +2968,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   background: '#FFFFFF',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   cursor: 'pointer',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
                   display: 'inline-flex',
@@ -3037,13 +3038,13 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
 
       {/* Pagination Footer */}
       <div className="table-pagination-footer">
-        <div className="tabular-nums" style={{ fontSize: '13px', color: '#64748b', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-          Menampilkan <span style={{ color: '#0f172a', fontWeight: 600 }}>{rangeStart}</span> - <span style={{ color: '#0f172a', fontWeight: 600 }}>{rangeEnd}</span> dari <span style={{ color: '#0f172a', fontWeight: 600 }}>{displayProjects.length}</span> proyek
+        <div className="tabular-nums" style={{ fontSize: '13px', color: '#64748b', fontVariantNumeric: 'tabular-nums' }}>
+          Menampilkan <span style={{ color: '#0f172a', }}>{rangeStart}</span> - <span style={{ color: '#0f172a', }}>{rangeEnd}</span> dari <span style={{ color: '#0f172a', }}>{displayProjects.length}</span> proyek
         </div>
 
         <div className="table-pagination-controls">
           {/* Custom Capsule Dropup for Page Size */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b', fontWeight: 600 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b', }}>
             <span>Per halaman:</span>
             <div ref={pageSizeRef} style={{ position: 'relative' }}>
               <button
@@ -3063,7 +3064,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   gap: '6px',
                   cursor: 'pointer',
                   userSelect: 'none',
-                  fontWeight: 700,
                   color: '#0f172a'
                 }}
               >
@@ -3105,7 +3105,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                         textAlign: 'left',
                         padding: '8px 14px',
                         fontSize: '13px',
-                        fontWeight: pageSize === size ? 600 : 500,
                         color: pageSize === size ? '#800000' : '#334155',
                         background: pageSize === size ? '#FEF2F2' : 'transparent',
                         cursor: 'pointer'
@@ -3146,7 +3145,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               </svg>
             </button>
 
-            <span className="tabular-nums" style={{ padding: '0 6px', fontSize: '13px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+            <span className="tabular-nums" style={{ padding: '0 6px', fontSize: '13px', color: '#0f172a', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
               {currentPage} / {totalPages}
             </span>
 
@@ -3185,20 +3184,15 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/ActivityStatus.jsx` (231 baris)
+## File: `gtm-monitor-frontend/src/components/ActivityStatus.jsx` (220 baris)
 
 ```javascript
 import { memo } from 'react';
 
 /**
  * ActivityStatus Component
- * Komponen tunggal representasi status aktivitas GTM.
- * Varian:
- * - 'selesai': Ikon centang hijau sukses, tanpa tombol upload.
- * - 'belum': Ikon netral/abu, label singkat, tombol "Upload" sekunder/ghost netral (TIDAK merah).
- * - 'proses': Ikon spinner/progress circle.
- * - 'menunggu_verifikasi': Badge amber + tombol "Cek Status" (bukan Upload).
- * - 'gagal': Badge merah + tombol "Perbaiki/Ulang" (satu-satunya varian merah).
+ * Komponen tunggal representasi status aktivitas GTM dengan tipografi Gordita Regular 400
+ * dan palet netral Slate monokrom tanpa teks berwarna-warni.
  */
 const ActivityStatus = memo(function ActivityStatus({
   status = 'belum',
@@ -3214,7 +3208,7 @@ const ActivityStatus = memo(function ActivityStatus({
     else if (onClick) onClick(e);
   };
 
-  // 1. Selesai (Verified) — Ikon centang, hijau sukses, tanpa tombol
+  // 1. Selesai (Verified) — Ikon centang, chip netral elegan, tanpa tombol
   if (status === 'selesai' || status === 'verified') {
     const displayLabel = label || (count > 1 ? `Selesai (${count})` : 'Selesai');
     return (
@@ -3227,11 +3221,10 @@ const ActivityStatus = memo(function ActivityStatus({
           gap: '5px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#DCFCE7',
-          color: '#15803D',
-          border: '1px solid #BBF7D0',
+          backgroundColor: '#F1F5F9',
+          color: '#1E293B',
+          border: '1px solid #CBD5E1',
           fontSize: '11px',
-          fontWeight: 700,
           whiteSpace: 'nowrap'
         }}
         title={title ? `${title}: Selesai & Terverifikasi` : 'Aktivitas telah selesai dan terverifikasi'}
@@ -3244,7 +3237,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 2. Menunggu Verifikasi — Tombol "Cek Status"
+  // 2. Menunggu Verifikasi — Tombol "Cek Status" Netral
   if (status === 'menunggu_verifikasi' || status === 'upload') {
     return (
       <button
@@ -3254,21 +3247,20 @@ const ActivityStatus = memo(function ActivityStatus({
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '3px',
+          gap: '4px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#FFFBEB',
-          border: '1px solid #FCD34D',
-          color: '#B45309',
+          backgroundColor: '#F8FAFC',
+          border: '1px solid #CBD5E1',
+          color: '#334155',
           fontSize: '10.5px',
-          fontWeight: 700,
           cursor: 'pointer',
           whiteSpace: 'nowrap',
           minHeight: '26px',
           transition: 'all 0.15s ease'
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FEF3C7'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FFFBEB'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#F1F5F9'; e.currentTarget.style.borderColor = '#94A3B8'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#F8FAFC'; e.currentTarget.style.borderColor = '#CBD5E1'; }}
         title={title ? `${title}: Menunggu verifikasi admin. Klik untuk cek status.` : 'Menunggu verifikasi admin. Klik untuk cek status.'}
       >
         <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -3280,7 +3272,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 3. Proses — Ikon spinner + indikator proses
+  // 3. Proses — Ikon spinner + indikator proses Netral
   if (status === 'proses' || status === 'processing') {
     return (
       <div
@@ -3292,11 +3284,10 @@ const ActivityStatus = memo(function ActivityStatus({
           gap: '5px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#EFF6FF',
-          color: '#2563EB',
-          border: '1px solid #BFDBFE',
+          backgroundColor: '#F1F5F9',
+          color: '#334155',
+          border: '1px solid #CBD5E1',
           fontSize: '11px',
-          fontWeight: 600,
           whiteSpace: 'nowrap'
         }}
         title={title ? `${title}: Sedang diproses` : 'Sedang diproses'}
@@ -3319,7 +3310,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 4. Gagal / Ditolak — Ikon merah + tombol "Perbaiki/Ulang" (Satu-satunya varian merah bahaya)
+  // 4. Gagal / Ditolak — Chip Netral + Tombol "Perbaiki" Slate Gelap
   if (status === 'gagal' || status === 'rejected') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
@@ -3327,12 +3318,11 @@ const ActivityStatus = memo(function ActivityStatus({
           role="status"
           style={{
             fontSize: '10px',
-            fontWeight: 700,
             padding: '2px 6px',
             borderRadius: '4px',
-            backgroundColor: '#FEE2E2',
-            color: '#DC2626',
-            border: '1px solid #FECACA',
+            backgroundColor: '#F1F5F9',
+            color: '#475569',
+            border: '1px solid #CBD5E1',
             whiteSpace: 'nowrap'
           }}
         >
@@ -3348,18 +3338,17 @@ const ActivityStatus = memo(function ActivityStatus({
             gap: '3px',
             padding: '4px 8px',
             borderRadius: '6px',
-            backgroundColor: '#DC2626',
-            border: '1px solid #B91C1C',
+            backgroundColor: '#0F172A',
+            border: '1px solid #0F172A',
             color: '#FFFFFF',
             fontSize: '10.5px',
-            fontWeight: 700,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
             minHeight: '26px',
             transition: 'all 0.15s ease'
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#B91C1C'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#DC2626'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1E293B'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#0F172A'; }}
           title={title ? `${title}: Kegiatan ditolak. Klik untuk perbaiki.` : 'Kegiatan ditolak. Klik untuk perbaiki.'}
         >
           <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -3372,7 +3361,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 5. Belum (Default) — Ikon netral/abu, label singkat, tombol "Upload" sekunder/ghost netral (TIDAK merah)
+  // 5. Belum (Default) — Tombol Upload Netral Slate
   return (
     <button
       type="button"
@@ -3389,7 +3378,6 @@ const ActivityStatus = memo(function ActivityStatus({
         backgroundColor: '#F8FAFC',
         color: '#475569',
         fontSize: '11px',
-        fontWeight: 600,
         cursor: 'pointer',
         minHeight: '28px',
         transition: 'all 0.15s ease',
@@ -3423,7 +3411,7 @@ export default ActivityStatus;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/HeroOccupancyCard.jsx` (138 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/HeroOccupancyCard.jsx` (133 baris)
 
 ```javascript
 import { useCountUp } from '../../hooks/useCountUp';
@@ -3460,7 +3448,6 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
         <span
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#FFFFFF',
             letterSpacing: '-0.1px',
             whiteSpace: 'nowrap'
@@ -3473,7 +3460,6 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
           <span
             style={{
               fontSize: '11px',
-              fontWeight: 600,
               padding: '2px 8px',
               borderRadius: '6px',
               background: 'rgba(255, 255, 255, 0.2)',
@@ -3490,7 +3476,6 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
       <div
         style={{
           fontSize: '48px',
-          fontWeight: 600,
           lineHeight: 1,
           letterSpacing: '-1.5px',
           margin: '18px 0 16px 0',
@@ -3515,12 +3500,11 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
           style={{
             fontSize: '13px',
             color: 'rgba(255, 255, 255, 0.9)',
-            fontWeight: 500,
             whiteSpace: 'nowrap'
           }}
         >
-          <span style={{ fontWeight: 600, color: '#FFFFFF' }}>{countTotalUsed}</span> dari{' '}
-          <span style={{ fontWeight: 600, color: '#FFFFFF' }}>{countTotalPort}</span> port
+          <span style={{ color: '#FFFFFF' }}>{countTotalUsed}</span> dari{' '}
+          <span style={{ color: '#FFFFFF' }}>{countTotalPort}</span> port
         </div>
 
         {isAdmin && onReviewBranch && (
@@ -3534,8 +3518,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
               alignItems: 'center',
               gap: '4px',
               backgroundColor: '#FFFFFF',
-              color: '#800000',
-              fontWeight: 600,
+              color: '#0F172A',
               fontSize: '11.5px',
               padding: '3px 9px',
               borderRadius: '6px',
@@ -3546,7 +3529,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
               flexShrink: 0
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#FFF5F5';
+              e.currentTarget.style.backgroundColor = '#F1F5F9';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = '#FFFFFF';
@@ -3568,7 +3551,7 @@ export default function HeroOccupancyCard({ safeKpi, onReviewBranch, isAdmin, is
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/RegionalMetricsSummaryCard.jsx` (264 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/RegionalMetricsSummaryCard.jsx` (252 baris)
 
 ```javascript
 import { useCountUp } from '../../hooks/useCountUp';
@@ -3622,7 +3605,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -3636,7 +3618,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -3652,7 +3633,6 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -3662,7 +3642,6 @@ export default function RegionalMetricsSummaryCard({
             Kapasitas:{' '}
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -3679,7 +3658,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -3693,7 +3671,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -3725,7 +3702,7 @@ export default function RegionalMetricsSummaryCard({
                   gap: '4px',
                   fontSize: '12px',
                   color: '#475569',
-                  fontWeight: 500, fontVariantNumeric: 'tabular-nums',
+                  fontVariantNumeric: 'tabular-nums',
                   fontFeatureSettings: '"tnum"',
                   whiteSpace: 'nowrap'
                 }}
@@ -3755,7 +3732,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -3769,7 +3745,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -3785,7 +3760,6 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -3796,7 +3770,6 @@ export default function RegionalMetricsSummaryCard({
             <span
               style={{
                 color: '#1E293B',
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"'
               }}
@@ -3808,7 +3781,6 @@ export default function RegionalMetricsSummaryCard({
             <span
               style={{
                 color: '#1E293B',
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"'
               }}
@@ -3820,7 +3792,6 @@ export default function RegionalMetricsSummaryCard({
             <span
               style={{
                 color: '#1E293B',
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"'
               }}
@@ -3839,7 +3810,7 @@ export default function RegionalMetricsSummaryCard({
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/KpiCards.jsx` (253 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/KpiCards.jsx` (245 baris)
 
 ```javascript
 import { useState, useEffect } from 'react';
@@ -3872,7 +3843,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
       {/* ─── CARD 1: TOTAL OCCUPANCY RATE ─── */}
       <div className="kpi-metric-card kpi-card-animated stagger-1">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '22px' }}>
-          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Total Occupancy Rate
           </span>
           {safeKpi.gapWoW != null && (
@@ -3885,7 +3856,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
         <div>
           <div style={{ 
             fontSize: '28px', 
-            fontWeight: 800, 
             color: '#0F172A', 
             letterSpacing: '-0.5px',
             fontVariantNumeric: 'tabular-nums',
@@ -3909,7 +3879,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
           </div>
         </div>
 
-        <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
+        <div style={{ fontSize: '12px', color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
           {countTotalUsed} dari {countTotalPort} port terpakai
         </div>
       </div>
@@ -3917,12 +3887,11 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
       {/* ─── CARD 2: PORT TERSEDIA ─── */}
       <div className="kpi-metric-card kpi-card-animated stagger-2">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '22px' }}>
-          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Port Tersedia
           </span>
           <span style={{ 
             fontSize: '11px', 
-            fontWeight: 600, 
             padding: '2px 8px', 
             background: '#F1F5F9', 
             color: '#475569', 
@@ -3935,7 +3904,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
         <div>
           <div style={{ 
             fontSize: '28px', 
-            fontWeight: 800, 
             color: '#0F172A', 
             letterSpacing: '-0.5px',
             fontVariantNumeric: 'tabular-nums',
@@ -3959,7 +3927,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
           </div>
         </div>
 
-        <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
+        <div style={{ fontSize: '12px', color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
           Total kapasitas {countTotalPort} port di {countOdpCount} ODP
         </div>
       </div>
@@ -3967,12 +3935,11 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
       {/* ─── CARD 3: TOTAL ODP TERPANTAU ─── */}
       <div className="kpi-metric-card kpi-card-animated stagger-3">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '22px' }}>
-          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Total ODP Terpantau
           </span>
           <span style={{ 
             fontSize: '11px', 
-            fontWeight: 600, 
             padding: '2px 8px', 
             background: '#F1F5F9', 
             color: '#475569', 
@@ -3985,7 +3952,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
         <div>
           <div style={{ 
             fontSize: '28px', 
-            fontWeight: 800, 
             color: '#0F172A', 
             letterSpacing: '-0.5px',
             fontVariantNumeric: 'tabular-nums',
@@ -4031,7 +3997,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
                 gap: '3.5px', 
                 fontSize: '11px', 
                 color: '#475569', 
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums'
               }}
             >
@@ -4045,12 +4010,11 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
       {/* ─── CARD 4: AKTIVITAS GTM SELESAI ─── */}
       <div className="kpi-metric-card kpi-card-animated stagger-4">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '22px' }}>
-          <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <span style={{ fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Aktivitas GTM Selesai
           </span>
           <span style={{ 
             fontSize: '11px', 
-            fontWeight: 600, 
             padding: '2px 8px', 
             background: '#F1F5F9', 
             color: '#475569', 
@@ -4063,7 +4027,6 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
         <div>
           <div style={{ 
             fontSize: '28px', 
-            fontWeight: 800, 
             color: '#0F172A', 
             letterSpacing: '-0.5px',
             fontVariantNumeric: 'tabular-nums',
@@ -4087,7 +4050,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
           </div>
         </div>
 
-        <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
+        <div style={{ fontSize: '12px', color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '10px' }}>
           {countActVerified} terverifikasi · {countActUploaded} diunggah · {countActPending} belum
         </div>
       </div>
@@ -4099,7 +4062,7 @@ export default function KpiCards({ safeKpi, safeStatusChips, isInView = true }) 
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/PortDistributionChartCard.jsx` (449 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/PortDistributionChartCard.jsx` (443 baris)
 
 ```javascript
 import { useState, useEffect } from 'react';
@@ -4252,7 +4215,6 @@ export default function PortDistributionChartCard({
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             letterSpacing: '-0.1px',
             whiteSpace: 'nowrap',
@@ -4278,7 +4240,6 @@ export default function PortDistributionChartCard({
               style={{
                 fontSize: '11.5px',
                 color: '#0F172A',
-                fontWeight: 600,
                 background: '#F8FAFC',
                 padding: '3px 10px',
                 borderRadius: '6px',
@@ -4293,7 +4254,7 @@ export default function PortDistributionChartCard({
                 alignItems: 'center'
               }}
             >
-              <span style={{ color: '#800000', fontWeight: 600 }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{activeBar.occRate}% ({activeBar.portUsed.toLocaleString('id-ID')} / {activeBar.portTotal.toLocaleString('id-ID')} port)
+              <span style={{ color: '#0F172A' }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{activeBar.occRate}% ({activeBar.portUsed.toLocaleString('id-ID')} / {activeBar.portTotal.toLocaleString('id-ID')} port)
             </div>
           ) : (
             <div
@@ -4303,7 +4264,6 @@ export default function PortDistributionChartCard({
                 gap: '14px',
                 fontSize: '11px',
                 color: '#64748B',
-                fontWeight: 600,
                 height: '26px',
                 lineHeight: '18px',
                 boxSizing: 'border-box'
@@ -4368,7 +4328,6 @@ export default function PortDistributionChartCard({
                       <span
                         style={{
                           fontSize: '11px',
-                          fontWeight: 500,
                           color: '#64748B',
                           fontVariantNumeric: 'tabular-nums',
                           userSelect: 'none',
@@ -4510,8 +4469,7 @@ export default function PortDistributionChartCard({
                           title={`${bar.displayName} (${bar.branchName})`}
                           style={{
                             fontSize: '10px',
-                            fontWeight: isHovered ? 600 : 500,
-                            color: isHovered ? '#800000' : '#475569',
+                            color: isHovered ? '#0F172A' : '#475569',
                             width: '100%',
                             textAlign: 'center',
                             whiteSpace: 'nowrap',
@@ -4529,8 +4487,7 @@ export default function PortDistributionChartCard({
                         <span
                           style={{
                             fontSize: '8.5px',
-                            fontWeight: 500,
-                            color: isHovered ? '#800000' : '#94A3B8',
+                            color: isHovered ? '#0F172A' : '#94A3B8',
                             lineHeight: '11px',
                             letterSpacing: '0.2px',
                             marginTop: '2px'
@@ -4555,7 +4512,7 @@ export default function PortDistributionChartCard({
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/OdpStatusDonutCard.jsx` (299 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/OdpStatusDonutCard.jsx` (291 baris)
 
 ```javascript
 import { useState, useMemo, useEffect } from 'react';
@@ -4640,14 +4597,13 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
     >
       {/* ─── HEADER KARTU ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
-        <div style={{ fontSize: '15px', fontWeight: 600, color: '#475569', letterSpacing: '-0.1px' }}>
+        <div style={{ fontSize: '15px', color: '#475569', letterSpacing: '-0.1px' }}>
           Profil Status Utilisasi ODP
         </div>
 
         <span
           style={{
             fontSize: '12px',
-            fontWeight: 500,
             color: '#475569',
             fontVariantNumeric: 'tabular-nums'
           }}
@@ -4728,8 +4684,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 <div
                   style={{
                     fontSize: '26px',
-                    fontWeight: 600,
-                    color: activeChip.label?.toLowerCase() === 'yellow' ? '#CA8A04' : activeChip.color,
+                    color: '#0F172A',
                     fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1.1
                   }}
@@ -4739,7 +4694,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 <div
                   style={{
                     fontSize: '12px',
-                    fontWeight: 500,
                     color: '#475569',
                     letterSpacing: '0.4px',
                     textTransform: 'uppercase',
@@ -4754,7 +4708,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 <div
                   style={{
                     fontSize: '28px',
-                    fontWeight: 600,
                     color: '#0F172A',
                     fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1.1
@@ -4765,7 +4718,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 <div
                   style={{
                     fontSize: '11px',
-                    fontWeight: 500,
                     color: '#64748B',
                     letterSpacing: '0.8px',
                     textTransform: 'uppercase',
@@ -4815,7 +4767,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: isHovered ? 600 : 500,
                       color: isHovered ? '#0F172A' : '#334155',
                       whiteSpace: 'nowrap'
                     }}
@@ -4828,7 +4779,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: 500,
                       color: '#0F172A',
                       fontVariantNumeric: 'tabular-nums'
                     }}
@@ -4838,7 +4788,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   <span
                     style={{
                       fontSize: '11px',
-                      fontWeight: 600,
                       color: '#64748B',
                       fontVariantNumeric: 'tabular-nums',
                       minWidth: '38px',
@@ -4861,7 +4810,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/BranchRankingCard.jsx` (370 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/BranchRankingCard.jsx` (360 baris)
 
 ```javascript
 import { useState, useCallback, useEffect } from 'react';
@@ -4904,7 +4853,6 @@ function WokRowItem({ w, index, isMounted, isInView, goBranch, branchName }) {
         display: 'flex', 
         alignItems: 'center', 
         gap: '6px', 
-        fontWeight: 500, 
         fontSize: '12.5px', 
         color: '#334155', 
         minWidth: 0, 
@@ -4933,7 +4881,6 @@ function WokRowItem({ w, index, isMounted, isInView, goBranch, branchName }) {
       {/* Occupancy % */}
       <div style={{ 
         fontSize: '12.5px', 
-        fontWeight: 600, 
         color: '#334155', 
         textAlign: 'right',
         fontVariantNumeric: 'tabular-nums'
@@ -4951,7 +4898,6 @@ function WokRowItem({ w, index, isMounted, isInView, goBranch, branchName }) {
       <div style={{ 
         fontSize: '12px', 
         color: '#64748B', 
-        fontWeight: 500, 
         textAlign: 'right',
         fontVariantNumeric: 'tabular-nums'
       }}>
@@ -4961,7 +4907,6 @@ function WokRowItem({ w, index, isMounted, isInView, goBranch, branchName }) {
       <div style={{ 
         fontSize: '12px', 
         color: '#64748B', 
-        fontWeight: 500, 
         textAlign: 'right',
         fontVariantNumeric: 'tabular-nums'
       }}>
@@ -5014,7 +4959,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
           display: 'flex', 
           alignItems: 'center', 
           gap: '8px', 
-          fontWeight: 500, 
           fontSize: '13.5px', 
           color: '#0F172A',
           minWidth: 0, 
@@ -5053,7 +4997,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
         {/* Occupancy % */}
         <div style={{ 
           fontSize: '13px', 
-          fontWeight: 500, 
           color: '#0F172A', 
           textAlign: 'right',
           fontVariantNumeric: 'tabular-nums'
@@ -5072,7 +5015,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
         <div style={{ 
           fontSize: '12.5px', 
           color: '#64748B', 
-          fontWeight: 500, 
           textAlign: 'right',
           fontVariantNumeric: 'tabular-nums'
         }}>
@@ -5083,7 +5025,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
         <div style={{ 
           fontSize: '12.5px', 
           color: '#64748B', 
-          fontWeight: 500, 
           textAlign: 'right',
           fontVariantNumeric: 'tabular-nums'
         }}>
@@ -5103,7 +5044,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
               border: 'none',
               color: '#0F172A',
               fontSize: '12.5px',
-              fontWeight: 600,
               cursor: 'pointer',
               padding: '4px 6px',
               fontFamily: 'inherit',
@@ -5165,7 +5105,6 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
       <div className="ranking-card-header">
         <h2 style={{ 
           fontSize: '15px', 
-          fontWeight: 600, 
           color: '#475569', 
           margin: 0,
           letterSpacing: '-0.1px'
@@ -5175,7 +5114,7 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
       </div>
 
       <div className="table-responsive-wrapper custom-table-scrollbar" style={{ overflowX: 'auto' }}>
-        <div style={{ minWidth: '820px' }}>
+        <div style={{ minWidth: '920px' }}>
           {/* Table Column Headers: Dark Navy background (bg-slate-900) */}
           <div style={{
             display: 'grid',
@@ -5186,9 +5125,9 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
             background: '#0F172A',
             color: '#FFFFFF',
             fontSize: '11px',
-            fontWeight: 500,
             letterSpacing: '0.05em',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap'
           }}>
             <div>Branch / WOK</div>
             <div>Occupancy</div>
@@ -5238,7 +5177,7 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/ExecutiveSummarySection.jsx` (525 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/ExecutiveSummarySection.jsx` (514 baris)
 
 ```javascript
 import { useMemo } from 'react';
@@ -5331,7 +5270,6 @@ export default function ExecutiveSummarySection({
             <h2
               style={{
                 fontSize: '15px',
-                fontWeight: 600,
                 color: '#475569',
                 margin: 0,
                 letterSpacing: '-0.1px'
@@ -5356,7 +5294,6 @@ export default function ExecutiveSummarySection({
                   borderRadius: '8px',
                   padding: '6px 28px 6px 10px',
                   fontSize: '12px',
-                  fontWeight: 600,
                   color: '#334155',
                   cursor: 'pointer',
                   appearance: 'none',
@@ -5405,7 +5342,6 @@ export default function ExecutiveSummarySection({
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
             color: '#334155',
-            fontWeight: 600,
             fontSize: '12px',
             padding: '6px 12px',
             borderRadius: '8px',
@@ -5453,7 +5389,7 @@ export default function ExecutiveSummarySection({
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px', textAlign: 'center', minWidth: '1120px' }}>
           <thead>
             {/* Row 1 Header (Telkomsel Red Branding) */}
-            <tr style={{ background: '#800000', color: '#FFFFFF', fontWeight: 500 }}>
+            <tr style={{ background: '#800000', color: '#FFFFFF', }}>
               <th
                 rowSpan={2}
                 style={{
@@ -5505,7 +5441,6 @@ export default function ExecutiveSummarySection({
                   color: '#FFFFFF',
                   padding: '9px 10px',
                   fontSize: '11.5px',
-                  fontWeight: 500,
                   borderRight: '1px solid rgba(255, 255, 255, 0.25)',
                   borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                   letterSpacing: '0.02em'
@@ -5522,7 +5457,6 @@ export default function ExecutiveSummarySection({
                   color: '#FFFFFF',
                   padding: '9px 10px',
                   fontSize: '11.5px',
-                  fontWeight: 500,
                   borderRight: '1px solid rgba(255, 255, 255, 0.25)',
                   borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
                   letterSpacing: '0.02em'
@@ -5548,7 +5482,7 @@ export default function ExecutiveSummarySection({
             </tr>
 
             {/* Row 2 Header Sub-Columns (5 Kegiatan Prioritas) */}
-            <tr style={{ background: '#800000', color: '#FFFFFF', fontSize: '10px', fontWeight: 500 }}>
+            <tr style={{ background: '#800000', color: '#FFFFFF', fontSize: '10px', }}>
               {ACT_TYPES_ORDER.map((item) => (
                 <th
                   key={`done-${item.key}`}
@@ -5622,7 +5556,6 @@ export default function ExecutiveSummarySection({
                         style={{
                           padding: '10px 10px',
                           textAlign: 'left',
-                          fontWeight: 500,
                           color: '#0F172A',
                           verticalAlign: 'top',
                           borderRight: '1px solid #E2E8F0',
@@ -5639,7 +5572,6 @@ export default function ExecutiveSummarySection({
                       style={{
                         padding: '8px 10px',
                         textAlign: 'left',
-                        fontWeight: 600,
                         color: '#334155',
                         borderRight: '1px solid #F1F5F9'
                       }}
@@ -5652,7 +5584,6 @@ export default function ExecutiveSummarySection({
                       style={{
                         padding: '8px 8px',
                         textAlign: 'right',
-                        fontWeight: 500,
                         color: '#0F172A',
                         borderRight: '1px solid #F1F5F9',
                         fontVariantNumeric: 'tabular-nums'
@@ -5669,7 +5600,6 @@ export default function ExecutiveSummarySection({
                           key={`row-done-${item.key}`}
                           style={{
                             padding: '8px 4px',
-                            fontWeight: 500,
                             color: '#334155',
                             borderRight: '1px solid #F1F5F9',
                             fontVariantNumeric: 'tabular-nums'
@@ -5688,7 +5618,6 @@ export default function ExecutiveSummarySection({
                           key={`row-notyet-${item.key}`}
                           style={{
                             padding: '8px 4px',
-                            fontWeight: 500,
                             color: '#334155',
                             borderRight: iIdx === ACT_TYPES_ORDER.length - 1 ? '1px solid #E2E8F0' : '1px solid #F1F5F9',
                             fontVariantNumeric: 'tabular-nums'
@@ -5713,7 +5642,7 @@ export default function ExecutiveSummarySection({
                             }}
                           />
                         </div>
-                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#334155', minWidth: '32px', textAlign: 'right' }}>
+                        <span style={{ fontSize: '11px', color: '#334155', minWidth: '32px', textAlign: 'right' }}>
                           {r.progressPct}%
                         </span>
                       </div>
@@ -5727,15 +5656,15 @@ export default function ExecutiveSummarySection({
           {/* Table Footer: Grand Totals Regional Jateng DIY */}
           {((executiveSummary?.grandTotals) || (executiveSummary?.grandTotalLop !== undefined)) && (
             <tfoot>
-              <tr style={{ background: '#800000', color: '#FFFFFF', fontWeight: 600, borderTop: '2px solid #550000' }}>
+              <tr style={{ background: '#800000', color: '#FFFFFF', borderTop: '2px solid #550000' }}>
                 <td colSpan={2} style={{ padding: '11px 12px', textAlign: 'left', borderRight: '1px solid rgba(255, 255, 255, 0.2)', fontSize: '11.5px', letterSpacing: '0.03em' }}>
                   GRAND TOTAL
                 </td>
-                <td style={{ padding: '11px 8px', textAlign: 'right', borderRight: '1px solid rgba(255, 255, 255, 0.2)', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
+                <td style={{ padding: '11px 8px', textAlign: 'right', borderRight: '1px solid rgba(255, 255, 255, 0.2)', fontVariantNumeric: 'tabular-nums', }}>
                   <AnimatedNumber value={executiveSummary.grandTotals?.lop ?? executiveSummary.grandTotalLop} enabled={isInView} />
                 </td>
                 {ACT_TYPES_ORDER.map((item) => (
-                  <td key={`grand-done-${item.key}`} style={{ padding: '11px 4px', borderRight: '1px solid rgba(255, 255, 255, 0.2)', color: '#FFFFFF', fontWeight: 600, fontVariantNumeric: 'tabular-nums', textAlign: 'center' }}>
+                  <td key={`grand-done-${item.key}`} style={{ padding: '11px 4px', borderRight: '1px solid rgba(255, 255, 255, 0.2)', color: '#FFFFFF', fontVariantNumeric: 'tabular-nums', textAlign: 'center' }}>
                     <AnimatedNumber value={(executiveSummary.grandTotals?.done?.[item.key]) ?? executiveSummary.grandTotalDone?.[item.key] ?? 0} enabled={isInView} />
                   </td>
                 ))}
@@ -5746,7 +5675,6 @@ export default function ExecutiveSummarySection({
                       padding: '11px 4px',
                       borderRight: idx === ACT_TYPES_ORDER.length - 1 ? '1px solid rgba(255, 255, 255, 0.25)' : '1px solid rgba(255, 255, 255, 0.2)',
                       color: '#FFFFFF',
-                      fontWeight: 500,
                       fontVariantNumeric: 'tabular-nums',
                       textAlign: 'center'
                     }}
@@ -5754,7 +5682,7 @@ export default function ExecutiveSummarySection({
                     <AnimatedNumber value={(executiveSummary.grandTotals?.notYet?.[item.key]) ?? executiveSummary.grandTotalNotYet?.[item.key] ?? 0} enabled={isInView} />
                   </td>
                 ))}
-                <td style={{ padding: '11px 8px', textAlign: 'center', color: '#FFFFFF', fontWeight: 600 }}>
+                <td style={{ padding: '11px 8px', textAlign: 'center', color: '#FFFFFF', }}>
                   {(executiveSummary.grandTotals?.progressPct) ?? executiveSummary.grandProgressPct ?? 0}%
                 </td>
               </tr>
@@ -5770,7 +5698,7 @@ export default function ExecutiveSummarySection({
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/ExecutiveSummaryCard.jsx` (371 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/ExecutiveSummaryCard.jsx` (360 baris)
 
 ```javascript
 import { ACT_TYPES_ORDER } from '../../constants/dashboard';
@@ -5804,7 +5732,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
         <div>
           <h2 style={{ 
             fontSize: '15px', 
-            fontWeight: 600, 
             color: '#475569', 
             margin: 0,
             letterSpacing: '-0.1px'
@@ -5826,7 +5753,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
             color: '#334155',
-            fontWeight: 600,
             fontSize: '12px',
             padding: '7px 14px',
             borderRadius: '8px',
@@ -5874,7 +5800,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'center', minWidth: '1100px' }}>
           <thead>
             {/* Primary Header Row */}
-            <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 500 }}>
+            <tr style={{ background: '#0F172A', color: '#FFFFFF', }}>
               <th style={{ 
                 padding: '12px 10px', 
                 width: '130px', 
@@ -5942,7 +5868,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
             </tr>
 
             {/* Subheader Column Names */}
-            <tr style={{ background: '#0F172A', color: '#CBD5E1', fontSize: '11px', fontWeight: 600 }}>
+            <tr style={{ background: '#0F172A', color: '#CBD5E1', fontSize: '11px', }}>
               {/* Subheaders Done Activity */}
               <th style={{ background: '#1E293B', color: '#E2E8F0', padding: '7px 4px', borderRight: '1px solid #334155' }}>Tsel Menyapa</th>
               <th style={{ background: '#1E293B', color: '#E2E8F0', padding: '7px 4px', borderRight: '1px solid #334155' }}>Branding Outlet</th>
@@ -5980,7 +5906,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                     rowSpan={row.branchRowSpan} 
                     style={{ 
                       padding: '10px 12px', 
-                      fontWeight: 500, 
                       fontSize: '12.5px',
                       color: '#0F172A', 
                       borderRight: '1px solid #E2E8F0', 
@@ -5999,7 +5924,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 {/* WOK Name (Rata Kiri) */}
                 <td style={{ 
                   padding: '9px 12px', 
-                  fontWeight: 500, 
                   color: '#334155', 
                   textAlign: 'left', 
                   borderRight: '1px solid #E2E8F0', 
@@ -6011,7 +5935,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 {/* LOP Count (Rata Kanan) */}
                 <td style={{ 
                   padding: '9px 8px', 
-                  fontWeight: 500, 
                   color: '#0F172A', 
                   textAlign: 'right',
                   borderRight: '1px solid #E2E8F0', 
@@ -6029,7 +5952,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                       key={`done-${item.key}`} 
                       style={{ 
                         padding: '9px 6px', 
-                        fontWeight: val > 0 ? 600 : 400, 
                         color: val > 0 ? '#0F172A' : '#94A3B8', 
                         borderRight: '1px solid #E2E8F0', 
                         borderBottom: row.isLastInBranch ? '2px solid #CBD5E1' : '1px solid #F1F5F9',
@@ -6050,7 +5972,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                       key={`notyet-${item.key}`} 
                       style={{ 
                         padding: '9px 6px', 
-                        fontWeight: val > 0 ? 600 : 400, 
                         color: val > 0 ? '#475569' : '#94A3B8', 
                         borderRight: '1px solid #E2E8F0', 
                         borderBottom: row.isLastInBranch ? '2px solid #CBD5E1' : '1px solid #F1F5F9',
@@ -6066,7 +5987,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 {/* Progress % (Rata Kanan) */}
                 <td style={{ 
                   padding: '9px 10px', 
-                  fontWeight: 500,
                   color: '#0F172A', 
                   textAlign: 'right',
                   borderBottom: row.isLastInBranch ? '2px solid #CBD5E1' : '1px solid #F1F5F9',
@@ -6080,7 +6000,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
 
           {/* Table Footer: Grand Totals Regional Jateng DIY */}
           <tfoot>
-            <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 500, borderTop: '2px solid #0F172A' }}>
+            <tr style={{ background: '#0F172A', color: '#FFFFFF', borderTop: '2px solid #0F172A' }}>
               <td colSpan={2} style={{ padding: '12px 14px', textAlign: 'left', fontSize: '11.5px', letterSpacing: '0.05em' }}>
                 TOTAL REGIONAL JATENG DIY
               </td>
@@ -6095,7 +6015,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                   style={{ 
                     padding: '12px 6px', 
                     color: '#FFFFFF', 
-                    fontWeight: 500,
                     fontVariantNumeric: 'tabular-nums',
                     textAlign: 'center'
                   }}
@@ -6111,7 +6030,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                   style={{ 
                     padding: '12px 6px', 
                     color: '#FFFFFF', 
-                    fontWeight: 500,
                     fontVariantNumeric: 'tabular-nums',
                     textAlign: 'center'
                   }}
@@ -6125,7 +6043,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 padding: '12px 10px', 
                 fontSize: '12.5px', 
                 color: '#FFFFFF', 
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 textAlign: 'right' 
               }}>
@@ -6148,7 +6065,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/GtmExecutionInsightCard.jsx` (132 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/GtmExecutionInsightCard.jsx` (131 baris)
 
 ```javascript
 import { memo, useMemo } from 'react';
@@ -6217,14 +6134,13 @@ const GtmExecutionInsightCard = memo(function GtmExecutionInsightCard({
     >
       {/* Header 5 Pilar Aktivitas GTM */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '8px' }}>
-        <span style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+        <span style={{ fontSize: '15px', color: '#0F172A', letterSpacing: '-0.2px' }}>
           5 Pilar Aktivitas GTM
         </span>
         <span
           style={{
             fontSize: '12px',
             color: '#64748B',
-            fontWeight: 500,
             fontVariantNumeric: 'tabular-nums'
           }}
         >
@@ -6239,15 +6155,15 @@ const GtmExecutionInsightCard = memo(function GtmExecutionInsightCard({
           return (
             <div key={pillar.key} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
-                <span style={{ color: '#0F172A', fontWeight: 600 }}>
+                <span style={{ color: '#0F172A', }}>
                   {pillar.label}
                 </span>
-                <span style={{ color: '#0F172A', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+                <span style={{ color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
                   <span>
                     {pillar.verified}
                   </span>
                   /{pillar.total}{' '}
-                  <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 500 }}>
+                  <span style={{ fontSize: '11px', color: '#94A3B8', }}>
                     ({pct}%)
                   </span>
                 </span>
@@ -6287,7 +6203,7 @@ export default GtmExecutionInsightCard;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/BranchProjectsPieCard.jsx` (248 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/BranchProjectsPieCard.jsx` (244 baris)
 
 ```javascript
 import { useState, useMemo, useEffect } from 'react';
@@ -6399,14 +6315,13 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
     >
       {/* ─── HEADER KARTU ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
-        <div style={{ fontSize: '15px', fontWeight: 600, color: '#475569', letterSpacing: '-0.1px' }}>
+        <div style={{ fontSize: '15px', color: '#475569', letterSpacing: '-0.1px' }}>
           Sebaran Volume Proyek per Branch
         </div>
 
         <span
           style={{
             fontSize: '12px',
-            fontWeight: 500,
             color: '#475569'
           }}
         >
@@ -6496,7 +6411,6 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: isHovered ? 600 : 500,
                       color: isHovered ? '#0F172A' : '#334155',
                       whiteSpace: 'nowrap'
                     }}
@@ -6509,17 +6423,15 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: 500,
                       color: '#0F172A',
                       fontVariantNumeric: 'tabular-nums'
                     }}
                   >
-                    {slice.count} <span style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 500 }}>proj</span>
+                    {slice.count} <span style={{ fontSize: '10.5px', color: '#64748B', }}>proj</span>
                   </span>
                   <span
                     style={{
                       fontSize: '11px',
-                      fontWeight: 600,
                       color: '#64748B',
                       fontVariantNumeric: 'tabular-nums',
                       minWidth: '38px',
@@ -6542,7 +6454,7 @@ export default function BranchProjectsPieCard({ ranking = [], branches = [], goB
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/SearchFilterToolbar.jsx` (144 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/SearchFilterToolbar.jsx` (142 baris)
 
 ```javascript
 import { useState } from 'react';
@@ -6585,7 +6497,6 @@ export default function SearchFilterToolbar({
             borderRadius: '8px',
             padding: '7px 26px 7px 10px',
             fontSize: '12.5px',
-            fontWeight: 600,
             color: '#334155',
             cursor: 'pointer',
             appearance: 'none',
@@ -6639,8 +6550,7 @@ export default function SearchFilterToolbar({
             fontSize: '13px',
             color: '#0F172A',
             padding: '7px 0',
-            fontWeight: 500
-          }}
+            }}
         />
 
         {/* Clear Button */}
@@ -6693,7 +6603,7 @@ export default function SearchFilterToolbar({
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/RightWidgetPanel.jsx` (190 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/RightWidgetPanel.jsx` (189 baris)
 
 ```javascript
 import { memo } from 'react';
@@ -6746,16 +6656,16 @@ function MiniProgressItem({ b, index, isLast, goBranch, isInView }) {
       {/* Baris 1: Rank, Nama Branch & Persentase + Trend Icon */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-          <span style={{ fontSize: '11px', fontWeight: 600, color: '#94A3B8', flexShrink: 0 }}>
+          <span style={{ fontSize: '11px', color: '#94A3B8', flexShrink: 0 }}>
             #{index + 1}
           </span>
-          <span style={{ fontSize: '13px', fontWeight: 500, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <span style={{ fontSize: '13px', color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {b.name}
           </span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
+          <span style={{ fontSize: '13.5px', color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
             {countOcc}%
           </span>
           <span
@@ -6764,7 +6674,6 @@ function MiniProgressItem({ b, index, isLast, goBranch, isInView }) {
               alignItems: 'center',
               gap: '3px',
               fontSize: '11.5px',
-              fontWeight: 500,
               color: deltaColor,
               fontVariantNumeric: 'tabular-nums',
               background: 'none',
@@ -6855,10 +6764,10 @@ export default memo(function RightWidgetPanel({
     >
       {/* Header Ranking Branch */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '4px' }}>
-        <span style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+        <span style={{ fontSize: '15px', color: '#0F172A', letterSpacing: '-0.2px' }}>
           Ranking Branch
         </span>
-        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>
+        <span style={{ fontSize: '11px', color: '#64748B', }}>
           OCC Terendah
         </span>
       </div>
@@ -6890,7 +6799,7 @@ export default memo(function RightWidgetPanel({
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/dashboard/DashboardHeader.jsx` (129 baris)
+## File: `gtm-monitor-frontend/src/components/dashboard/DashboardHeader.jsx` (126 baris)
 
 ```javascript
 export default function DashboardHeader({
@@ -6921,7 +6830,6 @@ export default function DashboardHeader({
           style={{
             fontFamily: 'var(--font-heading)',
             fontSize: '28px',
-            fontWeight: 600,
             color: '#0F172A',
             margin: 0,
             letterSpacing: '-0.5px',
@@ -6937,7 +6845,6 @@ export default function DashboardHeader({
               alignItems: 'center',
               gap: '6px',
               fontSize: '12px',
-              fontWeight: 500,
               color: '#64748B',
               marginTop: '6px'
             }}
@@ -6990,7 +6897,6 @@ export default function DashboardHeader({
                   borderRadius: '8px',
                   border: 'none',
                   fontSize: '13px',
-                  fontWeight: isActive ? 600 : 400,
                   cursor: 'pointer',
                   background: isActive ? '#FFFFFF' : 'transparent',
                   color: isActive ? '#0F172A' : '#475569',

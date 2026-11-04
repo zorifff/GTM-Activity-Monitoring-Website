@@ -6,8 +6,8 @@
 
 - `gtm-monitor-frontend/package.json` (33 baris)
 - `gtm-monitor-frontend/vite.config.js` (31 baris)
-- `gtm-monitor-frontend/index.html` (20 baris)
-- `gtm-monitor-frontend/src/index.css` (1168 baris)
+- `gtm-monitor-frontend/index.html` (21 baris)
+- `gtm-monitor-frontend/src/index.css` (1291 baris)
 - `gtm-monitor-frontend/src/apiConfig.js` (64 baris)
 - `gtm-monitor-frontend/src/lib/queryClient.js` (18 baris)
 - `gtm-monitor-frontend/src/main.jsx` (21 baris)
@@ -98,21 +98,24 @@ export default defineConfig({
 
 ---
 
-## File: `gtm-monitor-frontend/index.html` (20 baris)
+## File: `gtm-monitor-frontend/index.html` (21 baris)
 
 ```html
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='gtmGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23C8102E'/%3E%3Cstop offset='100%25' stop-color='%23FF5E00'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='50' fill='url(%23gtmGrad)'/%3E%3Ctext x='50' y='54' font-family='sans-serif' font-weight='900' font-size='34' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle' letter-spacing='-1'%3EGTM%3C/text%3E%3C/svg%3E" />
-    <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg?v=3" />
+    <link rel="icon" type="image/png" href="/telkomsel-symbol.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/telkomsel-symbol.png" />
+
+    <link rel="shortcut icon" type="image/png" href="/telkomsel-symbol.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GTM Activity Monitor - Jateng DIY</title>
     <!-- Google Fonts: Inter & Geist (Modern Neo-Grotesque / Geometric Sans-Serif UI Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://db.onlinewebfonts.com/c/0825e48b888e2966c14f17034b133d07?family=Gordita-Regular" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   </head>
   <body>
@@ -125,15 +128,38 @@ export default defineConfig({
 
 ---
 
-## File: `gtm-monitor-frontend/src/index.css` (1168 baris)
+## File: `gtm-monitor-frontend/src/index.css` (1291 baris)
 
 ```css
+@font-face {
+  font-family: 'Gordita';
+  src: local('Gordita'), local('Gordita Regular'),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.woff") format("woff"),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gordita-Regular';
+  src: local('Gordita'), local('Gordita Regular'),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.woff") format("woff"),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  font-family: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Gordita', 'Gordita-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: #1e293b;
   background-color: #ffffff;
-  --font-heading: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Gordita', 'Gordita-Regular', sans-serif;
+  --font-body: 'Gordita', 'Gordita-Regular', sans-serif;
+  --font-landing: 'Gordita', 'Gordita-Regular', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
   /* Spektrum Merah - Jingga - Hitam - Putih */
   --primary-red: #800000;
@@ -142,6 +168,56 @@ export default defineConfig({
   --grad-orange-red: linear-gradient(135deg, #FF5E00 0%, #800000 100%);
   --bg-dark: #090A0F;
   --bg-dark-card: rgba(255, 255, 255, 0.04);
+}
+
+
+/* ─── TYPOGRAPHY: GORDITA REGULAR 400 & PALET TEKS NETRAL (DASHBOARD, ACTIVITY, ADMIN, PROGRAM, CEK PAIRING) ─── */
+#dashboard-section,
+#dashboard-section *,
+#activity-section,
+#activity-section *,
+#branch-section,
+#branch-section *,
+.branch-view,
+.branch-view *,
+.top-header-bar,
+.top-header-bar *,
+.app-sidebar,
+.app-sidebar *,
+#admin-section,
+#admin-section *,
+.admin-panel,
+.admin-panel *,
+.admin-modal,
+.admin-modal *,
+.program-modal,
+.program-modal *,
+.program-menu,
+.program-menu *,
+.cek-pairing-popover,
+.cek-pairing-popover *,
+#program-viewer-modal,
+#program-viewer-modal *,
+#cek-pairing-popover,
+#cek-pairing-popover * {
+  font-family: 'Gordita', 'Gordita-Regular', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 400 !important;
+}
+
+#dashboard-section h1, #dashboard-section h2, #dashboard-section h3, #dashboard-section h4, #dashboard-section h5, #dashboard-section h6,
+#dashboard-section th, #dashboard-section strong, #dashboard-section b,
+#activity-section h1, #activity-section h2, #activity-section h3, #activity-section h4, #activity-section h5, #activity-section h6,
+#activity-section th, #activity-section strong, #activity-section b,
+#admin-section h1, #admin-section h2, #admin-section h3, #admin-section h4, #admin-section h5, #admin-section h6,
+#admin-section th, #admin-section strong, #admin-section b,
+#branch-section h1, #branch-section h2, #branch-section h3, #branch-section h4, #branch-section h5, #branch-section h6,
+#branch-section th, #branch-section strong, #branch-section b,
+.top-header-bar h1, .top-header-bar h2, .top-header-bar h3, .top-header-bar strong, .top-header-bar b,
+#program-viewer-modal h1, #program-viewer-modal h2, #program-viewer-modal h3, #program-viewer-modal h4, #program-viewer-modal h5, #program-viewer-modal h6,
+#program-viewer-modal th, #program-viewer-modal strong, #program-viewer-modal b,
+#cek-pairing-popover h1, #cek-pairing-popover h2, #cek-pairing-popover h3, #cek-pairing-popover h4, #cek-pairing-popover h5, #cek-pairing-popover h6,
+#cek-pairing-popover th, #cek-pairing-popover strong, #cek-pairing-popover b {
+  font-weight: 400 !important;
 }
 
 html, body {
@@ -214,7 +290,17 @@ select, input {
   font-family: inherit;
 }
 select:focus, input:focus {
-  border-color: #94a3b8;
+  border-color: #0F172A;
+}
+
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
 }
 
 /* Disable native browser password reveal eye icon to prevent glitches */
@@ -229,8 +315,8 @@ button {
 }
 
 /* Accessible focus ring replacement for keyboard navigation (R-32) */
-:focus-visible {
-  outline: 2px solid #800000 !important;
+:focus-visible:not(input):not(textarea):not(select):not(.login-btn-interactive):not(#login-submit-btn) {
+  outline: 2px solid #0F172A !important;
   outline-offset: 2px !important;
 }
 
@@ -756,7 +842,7 @@ button {
   .search-input-field {
     width: 100% !important;
     box-sizing: border-box !important;
-    padding: 10px 18px !important;
+    padding: 10px 16px 10px 38px !important;
     font-size: 12.5px !important;
   }
 
@@ -781,7 +867,7 @@ button {
   gap: 14px;
   margin-bottom: 24px;
   position: relative;
-  z-index: 80;
+  z-index: 25;
 }
 
 .branch-filter-capsule {
@@ -1241,8 +1327,12 @@ button {
     left: 0;
     top: 0;
     bottom: 0;
-    height: 100vh !important;
-    min-height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 100dvh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
     transform: translateX(-100%);
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 0 35px rgba(2, 19, 41, 0.7);
@@ -1272,6 +1362,11 @@ button {
   .saas-main-viewport {
     padding: 16px 20px 40px !important;
   }
+
+  .app-sidebar .sidebar-bottom-actions {
+    margin-top: 24px !important;
+    padding-bottom: max(32px, env(safe-area-inset-bottom)) !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1294,6 +1389,87 @@ button {
   .saas-main-viewport {
     padding: 14px 14px 32px !important;
   }
+}
+
+/* ─── RESPONSIVE LOGIN PAGE ─── */
+.login-root-container {
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+  background-color: #FFFFFF;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.login-form-pane {
+  flex: 0 0 57.2%;
+  width: 57.2%;
+  min-height: 100dvh;
+  background-color: #FFFFFF;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justifyContent: center;
+  align-items: center;
+  padding: 40px 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.login-image-pane {
+  flex: 0 0 42.8%;
+  width: 42.8%;
+  min-height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  background-color: #0F172A;
+}
+
+.login-card-inner {
+  width: 100%;
+  max-width: 542px;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .login-root-container {
+    flex-direction: column !important;
+  }
+  .login-form-pane {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    min-height: 100dvh !important;
+    padding: 80px 20px 48px !important;
+    justify-content: flex-start !important;
+  }
+  .login-image-pane {
+    display: none !important;
+  }
+  .login-card-inner {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .login-logo-container {
+    top: 24px !important;
+    left: 20px !important;
+  }
+  .login-back-btn {
+    top: 24px !important;
+    right: 20px !important;
+    padding: 0 !important;
+    font-size: 12px !important;
+  }
+}
+
+
+
+.top-header-bar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  background-color: #FFFFFF !important;
+  flex-shrink: 0 !important;
 }
 
 ```

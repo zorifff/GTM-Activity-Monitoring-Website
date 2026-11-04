@@ -275,7 +275,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -289,7 +288,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -305,7 +303,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -315,7 +312,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             Kapasitas:{' '}
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -348,7 +344,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -362,7 +357,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -376,7 +370,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             <span
               style={{
                 fontSize: '20px',
-                fontWeight: 500,
                 color: '#64748B',
                 letterSpacing: '-0.2px',
                 marginLeft: '6px'
@@ -389,7 +382,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -399,7 +391,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             Mencakup{' '}
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -430,7 +421,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -444,7 +434,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -460,7 +449,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -470,7 +458,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             Terverifikasi:{' '}
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -491,7 +478,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
         {/* Branch Dropdown */}
         {branches.length === 1 ? (
           <div className="branch-filter-capsule" style={{ height: '42px', minWidth: 'auto', border: '1px solid #CBD5E1', color: '#0F172A', display: 'flex', alignItems: 'center', padding: '0 16px', borderRadius: '10px', background: '#FFFFFF', boxSizing: 'border-box' }}>
-            <span className="branch-text-label" style={{ fontWeight: 600, fontSize: '13px' }}>Branch: {formatBranch(branches[0].name)}</span>
+            <span className="branch-text-label" style={{ fontSize: '13px' }}>Branch: {formatBranch(branches[0].name)}</span>
           </div>
         ) : (
           <div ref={branchDropdownRef} style={{ position: 'relative' }}>
@@ -520,7 +507,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#94A3B8'; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#CBD5E1'; }}
             >
-              <span className="branch-text-label" style={{ flex: 1, fontWeight: 600, color: '#0F172A', fontSize: '13px' }}>
+              <span className="branch-text-label" style={{ flex: 1, color: '#0F172A', fontSize: '13px' }}>
                 {selectedBranch === 'Semua Branch' 
                   ? `Semua Branch (${totalProjects})` 
                   : `${formatBranch(selectedBranch)} (${priorityBranches.find(x => x.name === selectedBranch)?.projects?.length || 0})`}
@@ -537,7 +524,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                   aria-selected={selectedBranch === 'Semua Branch'}
                   className={`dropdown-item ${selectedBranch === 'Semua Branch' ? 'active' : ''}`}
                   onClick={() => { setSelectedBranch('Semua Branch'); setIsDropdownOpen(false); }}
-                  style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === 'Semua Branch' ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', fontWeight: selectedBranch === 'Semua Branch' ? 600 : 500, color: '#0F172A', cursor: 'pointer' }}
+                  style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === 'Semua Branch' ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', color: '#0F172A', cursor: 'pointer' }}
                 >
                   Semua Branch ({totalProjects})
                 </button>
@@ -549,7 +536,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                     aria-selected={selectedBranch === b.name}
                     className={`dropdown-item ${selectedBranch === b.name ? 'active' : ''}`}
                     onClick={() => { setSelectedBranch(b.name); setIsDropdownOpen(false); }}
-                    style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === b.name ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', fontWeight: selectedBranch === b.name ? 600 : 500, color: '#0F172A', cursor: 'pointer' }}
+                    style={{ width: '100%', textAlign: 'left', border: 'none', background: selectedBranch === b.name ? '#F1F5F9' : 'transparent', padding: '10px 16px', fontSize: '13px', color: '#0F172A', cursor: 'pointer' }}
                   >
                     {formatBranch(b.name)} ({b.projects?.length || 0})
                   </button>
@@ -578,13 +565,12 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 padding: '0 16px',
                 borderRadius: '10px',
                 fontSize: '13px',
-                fontWeight: 600,
                 flexShrink: 0,
                 boxSizing: 'border-box',
                 transition: 'all 0.15s ease',
-                border: isStatusFiltered ? '1.5px solid #800000' : '1px solid #CBD5E1',
-                backgroundColor: isStatusFiltered ? '#FEF2F2' : '#FFFFFF',
-                color: isStatusFiltered ? '#800000' : '#0F172A',
+                border: isStatusFiltered ? '1.5px solid #0F172A' : '1px solid #CBD5E1',
+                backgroundColor: isStatusFiltered ? '#F1F5F9' : '#FFFFFF',
+                color: '#0F172A',
                 boxShadow: 'none'
               }}
               onMouseEnter={(e) => {
@@ -600,7 +586,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 }
               }}
             >
-              <span className="status-text-label" style={{ fontWeight: 600, fontSize: '13px' }}>
+              <span className="status-text-label" style={{ fontSize: '13px' }}>
                 Status ({statusMatchingProjectsCount})
               </span>
               <svg
@@ -608,7 +594,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                 height="14"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke={isStatusFiltered ? '#800000' : '#64748B'}
+                stroke={isStatusFiltered ? '#0F172A' : '#64748B'}
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -640,7 +626,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                   padding: '12px',
                   fontSize: '12px',
                   color: '#334155',
-                  fontWeight: 500,
                   textAlign: 'left'
                 }}
               >
@@ -652,7 +637,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                     gap: '8px',
                     padding: '4px 2px',
                     cursor: 'pointer',
-                    fontWeight: 600,
                     borderBottom: '1px solid #F1F5F9',
                     marginBottom: '6px',
                     fontSize: '12px',
@@ -672,7 +656,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                     style={{ cursor: 'pointer' }}
                   />
                   <span>(Pilih Semua)</span>
-                  <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', fontWeight: 600 }}>
+                  <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px' }}>
                     ({totalProjectsInFilter})
                   </span>
                 </label>
@@ -713,10 +697,10 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
                           }}
                           style={{ cursor: 'pointer', flexShrink: 0 }}
                         />
-                        <span style={{ fontSize: '12px', color: '#0F172A', fontWeight: isChecked ? 600 : 500 }}>
+                        <span style={{ fontSize: '12px', color: '#0F172A',  }}>
                           {st}
                         </span>
-                        <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', fontWeight: 600 }}>
+                        <span style={{ marginLeft: 'auto', color: '#64748B', fontSize: '11px', }}>
                           ({count})
                         </span>
                       </label>
@@ -783,7 +767,6 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
             color: '#0F172A',
-            fontWeight: 600,
             fontSize: '13px',
             padding: '0 18px',
             height: '42px',
@@ -854,7 +837,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
           justifyContent: 'center',
           gap: '6px'
         }}>
-          <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.1px' }}>
+          <div style={{ fontSize: '15px', color: '#0F172A', letterSpacing: '-0.1px' }}>
             {isAdmin && isStatusFiltered 
               ? 'Tidak ada proyek dengan status terpilih' 
               : 'Tidak ada proyek yang sesuai kriteria'}

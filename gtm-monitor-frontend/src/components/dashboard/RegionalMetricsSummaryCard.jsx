@@ -49,7 +49,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -63,7 +62,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -79,7 +77,6 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -89,7 +86,6 @@ export default function RegionalMetricsSummaryCard({
             Kapasitas:{' '}
             <span
               style={{
-                fontWeight: 600,
                 color: '#1E293B',
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"',
@@ -106,7 +102,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -120,7 +115,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -152,7 +146,7 @@ export default function RegionalMetricsSummaryCard({
                   gap: '4px',
                   fontSize: '12px',
                   color: '#475569',
-                  fontWeight: 500, fontVariantNumeric: 'tabular-nums',
+                  fontVariantNumeric: 'tabular-nums',
                   fontFeatureSettings: '"tnum"',
                   whiteSpace: 'nowrap'
                 }}
@@ -181,7 +175,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '15px',
-              fontWeight: 600,
               color: '#475569',
               whiteSpace: 'nowrap',
               letterSpacing: '-0.1px',
@@ -195,7 +188,6 @@ export default function RegionalMetricsSummaryCard({
           <div
             style={{
               fontSize: '48px',
-              fontWeight: 600,
               color: '#0F172A',
               letterSpacing: '-1.5px',
               margin: '18px 0 16px 0',
@@ -211,7 +203,6 @@ export default function RegionalMetricsSummaryCard({
             style={{
               fontSize: '13px',
               color: '#64748B',
-              fontWeight: 500,
               whiteSpace: 'nowrap',
               height: '24px',
               display: 'flex',
@@ -222,7 +213,6 @@ export default function RegionalMetricsSummaryCard({
             <span
               style={{
                 color: '#1E293B',
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"'
               }}
@@ -234,7 +224,6 @@ export default function RegionalMetricsSummaryCard({
             <span
               style={{
                 color: '#1E293B',
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"'
               }}
@@ -246,7 +235,6 @@ export default function RegionalMetricsSummaryCard({
             <span
               style={{
                 color: '#1E293B',
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 fontFeatureSettings: '"tnum"'
               }}

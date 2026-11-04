@@ -67,8 +67,8 @@ export default function PairingImportModal({
                 width: '38px',
                 height: '38px',
                 borderRadius: '10px',
-                background: '#FEF2F2',
-                color: '#800000',
+                background: '#F1F5F9',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -81,10 +81,10 @@ export default function PairingImportModal({
               </svg>
             </div>
             <div>
-              <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+              <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '17px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                 Upload File Excel Data Pairing
               </h3>
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
+              <span style={{ fontSize: '12px', color: '#64748B', }}>
                 Target: Data Tsel One Pairing Pelanggan
               </span>
             </div>
@@ -104,7 +104,6 @@ export default function PairingImportModal({
                   background: '#F8FAFC',
                   color: '#475569',
                   fontSize: '13px',
-                  fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -126,7 +125,6 @@ export default function PairingImportModal({
                 background: '#F1F5F9',
                 color: '#64748B',
                 fontSize: '14px',
-                fontWeight: 700,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -163,7 +161,6 @@ export default function PairingImportModal({
                 border: '1px solid #CBD5E1',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -186,8 +183,7 @@ export default function PairingImportModal({
             <span
               style={{
                 fontSize: '12.5px',
-                color: pairingFile ? '#065F46' : '#94A3B8',
-                fontWeight: pairingFile ? 600 : 400,
+                color: pairingFile ? '#0F172A' : '#94A3B8',
                 flex: 1,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -209,9 +205,8 @@ export default function PairingImportModal({
                 style={{
                   border: 'none',
                   background: 'transparent',
-                  color: '#800000',
+                  color: '#0F172A',
                   fontSize: '15px',
-                  fontWeight: 700,
                   cursor: 'pointer',
                   padding: '0 4px',
                   lineHeight: 1
@@ -238,13 +233,13 @@ export default function PairingImportModal({
           </div>
 
           {pairingMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {pairingMessage}
             </div>
           )}
 
           {pairingError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#800000', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {pairingError}
             </div>
           )}
@@ -261,7 +256,6 @@ export default function PairingImportModal({
                 background: '#FFFFFF',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -278,7 +272,6 @@ export default function PairingImportModal({
                 background: pairingLoading || !pairingFile ? '#E2E8F0' : '#800000',
                 color: pairingLoading || !pairingFile ? '#94A3B8' : '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: pairingLoading || !pairingFile ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
                 display: 'inline-flex',

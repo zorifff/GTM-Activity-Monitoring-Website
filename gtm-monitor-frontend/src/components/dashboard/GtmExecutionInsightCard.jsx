@@ -64,14 +64,13 @@ const GtmExecutionInsightCard = memo(function GtmExecutionInsightCard({
     >
       {/* Header 5 Pilar Aktivitas GTM */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '8px' }}>
-        <span style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+        <span style={{ fontSize: '15px', color: '#0F172A', letterSpacing: '-0.2px' }}>
           5 Pilar Aktivitas GTM
         </span>
         <span
           style={{
             fontSize: '12px',
             color: '#64748B',
-            fontWeight: 500,
             fontVariantNumeric: 'tabular-nums'
           }}
         >
@@ -86,15 +85,15 @@ const GtmExecutionInsightCard = memo(function GtmExecutionInsightCard({
           return (
             <div key={pillar.key} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
-                <span style={{ color: '#0F172A', fontWeight: 600 }}>
+                <span style={{ color: '#0F172A', }}>
                   {pillar.label}
                 </span>
-                <span style={{ color: '#0F172A', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+                <span style={{ color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
                   <span>
                     {pillar.verified}
                   </span>
                   /{pillar.total}{' '}
-                  <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 500 }}>
+                  <span style={{ fontSize: '11px', color: '#94A3B8', }}>
                     ({pct}%)
                   </span>
                 </span>

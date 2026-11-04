@@ -50,9 +50,9 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            background: '#FEE2E2',
-            border: '1px solid #FCA5A5',
-            color: '#800000',
+            background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
+            border: '1px solid #FDA4AF',
+            color: '#0F172A',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -68,22 +68,22 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
           </svg>
         </div>
 
-        <h3 id="delete-prog-title" style={{ fontSize: '20px', fontWeight: 900, color: '#0F172A', margin: '0 0 10px 0', fontFamily: "var(--font-heading)" }}>
+        <h3 id="delete-prog-title" style={{ fontSize: '20px', color: '#0F172A', margin: '0 0 10px 0', fontFamily: "var(--font-heading)" }}>
           Konfirmasi Hapus Program
         </h3>
 
-        <p style={{ fontSize: '13.5px', color: '#475569', lineHeight: 1.6, margin: '0 0 20px 0', fontWeight: 500 }}>
+        <p style={{ fontSize: '13.5px', color: '#475569', lineHeight: 1.6, margin: '0 0 20px 0', }}>
           Apakah Anda yakin ingin menghapus data program terdaftar ini? Program akan terhapus dari menu navigasi program.
         </p>
 
         <div style={{ background: '#F8FAFC', borderRadius: '14px', padding: '12px 16px', marginBottom: '22px', border: '1px solid #E2E8F0', textAlign: 'left', fontSize: '12.5px', color: '#334155', display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <div>
-            <span style={{ color: '#64748B', fontWeight: 600 }}>Periode Bulan:</span>{' '}
-            <strong style={{ color: '#0F172A', fontWeight: 700 }}>{deleteProgramMonth}</strong>
+            <span style={{ color: '#64748B', }}>Periode Bulan:</span>{' '}
+            <strong style={{ color: '#0F172A', }}>{deleteProgramMonth}</strong>
           </div>
           <div>
-            <span style={{ color: '#64748B', fontWeight: 600 }}>Target Hapus:</span>{' '}
-            <strong style={{ color: '#800000', fontWeight: 700 }}>
+            <span style={{ color: '#64748B', }}>Target Hapus:</span>{' '}
+            <strong style={{ color: '#0F172A', }}>
               {deleteProgramTarget === 'ALL' ? `Semua Program di ${deleteProgramMonth}` : deleteProgramTarget}
             </strong>
           </div>
@@ -102,7 +102,6 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
               background: '#F8FAFC',
               color: '#475569',
               fontSize: '13.5px',
-              fontWeight: 700,
               cursor: deleteLoading ? 'not-allowed' : 'pointer'
             }}
           >
@@ -120,7 +119,6 @@ export default function DeleteProgramConfirmModal({ deleteProgramMonth, deletePr
               background: '#800000',
               color: '#FFFFFF',
               fontSize: '13.5px',
-              fontWeight: 800,
               cursor: deleteLoading ? 'not-allowed' : 'pointer',
               boxShadow: '0 4px 14px rgba(128, 0, 0, 0.35)'
             }}

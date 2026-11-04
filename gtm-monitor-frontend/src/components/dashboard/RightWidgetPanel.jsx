@@ -48,16 +48,16 @@ function MiniProgressItem({ b, index, isLast, goBranch, isInView }) {
       {/* Baris 1: Rank, Nama Branch & Persentase + Trend Icon */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-          <span style={{ fontSize: '11px', fontWeight: 600, color: '#94A3B8', flexShrink: 0 }}>
+          <span style={{ fontSize: '11px', color: '#94A3B8', flexShrink: 0 }}>
             #{index + 1}
           </span>
-          <span style={{ fontSize: '13px', fontWeight: 500, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <span style={{ fontSize: '13px', color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {b.name}
           </span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
+          <span style={{ fontSize: '13.5px', color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
             {countOcc}%
           </span>
           <span
@@ -66,7 +66,6 @@ function MiniProgressItem({ b, index, isLast, goBranch, isInView }) {
               alignItems: 'center',
               gap: '3px',
               fontSize: '11.5px',
-              fontWeight: 500,
               color: deltaColor,
               fontVariantNumeric: 'tabular-nums',
               background: 'none',
@@ -157,10 +156,10 @@ export default memo(function RightWidgetPanel({
     >
       {/* Header Ranking Branch */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '4px' }}>
-        <span style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+        <span style={{ fontSize: '15px', color: '#0F172A', letterSpacing: '-0.2px' }}>
           Ranking Branch
         </span>
-        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>
+        <span style={{ fontSize: '11px', color: '#64748B', }}>
           OCC Terendah
         </span>
       </div>

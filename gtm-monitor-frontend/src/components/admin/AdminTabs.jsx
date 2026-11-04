@@ -18,7 +18,6 @@ export default function AdminTabs() {
             padding: '0 16px',
             borderRadius: '6px',
             fontSize: '13px',
-            fontWeight: 600,
             background: '#FFFFFF',
             color: '#0F172A',
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',

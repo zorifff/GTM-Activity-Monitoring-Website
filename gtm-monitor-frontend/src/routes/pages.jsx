@@ -2,7 +2,6 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router';
 import LandingPage from '../components/LandingPage';
-import LoginPage from '../components/Auth/LoginPage';
 import Dashboard from '../components/Dashboard';
 import BranchView from '../components/BranchView';
 import UploadView from '../components/UploadView';
@@ -14,11 +13,13 @@ import { useActivityActions } from '../hooks/useActivityActions';
 import { PATHS } from './paths';
 
 export function LandingRoute() {
-  const navigate = useNavigate();
+  const { login } = useAuth();
   return (
     <LandingPage
-      onLoginClick={() => navigate(PATHS.login)}
-      onExplore={() => navigate(PATHS.login)}
+      initialLoginOpen={false}
+      onLoginSuccess={(loggedInUser, expiresAt) => {
+        login(loggedInUser, expiresAt);
+      }}
     />
   );
 }
@@ -27,11 +28,12 @@ export function LoginRoute() {
   const navigate = useNavigate();
   const { login } = useAuth();
   return (
-    <LoginPage
+    <LandingPage
+      initialLoginOpen={true}
       onLoginSuccess={(loggedInUser, expiresAt) => {
         login(loggedInUser, expiresAt);
       }}
-      onBackToLanding={() => navigate(PATHS.landing)}
+      onCloseLoginRoute={() => navigate(PATHS.landing, { replace: true })}
     />
   );
 }
@@ -75,7 +77,8 @@ export function BranchRoute() {
   const goDashboard = useCallback(() => navigate(PATHS.dashboard), [navigate]);
 
   return (
-    <BranchView
+    <section id="branch-section" style={{ scrollMarginTop: '80px' }}>
+      <BranchView
       branches={branches}
       activeBranch={branchName}
       goDashboard={goDashboard}
@@ -83,7 +86,8 @@ export function BranchRoute() {
       verifyActivity={isAdmin ? verifyActivity : null}
       rejectActivity={isAdmin ? rejectActivity : null}
       deletePhoto={deletePhoto}
-    />
+      />
+    </section>
   );
 }
 
@@ -120,13 +124,15 @@ export function AdminRoute() {
   const { branches, refreshMonitoring } = useOutletContext();
   const { uploadPhoto, verifyActivity, rejectActivity, deletePhoto } = useActivityActions();
   return (
-    <AdminPanel
-      branches={branches}
-      onUpdate={refreshMonitoring}
-      verifyActivity={verifyActivity}
-      rejectActivity={rejectActivity}
-      uploadPhoto={uploadPhoto}
-      deletePhoto={deletePhoto}
-    />
+    <section id="admin-section" style={{ scrollMarginTop: '80px' }}>
+      <AdminPanel
+        branches={branches}
+        onUpdate={refreshMonitoring}
+        verifyActivity={verifyActivity}
+        rejectActivity={rejectActivity}
+        uploadPhoto={uploadPhoto}
+        deletePhoto={deletePhoto}
+      />
+    </section>
   );
 }

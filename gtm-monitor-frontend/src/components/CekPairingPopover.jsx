@@ -213,7 +213,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
+                <h3 style={{ margin: 0, fontSize: '15px', color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
                   Pencarian Data Pairing
                 </h3>
 
@@ -231,9 +231,9 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       width: '20px',
                       height: '20px',
                       borderRadius: '50%',
-                      background: showGuide ? '#EFF6FF' : '#FFFFFF',
-                      color: showGuide ? '#1D4ED8' : '#64748B',
-                      border: showGuide ? '1px solid #93C5FD' : '1px solid #CBD5E1',
+                      background: showGuide ? '#F1F5F9' : '#FFFFFF',
+                      color: showGuide ? '#0F172A' : '#64748B',
+                      border: showGuide ? '1px solid #0F172A' : '1px solid #CBD5E1',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -272,7 +272,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
-                        <div style={{ fontFamily: 'var(--font-heading)', fontSize: '12.5px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                        <div style={{ fontFamily: 'var(--font-heading)', fontSize: '12.5px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                           Panduan Penggunaan
                         </div>
                         <button
@@ -312,7 +312,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       <ul style={{ margin: 0, paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '11.5px', color: '#475569', lineHeight: 1.5 }}>
                         <li>Masukkan <strong style={{ color: '#0F172A' }}>bb_id</strong>, nomor HP (<strong style={{ color: '#0F172A' }}>08...</strong> / <strong style={{ color: '#0F172A' }}>62...</strong>), atau <strong style={{ color: '#0F172A' }}>order_id</strong> lengkap.</li>
                         <li>Penulisan harus akurat sesuai data (minimal 6 karakter).</li>
-                        <li>Tekan <strong style={{ color: '#0F172A' }}>Enter</strong> atau klik tombol <strong style={{ color: '#800000' }}>Cari Data Pairing</strong>.</li>
+                        <li>Tekan <strong style={{ color: '#0F172A' }}>Enter</strong> atau klik tombol <strong style={{ color: '#0F172A' }}>Cari Data Pairing</strong>.</li>
                       </ul>
                     </div>
                   )}
@@ -335,7 +335,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 height: '26px',
                 borderRadius: '50%',
                 cursor: 'pointer',
-                fontWeight: 600,
                 fontSize: '12px',
                 display: 'flex',
                 alignItems: 'center',
@@ -376,7 +375,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                   borderRadius: '10px',
                   border: '1px solid #CBD5E1',
                   fontSize: '13px',
-                  fontWeight: 500,
                   fontFamily: 'var(--font-body)',
                   background: '#FFFFFF',
                   color: '#0F172A',
@@ -409,7 +407,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             </div>
 
             {error && (
-              <div style={{ padding: '10px 12px', borderRadius: '8px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#800000', fontSize: '12px', fontWeight: 500, lineHeight: 1.45 }}>
+              <div style={{ padding: '10px 12px', borderRadius: '8px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '12px', lineHeight: 1.45 }}>
                 {error}
               </div>
             )}
@@ -426,7 +424,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                 color: loading || !query.trim() ? '#94A3B8' : '#FFFFFF',
                 fontFamily: 'var(--font-body)',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: loading || !query.trim() ? 'not-allowed' : 'pointer',
                 boxShadow: loading || !query.trim() ? 'none' : '0 1px 2px rgba(128, 0, 0, 0.2)',
                 transition: 'all 0.15s ease',
@@ -494,7 +491,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             {/* Modal Header */}
             <div style={{ padding: '18px 24px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFC' }}>
               <div>
-                <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
+                <h3 id="pairing-modal-title" style={{ margin: 0, fontSize: '16px', color: '#0F172A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
                   Hasil Deteksi Pairing
                 </h3>
                 <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px' }}>
@@ -514,7 +511,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                   height: '28px',
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  fontWeight: 600,
                   fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
@@ -537,7 +533,7 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
             {/* Multiple Results Selector (if results count > 1) */}
             {results.length > 1 && (
               <div style={{ padding: '10px 24px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
-                <span style={{ fontWeight: 600, color: '#475569' }}>
+                <span style={{ color: '#475569' }}>
                   Ditemukan {results.length} data cocok ({selectedIdx + 1} dari {results.length}):
                 </span>
                 <div style={{ display: 'flex', gap: '6px' }}>
@@ -551,7 +547,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       border: '1px solid #CBD5E1',
                       background: '#FFFFFF',
                       fontSize: '11.5px',
-                      fontWeight: 600,
                       cursor: selectedIdx === 0 ? 'not-allowed' : 'pointer',
                       opacity: selectedIdx === 0 ? 0.5 : 1
                     }}
@@ -568,7 +563,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                       border: '1px solid #CBD5E1',
                       background: '#FFFFFF',
                       fontSize: '11.5px',
-                      fontWeight: 600,
                       cursor: selectedIdx === results.length - 1 ? 'not-allowed' : 'pointer',
                       opacity: selectedIdx === results.length - 1 ? 0.5 : 1
                     }}
@@ -592,7 +586,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                           padding: '10px 14px',
                           background: '#800000',
                           color: '#FFFFFF',
-                          fontWeight: 600,
                           fontSize: '12px',
                           fontFamily: 'var(--font-body)',
                           letterSpacing: '-0.1px',
@@ -614,7 +607,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                           borderTopRightRadius: '8px',
                           borderBottomRightRadius: '8px',
                           color: '#0F172A',
-                          fontWeight: 500,
                           wordBreak: 'break-all',
                           verticalAlign: 'middle',
                           fontFamily: 'var(--font-body)'
@@ -639,7 +631,6 @@ const CekPairingPopover = memo(function CekPairingPopover({ isOpen, coords, onCl
                   border: 'none',
                   background: '#800000',
                   color: '#FFFFFF',
-                  fontWeight: 600,
                   fontSize: '12.5px',
                   cursor: 'pointer',
                   boxShadow: '0 1px 2px rgba(128, 0, 0, 0.2)',

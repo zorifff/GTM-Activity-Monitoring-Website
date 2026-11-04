@@ -29,7 +29,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
         <div>
           <h2 style={{ 
             fontSize: '15px', 
-            fontWeight: 600, 
             color: '#475569', 
             margin: 0,
             letterSpacing: '-0.1px'
@@ -51,7 +50,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
             background: '#FFFFFF',
             border: '1px solid #CBD5E1',
             color: '#334155',
-            fontWeight: 600,
             fontSize: '12px',
             padding: '7px 14px',
             borderRadius: '8px',
@@ -99,7 +97,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'center', minWidth: '1100px' }}>
           <thead>
             {/* Primary Header Row */}
-            <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 500 }}>
+            <tr style={{ background: '#0F172A', color: '#FFFFFF', }}>
               <th style={{ 
                 padding: '12px 10px', 
                 width: '130px', 
@@ -167,7 +165,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
             </tr>
 
             {/* Subheader Column Names */}
-            <tr style={{ background: '#0F172A', color: '#CBD5E1', fontSize: '11px', fontWeight: 600 }}>
+            <tr style={{ background: '#0F172A', color: '#CBD5E1', fontSize: '11px', }}>
               {/* Subheaders Done Activity */}
               <th style={{ background: '#1E293B', color: '#E2E8F0', padding: '7px 4px', borderRight: '1px solid #334155' }}>Tsel Menyapa</th>
               <th style={{ background: '#1E293B', color: '#E2E8F0', padding: '7px 4px', borderRight: '1px solid #334155' }}>Branding Outlet</th>
@@ -205,7 +203,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                     rowSpan={row.branchRowSpan} 
                     style={{ 
                       padding: '10px 12px', 
-                      fontWeight: 500, 
                       fontSize: '12.5px',
                       color: '#0F172A', 
                       borderRight: '1px solid #E2E8F0', 
@@ -224,7 +221,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 {/* WOK Name (Rata Kiri) */}
                 <td style={{ 
                   padding: '9px 12px', 
-                  fontWeight: 500, 
                   color: '#334155', 
                   textAlign: 'left', 
                   borderRight: '1px solid #E2E8F0', 
@@ -236,7 +232,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 {/* LOP Count (Rata Kanan) */}
                 <td style={{ 
                   padding: '9px 8px', 
-                  fontWeight: 500, 
                   color: '#0F172A', 
                   textAlign: 'right',
                   borderRight: '1px solid #E2E8F0', 
@@ -254,7 +249,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                       key={`done-${item.key}`} 
                       style={{ 
                         padding: '9px 6px', 
-                        fontWeight: val > 0 ? 600 : 400, 
                         color: val > 0 ? '#0F172A' : '#94A3B8', 
                         borderRight: '1px solid #E2E8F0', 
                         borderBottom: row.isLastInBranch ? '2px solid #CBD5E1' : '1px solid #F1F5F9',
@@ -275,7 +269,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                       key={`notyet-${item.key}`} 
                       style={{ 
                         padding: '9px 6px', 
-                        fontWeight: val > 0 ? 600 : 400, 
                         color: val > 0 ? '#475569' : '#94A3B8', 
                         borderRight: '1px solid #E2E8F0', 
                         borderBottom: row.isLastInBranch ? '2px solid #CBD5E1' : '1px solid #F1F5F9',
@@ -291,7 +284,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 {/* Progress % (Rata Kanan) */}
                 <td style={{ 
                   padding: '9px 10px', 
-                  fontWeight: 500,
                   color: '#0F172A', 
                   textAlign: 'right',
                   borderBottom: row.isLastInBranch ? '2px solid #CBD5E1' : '1px solid #F1F5F9',
@@ -305,7 +297,7 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
 
           {/* Table Footer: Grand Totals Regional Jateng DIY */}
           <tfoot>
-            <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 500, borderTop: '2px solid #0F172A' }}>
+            <tr style={{ background: '#0F172A', color: '#FFFFFF', borderTop: '2px solid #0F172A' }}>
               <td colSpan={2} style={{ padding: '12px 14px', textAlign: 'left', fontSize: '11.5px', letterSpacing: '0.05em' }}>
                 TOTAL REGIONAL JATENG DIY
               </td>
@@ -320,7 +312,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                   style={{ 
                     padding: '12px 6px', 
                     color: '#FFFFFF', 
-                    fontWeight: 500,
                     fontVariantNumeric: 'tabular-nums',
                     textAlign: 'center'
                   }}
@@ -336,7 +327,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                   style={{ 
                     padding: '12px 6px', 
                     color: '#FFFFFF', 
-                    fontWeight: 500,
                     fontVariantNumeric: 'tabular-nums',
                     textAlign: 'center'
                   }}
@@ -350,7 +340,6 @@ export default function ExecutiveSummaryCard({ branches, isInView = true }) {
                 padding: '12px 10px', 
                 fontSize: '12.5px', 
                 color: '#FFFFFF', 
-                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
                 textAlign: 'right' 
               }}>

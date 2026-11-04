@@ -38,7 +38,6 @@ export default function SearchFilterToolbar({
             borderRadius: '8px',
             padding: '7px 26px 7px 10px',
             fontSize: '12.5px',
-            fontWeight: 600,
             color: '#334155',
             cursor: 'pointer',
             appearance: 'none',
@@ -92,8 +91,7 @@ export default function SearchFilterToolbar({
             fontSize: '13px',
             color: '#0F172A',
             padding: '7px 0',
-            fontWeight: 500
-          }}
+            }}
         />
 
         {/* Clear Button */}

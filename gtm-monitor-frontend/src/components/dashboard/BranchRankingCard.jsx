@@ -38,7 +38,6 @@ function WokRowItem({ w, index, isMounted, isInView, goBranch, branchName }) {
         display: 'flex', 
         alignItems: 'center', 
         gap: '6px', 
-        fontWeight: 500, 
         fontSize: '12.5px', 
         color: '#334155', 
         minWidth: 0, 
@@ -67,7 +66,6 @@ function WokRowItem({ w, index, isMounted, isInView, goBranch, branchName }) {
       {/* Occupancy % */}
       <div style={{ 
         fontSize: '12.5px', 
-        fontWeight: 600, 
         color: '#334155', 
         textAlign: 'right',
         fontVariantNumeric: 'tabular-nums'
@@ -85,7 +83,6 @@ function WokRowItem({ w, index, isMounted, isInView, goBranch, branchName }) {
       <div style={{ 
         fontSize: '12px', 
         color: '#64748B', 
-        fontWeight: 500, 
         textAlign: 'right',
         fontVariantNumeric: 'tabular-nums'
       }}>
@@ -95,7 +92,6 @@ function WokRowItem({ w, index, isMounted, isInView, goBranch, branchName }) {
       <div style={{ 
         fontSize: '12px', 
         color: '#64748B', 
-        fontWeight: 500, 
         textAlign: 'right',
         fontVariantNumeric: 'tabular-nums'
       }}>
@@ -148,7 +144,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
           display: 'flex', 
           alignItems: 'center', 
           gap: '8px', 
-          fontWeight: 500, 
           fontSize: '13.5px', 
           color: '#0F172A',
           minWidth: 0, 
@@ -187,7 +182,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
         {/* Occupancy % */}
         <div style={{ 
           fontSize: '13px', 
-          fontWeight: 500, 
           color: '#0F172A', 
           textAlign: 'right',
           fontVariantNumeric: 'tabular-nums'
@@ -206,7 +200,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
         <div style={{ 
           fontSize: '12.5px', 
           color: '#64748B', 
-          fontWeight: 500, 
           textAlign: 'right',
           fontVariantNumeric: 'tabular-nums'
         }}>
@@ -217,7 +210,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
         <div style={{ 
           fontSize: '12.5px', 
           color: '#64748B', 
-          fontWeight: 500, 
           textAlign: 'right',
           fontVariantNumeric: 'tabular-nums'
         }}>
@@ -237,7 +229,6 @@ function BranchRowItem({ b, index, isMounted, isInView, isExpanded, hasWoks, onT
               border: 'none',
               color: '#0F172A',
               fontSize: '12.5px',
-              fontWeight: 600,
               cursor: 'pointer',
               padding: '4px 6px',
               fontFamily: 'inherit',
@@ -299,7 +290,6 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
       <div className="ranking-card-header">
         <h2 style={{ 
           fontSize: '15px', 
-          fontWeight: 600, 
           color: '#475569', 
           margin: 0,
           letterSpacing: '-0.1px'
@@ -320,7 +310,6 @@ export default function BranchRankingCard({ safeRanking, goBranch, isInView = tr
             background: '#0F172A',
             color: '#FFFFFF',
             fontSize: '11px',
-            fontWeight: 500,
             letterSpacing: '0.05em',
             textTransform: 'uppercase',
             whiteSpace: 'nowrap'

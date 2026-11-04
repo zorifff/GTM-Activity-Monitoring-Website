@@ -44,8 +44,8 @@ const SortIcon = ({ sort }) => {
 // ─── OPTIMASI 3: ON-DEMAND LOADING & MEMOIZED ODP ROW ───
 const OdpRow = memo(({ o, odpGrid }) => {
   const occRate = o.total > 0 ? Math.round((o.used / o.total) * 100) : 0;
-  const badgeBg = o.used === 0 ? '#e2e8f0' : occRate < 50 ? '#dcfce7' : occRate < 75 ? '#fef3c7' : '#fee2e2';
-  const badgeColor = o.used === 0 ? '#334155' : occRate < 50 ? '#16a34a' : occRate < 75 ? '#B45309' : '#dc2626';
+  const badgeBg = '#F1F5F9';
+  const badgeColor = '#0F172A';
 
   return (
     <div
@@ -53,10 +53,10 @@ const OdpRow = memo(({ o, odpGrid }) => {
       style={{ gridTemplateColumns: odpGrid, backgroundColor: '#fafbfc', borderTop: '1px solid #f8fafc', minHeight: '44px', minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
     >
       <div></div>
-      <div style={{ fontSize: '13px', fontWeight: 600, paddingLeft: '14px', textAlign: 'left' }}>{o.odp}</div>
+      <div style={{ fontSize: '13px', paddingLeft: '14px', textAlign: 'left' }}>{o.odp}</div>
 
       <div style={{
-        fontSize: '11.5px', fontWeight: 600, padding: '3px 9px', borderRadius: '6px',
+        fontSize: '11.5px', padding: '3px 9px', borderRadius: '6px',
         display: 'inline-block',
         backgroundColor: badgeBg,
         color: badgeColor,
@@ -116,7 +116,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
           type="button"
           aria-label={`Toggle detail proyek ${p.name}`}
           style={{
-            fontSize: '13.5px', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis',
+            fontSize: '13.5px', overflow: 'hidden', textOverflow: 'ellipsis',
             cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'left',
             color: '#0F172A', display: 'block', width: '100%'
           }}
@@ -130,15 +130,14 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
           style={{
             fontSize: '12px', color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis',
             cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'left',
-            display: 'block', width: '100%', fontWeight: 500
-          }}
+            display: 'block', width: '100%', }}
           onClick={() => toggleProject(p.name)}
         >
           {formatBranch(bName)} · {p.wok}
         </button>
-        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', fontWeight: 600, color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(usedTotal || 0).toLocaleString('id-ID')}</div>
-        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', fontWeight: 600, color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(avaiTotal || 0).toLocaleString('id-ID')}</div>
-        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', fontWeight: 600, color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(totalPort || 0).toLocaleString('id-ID')}</div>
+        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(usedTotal || 0).toLocaleString('id-ID')}</div>
+        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(avaiTotal || 0).toLocaleString('id-ID')}</div>
+        <div className="tabular-nums" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px', fontSize: '13px', color: '#1E293B', height: '100%', fontVariantNumeric: 'tabular-nums' }}>{Number(totalPort || 0).toLocaleString('id-ID')}</div>
 
         {/* Activity cells using unified ActivityStatus component */}
         {ACT_TYPES.map(actType => {
@@ -218,8 +217,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
               <span
                 style={{
                   fontSize: '11px',
-                  fontWeight: 600,
-                  color: completedCount === ACT_TYPES.length ? '#15803D' : completedCount > 0 ? '#B45309' : '#64748B',
+                  color: completedCount > 0 ? '#0F172A' : '#64748B',
                   whiteSpace: 'nowrap'
                 }}
               >
@@ -239,7 +237,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
                   style={{
                     width: `${progressPct}%`,
                     height: '100%',
-                    backgroundColor: completedCount === ACT_TYPES.length ? '#16A34A' : completedCount > 0 ? '#D97706' : '#94A3B8',
+                    backgroundColor: completedCount === ACT_TYPES.length ? '#0F172A' : completedCount > 0 ? '#475569' : '#CBD5E1',
                     borderRadius: '9999px',
                     transition: 'width 0.3s ease'
                   }}
@@ -262,7 +260,6 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
               borderRadius: '8px',
               padding: '6px 14px',
               fontSize: '12px',
-              fontWeight: 600,
               color: '#0F172A',
               cursor: 'pointer',
               display: 'inline-flex',
@@ -516,8 +513,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             alignItems: 'center',
             gap: '4px',
             font: 'inherit',
-            color: '#FFFFFF',
-            fontWeight: sort ? 700 : 600,
+            color: sort ? '#0F172A' : '#475569',
             textTransform: 'inherit',
             letterSpacing: 'inherit',
             whiteSpace: 'nowrap',
@@ -592,7 +588,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           padding: '12px',
           fontSize: '12px',
           color: '#334155',
-          fontWeight: 500,
           textAlign: 'left',
           textTransform: 'none',
           letterSpacing: 'normal'
@@ -601,14 +596,14 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         <button
           type="button"
           onClick={() => { updateFilter(col, 'sort', filters[col].sort === 'asc' ? null : 'asc'); setFilterPopup(null); }}
-          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'asc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: filters[col].sort === 'asc' ? '#800000' : '#334155', textAlign: 'left' }}
+          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'asc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', color: filters[col].sort === 'asc' ? '#800000' : '#334155', textAlign: 'left' }}
         >
           <span style={{ fontSize: '14px' }}>↓</span> {isStringCol ? 'Sort A to Z' : 'Sort Kecil ke Besar'}
         </button>
         <button
           type="button"
           onClick={() => { updateFilter(col, 'sort', filters[col].sort === 'desc' ? null : 'desc'); setFilterPopup(null); }}
-          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'desc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, color: filters[col].sort === 'desc' ? '#800000' : '#334155', textAlign: 'left' }}
+          style={{ width: '100%', border: 'none', padding: '6px 10px', cursor: 'pointer', borderRadius: '6px', backgroundColor: filters[col].sort === 'desc' ? '#F1F5F9' : 'transparent', display: 'flex', alignItems: 'center', gap: '8px', color: filters[col].sort === 'desc' ? '#800000' : '#334155', textAlign: 'left' }}
         >
           <span style={{ fontSize: '14px' }}>↑</span> {isStringCol ? 'Sort Z to A' : 'Sort Besar ke Kecil'}
         </button>
@@ -625,7 +620,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
         />
 
         <div style={{ maxHeight: '160px', overflowY: 'auto', paddingRight: '2px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 2px', cursor: 'pointer', fontWeight: 600, borderBottom: '1px solid #F1F5F9', marginBottom: '4px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 2px', cursor: 'pointer', borderBottom: '1px solid #F1F5F9', marginBottom: '4px' }}>
             <input
               type="checkbox"
               checked={currentUncheckedStr.length === 0}
@@ -654,7 +649,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   }}
                 />
                 <span style={{ lineHeight: '1.3', fontSize: '11.5px', color: '#0F172A' }}>
-                  {strVal} <span style={{ color: '#64748B', fontSize: '10.5px', fontWeight: 600 }}>({valueCounts[v]})</span>
+                  {strVal} <span style={{ color: '#64748B', fontSize: '10.5px', }}>({valueCounts[v]})</span>
                 </span>
               </label>
             );
@@ -669,14 +664,14 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               updateFilter(col, 'search', '');
               updateFilter(col, 'sort', null);
             }}
-            style={{ padding: '4px 8px', border: 'none', background: 'transparent', color: '#64748B', cursor: 'pointer', fontSize: '11px', fontWeight: 600 }}
+            style={{ padding: '4px 8px', border: 'none', background: 'transparent', color: '#64748B', cursor: 'pointer', fontSize: '11px', }}
           >
             Reset
           </button>
           <button
             type="button"
             onClick={() => setFilterPopup(null)}
-            style={{ padding: '4px 12px', border: 'none', borderRadius: '6px', background: '#0F172A', color: '#FFFFFF', cursor: 'pointer', fontSize: '11px', fontWeight: 600 }}
+            style={{ padding: '4px 12px', border: 'none', borderRadius: '6px', background: '#0F172A', color: '#FFFFFF', cursor: 'pointer', fontSize: '11px', }}
           >
             Terapkan
           </button>
@@ -720,8 +715,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
             {ACT_TYPES.map(t => (
               <div key={t.key} className="activity-col-header">{t.label}</div>
             ))}
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progres</div>
-            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detail</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progres</div>
+            <div style={{ textAlign: 'center', padding: '0 4px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detail</div>
           </div>
 
           {/* Rows / Skeleton / Empty State */}
@@ -770,7 +765,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   <line x1="8" y1="11" x2="14" y2="11"></line>
                 </svg>
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A' }}>
+              <div style={{ fontSize: '15px', color: '#0F172A' }}>
                 Tidak ada proyek yang sesuai dengan filter
               </div>
               <p style={{ margin: 0, fontSize: '13px', color: '#64748B', maxWidth: '420px', lineHeight: 1.5 }}>
@@ -797,7 +792,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   background: '#FFFFFF',
                   color: '#0F172A',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   cursor: 'pointer',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
                   display: 'inline-flex',
@@ -868,13 +862,13 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
 
       {/* Pagination Footer */}
       <div className="table-pagination-footer">
-        <div className="tabular-nums" style={{ fontSize: '13px', color: '#64748b', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-          Menampilkan <span style={{ color: '#0f172a', fontWeight: 600 }}>{rangeStart}</span> - <span style={{ color: '#0f172a', fontWeight: 600 }}>{rangeEnd}</span> dari <span style={{ color: '#0f172a', fontWeight: 600 }}>{displayProjects.length}</span> proyek
+        <div className="tabular-nums" style={{ fontSize: '13px', color: '#64748b', fontVariantNumeric: 'tabular-nums' }}>
+          Menampilkan <span style={{ color: '#0f172a', }}>{rangeStart}</span> - <span style={{ color: '#0f172a', }}>{rangeEnd}</span> dari <span style={{ color: '#0f172a', }}>{displayProjects.length}</span> proyek
         </div>
 
         <div className="table-pagination-controls">
           {/* Custom Capsule Dropup for Page Size */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b', fontWeight: 600 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b', }}>
             <span>Per halaman:</span>
             <div ref={pageSizeRef} style={{ position: 'relative' }}>
               <button
@@ -894,7 +888,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                   gap: '6px',
                   cursor: 'pointer',
                   userSelect: 'none',
-                  fontWeight: 700,
                   color: '#0f172a'
                 }}
               >
@@ -936,7 +929,6 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                         textAlign: 'left',
                         padding: '8px 14px',
                         fontSize: '13px',
-                        fontWeight: pageSize === size ? 600 : 500,
                         color: pageSize === size ? '#800000' : '#334155',
                         background: pageSize === size ? '#FEF2F2' : 'transparent',
                         cursor: 'pointer'
@@ -977,7 +969,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               </svg>
             </button>
 
-            <span className="tabular-nums" style={{ padding: '0 6px', fontSize: '13px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+            <span className="tabular-nums" style={{ padding: '0 6px', fontSize: '13px', color: '#0f172a', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
               {currentPage} / {totalPages}
             </span>
 

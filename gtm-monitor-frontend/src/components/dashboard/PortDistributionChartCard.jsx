@@ -148,7 +148,6 @@ export default function PortDistributionChartCard({
         <div
           style={{
             fontSize: '15px',
-            fontWeight: 600,
             color: '#475569',
             letterSpacing: '-0.1px',
             whiteSpace: 'nowrap',
@@ -174,7 +173,6 @@ export default function PortDistributionChartCard({
               style={{
                 fontSize: '11.5px',
                 color: '#0F172A',
-                fontWeight: 600,
                 background: '#F8FAFC',
                 padding: '3px 10px',
                 borderRadius: '6px',
@@ -189,7 +187,7 @@ export default function PortDistributionChartCard({
                 alignItems: 'center'
               }}
             >
-              <span style={{ color: '#800000', fontWeight: 600 }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{activeBar.occRate}% ({activeBar.portUsed.toLocaleString('id-ID')} / {activeBar.portTotal.toLocaleString('id-ID')} port)
+              <span style={{ color: '#0F172A' }}>{activeBar.branchName}</span>&nbsp;({activeBar.displayName}):&nbsp;{activeBar.occRate}% ({activeBar.portUsed.toLocaleString('id-ID')} / {activeBar.portTotal.toLocaleString('id-ID')} port)
             </div>
           ) : (
             <div
@@ -199,7 +197,6 @@ export default function PortDistributionChartCard({
                 gap: '14px',
                 fontSize: '11px',
                 color: '#64748B',
-                fontWeight: 600,
                 height: '26px',
                 lineHeight: '18px',
                 boxSizing: 'border-box'
@@ -264,7 +261,6 @@ export default function PortDistributionChartCard({
                       <span
                         style={{
                           fontSize: '11px',
-                          fontWeight: 500,
                           color: '#64748B',
                           fontVariantNumeric: 'tabular-nums',
                           userSelect: 'none',
@@ -406,8 +402,7 @@ export default function PortDistributionChartCard({
                           title={`${bar.displayName} (${bar.branchName})`}
                           style={{
                             fontSize: '10px',
-                            fontWeight: isHovered ? 600 : 500,
-                            color: isHovered ? '#800000' : '#475569',
+                            color: isHovered ? '#0F172A' : '#475569',
                             width: '100%',
                             textAlign: 'center',
                             whiteSpace: 'nowrap',
@@ -425,8 +420,7 @@ export default function PortDistributionChartCard({
                         <span
                           style={{
                             fontSize: '8.5px',
-                            fontWeight: 500,
-                            color: isHovered ? '#800000' : '#94A3B8',
+                            color: isHovered ? '#0F172A' : '#94A3B8',
                             lineHeight: '11px',
                             letterSpacing: '0.2px',
                             marginTop: '2px'

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import LoginPage from '../components/Auth/LoginPage';
+import LoginModal from '../components/Auth/LoginModal';
 import ProgramViewerModal from '../components/ProgramViewerModal';
 import LoadingScreen from '../components/layout/LoadingScreen';
 import AppSidebar from '../components/layout/AppSidebar';
@@ -131,22 +131,19 @@ export default function AppLayout() {
     }));
   }, [view, navigate]);
 
-  if (!authChecked || isInitialLoading) {
-    return <LoadingScreen />;
-  }
+  const isGlobalLoading = !authChecked || isInitialLoading;
 
   const renderLoginModal = () => {
     if (!showLoginModal) return null;
     return (
-      <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#ffffff', overflowY: 'auto' }}>
-        <LoginPage
-          onLoginSuccess={(loggedInUser, expiresAt) => {
-            login(loggedInUser, expiresAt);
-            setShowLoginModal(false);
-          }}
-          onBackToLanding={() => setShowLoginModal(false)}
-        />
-      </div>
+      <LoginModal
+        isOpen={showLoginModal}
+        onLoginSuccess={(loggedInUser, expiresAt) => {
+          login(loggedInUser, expiresAt);
+          setShowLoginModal(false);
+        }}
+        onClose={() => setShowLoginModal(false)}
+      />
     );
   };
 
@@ -154,113 +151,117 @@ export default function AppLayout() {
 
   return (
     <div className={`saas-app-root ${isFullPage ? 'app-root-fullpage' : 'app-root-saas'}`}>
-      {renderLoginModal()}
-      {activeProgramModal && (
-        <ProgramViewerModal
-          program={activeProgramModal.program}
-          monthLabel={activeProgramModal.monthLabel}
-          onClose={() => setActiveProgramModal(null)}
-          isAdmin={!!(user && (user.role === 'ADMIN' || user.username === 'admin'))}
-          onDeleteSuccess={() => {
-            invalidatePrograms();
-            setActiveProgramModal(null);
-          }}
-        />
-      )}
-
-      {isFullPage ? (
-        <div className="main-content-full">
-          <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
-        </div>
-      ) : (
-        <div
-          className="saas-shell"
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            height: '100vh',
-            minHeight: '100dvh',
-            maxHeight: '100dvh',
-            width: '100%',
-            background: '#FFFFFF',
-            overflow: 'hidden'
-          }}
-        >
-          <AppSidebar
-            user={user}
-            isAdmin={isAdmin}
-            goDashboard={goDashboard}
-            goUpload={goUpload}
-            goAdmin={goAdmin}
-            onLoginClick={() => navigate(PATHS.login)}
-            setShowLoginModal={setShowLoginModal}
-            dynamicMonthsData={dynamicMonthsData}
-            setActiveProgramModal={setActiveProgramModal}
-            isMobileOpen={isMobileSidebarOpen}
-            setIsMobileOpen={setIsMobileSidebarOpen}
-            isCollapsed={isSidebarCollapsed}
-            setIsCollapsed={setIsSidebarCollapsed}
-            handleLogout={handleLogout}
-          />
-
-          <div
-            ref={contentAreaRef}
-            className="saas-content-area"
-            style={{
-              flex: 1,
-              minWidth: 0,
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: '#FFFFFF',
-              overflowY: 'auto',
-              scrollPaddingTop: '80px',
-              scrollBehavior: 'smooth'
-            }}
-          >
-            <TopHeaderBar
-              user={user}
-              isAdmin={isAdmin}
-              activeSection={activeSection}
-              onLoginClick={() => navigate(PATHS.login)}
-              onLogoutClick={() => handleLogout(true)}
-              goDashboard={goDashboard}
-              goUpload={goUpload}
-              pendingCount={notificationCount}
-              notifications={notifications}
-              notificationCount={notificationCount}
-              onSelectNotification={handleSelectProjectNotification}
-              onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-              typeDesignFilter={typeDesignFilter}
-              setTypeDesignFilter={setTypeDesignFilter}
+      <LoadingScreen isVisible={isGlobalLoading} />
+      {authChecked && (
+        <>
+          {renderLoginModal()}
+          {activeProgramModal && (
+            <ProgramViewerModal
+              program={activeProgramModal.program}
+              monthLabel={activeProgramModal.monthLabel}
+              onClose={() => setActiveProgramModal(null)}
+              isAdmin={!!(user && (user.role === 'ADMIN' || user.username === 'admin'))}
+              onDeleteSuccess={() => {
+                invalidatePrograms();
+                setActiveProgramModal(null);
+              }}
             />
+          )}
 
-            <main
-              className={`saas-main-viewport ${view === 'upload' || view === 'branch' ? 'saas-main-viewport-table' : ''}`}
+          {isFullPage ? (
+            <div className="main-content-full">
+              <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
+            </div>
+          ) : (
+            <div
+              className="saas-shell"
               style={{
-                flex: 1,
-                padding: view === 'upload' || view === 'branch' ? '24px 32px 12px' : '24px 32px 48px',
-                boxSizing: 'border-box'
+                display: 'flex',
+                flexDirection: 'row',
+                height: '100vh',
+                minHeight: '100dvh',
+                maxHeight: '100dvh',
+                width: '100%',
+                background: '#FFFFFF',
+                overflow: 'hidden'
               }}
             >
-              <div className="fade-in" key={view}>
-                <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
+              <AppSidebar
+                user={user}
+                isAdmin={isAdmin}
+                activeSection={activeSection}
+                goDashboard={goDashboard}
+                goUpload={goUpload}
+                goAdmin={goAdmin}
+                onLoginClick={() => navigate(PATHS.login)}
+                setShowLoginModal={setShowLoginModal}
+                dynamicMonthsData={dynamicMonthsData}
+                setActiveProgramModal={setActiveProgramModal}
+                isMobileOpen={isMobileSidebarOpen}
+                setIsMobileOpen={setIsMobileSidebarOpen}
+                handleLogout={handleLogout}
+              />
+
+              <div
+                ref={contentAreaRef}
+                className="saas-content-area"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  backgroundColor: '#FFFFFF',
+                  overflowY: 'auto',
+                  scrollPaddingTop: '80px',
+                  scrollBehavior: 'smooth'
+                }}
+              >
+                <TopHeaderBar
+                  user={user}
+                  isAdmin={isAdmin}
+                  activeSection={activeSection}
+                  onLoginClick={() => navigate(PATHS.login)}
+                  onLogoutClick={() => handleLogout(true)}
+                  goDashboard={goDashboard}
+                  goUpload={goUpload}
+                  pendingCount={notificationCount}
+                  notifications={notifications}
+                  notificationCount={notificationCount}
+                  onSelectNotification={handleSelectProjectNotification}
+                  onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+                  typeDesignFilter={typeDesignFilter}
+                  setTypeDesignFilter={setTypeDesignFilter}
+                />
+
+                <main
+                  className="saas-main-viewport"
+                  style={{
+                    flex: 1,
+                    padding: '24px 32px 48px',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <div className="fade-in" key={view}>
+                    <Outlet context={{ branches, importMeta, typeDesignFilter, setTypeDesignFilter, refreshMonitoring: refresh, invalidatePrograms }} />
+                  </div>
+                </main>
               </div>
-            </main>
-          </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {showProfileModal && (
-        <ProfileMenu user={user} isAdmin={isAdmin} setShowProfileModal={setShowProfileModal} handleLogout={handleLogout} />
-      )}
+          {showProfileModal && (
+            <ProfileMenu user={user} isAdmin={isAdmin} setShowProfileModal={setShowProfileModal} handleLogout={handleLogout} />
+          )}
 
-      {showLogoutConfirmModal && (
-        <LogoutConfirmModal setShowLogoutConfirmModal={setShowLogoutConfirmModal} executeLogout={logout} />
-      )}
+          {showLogoutConfirmModal && (
+            <LogoutConfirmModal setShowLogoutConfirmModal={setShowLogoutConfirmModal} executeLogout={logout} />
+          )}
 
-      {sessionExpiredNotice && (
-        <SessionExpiredModal sessionExpiredNotice={sessionExpiredNotice} setSessionExpiredNotice={setSessionExpiredNotice} />
+          {sessionExpiredNotice && (
+            <SessionExpiredModal sessionExpiredNotice={sessionExpiredNotice} setSessionExpiredNotice={setSessionExpiredNotice} />
+          )}
+        </>
       )}
     </div>
   );

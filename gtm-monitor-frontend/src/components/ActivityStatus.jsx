@@ -2,13 +2,8 @@ import { memo } from 'react';
 
 /**
  * ActivityStatus Component
- * Komponen tunggal representasi status aktivitas GTM.
- * Varian:
- * - 'selesai': Ikon centang hijau sukses, tanpa tombol upload.
- * - 'belum': Ikon netral/abu, label singkat, tombol "Upload" sekunder/ghost netral (TIDAK merah).
- * - 'proses': Ikon spinner/progress circle.
- * - 'menunggu_verifikasi': Badge amber + tombol "Cek Status" (bukan Upload).
- * - 'gagal': Badge merah + tombol "Perbaiki/Ulang" (satu-satunya varian merah).
+ * Komponen tunggal representasi status aktivitas GTM dengan tipografi Gordita Regular 400
+ * dan palet netral Slate monokrom tanpa teks berwarna-warni.
  */
 const ActivityStatus = memo(function ActivityStatus({
   status = 'belum',
@@ -24,7 +19,7 @@ const ActivityStatus = memo(function ActivityStatus({
     else if (onClick) onClick(e);
   };
 
-  // 1. Selesai (Verified) — Ikon centang, hijau sukses, tanpa tombol
+  // 1. Selesai (Verified) — Ikon centang, chip netral elegan, tanpa tombol
   if (status === 'selesai' || status === 'verified') {
     const displayLabel = label || (count > 1 ? `Selesai (${count})` : 'Selesai');
     return (
@@ -37,11 +32,10 @@ const ActivityStatus = memo(function ActivityStatus({
           gap: '5px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#DCFCE7',
-          color: '#15803D',
-          border: '1px solid #BBF7D0',
+          backgroundColor: '#F1F5F9',
+          color: '#1E293B',
+          border: '1px solid #CBD5E1',
           fontSize: '11px',
-          fontWeight: 700,
           whiteSpace: 'nowrap'
         }}
         title={title ? `${title}: Selesai & Terverifikasi` : 'Aktivitas telah selesai dan terverifikasi'}
@@ -54,7 +48,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 2. Menunggu Verifikasi — Tombol "Cek Status"
+  // 2. Menunggu Verifikasi — Tombol "Cek Status" Netral
   if (status === 'menunggu_verifikasi' || status === 'upload') {
     return (
       <button
@@ -64,21 +58,20 @@ const ActivityStatus = memo(function ActivityStatus({
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '3px',
+          gap: '4px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#FFFBEB',
-          border: '1px solid #FCD34D',
-          color: '#B45309',
+          backgroundColor: '#F8FAFC',
+          border: '1px solid #CBD5E1',
+          color: '#334155',
           fontSize: '10.5px',
-          fontWeight: 700,
           cursor: 'pointer',
           whiteSpace: 'nowrap',
           minHeight: '26px',
           transition: 'all 0.15s ease'
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FEF3C7'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FFFBEB'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#F1F5F9'; e.currentTarget.style.borderColor = '#94A3B8'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#F8FAFC'; e.currentTarget.style.borderColor = '#CBD5E1'; }}
         title={title ? `${title}: Menunggu verifikasi admin. Klik untuk cek status.` : 'Menunggu verifikasi admin. Klik untuk cek status.'}
       >
         <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -90,7 +83,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 3. Proses — Ikon spinner + indikator proses
+  // 3. Proses — Ikon spinner + indikator proses Netral
   if (status === 'proses' || status === 'processing') {
     return (
       <div
@@ -102,11 +95,10 @@ const ActivityStatus = memo(function ActivityStatus({
           gap: '5px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#EFF6FF',
-          color: '#2563EB',
-          border: '1px solid #BFDBFE',
+          backgroundColor: '#F1F5F9',
+          color: '#334155',
+          border: '1px solid #CBD5E1',
           fontSize: '11px',
-          fontWeight: 600,
           whiteSpace: 'nowrap'
         }}
         title={title ? `${title}: Sedang diproses` : 'Sedang diproses'}
@@ -129,7 +121,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 4. Gagal / Ditolak — Ikon merah + tombol "Perbaiki/Ulang" (Satu-satunya varian merah bahaya)
+  // 4. Gagal / Ditolak — Chip Netral + Tombol "Perbaiki" Slate Gelap
   if (status === 'gagal' || status === 'rejected') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
@@ -137,12 +129,11 @@ const ActivityStatus = memo(function ActivityStatus({
           role="status"
           style={{
             fontSize: '10px',
-            fontWeight: 700,
             padding: '2px 6px',
             borderRadius: '4px',
-            backgroundColor: '#FEE2E2',
-            color: '#800000',
-            border: '1px solid #FECACA',
+            backgroundColor: '#F1F5F9',
+            color: '#475569',
+            border: '1px solid #CBD5E1',
             whiteSpace: 'nowrap'
           }}
         >
@@ -158,18 +149,17 @@ const ActivityStatus = memo(function ActivityStatus({
             gap: '3px',
             padding: '4px 8px',
             borderRadius: '6px',
-            backgroundColor: '#800000',
-            border: '1px solid #660000',
+            backgroundColor: '#0F172A',
+            border: '1px solid #0F172A',
             color: '#FFFFFF',
             fontSize: '10.5px',
-            fontWeight: 700,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
             minHeight: '26px',
             transition: 'all 0.15s ease'
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#660000'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#800000'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1E293B'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#0F172A'; }}
           title={title ? `${title}: Kegiatan ditolak. Klik untuk perbaiki.` : 'Kegiatan ditolak. Klik untuk perbaiki.'}
         >
           <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -182,7 +172,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 5. Belum (Default) — Ikon netral/abu, label singkat, tombol "Upload" sekunder/ghost netral (TIDAK merah)
+  // 5. Belum (Default) — Tombol Upload Netral Slate
   return (
     <button
       type="button"
@@ -199,7 +189,6 @@ const ActivityStatus = memo(function ActivityStatus({
         backgroundColor: '#F8FAFC',
         color: '#475569',
         fontSize: '11px',
-        fontWeight: 600,
         cursor: 'pointer',
         minHeight: '28px',
         transition: 'all 0.15s ease',

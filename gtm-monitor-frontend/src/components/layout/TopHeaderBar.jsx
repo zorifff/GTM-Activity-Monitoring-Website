@@ -130,7 +130,6 @@ export default function TopHeaderBar({
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '18px',
-                fontWeight: 600,
                 color: '#0F172A',
                 margin: 0,
                 letterSpacing: '-0.3px',
@@ -187,7 +186,6 @@ export default function TopHeaderBar({
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '18px',
-                fontWeight: 600,
                 color: '#0F172A',
                 margin: 0,
                 letterSpacing: '-0.3px',
@@ -236,7 +234,6 @@ export default function TopHeaderBar({
                     borderRadius: '6px',
                     border: 'none',
                     fontSize: '12px',
-                    fontWeight: isActive ? 600 : 500,
                     cursor: 'pointer',
                     background: isActive ? '#FFFFFF' : 'transparent',
                     color: isActive ? '#0F172A' : '#64748B',
@@ -308,7 +305,6 @@ export default function TopHeaderBar({
                   right: '3px',
                   color: '#0F172A',
                   fontSize: '11px',
-                  fontWeight: 700,
                   lineHeight: 1,
                   userSelect: 'none',
                   pointerEvents: 'none'
@@ -321,6 +317,7 @@ export default function TopHeaderBar({
 
           {showNotificationDropdown && (
             <div
+              className="header-notification-dropdown"
               style={{
                 position: 'absolute',
                 top: '48px',
@@ -348,14 +345,13 @@ export default function TopHeaderBar({
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                  <span style={{ fontSize: '13.5px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                     {isAdmin ? 'Pemberitahuan Upload' : 'Pemberitahuan Disetujui'}
                   </span>
                   {displayCount > 0 && (
                     <span
                       style={{
                         fontSize: '11px',
-                        fontWeight: 600,
                         color: '#475569',
                         backgroundColor: '#F1F5F9',
                         padding: '1px 7px',
@@ -405,7 +401,7 @@ export default function TopHeaderBar({
                     >
                       {/* Baris 1: Nama Kegiatan & Waktu Unggah */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '6px' }}>
-                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A' }}>
+                        <span style={{ fontSize: '13px', color: '#0F172A' }}>
                           {item.actLabel}
                         </span>
                         {item.timestamp && (
@@ -413,7 +409,6 @@ export default function TopHeaderBar({
                             style={{
                               fontSize: '11px',
                               color: '#64748B',
-                              fontWeight: 500,
                               fontVariantNumeric: 'tabular-nums',
                               flexShrink: 0
                             }}
@@ -428,7 +423,7 @@ export default function TopHeaderBar({
                         <div style={{ fontSize: '11px', color: '#64748B', marginBottom: '2px' }}>
                           {isAdmin ? 'Aktivitas diunggah di proyek:' : 'Kegiatan disetujui di proyek:'}
                         </div>
-                        <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', wordBreak: 'break-word', lineHeight: 1.35 }}>
+                        <div style={{ fontSize: '12.5px', color: '#0F172A', wordBreak: 'break-word', lineHeight: 1.35 }}>
                           {item.projectName}
                         </div>
                       </div>
@@ -447,7 +442,7 @@ export default function TopHeaderBar({
                         <span style={{ color: '#64748B' }}>
                           Branch {formatBranch(item.branchName)}{item.wok ? ` · ${item.wok}` : ''}
                         </span>
-                        <span style={{ color: '#0F172A', fontWeight: 600 }}>
+                        <span style={{ color: '#0F172A', }}>
                           Buka di Activity →
                         </span>
                       </div>
@@ -517,10 +512,10 @@ export default function TopHeaderBar({
                 </div>
 
                 <div className="header-profile-text" style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                  <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: '12.5px', color: '#0F172A', whiteSpace: 'nowrap' }}>
                     {user.username || 'admin'}
                   </div>
-                  <div style={{ fontSize: '10.5px', color: '#475569', fontWeight: 500 }}>
+                  <div style={{ fontSize: '10.5px', color: '#475569', }}>
                     {user.role === 'ADMIN' ? 'admin 1' : 'user'}
                   </div>
                 </div>
@@ -543,10 +538,10 @@ export default function TopHeaderBar({
                   }}
                 >
                   <div style={{ padding: '12px 14px', borderBottom: '1px solid #F1F5F9', backgroundColor: '#F8FAFC' }}>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
+                    <div style={{ fontSize: '13px', color: '#0F172A' }}>
                       {user.username || 'Pengguna'}
                     </div>
-                    <div style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
+                    <div style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', }}>
                       {user.role === 'ADMIN' ? 'Administrator' : `User (${formatBranch(user.branch || '')})`}
                     </div>
                   </div>
@@ -567,9 +562,8 @@ export default function TopHeaderBar({
                         border: 'none',
                         borderRadius: '8px',
                         backgroundColor: 'transparent',
-                        color: '#800000',
+                        color: '#0F172A',
                         fontSize: '12.5px',
-                        fontWeight: 600,
                         cursor: 'pointer',
                         textAlign: 'left',
                         transition: 'background-color 0.15s ease'
@@ -599,7 +593,6 @@ export default function TopHeaderBar({
                 background: '#800000',
                 color: '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'background-color 0.15s ease'

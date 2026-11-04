@@ -68,8 +68,8 @@ export default function ProgramDeleteModal({
                 width: '38px',
                 height: '38px',
                 borderRadius: '10px',
-                background: '#FEF2F2',
-                color: '#800000',
+                background: '#F1F5F9',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -84,10 +84,10 @@ export default function ProgramDeleteModal({
               </svg>
             </div>
             <div>
-              <h3 id="delete-modal-title" style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.2px' }}>
+              <h3 id="delete-modal-title" style={{ margin: 0, fontSize: '17px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                 Kelola &amp; Hapus Program Terdaftar
               </h3>
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>
+              <span style={{ fontSize: '12px', color: '#64748B', }}>
                 Hapus program terdaftar spesifik per bulan atau periode
               </span>
             </div>
@@ -105,7 +105,6 @@ export default function ProgramDeleteModal({
               background: '#F1F5F9',
               color: '#64748B',
               fontSize: '14px',
-              fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -118,17 +117,16 @@ export default function ProgramDeleteModal({
 
         {/* Status Periode Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>Status Periode:</span>
+          <span style={{ fontSize: '12px', color: '#475569' }}>Status Periode:</span>
           <div
             style={{
               padding: '4px 12px',
               borderRadius: '8px',
               background: deleteAvailablePrograms.length > 0 ? '#ECFDF5' : '#F1F5F9',
               border: deleteAvailablePrograms.length > 0 ? '1px solid #A7F3D0' : '1px solid #E2E8F0',
-              color: deleteAvailablePrograms.length > 0 ? '#047857' : '#64748B',
+              color: deleteAvailablePrograms.length > 0 ? '#0F172A' : '#64748B',
               fontSize: '12px',
-              fontWeight: 600
-            }}
+              }}
           >
             {deleteAvailablePrograms.length > 0 ? `${deleteAvailablePrograms.length} Program Ditemukan` : 'Tidak Ada Program Terdaftar'}
           </div>
@@ -138,7 +136,7 @@ export default function ProgramDeleteModal({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           {/* Pilih Periode */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>1. Pilih Periode Bulan:</label>
+            <label style={{ fontSize: '12.5px', color: '#334155' }}>1. Pilih Periode Bulan:</label>
             <select
               value={deleteProgramMonth}
               onChange={(e) => {
@@ -155,7 +153,6 @@ export default function ProgramDeleteModal({
                 background: '#F8FAFC',
                 color: '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 outline: 'none',
                 cursor: 'pointer'
               }}
@@ -175,7 +172,7 @@ export default function ProgramDeleteModal({
 
           {/* Pilih Opsi Program */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
+            <label style={{ fontSize: '12.5px', color: '#334155' }}>2. Pilih Opsi Program yang Ingin Dihapus:</label>
             <select
               value={deleteProgramTarget}
               onChange={(e) => {
@@ -192,7 +189,6 @@ export default function ProgramDeleteModal({
                 background: deleteAvailablePrograms.length === 0 ? '#F1F5F9' : '#FFFFFF',
                 color: deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#0F172A',
                 fontSize: '12.5px',
-                fontWeight: 600,
                 outline: 'none',
                 cursor: deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer'
               }}
@@ -207,13 +203,13 @@ export default function ProgramDeleteModal({
           </div>
 
           {deleteMessage && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#065F46', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {deleteMessage}
             </div>
           )}
 
           {deleteError && (
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#800000', fontSize: '13px', fontWeight: 600 }}>
+            <div style={{ padding: '12px 16px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '13px', }}>
               {deleteError}
             </div>
           )}
@@ -230,7 +226,6 @@ export default function ProgramDeleteModal({
                 background: '#FFFFFF',
                 color: '#475569',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -250,7 +245,6 @@ export default function ProgramDeleteModal({
                 background: deleteLoading || deleteAvailablePrograms.length === 0 ? '#E2E8F0' : '#800000',
                 color: deleteLoading || deleteAvailablePrograms.length === 0 ? '#94A3B8' : '#FFFFFF',
                 fontSize: '13px',
-                fontWeight: 600,
                 cursor: deleteLoading || deleteAvailablePrograms.length === 0 ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
                 display: 'inline-flex',

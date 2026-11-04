@@ -253,14 +253,14 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
 
     if (strVal === 'PASS') {
       return (
-        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#DCFCE7', color: '#166534', fontWeight: 800, fontSize: '11px' }}>
+        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#F1F5F9', color: '#1E293B', fontSize: '11px' }}>
           PASS
         </span>
       );
     }
     if (strVal === 'NOT PASS') {
       return (
-        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#FEE2E2', color: '#800000', fontWeight: 800, fontSize: '11px' }}>
+        <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#F1F5F9', color: '#475569', fontSize: '11px' }}>
           NOT PASS
         </span>
       );
@@ -275,8 +275,8 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
       const num = parseFloat(val);
       if (!isNaN(num)) {
         const pct = num <= 1 && num >= -1 ? Math.round(num * 1000) / 10 : Math.round(num * 10) / 10;
-        const color = pct > 0 && (header.includes('MOM') || header.includes('ACH')) ? '#16A34A' : pct < 0 && header.includes('MOM') ? '#800000' : 'inherit';
-        return <span style={{ color, fontWeight: 700 }}>{pct > 0 && header.includes('MOM') ? `+${pct}%` : `${pct}%`}</span>;
+        const color = 'inherit';
+        return <span style={{ color, }}>{pct > 0 && header.includes('MOM') ? `+${pct}%` : `${pct}%`}</span>;
       }
     }
 
@@ -349,10 +349,10 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               background: '#FFFFFF'
             }}
           />
-          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '13.5px', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.1px' }}>
+          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '13.5px', color: '#FFFFFF', letterSpacing: '-0.1px' }}>
             {program.sheetName || 'Program Tracking'}
           </span>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 500, color: '#94A3B8' }}>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#94A3B8' }}>
             • {monthLabel || 'Agustus 2026'}
           </span>
           {slides.length > 1 && (
@@ -360,8 +360,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               style={{
                 fontSize: '11px',
                 fontFamily: 'var(--font-body)',
-                fontWeight: 600,
-                color: '#60A5FA',
+                color: '#F8FAFC',
                 background: 'rgba(59, 130, 246, 0.15)',
                 padding: '2px 8px',
                 borderRadius: '20px',
@@ -441,10 +440,9 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     style={{
                       padding: '10px 14px',
                       borderRadius: '10px',
-                      color: '#60A5FA',
+                      color: '#F8FAFC',
                       fontFamily: 'var(--font-body)',
                       fontSize: '13px',
-                      fontWeight: 500,
                       textDecoration: 'none',
                       display: 'flex',
                       alignItems: 'center',
@@ -461,7 +459,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <span>Link Detail Program</span>
                       {slides.length > 1 && (
-                        <span style={{ fontSize: '10.5px', color: '#93C5FD', fontWeight: 600 }}>
+                        <span style={{ fontSize: '10.5px', color: '#94A3B8', }}>
                           (Slide {currentSlideIndex + 1})
                         </span>
                       )}
@@ -483,7 +481,6 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                       border: 'none',
                       fontFamily: 'var(--font-body)',
                       fontSize: '13px',
-                      fontWeight: 500,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -502,7 +499,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <span>Link Detail Program</span>
                       {slides.length > 1 && (
-                        <span style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 500 }}>
+                        <span style={{ fontSize: '10.5px', color: '#64748B', }}>
                           (Slide {currentSlideIndex + 1} - Tidak Ada)
                         </span>
                       )}
@@ -526,7 +523,6 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     border: 'none',
                     fontFamily: 'var(--font-body)',
                     fontSize: '13px',
-                    fontWeight: 500,
                     cursor: isDownloading ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -564,12 +560,11 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     style={{
                       padding: '10px 14px',
                       borderRadius: '10px',
-                      color: '#FCA5A5',
+                      color: '#F8FAFC',
                       background: 'transparent',
                       border: 'none',
                       fontFamily: 'var(--font-body)',
                       fontSize: '13px',
-                      fontWeight: 500,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -602,12 +597,11 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                     style={{
                       padding: '10px 14px',
                       borderRadius: '10px',
-                      color: '#FCA5A5',
+                      color: '#F8FAFC',
                       background: 'transparent',
                       border: 'none',
                       fontFamily: 'var(--font-body)',
                       fontSize: '13px',
-                      fontWeight: 500,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -775,7 +769,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               userSelect: 'none'
             }}
           >
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 600, color: '#F8FAFC', letterSpacing: '0.3px' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#F8FAFC', letterSpacing: '0.3px' }}>
               Slide {currentSlideIndex + 1} dari {slides.length}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -877,14 +871,14 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
           >
             <div style={{ marginBottom: '16px', borderBottom: '2px solid #800000', paddingBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h4 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '15px', fontWeight: 700, color: '#800000', letterSpacing: '0.4px' }}>
+                <h4 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '15px', color: '#0F172A', letterSpacing: '0.4px' }}>
                   TELKOMSEL GTM ACTIVITY MONITORING
                 </h4>
-                <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 600, color: '#0F172A', marginTop: '2px' }}>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#0F172A', marginTop: '2px' }}>
                   {program.sheetName} · {monthLabel || 'Agustus 2026'}
                 </div>
               </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 600, color: '#64748B', background: '#F8FAFC', padding: '4px 10px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: '#64748B', background: '#F8FAFC', padding: '4px 10px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
                 Total {rows.length} Baris Data
               </div>
             </div>
@@ -905,7 +899,6 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                       key={colIdx}
                       style={{
                         padding: '12px 14px',
-                        fontWeight: 800,
                         fontSize: '11.5px',
                         letterSpacing: '0.5px',
                         textTransform: 'uppercase',
@@ -943,7 +936,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                 ))}
 
                 {summaryRow && (
-                  <tr style={{ background: '#0F172A', color: '#FFFFFF', fontWeight: 800 }}>
+                  <tr style={{ background: '#0F172A', color: '#FFFFFF', }}>
                     {headers.map((h, colIdx) => (
                       <td
                         key={colIdx}
@@ -1000,9 +993,9 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                 width: '56px',
                 height: '56px',
                 borderRadius: '50%',
-                background: '#FEE2E2',
-                border: '1px solid #FCA5A5',
-                color: '#800000',
+                background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
+                border: '1px solid #FDA4AF',
+                color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1018,11 +1011,11 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
               </svg>
             </div>
 
-            <h3 style={{ fontSize: '17px', fontWeight: 600, color: '#0F172A', margin: '0 0 8px 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
+            <h3 style={{ fontSize: '17px', color: '#0F172A', margin: '0 0 8px 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.2px' }}>
               {deleteTargetType === 'SLIDE' ? 'Konfirmasi Hapus Slide' : 'Konfirmasi Hapus Program'}
             </h3>
 
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#475569', lineHeight: 1.5, margin: '0 0 18px 0', fontWeight: 500 }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#475569', lineHeight: 1.5, margin: '0 0 18px 0', }}>
               {deleteTargetType === 'SLIDE' ? (
                 <>
                   Apakah Anda yakin ingin menghapus <strong>Slide {currentSlideIndex + 1}</strong> dari program <strong>"{program.sheetName}"</strong>?
@@ -1035,7 +1028,7 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
             </p>
 
             {deleteError && (
-              <div style={{ fontFamily: 'var(--font-body)', padding: '10px 14px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#800000', fontSize: '12px', fontWeight: 600, marginBottom: '16px' }}>
+              <div style={{ fontFamily: 'var(--font-body)', padding: '10px 14px', borderRadius: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '12px', marginBottom: '16px' }}>
                 {deleteError}
               </div>
             )}
@@ -1054,7 +1047,6 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                   color: '#475569',
                   fontFamily: 'var(--font-body)',
                   fontSize: '13px',
-                  fontWeight: 600,
                   cursor: isDeleting ? 'not-allowed' : 'pointer'
                 }}
               >
@@ -1073,7 +1065,6 @@ export default function ProgramViewerModal({ program, monthLabel, onClose, isAdm
                   color: '#FFFFFF',
                   fontFamily: 'var(--font-body)',
                   fontSize: '13px',
-                  fontWeight: 600,
                   cursor: isDeleting ? 'not-allowed' : 'pointer',
                   boxShadow: '0 4px 14px rgba(128, 0, 0,0.35)'
                 }}

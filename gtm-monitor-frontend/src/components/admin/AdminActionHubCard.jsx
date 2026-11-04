@@ -140,7 +140,7 @@ export default function AdminActionHubCard({
       {/* Header Segmen */}
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #F1F5F9', paddingBottom: '16px' }}>
         <div>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '16px', fontWeight: 600, color: '#0F172A', margin: 0, letterSpacing: '-0.2px' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '16px', color: '#0F172A', margin: 0, letterSpacing: '-0.2px' }}>
             Pusat Pembaruan Database &amp; Program
           </h2>
           <div style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: '#64748B', marginTop: '4px' }}>
@@ -177,7 +177,7 @@ export default function AdminActionHubCard({
                 flex: 1
               }}
             >
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: '13.5px', fontWeight: 600, color: '#0F172A', letterSpacing: '-0.1px' }}>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: '13.5px', color: '#0F172A', letterSpacing: '-0.1px' }}>
                 {act.title}
               </span>
 
@@ -200,9 +200,9 @@ export default function AdminActionHubCard({
                     width: '20px',
                     height: '20px',
                     borderRadius: '50%',
-                    background: activeHintId === act.id ? '#EFF6FF' : '#FFFFFF',
-                    color: activeHintId === act.id ? '#1D4ED8' : '#64748B',
-                    border: activeHintId === act.id ? '1px solid #93C5FD' : '1px solid #CBD5E1',
+                    background: activeHintId === act.id ? '#F1F5F9' : '#FFFFFF',
+                    color: activeHintId === act.id ? '#0F172A' : '#64748B',
+                    border: activeHintId === act.id ? '1px solid #0F172A' : '1px solid #CBD5E1',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -243,7 +243,7 @@ export default function AdminActionHubCard({
                   >
                     {/* Header Hint Popover */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', borderBottom: '1px solid #F1F5F9', paddingBottom: '6px' }}>
-                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '13px', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.2px' }}>
+                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '13px', color: '#0F172A', letterSpacing: '-0.2px' }}>
                         {act.hint.title}
                       </div>
                       <button
@@ -284,7 +284,7 @@ export default function AdminActionHubCard({
 
                     {/* Ketentuan Upload Bersatu (Termasuk Format Berkas) */}
                     <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#475569', lineHeight: 1.55 }}>
-                      <div style={{ fontWeight: 600, color: '#0F172A', marginBottom: '6px', fontSize: '12px' }}>
+                      <div style={{ color: '#0F172A', marginBottom: '6px', fontSize: '12px' }}>
                         Ketentuan Upload:
                       </div>
                       <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -309,12 +309,11 @@ export default function AdminActionHubCard({
                   width: '170px',
                   height: '38px',
                   borderRadius: '8px',
-                  border: act.isDanger ? '1px solid #FCA5A5' : 'none',
+                  border: act.isDanger ? '1px solid #CBD5E1' : 'none',
                   background: act.isDanger ? '#FFFFFF' : '#800000',
-                  color: act.isDanger ? '#800000' : '#FFFFFF',
+                  color: act.isDanger ? '#0F172A' : '#FFFFFF',
                   fontFamily: 'var(--font-body)',
                   fontSize: '12.5px',
-                  fontWeight: 600,
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',

@@ -1,14 +1,87 @@
+@font-face {
+  font-family: 'Gordita';
+  src: local('Gordita'), local('Gordita Regular'),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.woff") format("woff"),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gordita-Regular';
+  src: local('Gordita'), local('Gordita Regular'),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.woff") format("woff"),
+       url("https://db.onlinewebfonts.com/t/0825e48b888e2966c14f17034b133d07.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  font-family: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Gordita', 'Gordita-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: #1e293b;
   background-color: #ffffff;
-  --font-heading: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Gordita', 'Gordita-Regular', sans-serif;
+  --font-body: 'Gordita', 'Gordita-Regular', sans-serif;
+  --font-landing: 'Gordita', 'Gordita-Regular', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
   /* Warna utama: maroon. Hover/border: #660000. Latar lembut: #FEF2F2 / #FEE2E2. Di atas latar gelap: putih atau #FCA5A5 */
   --primary-red: #800000;
   --bg-dark: #090A0F;
   --bg-dark-card: rgba(255, 255, 255, 0.04);
+}
+
+
+/* ─── TYPOGRAPHY: GORDITA REGULAR 400 & PALET TEKS NETRAL (DASHBOARD, ACTIVITY, ADMIN, PROGRAM, CEK PAIRING) ─── */
+#dashboard-section,
+#dashboard-section *,
+#activity-section,
+#activity-section *,
+#branch-section,
+#branch-section *,
+.branch-view,
+.branch-view *,
+.top-header-bar,
+.top-header-bar *,
+.app-sidebar,
+.app-sidebar *,
+#admin-section,
+#admin-section *,
+.admin-panel,
+.admin-panel *,
+.admin-modal,
+.admin-modal *,
+.program-modal,
+.program-modal *,
+.program-menu,
+.program-menu *,
+.cek-pairing-popover,
+.cek-pairing-popover *,
+#program-viewer-modal,
+#program-viewer-modal *,
+#cek-pairing-popover,
+#cek-pairing-popover * {
+  font-family: 'Gordita', 'Gordita-Regular', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 400 !important;
+}
+
+#dashboard-section h1, #dashboard-section h2, #dashboard-section h3, #dashboard-section h4, #dashboard-section h5, #dashboard-section h6,
+#dashboard-section th, #dashboard-section strong, #dashboard-section b,
+#activity-section h1, #activity-section h2, #activity-section h3, #activity-section h4, #activity-section h5, #activity-section h6,
+#activity-section th, #activity-section strong, #activity-section b,
+#admin-section h1, #admin-section h2, #admin-section h3, #admin-section h4, #admin-section h5, #admin-section h6,
+#admin-section th, #admin-section strong, #admin-section b,
+#branch-section h1, #branch-section h2, #branch-section h3, #branch-section h4, #branch-section h5, #branch-section h6,
+#branch-section th, #branch-section strong, #branch-section b,
+.top-header-bar h1, .top-header-bar h2, .top-header-bar h3, .top-header-bar strong, .top-header-bar b,
+#program-viewer-modal h1, #program-viewer-modal h2, #program-viewer-modal h3, #program-viewer-modal h4, #program-viewer-modal h5, #program-viewer-modal h6,
+#program-viewer-modal th, #program-viewer-modal strong, #program-viewer-modal b,
+#cek-pairing-popover h1, #cek-pairing-popover h2, #cek-pairing-popover h3, #cek-pairing-popover h4, #cek-pairing-popover h5, #cek-pairing-popover h6,
+#cek-pairing-popover th, #cek-pairing-popover strong, #cek-pairing-popover b {
+  font-weight: 400 !important;
 }
 
 html, body {
@@ -161,7 +234,7 @@ button {
   padding: 12px 16px;
   background: #f8fafc;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 400;
   color: #475569;
   text-transform: uppercase;
   letter-spacing: .04em;
@@ -314,7 +387,7 @@ button {
 }
 .dropdown-item.active {
   background: #f8fafc;
-  font-weight: 600;
+  font-weight: 400;
   color: #0f172a;
 }
 
@@ -454,6 +527,15 @@ button {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .sidebar-nav-menu {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    padding: 0 !important;
     gap: 6px !important;
   }
 
@@ -684,6 +766,22 @@ button {
 }
 
 @media (max-width: 640px) {
+  .header-notification-dropdown {
+    position: fixed !important;
+    top: 68px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100dvh - 84px) !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.2), 0 8px 16px -6px rgba(15, 23, 42, 0.1) !important;
+    z-index: 1000 !important;
+  }
+
   .page-title-header {
     padding-left: 10px !important;
     padding-right: 10px !important;
@@ -781,7 +879,7 @@ button {
   border-radius: 10px;
   border: 1px solid #E2E8F0;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   background: #FFFFFF;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
@@ -1419,8 +1517,8 @@ button {
   .login-back-btn {
     top: 24px !important;
     right: 20px !important;
-    padding: 5px 12px !important;
-    font-size: 11.5px !important;
+    padding: 0 !important;
+    font-size: 12px !important;
   }
 }
 
@@ -1432,4 +1530,88 @@ button {
   z-index: 100 !important;
   background-color: #FFFFFF !important;
   flex-shrink: 0 !important;
+}
+
+
+/* ─── LANDING LOGIN POP-UP MODAL ANIMATIONS & GLASS INPUTS ─── */
+@keyframes landingModalBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes landingModalCardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.landing-login-modal input::placeholder {
+  color: rgba(148, 163, 184, 0.58);
+  font-weight: 400;
+}
+
+.landing-login-modal input:-webkit-autofill,
+.landing-login-modal input:-webkit-autofill:hover,
+.landing-login-modal input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #FFFFFF !important;
+  -webkit-box-shadow: 0 0 0 1000px #03152E inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.landing-login-modal button:focus-visible,
+#landing-login-btn:focus-visible {
+  outline: 2px solid #7DD3FC !important;
+  outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-login-modal-backdrop,
+  .landing-login-modal {
+    animation: none !important;
+  }
+}
+
+
+/* ─── TRANSITIONAL LOADING SCREEN KEYFRAMES & ACCENTS ─── */
+@keyframes telkomselAuraPulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+}
+
+@keyframes telemetryScanningBeam {
+  0% {
+    left: -40%;
+  }
+  50% {
+    left: 80%;
+  }
+  100% {
+    left: -40%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-loading-aura,
+  .transition-loading-beam {
+    animation: none !important;
+  }
 }

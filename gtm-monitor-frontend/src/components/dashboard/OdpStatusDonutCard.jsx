@@ -79,14 +79,13 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
     >
       {/* ─── HEADER KARTU ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
-        <div style={{ fontSize: '15px', fontWeight: 600, color: '#475569', letterSpacing: '-0.1px' }}>
+        <div style={{ fontSize: '15px', color: '#475569', letterSpacing: '-0.1px' }}>
           Profil Status Utilisasi ODP
         </div>
 
         <span
           style={{
             fontSize: '12px',
-            fontWeight: 500,
             color: '#475569',
             fontVariantNumeric: 'tabular-nums'
           }}
@@ -167,8 +166,7 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 <div
                   style={{
                     fontSize: '26px',
-                    fontWeight: 600,
-                    color: activeChip.label?.toLowerCase() === 'yellow' ? '#A16207' : activeChip.color,
+                    color: '#0F172A',
                     fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1.1
                   }}
@@ -178,7 +176,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 <div
                   style={{
                     fontSize: '12px',
-                    fontWeight: 500,
                     color: '#475569',
                     letterSpacing: '0.4px',
                     textTransform: 'uppercase',
@@ -193,7 +190,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 <div
                   style={{
                     fontSize: '28px',
-                    fontWeight: 600,
                     color: '#0F172A',
                     fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1.1
@@ -204,7 +200,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                 <div
                   style={{
                     fontSize: '11px',
-                    fontWeight: 500,
                     color: '#64748B',
                     letterSpacing: '0.8px',
                     textTransform: 'uppercase',
@@ -253,7 +248,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: isHovered ? 600 : 500,
                       color: isHovered ? '#0F172A' : '#334155',
                       whiteSpace: 'nowrap'
                     }}
@@ -266,7 +260,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   <span
                     style={{
                       fontSize: '12px',
-                      fontWeight: 500,
                       color: '#0F172A',
                       fontVariantNumeric: 'tabular-nums'
                     }}
@@ -276,7 +269,6 @@ export default function OdpStatusDonutCard({ statusChips = [], totalOdp = 0, isI
                   <span
                     style={{
                       fontSize: '11px',
-                      fontWeight: 600,
                       color: '#64748B',
                       fontVariantNumeric: 'tabular-nums',
                       minWidth: '38px',

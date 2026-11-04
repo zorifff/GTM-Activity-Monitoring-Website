@@ -195,7 +195,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
       >
         <div style={{ padding: '22px 26px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <div id="review-modal-title" style={{ fontFamily: "var(--font-heading)", fontSize: '18px', fontWeight: 600, color: '#0f172a' }}>{modalData.pName}</div>
+            <div id="review-modal-title" style={{ fontFamily: "var(--font-heading)", fontSize: '18px', color: '#0f172a' }}>{modalData.pName}</div>
             <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '3px' }}>{modalData.wok} · {modalData.bName}</div>
           </div>
           <button
@@ -212,29 +212,29 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
           {/* Project Stats Summary */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '22px' }}>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Available</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalAvai}</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', textTransform: 'uppercase' }}>Total Available</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalAvai}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Used</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalUsed}</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', textTransform: 'uppercase' }}>Total Used</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalUsed}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Total Port</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalPort}</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', textTransform: 'uppercase' }}>Total Port</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.totalPort}</div>
             </div>
             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '10px 12px' }}>
-              <div style={{ fontSize: '10.5px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Jumlah ODP</div>
-              <div className="tabular-nums" style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.odpCount}</div>
+              <div style={{ fontSize: '10.5px', color: '#64748B', textTransform: 'uppercase' }}>Jumlah ODP</div>
+              <div className="tabular-nums" style={{ fontSize: '18px', color: '#0f172a', fontVariantNumeric: 'tabular-nums' }}>{modalData.odpCount}</div>
             </div>
           </div>
 
           {/* ODP List */}
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>Daftar ODP dalam Proyek</div>
+          <div style={{ fontSize: '13px', color: '#0f172a', marginBottom: '8px' }}>Daftar ODP dalam Proyek</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
             {modalData.odps.map(o => (
               <span key={o.odp} style={{
-                fontSize: '11px', fontWeight: 600, padding: '4px 10px', borderRadius: '6px',
+                fontSize: '11px', padding: '4px 10px', borderRadius: '6px',
                 background: o.used === 0 ? '#e2e8f0' : '#dcfce7',
                 color: o.used === 0 ? '#334155' : '#16a34a'
               }}>
@@ -243,7 +243,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             ))}
           </div>
 
-          <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a', marginBottom: '12px' }}>Detail Activity GTM</div>
+          <div style={{ fontSize: '13.5px', color: '#0f172a', marginBottom: '12px' }}>Detail Activity GTM</div>
           
           {ACT_TYPES.map(actType => {
             const a = localActivities.find(x => x.type === actType.key);
@@ -265,8 +265,8 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             return (
               <div key={actType.key} style={{ border: '1px solid #f1f5f9', borderRadius: '10px', padding: '14px 16px', marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{actType.label}</div>
-                  <div style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, backgroundColor: meta.bg, color: meta.color }}>
+                  <div style={{ fontSize: '14px', color: '#0f172a' }}>{actType.label}</div>
+                  <div style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', backgroundColor: meta.bg, color: meta.color }}>
                     {meta.label} {photoList.length > 0 && (actType.key === 'rekrutmen_sf' ? '' : `(${photoList.length} Foto)`)}
                   </div>
                 </div>
@@ -291,12 +291,12 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                 title="Klik untuk melihat foto lebih besar"
                               >
                                 <img src={ph.photoUrl} alt={`Foto Bukti ${actType.label}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                                <div style={{ position: 'absolute', bottom: 0, inset: 'auto 0 0 0', background: 'rgba(15,23,42,0.75)', color: '#fff', fontSize: '9px', fontWeight: 700, textAlign: 'center', padding: '2px 0' }}>
+                                <div style={{ position: 'absolute', bottom: 0, inset: 'auto 0 0 0', background: 'rgba(15,23,42,0.75)', color: '#fff', fontSize: '9px', textAlign: 'center', padding: '2px 0' }}>
                                   Lihat
                                 </div>
                               </button>
                             ) : (
-                              <div style={{ width: '90px', height: '65px', borderRadius: '6px', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#64748b', fontWeight: 600, textAlign: 'center' }}>
+                              <div style={{ width: '90px', height: '65px', borderRadius: '6px', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#64748b', textAlign: 'center' }}>
                                 Tanpa Foto
                               </div>
                             )
@@ -304,7 +304,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
 
                           <div style={{ flex: 1, minWidth: '160px', fontSize: '12px', color: '#334155', lineHeight: 1.5 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '10.5px', fontWeight: 600, padding: '2px 8px', borderRadius: '4px', background: phMeta.bg, color: phMeta.color }}>
+                              <span style={{ fontSize: '10.5px', padding: '2px 8px', borderRadius: '4px', background: phMeta.bg, color: phMeta.color }}>
                                 {actType.key === 'rekrutmen_sf' ? phMeta.label : `Foto #${idx + 1}: ${phMeta.label}`}
                               </span>
                             </div>
@@ -323,7 +323,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                   <button
                                     type="button"
                                     onClick={() => triggerRejectConfirm(actType.key, ph.id, actType.label, idx)}
-                                    style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: '#800000', color: '#fff', fontSize: '11.5px', fontWeight: 700, cursor: 'pointer' }}
+                                    style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: '#dc2626', color: '#fff', fontSize: '11.5px', cursor: 'pointer' }}
                                   >
                                     Tolak
                                   </button>
@@ -340,7 +340,6 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                       background: verifyingId === ph.id ? '#15803d' : '#16a34a',
                                       color: '#fff',
                                       fontSize: '11.5px',
-                                      fontWeight: 700,
                                       cursor: verifyingId === ph.id ? 'not-allowed' : 'pointer',
                                       display: 'inline-flex',
                                       alignItems: 'center',
@@ -384,10 +383,9 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                                   padding: '6px 12px',
                                   borderRadius: '6px',
                                   border: '1px solid #fca5a5',
-                                  background: '#FEF2F2',
-                                  color: '#800000',
+                                  background: '#fff1f2',
+                                  color: '#0F172A',
                                   fontSize: '11.5px',
-                                  fontWeight: 700,
                                   cursor: 'pointer',
                                   display: 'inline-flex',
                                   alignItems: 'center',
@@ -446,12 +444,12 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
             }}
           >
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '16px' }}>
-              <div style={{ fontSize: '14.5px', fontWeight: 600, color: '#0f172a' }}>{previewPhoto.title}</div>
+              <div style={{ fontSize: '14.5px', color: '#0f172a' }}>{previewPhoto.title}</div>
               <button 
                 type="button"
                 onClick={() => setPreviewPhoto(null)} 
                 aria-label="Tutup pratinjau foto"
-                style={{ border: 'none', background: '#f1f5f9', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontWeight: 700, fontSize: '14px', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ border: 'none', background: '#f1f5f9', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontSize: '14px', color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 ✕
               </button>
@@ -466,7 +464,7 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                 href={previewPhoto.url} 
                 target="_blank" 
                 rel="noreferrer" 
-                style={{ fontSize: '13px', color: '#2563EB', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                style={{ fontSize: '13px', color: '#0F172A', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>

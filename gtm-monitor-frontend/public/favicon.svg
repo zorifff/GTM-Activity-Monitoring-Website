@@ -1,4 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="50" fill="#800000"/>
-  <text x="50" y="54" font-family="'Outfit', -apple-system, BlinkMacSystemFont, sans-serif" font-weight="900" font-size="34" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" letter-spacing="-1">GTM</text>
+  <image href="/telkomsel-symbol.png" x="4" y="4" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
 </svg>
