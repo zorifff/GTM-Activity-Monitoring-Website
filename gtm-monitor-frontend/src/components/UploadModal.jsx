@@ -142,10 +142,7 @@ export default function UploadModal({ data, onClose, onSubmit }) {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: 600, color: '#800000', textTransform: 'uppercase', letterSpacing: '1px' }}>
-              Upload Kegiatan GTM
-            </div>
-            <h3 id="upload-modal-title" style={{ fontSize: '18px', fontWeight: 600, color: '#0F172A', margin: '4px 0 2px 0', fontFamily: "var(--font-heading)" }}>
+            <h3 id="upload-modal-title" style={{ fontSize: '18px', fontWeight: 600, color: '#0F172A', margin: '0 0 2px 0', fontFamily: "var(--font-heading)" }}>
               {actLabel}
             </h3>
             <div style={{ fontSize: '12.5px', color: '#64748B', fontWeight: 600 }}>

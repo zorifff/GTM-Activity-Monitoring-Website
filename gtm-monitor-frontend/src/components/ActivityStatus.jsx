@@ -19,7 +19,7 @@ const ActivityStatus = memo(function ActivityStatus({
     else if (onClick) onClick(e);
   };
 
-  // 1. Selesai (Verified) — Ikon centang, chip netral elegan, tanpa tombol
+  // 1. Selesai (Verified) — Ikon centang, chip hijau solid, tanpa tombol
   if (status === 'selesai' || status === 'verified') {
     const displayLabel = label || (count > 1 ? `Selesai (${count})` : 'Selesai');
     return (
@@ -32,10 +32,11 @@ const ActivityStatus = memo(function ActivityStatus({
           gap: '5px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#F1F5F9',
-          color: '#1E293B',
-          border: '1px solid #CBD5E1',
+          backgroundColor: '#DCFCE7',
+          color: '#14532D',
+          border: '1px solid #22C55E',
           fontSize: '11px',
+          fontWeight: 500,
           whiteSpace: 'nowrap'
         }}
         title={title ? `${title}: Selesai & Terverifikasi` : 'Aktivitas telah selesai dan terverifikasi'}
@@ -48,7 +49,7 @@ const ActivityStatus = memo(function ActivityStatus({
     );
   }
 
-  // 2. Menunggu Verifikasi — Tombol "Cek Status" Netral
+  // 2. Menunggu Verifikasi — Tombol "Cek Status" Kuning Solid
   if (status === 'menunggu_verifikasi' || status === 'upload') {
     return (
       <button
@@ -61,17 +62,18 @@ const ActivityStatus = memo(function ActivityStatus({
           gap: '4px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#F8FAFC',
-          border: '1px solid #CBD5E1',
-          color: '#334155',
+          backgroundColor: '#FEF08A',
+          border: '1px solid #EAB308',
+          color: '#713F12',
           fontSize: '10.5px',
+          fontWeight: 500,
           cursor: 'pointer',
           whiteSpace: 'nowrap',
           minHeight: '26px',
           transition: 'all 0.15s ease'
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#F1F5F9'; e.currentTarget.style.borderColor = '#94A3B8'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#F8FAFC'; e.currentTarget.style.borderColor = '#CBD5E1'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FDE047'; e.currentTarget.style.borderColor = '#CA8A04'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FEF08A'; e.currentTarget.style.borderColor = '#EAB308'; }}
         title={title ? `${title}: Menunggu verifikasi admin. Klik untuk cek status.` : 'Menunggu verifikasi admin. Klik untuk cek status.'}
       >
         <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

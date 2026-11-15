@@ -4,7 +4,8 @@ import LoginModal from './Auth/LoginModal';
 const LandingPage = memo(function LandingPage({
   initialLoginOpen = false,
   onLoginSuccess,
-  onCloseLoginRoute
+  onCloseLoginRoute,
+  onOpenLoginRoute
 }) {
   const [isLoginOpen, setIsLoginOpen] = useState(Boolean(initialLoginOpen));
 
@@ -15,6 +16,9 @@ const LandingPage = memo(function LandingPage({
   const handleOpenLogin = (e) => {
     if (e) e.preventDefault();
     setIsLoginOpen(true);
+    if (onOpenLoginRoute) {
+      onOpenLoginRoute();
+    }
   };
 
   const handleCloseLogin = () => {

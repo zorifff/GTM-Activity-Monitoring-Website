@@ -266,9 +266,11 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
               <div key={actType.key} style={{ border: '1px solid #f1f5f9', borderRadius: '10px', padding: '14px 16px', marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                   <div style={{ fontSize: '14px', color: '#0f172a' }}>{actType.label}</div>
-                  <div style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', backgroundColor: meta.bg, color: meta.color }}>
-                    {meta.label} {photoList.length > 0 && (actType.key === 'rekrutmen_sf' ? '' : `(${photoList.length} Foto)`)}
-                  </div>
+                  {effectiveStatus !== 'upload' && (
+                    <div style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', backgroundColor: meta.bg, color: meta.color }}>
+                      {meta.label} {photoList.length > 0 && (actType.key === 'rekrutmen_sf' ? '' : `(${photoList.length} Foto)`)}
+                    </div>
+                  )}
                 </div>
 
                 {photoList.length === 0 ? (
@@ -303,11 +305,13 @@ export default function ReviewModal({ modalData, closeModal, verifyActivity, rej
                           )}
 
                           <div style={{ flex: 1, minWidth: '160px', fontSize: '12px', color: '#334155', lineHeight: 1.5 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '10.5px', padding: '2px 8px', borderRadius: '4px', background: phMeta.bg, color: phMeta.color }}>
-                                {actType.key === 'rekrutmen_sf' ? phMeta.label : `Foto #${idx + 1}: ${phMeta.label}`}
-                              </span>
-                            </div>
+                            {ph.status !== 'upload' && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                                <span style={{ fontSize: '10.5px', padding: '2px 8px', borderRadius: '4px', background: phMeta.bg, color: phMeta.color }}>
+                                  {actType.key === 'rekrutmen_sf' ? phMeta.label : `Foto #${idx + 1}: ${phMeta.label}`}
+                                </span>
+                              </div>
+                            )}
                             {ph.namaOutlet && <div><b>Nama Outlet:</b> {ph.namaOutlet}</div>}
                             {(ph.namaBumdes || (actType.key === 'bumdes' && ph.keterangan)) && (
                               <div><b>Nama BUMDES:</b> {ph.namaBumdes || ph.keterangan}</div>

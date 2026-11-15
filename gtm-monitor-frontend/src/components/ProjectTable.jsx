@@ -50,7 +50,7 @@ const OdpRow = memo(({ o, odpGrid }) => {
   return (
     <div
       className="table-row"
-      style={{ gridTemplateColumns: odpGrid, backgroundColor: '#fafbfc', borderTop: '1px solid #f8fafc', minHeight: '44px', minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
+      style={{ gridTemplateColumns: odpGrid, backgroundColor: '#fafbfc', borderTop: '1px solid #f8fafc', minHeight: '44px', minWidth: '100%', width: '100%', boxSizing: 'border-box' }}
     >
       <div></div>
       <div style={{ fontSize: '13px', paddingLeft: '14px', textAlign: 'left' }}>{o.odp}</div>
@@ -86,7 +86,7 @@ const ProjectRow = memo(({ p, branchName, isExpanded, toggleProject, onReview, o
       {/* Project row with activity status & action buttons */}
       <div
         className={`table-row ${isEven ? 'table-row-even' : ''}`}
-        style={{ gridTemplateColumns: tableGrid, minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
+        style={{ gridTemplateColumns: tableGrid, minWidth: '100%', width: '100%', boxSizing: 'border-box' }}
       >
         <button
           type="button"
@@ -683,14 +683,13 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
     );
   };
 
-  const tableGrid = '34px 220px 165px 95px 125px 95px 135px 145px 135px 135px 135px 115px 85px';
-  const odpGrid = '34px 220px 165px 95px 125px 95px';
+  const tableGrid = '34px 220px 165px 95px 125px 95px 135px 145px 135px 135px 135px 115px minmax(85px, 1fr)';
+  const odpGrid = '34px 220px 165px 95px 125px minmax(95px, 1fr)';
 
   return (
-    <div className="card project-table-card" style={{ position: 'relative', overflow: filterPopup ? 'visible' : 'hidden' }}>
-      <TableScrollSlider scrollRef={scrollRef} />
+    <div className="card project-table-card" style={{ overflow: filterPopup ? 'visible' : 'hidden' }}>
       <div ref={scrollRef} className="project-table-scroll" style={{ overflowX: 'auto', overflowY: filterPopup ? 'visible' : 'auto', borderRadius: 'inherit' }}>
-        <div style={{ minWidth: 'max-content', paddingBottom: filterPopup ? '400px' : '0' }}>
+        <div style={{ minWidth: '100%', width: 'max-content', paddingBottom: filterPopup ? '400px' : '0' }}>
           {/* Header */}
           <div
             className="table-header"
@@ -703,8 +702,8 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
               color: '#FFFFFF',
               borderBottom: '1px solid #660000',
               boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)',
-              minWidth: 'max-content',
-              width: 'max-content',
+              minWidth: '100%',
+              width: '100%',
               boxSizing: 'border-box'
             }}
           >
@@ -728,7 +727,7 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
                 <div
                   key={idx}
                   className="table-row"
-                  style={{ gridTemplateColumns: tableGrid, minHeight: '52px', minWidth: 'max-content', width: 'max-content', boxSizing: 'border-box' }}
+                  style={{ gridTemplateColumns: tableGrid, minHeight: '52px', minWidth: '100%', width: '100%', boxSizing: 'border-box' }}
                 >
                   <div style={{ width: '16px', height: '16px', borderRadius: '4px', background: '#E2E8F0', animation: 'pulse 1.5s infinite' }} />
                   <div style={{ width: '150px', height: '14px', borderRadius: '4px', background: '#E2E8F0', animation: 'pulse 1.5s infinite' }} />
@@ -814,6 +813,9 @@ export default function ProjectTable({ projects, branchName, onReview, uploadPho
           )}
         </div>
       </div>
+
+      {/* Slider geser horizontal untuk wadah tabel yang lebih lebar dari layar (<= 1024px) */}
+      <TableScrollSlider scrollRef={scrollRef} />
 
       {/* Upload Modal */}
       {activeUploadData && (

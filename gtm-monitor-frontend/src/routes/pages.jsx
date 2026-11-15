@@ -13,10 +13,12 @@ import { useActivityActions } from '../hooks/useActivityActions';
 import { PATHS } from './paths';
 
 export function LandingRoute() {
+  const navigate = useNavigate();
   const { login } = useAuth();
   return (
     <LandingPage
       initialLoginOpen={false}
+      onOpenLoginRoute={() => navigate(PATHS.login)}
       onLoginSuccess={(loggedInUser, expiresAt) => {
         login(loggedInUser, expiresAt);
       }}

@@ -7,7 +7,7 @@
 - `gtm-monitor-frontend/package.json` (33 baris)
 - `gtm-monitor-frontend/vite.config.js` (31 baris)
 - `gtm-monitor-frontend/index.html` (22 baris)
-- `gtm-monitor-frontend/src/index.css` (1881 baris)
+- `gtm-monitor-frontend/src/index.css` (1914 baris)
 - `gtm-monitor-frontend/src/apiConfig.js` (64 baris)
 - `gtm-monitor-frontend/src/lib/queryClient.js` (18 baris)
 - `gtm-monitor-frontend/src/main.jsx` (21 baris)
@@ -124,7 +124,7 @@ export default defineConfig({
 
 ---
 
-## File: `gtm-monitor-frontend/src/index.css` (1881 baris)
+## File: `gtm-monitor-frontend/src/index.css` (1914 baris)
 
 ```css
 @font-face {
@@ -369,6 +369,9 @@ button {
   letter-spacing: .04em;
   border-bottom: 1px solid #660000;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  min-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .table-header button,
@@ -387,6 +390,9 @@ button {
   border-top: 1px solid #f1f5f9;
   background-color: #ffffff;
   transition: background-color 0.15s ease;
+  min-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .table-row:hover {
@@ -406,8 +412,9 @@ button {
   50% { opacity: 0.4; }
 }
 
-/* Slider geser tabel: terkunci di bagian atas kartu tabel tepat sebelum header kolom */
+/* Slider geser tabel: khusus perangkat mobile/tablet (<= 1024px) */
 .table-scroll-slider {
+  display: none;
   position: relative;
   z-index: 22;
   background: #FFFFFF;
@@ -418,6 +425,12 @@ button {
   box-sizing: border-box;
   width: 100%;
   flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .table-scroll-slider {
+    display: block !important;
+  }
 }
 
 .table-scroll-track {
@@ -459,7 +472,7 @@ button {
   cursor: grabbing;
 }
 
-/* Scrollbar bawaan disembunyikan: geser samping lewat slider, geser baris lewat roda mouse atau sentuhan */
+/* Scrollbar bawaan disembunyikan: geser samping lewat slider pada mobile, scrollbar halus pada desktop */
 .project-table-scroll {
   flex: 1 1 auto;
   min-height: 0;
@@ -471,12 +484,32 @@ button {
   height: 0;
 }
 
+@media (min-width: 1025px) {
+  .project-table-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #CBD5E1 transparent;
+  }
+
+  .project-table-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .project-table-scroll::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 999px;
+  }
+
+  .project-table-scroll::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+}
+
 /* Tinggi maksimal kartu tabel dengan posisi sticky tepat di bawah top bar */
 .project-table-card {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  margin-top: 6px;
+  margin-top: 0 !important;
   min-height: 320px;
   max-height: calc(100dvh - 84px);
   position: sticky;
@@ -1041,7 +1074,7 @@ button {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 24px;
+  margin-bottom: 8px !important;
   position: relative;
   z-index: 25;
 }

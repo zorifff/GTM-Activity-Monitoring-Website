@@ -7,7 +7,7 @@
 - `gtm-monitor-frontend/src/routes/pages.jsx` (139 baris)
 - `gtm-monitor-frontend/src/components/Dashboard.jsx` (179 baris)
 - `gtm-monitor-frontend/src/components/UploadView.jsx` (869 baris)
-- `gtm-monitor-frontend/src/components/BranchView.jsx` (480 baris)
+- `gtm-monitor-frontend/src/components/BranchView.jsx` (484 baris)
 - `gtm-monitor-frontend/src/components/AdminPanel.jsx` (91 baris)
 - `gtm-monitor-frontend/src/components/LandingPage.jsx` (230 baris)
 - `gtm-monitor-frontend/src/components/Auth/LoginModal.jsx` (504 baris)
@@ -828,7 +828,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       </div>
 
       {/* ─── 3. CONTROLS BAR (FILTER BRANCH, SEARCH, & EXPORT EXCEL) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap', width: '100%' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', flexWrap: 'wrap', width: '100%' }}>
         {/* Branch Dropdown */}
         {branches.length === 1 ? (
           <div className="filter-dropdown-wrapper" style={{ position: 'relative' }}>
@@ -1223,7 +1223,7 @@ export default UploadView;
 
 ---
 
-## File: `gtm-monitor-frontend/src/components/BranchView.jsx` (480 baris)
+## File: `gtm-monitor-frontend/src/components/BranchView.jsx` (484 baris)
 
 ```javascript
 import { useState, useMemo, memo } from 'react';
@@ -1561,7 +1561,7 @@ const BranchView = memo(function BranchView({
       </div>
 
       {/* ─── CONTROLS BAR (EXPORT EXCEL & SEARCH INPUT) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap', width: '100%' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', flexWrap: 'wrap', width: '100%' }}>
         {/* Tombol Export Excel */}
         <button
           type="button"

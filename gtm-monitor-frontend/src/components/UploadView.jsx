@@ -475,7 +475,7 @@ const UploadView = memo(function UploadView({ branches, initialBranch, verifyAct
       </div>
 
       {/* ─── 3. CONTROLS BAR (FILTER BRANCH, SEARCH, & EXPORT EXCEL) ─── */}
-      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap', width: '100%' }}>
+      <div className="controls-bar-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', flexWrap: 'wrap', width: '100%' }}>
         {/* Branch Dropdown */}
         {branches.length === 1 ? (
           <div className="filter-dropdown-wrapper" style={{ position: 'relative' }}>
